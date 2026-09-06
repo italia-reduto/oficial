@@ -64,6 +64,23 @@
             🇮🇹 SISTEMA EXCLUSIVO | ORGANIZAÇÃO ITÁLIA
         </p>
     </div>
+    <script>
+const botao = document.querySelector('button');
+botao.addEventListener('click', () => {
+  const passaporte = document.querySelectorAll('input')[0].value.trim();
+  const nome = document.querySelectorAll('input')[1].value.trim();
+  
+  if (!passaporte) {
+    alert('⚠️ Digite o Número do Passaporte!');
+    return;
+  }
+  
+  localStorage.setItem('passaporte', passaporte);
+  localStorage.setItem('nome', nome || 'Membro');
+  window.location.href = 'inicio.html';
+});
+    </script>
+    
 </body>
 </html>
 
