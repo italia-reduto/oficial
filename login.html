@@ -11,7 +11,7 @@
             theme: {
                 extend: {
                     colors: {
-                        fundo: '#0a0a0d',
+                        fundo: '#0a0a0d', // Fundo quase preto absoluto
                         cartao: '#14141a',
                         destaque: '#c41e3a',
                         texto: '#e4e4e7',
@@ -23,8 +23,14 @@
     </script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { background-color: #0a0a0d; min-height: 100vh; }
-        body { background-image: radial-gradient(circle at top, rgba(196,30,58,0.06), transparent 50%); }
+        html, body { 
+            background-color: #0a0a0d !important; 
+            min-height: 100vh; 
+            height: 100%;
+        }
+        body { 
+            background-image: radial-gradient(circle at top, rgba(196,30,58,0.06), transparent 50%); 
+        }
     </style>
 </head>
 <body class="bg-fundo text-texto font-sans flex items-center justify-center min-h-screen p-4">
@@ -59,7 +65,6 @@
                 <i class="fas fa-arrow-right"></i>
             </button>
 
-            <!-- Link Esqueci Minha Senha -->
             <div class="text-center mt-6">
                 <a href="#" id="linkEsqueci" class="text-slate-400 hover:text-destaque text-sm transition-colors">
                     <i class="fas fa-lock mr-1"></i> Esqueci minha senha
@@ -71,7 +76,6 @@
     </div>
 
     <script>
-        // Alternar visibilidade da senha
         const inputSenha = document.getElementById('senha');
         const btnOlho = document.getElementById('btnOlho');
 
@@ -81,7 +85,6 @@
             btnOlho.innerHTML = tipo === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
         });
 
-        // Ação do botão de acesso
         document.getElementById('btnAcessar').addEventListener('click', () => {
             const p = document.getElementById('passaporte').value.trim();
             const s = inputSenha.value;
@@ -90,12 +93,10 @@
             window.location.href = 'inicio.html';
         });
 
-        // Ação Esqueci Senha (exemplo)
         document.getElementById('linkEsqueci').addEventListener('click', (e) => {
             e.preventDefault();
-            alert('Para recuperar acesso, procure a Administração ou o Setor de Recursos Humanos da Organização.');
+            alert('Para recuperar acesso, procure a Administração da Organização.');
         });
     </script>
 </body>
 </html>
-
