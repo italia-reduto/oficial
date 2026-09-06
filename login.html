@@ -1,18 +1,17 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORGANIZAÇÃO ITÁLIA • ACESSO</title>
+    <title>ORGANIZAÇÃO ITÁLIA · ACESSO</title>
     
-    <!-- ISTO AQUI DEIXA A BARRA DO NAVEGADOR ESCURA -->
     <meta name="theme-color" content="#0a0a0d">
-    <meta name="msapplication-navbutton-color" content="#0a0a0d">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script>
         tailwind.config = {
             theme: {
@@ -23,25 +22,30 @@
                         destaque: '#c41e3a',
                         texto: '#e4e4e7',
                     },
-                    fontFamily: { sans: ['Inter', 'sans-serif'] }
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif']
+                    }
                 }
             }
         }
     </script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { 
-            background-color: #0a0a0d !important; 
-            min-height: 100vh; 
+        html, body {
+            background-color: #0a0a0d !important;
+            min-height: 100vh;
             height: 100%;
         }
-        body { 
-            background-image: radial-gradient(circle at top, rgba(196,30,58,0.06), transparent 50%); 
+        body {
+            background-image: radial-gradient(circle at top, rgba(196,30,58,0.06), transparent 50%);
         }
     </style>
 </head>
 <body class="bg-fundo text-texto font-sans flex items-center justify-center min-h-screen p-4">
     <div class="w-full max-w-md">
+        
+        <!-- CABEÇALHO -->
         <div class="text-center mb-10">
             <div class="text-5xl mb-4">🇮🇹</div>
             <h1 class="text-xl font-bold tracking-widest uppercase">Organização Itália</h1>
@@ -49,45 +53,50 @@
             <div class="mt-6 text-xs text-slate-600 uppercase tracking-wider">🔒 Acesso Restrito • Uso Monitorado</div>
         </div>
 
+        <!-- CARTÃO DE LOGIN -->
         <div class="bg-cartao/80 rounded-2xl p-8 border border-slate-800/50 shadow-2xl">
+            
+            <!-- CAMPO PASSAPORTE COM ÍCONE DENTRO -->
             <div class="mb-6">
-                <label class="flex items-center gap-2 text-sm text-slate-300 mb-2">
-  <i class="fas fa-id-card"></i> Número de Passaporte
-                </label>
-                
-                
-                <input type="text" id="passaporte" placeholder="Ex: 17274"
-                    class="w-full bg-transparent border-2 border-slate-300/80 rounded-xl px-4 py-3.5 focus:outline-none focus:border-destaque transition-all">
+                <label class="block text-sm text-slate-300 mb-2">Número de Passaporte</label>
+                <div class="relative">
+                    <i class="fas fa-id-card absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="passaporte" placeholder="Ex: 17274"
+                        class="w-full bg-transparent border-2 border-slate-300/80 rounded-xl pl-12 pr-4 py-3.5 focus:outline-none focus:border-red-500">
+                </div>
             </div>
 
+            <!-- CAMPO SENHA COM ÍCONE DENTRO -->
             <div class="mb-8">
-                <label class="flex items-center gap-2 text-sm text-slate-300 mb-2">
-  <i class="fas fa-lock"></i> Senha de Acesso
-                </label>
-                
-                
+                <label class="block text-sm text-slate-300 mb-2">Senha de Acesso</label>
                 <div class="relative">
+                    <i class="fas fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
                     <input type="password" id="senha" placeholder="Sua senha"
-                        class="w-full bg-transparent border-2 border-slate-300/80 rounded-xl px-4 py-3.5 pr-12 focus:outline-none focus:border-destaque transition-all">
+                        class="w-full bg-transparent border-2 border-slate-300/80 rounded-xl pl-12 pr-12 py-3.5 focus:outline-none focus:border-red-500">
+                    
                     <button type="button" id="btnOlho" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
             </div>
 
-            <button id="btnAcessar" class="w-full bg-destaque hover:bg-destaque/90 text-white font-semibold py-4 rounded-xl transition-all flex items-center justify-center gap-2">
+            <!-- BOTÃO ENTRAR -->
+            <button id="btnAcessar" class="w-full bg-destaque hover:bg-destaque/90 text-white font-semibold py-4 rounded-xl transition-all">
                 <span>Entrar no Sistema</span>
-                <i class="fas fa-arrow-right"></i>
+                <i class="fas fa-arrow-right ml-2"></i>
             </button>
 
+            <!-- LINK ESQUECI -->
             <div class="text-center mt-6">
                 <a href="#" id="linkEsqueci" class="text-slate-400 hover:text-destaque text-sm transition-colors">
                     <i class="fas fa-lock mr-1"></i> Esqueci minha senha
                 </a>
             </div>
+
         </div>
 
         <div class="text-center text-slate-700 text-xs mt-10">USO EXCLUSIVO • PROIBIDA DIVULGAÇÃO EXTERNA</div>
+
     </div>
 
     <script>
@@ -95,23 +104,11 @@
         const btnOlho = document.getElementById('btnOlho');
 
         btnOlho.addEventListener('click', () => {
-            const tipo = inputSenha.type === 'password' ? 'text' : 'password';
-            inputSenha.type = tipo;
+            const tipo = inputSenha.getAttribute('type') === 'password' ? 'text' : 'password';
+            inputSenha.setAttribute('type', tipo);
             btnOlho.innerHTML = tipo === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-        });
-
-        document.getElementById('btnAcessar').addEventListener('click', () => {
-            const p = document.getElementById('passaporte').value.trim();
-            const s = inputSenha.value;
-            if (!p || !s) return alert('Preencha todos os campos para continuar.');
-            localStorage.setItem('it_passaporte', p);
-            window.location.href = 'inicio.html';
-        });
-
-        document.getElementById('linkEsqueci').addEventListener('click', (e) => {
-            e.preventDefault();
-            alert('Para recuperar acesso, procure a Administração da Organização.');
         });
     </script>
 </body>
-</html>
+                            </html>
+                            
