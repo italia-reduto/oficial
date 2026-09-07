@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REGISTROS · ORGANIZAÇÃO ITÁLIA</title>
+    <meta name="theme-color" content="#0f0f14">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#0f0f14',
+                        cartao: '#18181f',
+                        destaque: '#c41e3a',
+                        neutro: '#24242e',
+                        texto: '#e2e2e8',
+                        subtexto: '#9ca3af',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0f0f14; }
+        .opcao { transition: transform .2s ease, box-shadow .2s ease; }
+        .opcao:active { transform: scale(0.98); }
+        .seta-animada { animation: bounce 2s infinite; }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(6px); }
+        }
+    </style>
+</head>
+<body class="bg-fundo text-texto font-sans min-h-screen flex flex-col">
+
+    <!-- CABEÇALHO -->
+    <header class="bg-fundo/85 backdrop-blur-md border-b border-neutro/60">
+        <div class="flex items-center justify-between px-4 py-3">
+            <a href="painel.html" class="w-10 h-10 flex items-center justify-center rounded-xl bg-neutro/40 text-subtexto hover:text-texto">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="text-center">
+                <h1 class="font-bold text-base">Área de Registros</h1>
+                <p class="text-xs text-subtexto">🇮🇹 Organização Itália</p>
+            </div>
+            <div class="w-10 h-10"></div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO -->
+    <main class="flex-1 px-4 py-6 max-w-lg mx-auto w-full">
+        
+        <!-- AVISO + SETA CENTRALIZADA -->
+        <div class="text-center mb-6">
+            <h2 class="text-lg font-bold tracking-wide mb-4">
+                ESCOLHA UMA DAS OPÇÕES ABAIXO
+            </h2>
+            <div class="seta-animada text-destaque text-3xl">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+        
+        <div class="space-y-3">
+
+            <!-- OPÇÃO METAS -->
+            <a href="metas.html" class="opcao block bg-cartao p-4 rounded-2xl border border-neutro/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-red-500/15 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-bullseye text-destaque text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="font-semibold">Metas</h2>
+                        <p class="text-sm text-subtexto">Inventário e comprovação</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-subtexto"></i>
+                </div>
+            </a>
+
+            <!-- OPÇÃO VENDAS -->
+            <a href="vendas.html" class="opcao block bg-cartao p-4 rounded-2xl border border-neutro/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-green-500/15 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-chart-line text-green-400 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="font-semibold">Vendas</h2>
+                        <p class="text-sm text-subtexto">Contagem e lucros diários</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-subtexto"></i>
+                </div>
+            </a>
+
+            <!-- OPÇÃO DEPÓSITOS -->
+            <a href="depositos.html" class="opcao block bg-cartao p-4 rounded-2xl border border-neutro/50">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-xl bg-blue-500/15 flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-piggy-bank text-blue-400 text-lg"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="font-semibold">Depósitos</h2>
+                        <p class="text-sm text-subtexto">Registro e comprovantes</p>
+                    </div>
+                    <i class="fas fa-chevron-right text-subtexto"></i>
+                </div>
+            </a>
+
+        </div>
+
+        <!-- RODAPÉ INFORMATIVO -->
+        <div class="mt-10 text-center">
+            <div class="inline-flex items-center gap-2 bg-neutro/20 px-4 py-2 rounded-full">
+                <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+                <span class="text-xs text-subtexto">Sistema operacional</span>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+                  </html>
+                  
