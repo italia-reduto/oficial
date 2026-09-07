@@ -35,7 +35,37 @@
         }
         .card { transition: transform .2s, box-shadow .2s; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.35); }
-        .btn-sair:hover { background: #c41e3a; color: #fff; border-color: #c41e3a; }
+        
+        /* ✅ BOTÃO SAIR: APENAS VERMELHO AO PRESSIONAR */
+        .btn-sair { 
+            transition: all 0.15s ease; 
+        }
+        .btn-sair:active { 
+            background: #c41e3a; 
+            color: #fff; 
+            border-color: #c41e3a; 
+        }
+
+        /* MODAL PERSONALIZADO */
+        .modal-fundo {
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .modal-visivel { display: flex; }
+        .modal-conteudo {
+            background: #18181f;
+            border: 1px solid #24242e;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            animation: aparece 0.2s ease;
+        }
+        @keyframes aparece {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body class="bg-fundo text-texto font-sans min-h-screen pb-20">
@@ -49,7 +79,7 @@
                     <p class="text-[10px] text-subtexto tracking-wide">Passaporte: 17274</p>
                 </div>
             </div>
-            <button id="btnSair" class="btn-sair flex items-center gap-2 px-3 py-2 rounded-full border border-neutro text-subtexto text-sm">
+            <button id="btnAbrirModal" class="btn-sair flex items-center gap-2 px-3 py-2 rounded-full border border-neutro text-subtexto text-sm">
                 <i class="fas fa-sign-out-alt"></i>
                 <span class="hidden sm:inline">Sair</span>
             </button>
@@ -138,12 +168,41 @@
         </a>
     </nav>
 
+    <!-- MODAL PERSONALIZADO DE CONFIRMAÇÃO -->
+    <div id="modalSair" class="modal-fundo fixed inset-0 w-full h-full">
+        <div class="modal-conteudo w-[85%] max-w-md rounded-2xl p-6">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-full bg-destaque/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-sign-out-alt text-destaque text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Confirmação de Saída</h3>
+                <p class="text-subtexto">Você tem certeza que deseja sair da sua conta?</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="btnCancelar" class="flex-1 py-3 rounded-xl border border-neutro font-medium transition hover:bg-neutro/30">
+                    Cancelar
+                </button>
+                <button id="btnConfirmarSaida" class="flex-1 py-3 rounded-xl bg-destaque text-white font-medium transition hover:bg-destaque/90">
+                    Sim, Sair
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        document.getElementById('btnSair').addEventListener('click', function() {
-            if (confirm('Você tem certeza que deseja sair?')) {
-                window.location.href = 'index.html';
-            }
+        const modal = document.getElementById('modalSair');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const btnConfirmar = document.getElementById('btnConfirmarSaida');
+
+        btnAbrir.addEventListener('click', () => modal.classList.add('modal-visivel'));
+        btnCancelar.addEventListener('click', () => modal.classList.remove('modal-visivel'));
+        btnConfirmar.addEventListener('click', () => window.location.href = 'index.html');
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('modal-visivel');
         });
+
         const itensMenu = document.querySelectorAll('.menu-item');
         itensMenu.forEach(item => {
             item.addEventListener('click', (e) => {
@@ -153,5 +212,7 @@
             });
         });
     </script>
+
 </body>
-</html>
+                                                             </html>
+                                                             
