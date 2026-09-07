@@ -1,1 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORGANIZAÇÃO ITÁLIA · PAINEL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#0f0f14',
+                        cartao: '#18181f',
+                        destaque: '#c41e3a',
+                        neutro: '#24242e',
+                        texto: '#e2e2e8',
+                        subtexto: '#9ca3af',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { background-color: #0f0f14; min-height: 100vh; }
+        body { font-family: system-ui, sans-serif; color: #e2e2e8; padding-bottom: 80px; }
+        .btn { border: none; cursor: pointer; transition: transform 0.15s; }
+        .btn:active { transform: scale(0.96); }
+        .menu-container {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(24,24,31,0.95); backdrop-filter: blur(8px);
+            border-top: 1px solid #24242e;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 12px 8px;
+        }
+        .menu-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #9ca3af; background: transparent; border: none;
+            cursor: pointer; transition: color 0.2s;
+            min-width: 60px; text-align: center;
+        }
+        .menu-item.active { color: #ffffff; }
+        .menu-item i { font-size: 20px; margin-bottom: 4px; }
+        .menu-item span { font-size: 11px; line-height: 1; }
+    </style>
+</head>
+<body class="bg-fundo">
+    <!-- Cabeçalho -->
+    <header class="sticky top-0 bg-fundo/90 backdrop-blur border-b border-neutro/60 px-5 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-destaque/20 flex items-center justify-center">
+                    <i class="fas fa-user text-destaque text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">Membro: Falcão</h1>
+                    <p class="text-subtexto text-sm">Passaporte: 17274</p>
+                </div>
+            </div>
+            <button onclick="location.reload()" class="w-9 h-9 rounded-full bg-neutro/30 flex items-center justify-center btn">
+                <i class="fas fa-redo-alt text-subtexto"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 space-y-6">
+        <div class="bg-cartao p-5 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-1">Bem-vindo de volta, Falcão</h2>
+            <p class="text-subtexto">Segunda-feira, 7 de setembro</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-cartao p-4 rounded-2xl btn" onclick="alert('Status: Inativo')">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-clock text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Status de Hoje</p>
+                        <p class="font-semibold">Inativo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-4 rounded-2xl btn" onclick="alert('Pontos: —')">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-bolt text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Pontos do Mês</p>
+                        <p class="font-semibold">—</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-4 rounded-2xl btn" onclick="alert('Faltas: 0')">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-user-times text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Faltas Acumuladas</p>
+                        <p class="font-semibold">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-4 rounded-2xl btn" onclick="alert('Cargo: Membro')">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-briefcase text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Cargo Atual</p>
+                        <p class="font-semibold">Membro</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-cartao p-5 rounded-2xl">
+            <h3 class="font-semibold mb-4 flex items-center gap-2 text-lg">
+                <i class="fas fa-bullhorn text-destaque"></i> Avisos Recentes
+            </h3>
+            <div class="space-y-3 text-sm">
+                <p class="text-subtexto"><span class="text-destaque mr-2">•</span>Novo regulamento interno publicado.</p>
+                <p class="text-subtexto"><span class="text-subtexto mr-2">•</span>Sistema atualizado com sucesso.</p>
+            </div>
+        </div>
+
+        <!-- BOTÃO MANUAIS: ABRE PÁGINA ESPECÍFICA -->
+        <div class="grid grid-cols-4 gap-3">
+            <button onclick="alert('Abrir Registros')" class="bg-cartao p-4 rounded-xl text-center btn">
+                <i class="fas fa-clipboard-list text-xl mb-2 block"></i>
+                <span class="text-xs">Registros</span>
+            </button>
+            <button onclick="alert('Abrir Passaporte')" class="bg-cartao p-4 rounded-xl text-center btn">
+                <i class="fas fa-id-card text-xl mb-2 block"></i>
+                <span class="text-xs">Passaporte</span>
+            </button>
+            <button onclick="window.location.href='manuais.html'" class="bg-cartao p-4 rounded-xl text-center btn">
+                <i class="fas fa-book text-xl mb-2 block"></i>
+                <span class="text-xs">Manuais</span>
+            </button>
+            <button onclick="alert('Abrir Suporte')" class="bg-cartao p-4 rounded-xl text-center btn">
+                <i class="fas fa-headset text-xl mb-2 block"></i>
+                <span class="text-xs">Suporte</span>
+            </button>
+        </div>
+    </main>
+
+    <nav class="menu-container">
+        <button class="menu-item active" onclick="mudarMenu(this)">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-users"></i>
+            <span>Equipe</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-stopwatch"></i>
+            <span>Ponto</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-bell"></i>
+            <span>Avisos</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>Mais</span>
+        </button>
+    </nav>
+
+    <script>
+        function mudarMenu(el) {
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+              </html>
 
