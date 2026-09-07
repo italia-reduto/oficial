@@ -1,1 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORGANIZAÇÃO ITÁLIA · PAINEL</title>
+    <meta name="theme-color" content="#0f0f14">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#0f0f14',
+                        cartao: '#18181f',
+                        destaque: '#c41e3a',
+                        neutro: '#24242e',
+                        texto: '#e2e2e8',
+                        subtexto: '#9ca3af',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { background-color: #0f0f14; }
+        .menu-item.active { 
+            color: #fff; 
+            border-top: 2px solid #c41e3a; 
+            background: linear-gradient(to top, rgba(196,30,58,0.15), transparent); 
+        }
+        .card { transition: transform .2s, box-shadow .2s; }
+        .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.35); }
+        
+        /* Botão Sair */
+        .btn-sair { transition: all 0.15s ease; }
+        .btn-sair:active { 
+            background: #c41e3a; 
+            color: #fff; 
+            border-color: #c41e3a; 
+        }
+
+        /* Modal */
+        .modal-fundo {
+            background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        .modal-visivel { display: flex; }
+        .modal-conteudo {
+            background: #18181f;
+            border: 1px solid #24242e;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+            animation: aparece 0.2s ease;
+        }
+        @keyframes aparece {
+            from { transform: scale(0.95); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-fundo text-texto font-sans min-h-screen pb-20">
+
+    <!-- Cabeçalho com Ícone de Membro -->
+    <header class="sticky top-0 z-10 bg-fundo/80 backdrop-blur-md border-b border-neutro/60">
+        <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-destaque/20 flex items-center justify-center">
+                    <i class="fas fa-user text-destaque text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">Membro: Falcão</h1>
+                    <p class="text-[10px] text-subtexto tracking-wide">Passaporte: 17274</p>
+                </div>
+            </div>
+            <button id="btnAbrirModal" class="btn-sair flex items-center gap-2 px-3 py-2 rounded-full border border-neutro text-subtexto text-sm">
+                <i class="fas fa-sign-out-alt"></i>
+                <span class="hidden sm:inline">Sair</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 space-y-6">
+        <!-- Área de Bem-vindo com Data Automática -->
+        <section class="bg-cartao p-5 rounded-2xl border border-neutro/50">
+            <h2 class="text-xl font-semibold mb-1">Bem-vindo de volta, Falcão</h2>
+            <p id="data-atual" class="text-subtexto text-sm"></p>
+        </section>
+
+        <!-- ✅ BLOCO COMPLETO: Status, Faltas, Cargo e Pontos -->
+        <section class="grid grid-cols-2 gap-4 w-full">
+            <div class="space-y-4">
+                <!-- Status de Hoje -->
+                <div class="card bg-cartao px-4 py-4 rounded-2xl border border-neutro/50 w-full">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-neutro/30 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-clock text-subtexto"></i>
+                        </div>
+                        <div>
+                            <p class="text-subtexto text-xs mb-0.5">Status de Hoje</p>
+                            <p class="font-semibold text-base text-subtexto">Inativo</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Faltas Acumuladas -->
+                <div class="card bg-cartao px-4 py-4 rounded-2xl border border-neutro/50 w-full">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-neutro/30 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-user-times text-subtexto"></i>
+                        </div>
+                        <div>
+                            <p class="text-subtexto text-xs mb-0.5">Faltas Acumuladas</p>
+                            <p class="font-semibold text-base text-subtexto">0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <!-- Pontos do Mês -->
+                <div class="card bg-cartao px-4 py-4 rounded-2xl border border-neutro/50 w-full">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-neutro/30 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-bolt text-subtexto"></i>
+                        </div>
+                        <div>
+                            <p class="text-subtexto text-xs mb-0.5">Pontos do Mês</p>
+                            <p class="font-semibold text-base text-subtexto">—</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ✅ NOVA CAIXA: Cargo Atual -->
+                <div class="card bg-cartao px-4 py-4 rounded-2xl border border-neutro/50 w-full">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-lg bg-neutro/30 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-badge-check text-subtexto"></i>
+                        </div>
+                        <div>
+                            <p class="text-subtexto text-xs mb-0.5">Cargo Atual</p>
+                            <p class="font-semibold text-base text-subtexto">Membro</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Avisos Recentes -->
+        <section class="bg-cartao rounded-2xl p-5 border border-neutro/50">
+            <h3 class="font-semibold mb-4 flex items-center gap-2">
+                <i class="fas fa-bullhorn text-destaque"></i> Avisos Recentes
+            </h3>
+            <div class="space-y-4 text-sm">
+                <div class="flex gap-3">
+                    <span class="text-destaque">•</span>
+                    <p class="text-subtexto">Novo regulamento interno publicado.</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-subtexto">•</span>
+                    <p class="text-subtexto">Sistema atualizado com sucesso.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ações Rápidas -->
+        <section class="grid grid-cols-4 gap-3">
+            <div class="bg-cartao p-4 rounded-xl text-center border border-neutro/30">
+                <i class="fas fa-clipboard-list text-subtexto mb-2"></i>
+                <p class="text-xs">Registros</p>
+            </div>
+            <div class="bg-cartao p-4 rounded-xl text-center border border-neutro/30">
+                <i class="fas fa-id-card text-subtexto mb-2"></i>
+                <p class="text-xs">Passaporte</p>
+            </div>
+            <a href="manuais.html" class="bg-cartao p-4 rounded-xl text-center border border-neutro/30 block">
+                <i class="fas fa-book text-subtexto mb-2"></i>
+                <p class="text-xs">Manuais</p>
+            </a>
+            <div class="bg-cartao p-4 rounded-xl text-center border border-neutro/30">
+                <i class="fas fa-headset text-subtexto mb-2"></i>
+                <p class="text-xs">Suporte</p>
+            </div>
+        </section>
+    </main>
+
+    <!-- Navegação Inferior -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-cartao/95 backdrop-blur-md border-t border-neutro/60 flex justify-around py-2">
+        <a href="#" class="menu-item active flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-home text-lg mb-1"></i>
+            <span class="text-xs">Início</span>
+        </a>
+        <a href="#" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-users text-lg mb-1"></i>
+            <span class="text-xs">Equipe</span>
+        </a>
+        <a href="#" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-stopwatch text-lg mb-1"></i>
+            <span class="text-xs">Ponto</span>
+        </a>
+        <a href="#" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-bell text-lg mb-1"></i>
+            <span class="text-xs">Avisos</span>
+        </a>
+        <a href="#" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-ellipsis-h text-lg mb-1"></i>
+            <span class="text-xs">Mais</span>
+        </a>
+    </nav>
+
+    <!-- Modal de Saída -->
+    <div id="modalSair" class="modal-fundo fixed inset-0 w-full h-full">
+        <div class="modal-conteudo w-[85%] max-w-md rounded-2xl p-6">
+            <div class="text-center mb-6">
+                <div class="w-14 h-14 rounded-full bg-destaque/20 flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-sign-out-alt text-destaque text-xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Confirmação de Saída</h3>
+                <p class="text-subtexto">Você tem certeza que deseja sair da sua conta?</p>
+            </div>
+            <div class="flex gap-3">
+                <button id="btnCancelar" class="flex-1 py-3 rounded-xl border border-neutro font-medium transition hover:bg-neutro/30">
+                    Cancelar
+                </button>
+                <button id="btnConfirmarSaida" class="flex-1 py-3 rounded-xl bg-destaque text-white font-medium transition hover:bg-destaque/90">
+                    Sim, Sair
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 📅 Data Automática em Português
+        const diasSemana = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+        const meses = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+
+        function atualizarData() {
+            const hoje = new Date();
+            const diaSemana = diasSemana[hoje.getDay()];
+            const diaNum = hoje.getDate();
+            const mes = meses[hoje.getMonth()];
+            document.getElementById("data-atual").textContent = `${diaSemana}, ${diaNum} de ${mes}`;
+        }
+        atualizarData();
+
+        // Controle do Modal
+        const modal = document.getElementById('modalSair');
+        const btnAbrir = document.getElementById('btnAbrirModal');
+        const btnCancelar = document.getElementById('btnCancelar');
+        const btnConfirmar = document.getElementById('btnConfirmarSaida');
+
+        btnAbrir.addEventListener('click', () => modal.classList.add('modal-visivel'));
+        btnCancelar.addEventListener('click', () => modal.classList.remove('modal-visivel'));
+        btnConfirmar.addEventListener('click', () => window.location.href = 'index.html');
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.classList.remove('modal-visivel');
+        });
+
+        // Menu ativo
+        const itensMenu = document.querySelectorAll('.menu-item');
+        itensMenu.forEach(item => {
+            item.addEventListener('click', (e) => {
+                if(item.getAttribute('href') === '#') e.preventDefault();
+                itensMenu.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+</html>
 
