@@ -1,1 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORGANIZAÇÃO ITÁLIA · MANUAIS</title>
+    <meta name="theme-color" content="#0f0f14">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#0f0f14',
+                        cartao: '#18181f',
+                        destaque: '#c41e3a',
+                        neutro: '#24242e',
+                        texto: '#e2e2e8',
+                        subtexto: '#9ca3af',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { 
+            background-color: #0f0f14; 
+            scroll-behavior: smooth;
+        }
+        .menu-item.active { 
+            color: #fff; 
+            border-top: 2px solid #c41e3a; 
+            background: linear-gradient(to top, rgba(196,30,58,0.15), transparent); 
+        }
+        .secao { border-bottom: 1px solid #24242e; }
+        .secao:last-child { border-bottom: none; }
+
+        /* Animações do botão */
+        .btn-voltar {
+            transition: all 0.3s ease;
+            transform-origin: center;
+        }
+        .btn-voltar:hover {
+            background-color: rgba(36, 36, 46, 0.8);
+            transform: translateX(-3px);
+        }
+        .btn-voltar:active {
+            transform: scale(0.92) translateX(0);
+            box-shadow: 0 0 0 2px rgba(196, 30, 58, 0.4);
+        }
+        .btn-voltar.ativo {
+            animation: animarVoltar 0.4s ease forwards;
+        }
+        @keyframes animarVoltar {
+            0% { transform: translateX(0) scale(1); opacity: 1; }
+            30% { transform: translateX(-15px) scale(0.95); opacity: 0.6; }
+            100% { transform: translateX(-100%); opacity: 0; }
+        }
+    </style>
+</head>
+<body class="bg-fundo text-texto font-sans min-h-screen pb-24">
+
+    <!-- Cabeçalho -->
+    <header class="sticky top-0 z-10 bg-fundo/80 backdrop-blur-md border-b border-neutro/60">
+        <div class="flex items-center justify-between px-5 py-4">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-destaque/20 flex items-center justify-center">
+                    <i class="fas fa-book-open text-destaque text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">Manuais</h1>
+                    <p class="text-[10px] text-subtexto tracking-wide">Guia Oficial da Organização</p>
+                </div>
+            </div>
+            <a href="painel.html" id="btnVoltar" class="btn-voltar flex items-center gap-2 px-3 py-2 rounded-full border border-neutro text-subtexto text-sm">
+                <i class="fas fa-arrow-left"></i>
+                <span class="hidden sm:inline">Voltar</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Conteúdo -->
+    <main class="px-4 py-6 space-y-4">
+        <div class="bg-cartao rounded-2xl border border-neutro/50 overflow-hidden">
+            
+            <div class="p-5 border-b border-neutro/60 bg-gradient-to-r from-destaque/10 to-transparent">
+                <h2 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fas fa-book text-destaque"></i>
+                    ORGANIZAÇÃO ITÁLIA
+                </h2>
+                <p class="text-subtexto text-sm mt-1">Manual de Normas, Hierarquia e Estrutura Organizacional</p>
+            </div>
+
+            <!-- Apresentação -->
+            <div class="secao p-5">
+                <h3 class="font-semibold text-lg mb-3 flex items-center gap-2 text-destaque">
+                    <i class="fas fa-info-circle"></i>
+                    1. APRESENTAÇÃO
+                </h3>
+                <p class="text-subtexto text-sm leading-relaxed">
+                    Este é o guia oficial da Organização Itália. Aqui estão definidas as diretrizes, normas e princípios que regem nossa convivência, hierarquia e funcionamento dentro do jogo e da comunidade. Todo membro deve ler e cumprir o que está aqui descrito.
+                </p>
+            </div>
+
+            <!-- Normas -->
+            <div class="secao p-5">
+                <h3 class="font-semibold text-lg mb-3 flex items-center gap-2 text-destaque">
+                    <i class="fas fa-balance-scale"></i>
+                    2. NORMAS DE CONDUTA
+                </h3>
+                <ul class="text-subtexto text-sm space-y-2">
+                    <li class="flex gap-2"><span class="text-green-400 mt-1">•</span>Respeito acima de tudo com todos os membros</li>
+                    <li class="flex gap-2"><span class="text-green-400 mt-1">•</span>Lealdade à Organização e aos seus princípios</li>
+                    <li class="flex gap-2"><span class="text-green-400 mt-1">•</span>Proibido comportamento prejudicial ou conflitante</li>
+                    <li class="flex gap-2"><span class="text-green-400 mt-1">•</span>Manter discrição e postura adequada dentro e fora do jogo</li>
+                </ul>
+            </div>
+
+            <!-- Hierarquia Jogo -->
+            <div class="secao p-5">
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2 text-destaque">
+                    <i class="fas fa-chess-king"></i>
+                    3. HIERARQUIA INTERNA — CARGOS DO JOGO
+                </h3>
+                <p class="text-subtexto text-sm mb-4">Define a autoridade, experiência e função operacional de cada membro:</p>
+                <div class="bg-neutro/30 p-5 rounded-xl space-y-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-yellow-500/20 flex items-center justify-center">
+                            <i class="fas fa-crown text-yellow-400"></i>
+                        </div>
+                        <div><p class="font-bold text-lg">Mentor</p><p class="text-xs text-subtexto">Liderança máxima, decisões e orientação geral</p></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center">
+                            <i class="fas fa-shield-alt text-red-400"></i>
+                        </div>
+                        <div><p class="font-bold text-lg">Controle</p><p class="text-xs text-subtexto">Gestão, supervisão e ordem nos setores</p></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                            <i class="fas fa-fist-raised text-blue-400"></i>
+                        </div>
+                        <div><p class="font-bold text-lg">Executor</p><p class="text-xs text-subtexto">Ação, operações e cumprimento de missões</p></div>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <i class="fas fa-seedling text-green-400"></i>
+                        </div>
+                        <div><p class="font-bold text-lg">Novato</p><p class="text-xs text-subtexto">Início, aprendizado e adaptação</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hierarquia Administrativa -->
+            <div class="secao p-5">
+                <h3 class="font-semibold text-lg mb-4 flex items-center gap-2 text-destaque">
+                    <i class="fas fa-sitemap"></i>
+                    4. HIERARQUIA EXTERNA — CARGOS ADMINISTRATIVOS
+                </h3>
+                <p class="text-subtexto text-sm mb-4">Estrutura de gestão, suporte e administração geral da Organização:</p>
+                <div class="bg-neutro/30 p-5 rounded-xl space-y-4 text-sm">
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-amber-500/20 flex items-center justify-center"><i class="fas fa-crown text-amber-400"></i></div>
+                            <span class="font-bold text-destaque">00 — Dono da Organização</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-orange-500/20 flex items-center justify-center"><i class="fas fa-user-tie text-orange-400"></i></div>
+                            <span class="font-bold text-destaque">SUB — Sub líder da Organização</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-red-500/20 flex items-center justify-center"><i class="fas fa-briefcase text-red-400"></i></div>
+                            <span class="font-bold text-destaque">GGR — Gerente Geral</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-rose-500/20 flex items-center justify-center"><i class="fas fa-project-diagram text-rose-400"></i></div>
+                            <span class="font-bold text-destaque">COG — Coordenador Geral</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-pink-500/20 flex items-center justify-center"><i class="fas fa-users-cog text-pink-400"></i></div>
+                            <span class="font-bold text-subtexto">RH — Gestor de Membros</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-fuchsia-500/20 flex items-center justify-center"><i class="fas fa-user-plus text-fuchsia-400"></i></div>
+                            <span class="font-bold text-subtexto">CR — Coordenador de Recrutamento</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-blue-500/20 flex items-center justify-center"><i class="fas fa-male text-blue-400"></i></div>
+                            <span class="font-bold text-subtexto">RCM — Recrutador Masculino</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-purple-500/20 flex items-center justify-center"><i class="fas fa-female text-purple-400"></i></div>
+                            <span class="font-bold text-subtexto">RCF — Recrutadora Feminina</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-cyan-500/20 flex items-center justify-center"><i class="fas fa-file-alt text-cyan-400"></i></div>
+                            <span class="font-bold text-subtexto">AD — Analista Administrativo</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-sky-500/20 flex items-center justify-center"><i class="fas fa-comments text-sky-400"></i></div>
+                            <span class="font-bold text-subtexto">COC — Coordenador de Comunicação</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-teal-500/20 flex items-center justify-center"><i class="fas fa-hands-helping text-teal-400"></i></div>
+                            <span class="font-bold text-subtexto">AST — Assistente Administrativo</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between border-b border-neutro/50 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-lime-500/20 flex items-center justify-center"><i class="fas fa-graduation-cap text-lime-400"></i></div>
+                            <span class="font-bold text-subtexto">EST — Estagiário Administrativo</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="flex items-center gap-3">
+                            <div class="w-9 h-9 rounded-full bg-gray-500/20 flex items-center justify-center"><i class="fas fa-user text-gray-300"></i></div>
+                            <span class="font-bold text-subtexto">Membro</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Procedimentos -->
+            <div class="secao p-5">
+                <h3 class="font-semibold text-lg mb-3 flex items-center gap-2 text-destaque">
+                    <i class="fas fa-clipboard-check"></i>
+                    5. PROCEDIMENTOS GERAIS
+                </h3>
+                <p class="text-subtexto text-sm leading-relaxed">
+                    Para solicitar acesso, relatar problemas ou consultar regras específicas, consulte sempre a liderança do seu setor ou superior hierárquico. Mantenha seus dados e status de ponto atualizados no sistema.
+                </p>
+            </div>
+
+            <div class="p-5 text-center text-[11px] text-subtexto/60">
+                ORGANIZAÇÃO ITÁLIA — SISTEMA OFICIAL • VERSÃO 1.0
+            </div>
+        </div>
+    </main>
+
+    <!-- Menu Inferior -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-cartao/95 backdrop-blur-md border-t border-neutro/60 flex justify-around py-2">
+        <a href="painel.html" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-home text-lg mb-1"></i><span class="text-xs">Início</span>
+        </a>
+        <a href="#" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-users text-lg mb-1"></i><span class="text-xs">Equipe</span>
+        </a>
+        <a href="#" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-stopwatch text-lg mb-1"></i><span class="text-xs">Ponto</span>
+        </a>
+        <a href="#" class="menu-item active flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-bullhorn text-lg mb-1"></i><span class="text-xs">Avisos</span>
+        </a>
+        <a href="#" class="menu-item flex flex-col items-center justify-center w-full py-2 text-subtexto">
+            <i class="fas fa-ellipsis-h text-lg mb-1"></i><span class="text-xs">Mais</span>
+        </a>
+    </nav>
+
+    <script>
+        // Animação do botão voltar
+        const btnVoltar = document.getElementById('btnVoltar');
+        btnVoltar.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.add('ativo');
+            setTimeout(() => window.location.href = this.getAttribute('href'), 400);
+        });
+
+        // Menu
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.addEventListener('click', e => {
+                if(item.getAttribute('href') === '#') e.preventDefault();
+                document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+    </script>
+
+</body>
+  </html>
 
