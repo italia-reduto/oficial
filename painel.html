@@ -1,1 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORGANIZAÇÃO ITÁLIA · PAINEL</title>
+    <meta name="theme-color" content="#0f0f14">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#0f0f14',
+                        cartao: '#18181f',
+                        destaque: '#c41e3a',
+                        neutro: '#24242e',
+                        texto: '#e2e2e8',
+                        subtexto: '#9ca3af',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #0f0f14; }
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #9ca3af;
+        }
+        .menu-item.active { color: #ffffff; }
+        .menu-item.active::before {
+            content: '';
+            width: 32px; height: 32px;
+            background: rgba(156,163,175,0.1);
+            border: 1px solid rgba(156,163,175,0.3);
+            border-radius: 8px;
+            position: absolute; top: 0;
+        }
+    </style>
+</head>
+<body class="bg-fundo text-texto font-sans min-h-screen pb-20">
+    <header class="sticky top-0 bg-fundo/80 backdrop-blur border-b border-neutro/60 px-5 py-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-xl bg-destaque/20 flex items-center justify-center">
+                    <i class="fas fa-user text-destaque text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">Membro: Falcão</h1>
+                    <p class="text-subtexto text-[10px]">Passaporte: 17274</p>
+                </div>
+            </div>
+            <button class="w-9 h-9 rounded-full bg-neutro/30 flex items-center justify-center">
+                <i class="fas fa-redo-alt text-subtexto"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 space-y-6">
+        <section class="bg-cartao p-5 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-1">Bem-vindo de volta, Falcão</h2>
+            <p class="text-subtexto">Segunda-feira, 7 de setembro</p>
+        </section>
+
+        <section class="grid grid-cols-2 gap-4">
+            <div class="bg-cartao p-4 rounded-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-clock text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Status de Hoje</p>
+                        <p class="font-semibold">Inativo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-4 rounded-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-bolt text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Pontos do Mês</p>
+                        <p class="font-semibold">—</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-4 rounded-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-user-times text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Faltas Acumuladas</p>
+                        <p class="font-semibold">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-4 rounded-2xl">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center">
+                        <i class="fas fa-badge-check text-subtexto"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-xs">Cargo Atual</p>
+                        <p class="font-semibold">Membro</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-cartao p-5 rounded-2xl">
+            <h3 class="font-semibold mb-4 flex items-center gap-2 text-lg">
+                <i class="fas fa-bullhorn text-destaque"></i> Avisos Recentes
+            </h3>
+            <div class="space-y-3 text-sm">
+                <div class="flex gap-3">
+                    <span class="text-destaque font-bold">•</span>
+                    <p class="text-subtexto">Novo regulamento interno publicado.</p>
+                </div>
+                <div class="flex gap-3">
+                    <span class="text-subtexto font-bold">•</span>
+                    <p class="text-subtexto">Sistema atualizado com sucesso.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-4 gap-3">
+            <button class="bg-cartao p-4 rounded-xl text-center">
+                <i class="fas fa-clipboard-list text-xl mb-2 block"></i>
+                <span class="text-xs">Registros</span>
+            </button>
+            <button class="bg-cartao p-4 rounded-xl text-center">
+                <i class="fas fa-id-card text-xl mb-2 block"></i>
+                <span class="text-xs">Passaporte</span>
+            </button>
+            <button class="bg-cartao p-4 rounded-xl text-center">
+                <i class="fas fa-book text-xl mb-2 block"></i>
+                <span class="text-xs">Manuais</span>
+            </button>
+            <button class="bg-cartao p-4 rounded-xl text-center">
+                <i class="fas fa-headset text-xl mb-2 block"></i>
+                <span class="text-xs">Suporte</span>
+            </button>
+        </section>
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 bg-cartao/95 backdrop-blur border-t border-neutro/60 flex justify-around py-3">
+        <button class="menu-item active relative">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-xs">Início</span>
+        </button>
+        <button class="menu-item">
+            <i class="fas fa-users text-xl mb-1"></i>
+            <span class="text-xs">Equipe</span>
+        </button>
+        <button class="menu-item">
+            <i class="fas fa-stopwatch text-xl mb-1"></i>
+            <span class="text-xs">Ponto</span>
+        </button>
+        <button class="menu-item">
+            <i class="fas fa-bell text-xl mb-1"></i>
+            <span class="text-xs">Avisos</span>
+        </button>
+        <button class="menu-item">
+            <i class="fas fa-ellipsis-h text-xl mb-1"></i>
+            <span class="text-xs">Mais</span>
+        </button>
+    </nav>
+</body>
+          </html>
 
