@@ -153,7 +153,39 @@
         </a>
 
     </nav>
+<!-- MENU MAIS - BANCO DE DADOS -->
+<div id="fundoMenu" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:998;"></div>
+<div id="menuMais" style="display:none;position:fixed;bottom:90px;right:16px;background:#1a1a24;border:1px solid #2d2d3a;border-radius:16px;min-width:200px;z-index:999;padding:8px 0;">
+    <a href="registros.html" style="display:block;padding:14px 20px;color:#e4e4eb;text-decoration:none;font-size:15px;border-bottom:1px solid #272733;">
+        🗄️ Banco de Dados
+    </a>
+    <a href="metas.html" style="display:block;padding:14px 20px;color:#e4e4eb;text-decoration:none;font-size:15px;">
+        ➕ Novo Registro
+    </a>
+</div>
 
+<script>
+// PEGA O BOTÃO "MAIS" QUE JÁ EXISTE (último da navegação)
+const btnMais = document.querySelector('navegação um:last-child');
+const fundo = document.getElementById('fundoMenu');
+const menu = document.getElementById('menuMais');
+
+function alternarMenu() {
+    const estaAberto = menu.style.display === 'block';
+    menu.style.display = estaAberto ? 'none' : 'block';
+    fundo.style.display = estaAberto ? 'none' : 'block';
+}
+
+// ADICIONA O EVENTO NO SEU BOTÃO
+btnMais.addEventListener('click', (e) => {
+    e.preventDefault();
+    alternarMenu();
+});
+
+// FECHA AO CLICAR NO FUNDO ESCURO
+fundo.addEventListener('click', alternarMenu);
+</script>
+    
     <script>
         // ATIVAÇÃO DO MENU
         const itensMenu = document.querySelectorAll('.menu-item');
