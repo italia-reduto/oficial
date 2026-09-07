@@ -20,9 +20,6 @@
                         neutro: '#24242e',
                         texto: '#e2e2e8',
                         subtexto: '#9ca3af',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif']
                     }
                 }
             }
@@ -38,15 +35,11 @@
         }
         .card { transition: transform .2s, box-shadow .2s; }
         .card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.35); }
-        .menu-item { transition: all 0.2s ease; }
-        .btn-sair { transition: all .2s; }
         .btn-sair:hover { background: #c41e3a; color: #fff; border-color: #c41e3a; }
-        .no-underline { text-decoration: none; }
     </style>
 </head>
 <body class="bg-fundo text-texto font-sans min-h-screen pb-20">
 
-    <!-- CABEÇALHO COM BOTÃO SAIR E CONFIRMAÇÃO -->
     <header class="sticky top-0 z-10 bg-fundo/80 backdrop-blur-md border-b border-neutro/60">
         <div class="flex items-center justify-between px-5 py-4">
             <div class="flex items-center gap-3">
@@ -56,22 +49,19 @@
                     <p class="text-[10px] text-subtexto tracking-wide">Passaporte: 17274</p>
                 </div>
             </div>
-            <!-- BOTÃO SAIR COM CONFIRMAÇÃO -->
-            <button id="btnSair" class="btn-sair flex items-center gap-2 px-3 py-2 rounded-full border border-neutro text-subtexto text-sm bg-transparent">
+            <button id="btnSair" class="btn-sair flex items-center gap-2 px-3 py-2 rounded-full border border-neutro text-subtexto text-sm">
                 <i class="fas fa-sign-out-alt"></i>
                 <span class="hidden sm:inline">Sair</span>
             </button>
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main class="px-4 py-6 space-y-6">
         <section>
             <h2 class="text-xl font-semibold mb-1">Bem-vindo de volta, Falcão</h2>
             <p class="text-subtexto text-sm">Segunda-feira, 06 de setembro</p>
         </section>
 
-        <!-- CARDS -->
         <section class="grid grid-cols-2 gap-4">
             <div class="card bg-cartao p-5 rounded-2xl border border-neutro/50">
                 <div class="w-10 h-10 rounded-xl bg-destaque/20 flex items-center justify-center mb-3">
@@ -89,7 +79,6 @@
             </div>
         </section>
 
-        <!-- AVISOS RECENTES -->
         <section class="bg-cartao rounded-2xl p-5 border border-neutro/50">
             <h3 class="font-semibold mb-4 flex items-center gap-2">
                 <i class="fas fa-bullhorn text-destaque"></i> Avisos Recentes
@@ -106,9 +95,8 @@
             </div>
         </section>
 
-        <!-- ACESSO RÁPIDO -->
         <section class="grid grid-cols-4 gap-3">
-            <a href="registros.html" class="bg-cartao p-4 rounded-xl text-center border border-neutro/30 block hover:bg-neutro/20 transition no-underline">
+            <a href="registros.html" class="bg-cartao p-4 rounded-xl text-center border border-neutro/30 block">
                 <i class="fas fa-clipboard-list text-subtexto mb-2"></i>
                 <p class="text-xs">Registros</p>
             </a>
@@ -127,7 +115,6 @@
         </section>
     </main>
 
-    <!-- MENU INFERIOR -->
     <nav class="fixed bottom-0 left-0 right-0 bg-cartao/95 backdrop-blur-md border-t border-neutro/60 flex justify-around py-2">
         <a href="#" class="menu-item active flex flex-col items-center justify-center w-full py-2 text-subtexto">
             <i class="fas fa-home text-lg mb-1"></i>
@@ -152,15 +139,11 @@
     </nav>
 
     <script>
-        // CONFIRMAÇÃO DE SAÍDA
         document.getElementById('btnSair').addEventListener('click', function() {
             if (confirm('Você tem certeza que deseja sair?')) {
-                window.location.href = 'index.html'; // Vai para tela inicial
+                window.location.href = 'index.html';
             }
-            // Se clicar em "Cancelar", não faz nada
         });
-
-        // NAVEGAÇÃO INFERIOR
         const itensMenu = document.querySelectorAll('.menu-item');
         itensMenu.forEach(item => {
             item.addEventListener('click', (e) => {
@@ -170,7 +153,5 @@
             });
         });
     </script>
-
 </body>
 </html>
-
