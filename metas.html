@@ -1,1 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    
+    <!-- TAGS DE COR COMPLETAS (TODAS VERSÕES) -->
+    <meta name="theme-color" content="#0f0f14" media="(prefers-color-scheme: dark)">
+    <meta name="msapplication-TileColor" content="#0f0f14">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="METAS">
+    
+    <title>METAS — ORGANIZAÇÃO ITÁLIA</title>
+    <style>
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+        
+        html {
+            height: 100%;
+            /* Fundo escuro FORÇADO na raiz */
+            background: #0f0f14 !important;
+            background: linear-gradient(180deg, #0f0f14 0%, #15151d 100%) !important;
+            background-attachment: fixed !important;
+        }
+
+        body {
+            min-height: 100vh;
+            height: 100%;
+            background: transparent !important; /* Herda fundo do html */
+            color: #e4e4eb;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            flex-direction: column;
+            padding: 16px;
+            padding-top: env(safe-area-inset-top); /* Ajuste para recorte de tela */
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        .container {
+            max-width: 420px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .cabecalho {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .titulo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .icone-titulo {
+            color: #c8102e;
+            font-size: 24px;
+            animation: pulsarBrilho 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsarBrilho {
+            0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(200, 16, 46, 0.5)); }
+            50% { transform: scale(1.1); filter: drop-shadow(0 0 8px rgba(200, 16, 46, 0.9)); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(200, 16, 46, 0.5)); }
+        }
+
+        .aviso-principal {
+            background-color: rgba(200, 16, 46, 0.12);
+            border: 1px solid rgba(200, 16, 46, 0.25);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: #ffb3b3;
+            font-size: 12px;
+            line-height: 1.5;
+            animation: pulsarAviso 2.5s ease-in-out infinite;
+        }
+
+        @keyframes pulsarAviso {
+            0% { transform: scale(1); box-shadow: 0 0 4px rgba(200, 16, 46, 0.3); }
+            50% { transform: scale(1.03); box-shadow: 0 0 12px rgba(200, 16, 46, 0.6); }
+            100% { transform: scale(1); box-shadow: 0 0 4px rgba(200, 16, 46, 0.3); }
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            gap: 20px;
+        }
+
+        .grupo-campo {
+            position: relative;
+        }
+
+        .icone {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
+            font-size: 16px;
+            z-index: 1;
+        }
+
+        .selo-certo {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            color: #2ecc71;
+            font-size: 17px;
+            font-weight: bold;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .campo {
+            width: 100%;
+            background-color: rgba(23, 23, 31, 0.9);
+            border: 2px solid #b8b8c8;
+            border-radius: 16px;
+            padding: 16px 48px 16px 48px;
+            color: #fff;
+            font-size: 15px;
+            line-height: 1.3;
+            transition: all 0.3s ease;
+        }
+
+        .campo:valid:not(:placeholder-shown) {
+            border-color: #2ecc71;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .campo:valid:not(:placeholder-shown) ~ .selo-certo {
+            transform: translateY(-50%) scale(1);
+            opacity: 1;
+        }
+
+        .campo::placeholder { 
+            color: #9ca3af; 
+        }
+        
+        .campo:focus {
+            outline: none;
+            border-color: #c8102e;
+            box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.15);
+        }
+
+        .caixa-print {
+            margin-top: 10px;
+        }
+
+        .upload-campo {
+            padding: 16px 48px 16px 48px;
+            cursor: pointer;
+        }
+
+        .upload-texto {
+            color: #9ca3af;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .botao {
+            width: 100%;
+            background-color: #c8102e;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: auto;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .botao.pronto {
+            animation: brilhoBotao 1.5s ease-in-out infinite;
+        }
+
+        @keyframes brilhoBotao {
+            0% { box-shadow: 0 0 5px rgba(200, 16, 46, 0.5); transform: scale(1); }
+            50% { box-shadow: 0 0 20px rgba(200, 16, 46, 0.9); transform: scale(1.02); }
+            100% { box-shadow: 0 0 5px rgba(200, 16, 46, 0.5); transform: scale(1); }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="cabecalho">
+            <div class="titulo">
+                <i class="fas fa-bullseye icone-titulo"></i>
+                <span>REGISTRO DE METAS</span>
+            </div>
+            <div class="aviso-principal">
+                ⚠️ Não acertaremos metas incompletas sem que tenha tido uma justificativa antes
+            </div>
+        </div>
+
+        <form id="formMetas">
+            <div class="grupo-campo">
+                <i class="fas fa-user icone"></i>
+                <input type="text" class="campo" placeholder="Nome do usuário" required>
+                <i class="fas fa-check selo-certo"></i>
+            </div>
+
+            <div class="grupo-campo">
+                <i class="fas fa-id-card icone"></i>
+                <input type="text" class="campo" placeholder="Número do Passaporte" required>
+                <i class="fas fa-check selo-certo"></i>
+            </div>
+
+            <div class="grupo-campo">
+                <i class="fas fa-calendar-day icone"></i>
+                <input type="date" class="campo" required>
+                <i class="fas fa-check selo-certo"></i>
+            </div>
+
+            <div class="grupo-campo">
+                <i class="fas fa-key icone"></i>
+                <input type="number" class="campo" placeholder="Quantas Lockpicks farmou" required>
+                <i class="fas fa-check selo-certo"></i>
+            </div>
+
+            <div class="grupo-campo">
+                <i class="fas fa-tools icone"></i>
+                <input type="number" class="campo" placeholder="Quantos Flipper farmou" required>
+                <i class="fas fa-check selo-certo"></i>
+            </div>
+
+            <div class="grupo-campo caixa-print">
+                <i class="fas fa-image icone"></i>
+                <label class="campo upload-campo">
+                    <input type="file" accept="image/*" id="foto-input" required>
+                    <span class="upload-texto" id="foto-label">Clique para anexar print do inventário</span>
+                </label>
+            </div>
+
+            <button type="submit" class="botao" id="botaoEnviar">
+                Enviar Registro ➔
+            </button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('formMetas');
+        const botao = document.getElementById('botaoEnviar');
+        const fotoInput = document.getElementById('foto-input');
+        const fotoLabel = document.getElementById('foto-label');
+
+        function verificarFormulario() {
+            if (form.checkValidity() && fotoInput.files.length > 0) {
+                botao.classList.add('pronto');
+            } else {
+                botao.classList.remove('pronto');
+            }
+        }
+
+        form.addEventListener('input', verificarFormulario);
+        fotoInput.addEventListener('change', () => {
+            fotoLabel.textContent = fotoInput.files[0]?.name || 'Clique para anexar print do inventário';
+            verificarFormulario();
+        });
+
+        form.onsubmit = e => {
+            e.preventDefault();
+            alert('✅ Registro enviado com sucesso!');
+        };
+    </script>
+</body>
+</html>
 
