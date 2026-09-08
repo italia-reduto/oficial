@@ -1,600 +1,823 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f0f14">
+    <meta name="color-scheme" content="dark">
+    <title>ORGANIZAÇÃO ITÁLIA · REGISTRO DE METAS</title>
 
-  <title>Registro de Metas | Organização Itália</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: Arial, Helvetica, sans-serif;
-    }
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-    body {
-      min-height: 100vh;
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 35%),
-        linear-gradient(135deg, #080808, #151515 55%, #050505);
-      color: #fff;
-      padding-bottom: 40px;
-    }
+        :root {
+            --fundo: #0b0c10;
+            --fundo-2: #101218;
+            --card: #15171d;
+            --card-2: #191b22;
+            --borda: #292c35;
+            --vermelho: #c41e3a;
+            --vermelho-claro: #ef334f;
+            --verde: #22c55e;
+            --verde-fraco: rgba(34, 197, 94, 0.10);
+            --erro: #ef4444;
+            --erro-fraco: rgba(239, 68, 68, 0.10);
+            --texto: #f3f4f6;
+            --subtexto: #9ca3af;
+            --muted: #6b7280;
+        }
 
-    /* HEADER */
-    header {
-      width: 100%;
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      background: rgba(0,0,0,0.35);
-      backdrop-filter: blur(10px);
-    }
+        html {
+            min-height: 100%;
+            background: var(--fundo);
+        }
 
-    .marca {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at top right, rgba(196, 30, 58, 0.10), transparent 30%),
+                radial-gradient(circle at bottom left, rgba(196, 30, 58, 0.05), transparent 28%),
+                var(--fundo);
+            color: var(--texto);
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            padding: 0 0 30px 0;
+        }
 
-    .bandeira {
-      font-size: 30px;
-    }
+        button, input {
+            font: inherit;
+        }
 
-    .marca h1 {
-      font-size: 17px;
-      letter-spacing: 1px;
-    }
+        button {
+            cursor: pointer;
+        }
 
-    .marca span {
-      display: block;
-      color: #aaa;
-      font-size: 11px;
-      margin-top: 3px;
-    }
+        .topo {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(11, 12, 16, 0.88);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
 
-    .voltar {
-      border: 1px solid rgba(255,255,255,0.15);
-      background: rgba(255,255,255,0.06);
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.2s;
-    }
+        .topo-conteudo {
+            width: min(760px, calc(100% - 24px));
+            margin: auto;
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
 
-    .voltar:hover {
-      background: rgba(255,255,255,0.12);
-    }
+        .marca {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-    /* CONTAINER */
-    .container {
-      width: 100%;
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
+        .marca-icone {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            color: var(--vermelho-claro);
+            background: linear-gradient(145deg, rgba(196, 30, 58, 0.20), rgba(196, 30, 58, 0.06));
+            border: 1px solid rgba(196, 30, 58, 0.25);
+        }
 
-    .titulo {
-      margin-bottom: 25px;
-    }
+        .marca-icone i {
+            font-size: 17px;
+        }
 
-    .titulo h2 {
-      font-size: 27px;
-      margin-bottom: 8px;
-    }
+        .marca-texto h1 {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+        }
 
-    .titulo p {
-      color: #999;
-      font-size: 14px;
-    }
+        .marca-texto p {
+            margin-top: 1px;
+            color: var(--muted);
+            font-size: 11px;
+        }
 
-    /* AVISO */
-    .aviso {
-      border: 1px solid rgba(255, 193, 7, 0.25);
-      background: rgba(255, 193, 7, 0.06);
-      border-radius: 14px;
-      padding: 15px;
-      margin-bottom: 25px;
-      color: #ddd;
-      font-size: 13px;
-      line-height: 1.5;
-    }
+        .voltar {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--borda);
+            border-radius: 10px;
+            background: var(--card);
+            color: var(--subtexto);
+            text-decoration: none;
+            transition: all 0.2s;
+        }
 
-    .aviso strong {
-      color: #ffc107;
-    }
+        .voltar:hover {
+            color: white;
+            border-color: var(--vermelho-claro);
+        }
 
-    /* CARD */
-    .card {
-      background: rgba(255,255,255,0.045);
-      border: 1px solid rgba(255,255,255,0.09);
-      border-radius: 18px;
-      padding: 25px;
-      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-    }
+        .container {
+            width: min(680px, calc(100% - 24px));
+            margin: 0 auto;
+            padding-top: 20px;
+        }
 
-    .campo {
-      margin-bottom: 20px;
-    }
+        .cabecalho {
+            margin-bottom: 20px;
+        }
 
-    .campo label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 13px;
-      color: #ddd;
-      font-weight: bold;
-    }
+        .cabecalho-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(196, 30, 58, 0.08);
+            border: 1px solid rgba(196, 30, 58, 0.18);
+            color: #fca5b5;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
 
-    .input {
-      width: 100%;
-      padding: 14px;
-      border-radius: 11px;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.35);
-      color: #fff;
-      outline: none;
-      font-size: 14px;
-      transition: 0.2s;
-    }
+        .cabecalho h2 {
+            font-size: clamp(24px, 6vw, 32px);
+            line-height: 1.1;
+            font-weight: 850;
+        }
 
-    .input:focus {
-      border-color: #168f3d;
-      box-shadow: 0 0 0 3px rgba(22,143,61,0.12);
-    }
+        .cabecalho h2 span {
+            color: var(--vermelho-claro);
+        }
 
-    .input::placeholder {
-      color: #666;
-    }
+        .cabecalho p {
+            color: var(--subtexto);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
 
-    /* DATA */
-    input[type="date"] {
-      color-scheme: dark;
-    }
+        .aviso {
+            position: relative;
+            display: flex;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.13), rgba(239, 68, 68, 0.045));
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            border-radius: 16px;
+        }
 
-    /* UPLOAD */
-    .upload-area {
-      border: 1px dashed rgba(255,255,255,0.2);
-      border-radius: 14px;
-      padding: 25px 15px;
-      text-align: center;
-      cursor: pointer;
-      background: rgba(0,0,0,0.18);
-      transition: 0.25s;
-    }
+        .aviso::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 3px;
+            background: var(--erro);
+        }
 
-    .upload-area:hover {
-      border-color: #168f3d;
-      background: rgba(22,143,61,0.05);
-    }
+        .aviso-icone {
+            width: 36px;
+            height: 36px;
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.13);
+            color: #ff6b78;
+        }
 
-    .upload-icon {
-      font-size: 35px;
-      margin-bottom: 10px;
-    }
+        .aviso-conteudo strong {
+            display: block;
+            color: #ff7a86;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
 
-    .upload-area h3 {
-      font-size: 14px;
-      margin-bottom: 6px;
-    }
+        .aviso-conteudo p {
+            color: #d1d5db;
+            font-size: 13px;
+            line-height: 1.5;
+        }
 
-    .upload-area p {
-      color: #777;
-      font-size: 12px;
-    }
+        .formulario {
+            background: rgba(21, 23, 29, 0.76);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 20px;
+            padding: 18px;
+        }
 
-    #fotoComprovante {
-      display: none;
-    }
+        .secao-titulo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
 
-    /* PREVIEW */
-    .preview {
-      display: none;
-      margin-top: 15px;
-    }
+        .secao-titulo i {
+            color: var(--vermelho-claro);
+            font-size: 14px;
+        }
 
-    .preview img {
-      max-width: 100%;
-      max-height: 250px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.12);
-    }
+        .secao-titulo span {
+            color: var(--texto);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
 
-    /* BOTÃO */
-    .btn-enviar {
-      width: 100%;
-      padding: 15px;
-      border: none;
-      border-radius: 11px;
-      background: linear-gradient(135deg, #168f3d, #0c6d2c);
-      color: #fff;
-      font-weight: bold;
-      font-size: 14px;
-      cursor: pointer;
-      margin-top: 5px;
-      transition: 0.2s;
-    }
+        .campo {
+            margin-bottom: 16px;
+            position: relative;
+        }
 
-    .btn-enviar:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.1);
-    }
+        .campo:last-child {
+            margin-bottom: 0;
+        }
 
-    /* MODAL */
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.75);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      z-index: 999;
-    }
+        .campo-label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 7px;
+        }
 
-    .modal-box {
-      width: 100%;
-      max-width: 400px;
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 18px;
-      padding: 30px;
-      text-align: center;
-    }
+        .campo-label-esquerda {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
 
-    .modal-icon {
-      font-size: 45px;
-      margin-bottom: 15px;
-    }
+        .campo-label i {
+            width: 18px;
+            color: var(--subtexto);
+            font-size: 12px;
+        }
 
-    .modal-box h2 {
-      margin-bottom: 8px;
-    }
+        .campo-label label {
+            color: #d9dce2;
+            font-size: 13px;
+            font-weight: 700;
+        }
 
-    .modal-box p {
-      color: #999;
-      font-size: 13px;
-      line-height: 1.5;
-      margin-bottom: 20px;
-    }
+        .obrigatorio {
+            color: var(--erro);
+            font-size: 11px;
+            font-weight: 800;
+        }
 
-    .btn-fechar {
-      width: 100%;
-      padding: 13px;
-      border: none;
-      border-radius: 10px;
-      background: #168f3d;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-    }
+        .input-wrap {
+            position: relative;
+        }
 
-    @media (max-width: 600px) {
-      .container {
-        margin-top: 25px;
-      }
+        .input {
+            width: 100%;
+            min-height: 48px;
+            padding: 0 45px 0 14px;
+            background: #101217;
+            color: var(--texto);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+        }
 
-      .titulo h2 {
-        font-size: 23px;
-      }
+        .input::placeholder {
+            color: #555b66;
+        }
 
-      .card {
-        padding: 20px;
-      }
+        .input:focus {
+            border-color: rgba(196, 30, 58, 0.65);
+        }
 
-      header {
-        padding: 15px;
-      }
+        .status-check {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: transparent;
+            opacity: 0;
+            font-size: 16px;
+            transition: all 0.25s ease;
+            pointer-events: none;
+        }
 
-      .marca h1 {
-        font-size: 14px;
-      }
+        .campo.valido .input {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 2px var(--verde-fraco);
+        }
 
-      .voltar {
-        padding: 8px 11px;
-        font-size: 12px;
-      }
-    }
-  </style>
+        .campo.valido .status-check {
+            color: var(--verde);
+            opacity: 1;
+        }
+
+        .grid-campos {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        input[type="date"] {
+            color-scheme: dark;
+        }
+
+        .upload {
+            position: relative;
+            min-height: 130px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.02);
+            border: 1px dashed #3b3f49;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .upload.foto-selecionada {
+            border-color: var(--verde);
+            background: rgba(34,197,94,0.08);
+            box-shadow: 0 0 20px rgba(34,197,94,0.10);
+        }
+
+        .upload input {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .upload-icone {
+            width: 42px;
+            height: 42px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            background: rgba(196, 30, 58, 0.10);
+            color: #f05a70;
+            transition: all 0.3s ease;
+        }
+
+        .upload.foto-selecionada .upload-icone {
+            background: rgba(34,197,94,0.12);
+            color: var(--verde);
+            transform: scale(1.08);
+        }
+
+        .upload strong {
+            font-size: 13px;
+            color: #e5e7eb;
+        }
+
+        .upload.foto-selecionada strong {
+            color: var(--verde);
+        }
+
+        .upload p {
+            margin-top: 4px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .preview {
+            display: none;
+            position: absolute;
+            left: 12px;
+            right: 12px;
+            top: 12px;
+            height: 155px;
+            background: #0b0c10;
+            border-radius: 12px;
+            overflow: hidden;
+            z-index: 2;
+        }
+
+        .preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-info {
+            position: absolute;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 9px 11px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.72);
+            backdrop-filter: blur(8px);
+            color: #e5e7eb;
+            font-size: 11px;
+        }
+
+        .preview-info i {
+            color: var(--verde);
+        }
+
+        .enviar {
+            width: 100%;
+            min-height: 50px;
+            margin-top: 20px;
+            border: 0;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #c41e3a, #a51630);
+            color: white;
+            font-size: 14px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .enviar:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .rodape-form {
+            margin-top: 12px;
+            text-align: center;
+            color: #666c76;
+            font-size: 11px;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0,0,0,0.8);
+        }
+
+        .modal.aberto {
+            display: flex;
+        }
+
+        .modal-card {
+            width: min(340px, 100%);
+            padding: 24px;
+            background: #171920;
+            border: 1px solid #2b2e38;
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .modal-sucesso {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--verde);
+            background: rgba(34,197,94,0.10);
+        }
+
+        .modal-fechar {
+            width: 100%;
+            margin-top: 18px;
+            padding: 12px;
+            border: 0;
+            border-radius: 10px;
+            background: #252832;
+            color: white;
+            font-weight: 700;
+        }
+
+        .mensagem-erro {
+            display: none;
+            margin-top: 14px;
+            padding: 12px;
+            border-radius: 12px;
+            background: var(--erro-fraco);
+            border: 1px solid rgba(239, 68, 68, 0.28);
+            color: #fca5a5;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .mensagem-erro.mostrar {
+            display: block;
+        }
+
+        /* MENSAGEM DE FOTO */
+        .foto-status {
+            display: none;
+            margin-top: 10px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: rgba(34,197,94,0.10);
+            border: 1px solid rgba(34,197,94,0.25);
+            color: var(--verde);
+            font-size: 12px;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .foto-status.mostrar {
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="marca">
-      <div class="bandeira">🇮🇹</div>
+<header class="topo">
+    <div class="topo-conteudo">
 
-      <div>
-        <h1>ORGANIZAÇÃO ITÁLIA</h1>
-        <span>Sistema de Registro</span>
-      </div>
+        <div class="marca">
+            <div class="marca-icone">
+                <i class="fas fa-flag"></i>
+            </div>
+
+            <div class="marca-texto">
+                <h1>ORGANIZAÇÃO ITÁLIA</h1>
+                <p>Sistema de Registro</p>
+            </div>
+        </div>
+
+        <button class="voltar" id="btnVoltar" title="Voltar / Sair">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+
     </div>
-
-    <button class="voltar" id="btnVoltar">
-      ← Voltar
-    </button>
-  </header>
+</header>
 
 
-  <!-- CONTEÚDO -->
-  <main class="container">
+<main class="container">
 
-    <div class="titulo">
-      <h2>REGISTRO DE METAS</h2>
-      <p>Preencha as informações abaixo para registrar sua meta.</p>
+    <div class="cabecalho">
+
+        <div class="cabecalho-tag">
+            <i class="fas fa-bullseye"></i>
+            REGISTRO DE METAS
+        </div>
+
+        <h2>
+            Registre sua <span>meta cumprida</span>
+        </h2>
+
+        <p>
+            Informe os dados da sua participação e comprovação para análise da administração.
+        </p>
+
     </div>
 
 
     <div class="aviso">
-      ⚠️ <strong>Atenção:</strong>
-      Preencha todos os campos corretamente e envie uma foto que comprove
-      a realização da meta.
-    </div>
 
-
-    <div class="card">
-
-      <form id="formMetas">
-
-        <!-- PASSAPORTE -->
-        <div class="campo">
-          <label for="passaporte">
-            🪪 Nº PASSAPORTE
-          </label>
-
-          <input
-            type="text"
-            id="passaporte"
-            class="input"
-            placeholder="Ex: 17274"
-            inputmode="numeric"
-            required
-          >
+        <div class="aviso-icone">
+            <i class="fas fa-exclamation-triangle"></i>
         </div>
 
+        <div class="aviso-conteudo">
 
-        <!-- DATA -->
-        <div class="campo">
-          <label for="dataMeta">
-            📅 DATA DA META
-          </label>
+            <strong>Aviso Importante</strong>
 
-          <input
-            type="date"
-            id="dataMeta"
-            class="input"
-            required
-          >
-        </div>
-
-
-        <!-- DESCRIÇÃO -->
-        <div class="campo">
-          <label for="descricao">
-            📝 DESCRIÇÃO DA META
-          </label>
-
-          <input
-            type="text"
-            id="descricao"
-            class="input"
-            placeholder="Descreva o que foi realizado..."
-            required
-          >
-        </div>
-
-
-        <!-- FOTO -->
-        <div class="campo">
-
-          <label>
-            📸 COMPROVAÇÃO
-          </label>
-
-          <label
-            for="fotoComprovante"
-            class="upload-area"
-            id="areaUpload"
-          >
-
-            <div class="upload-icon" id="uploadIcon">
-              📷
-            </div>
-
-            <h3 id="textoUpload">
-              CLIQUE PARA ENVIAR A FOTO
-            </h3>
-
-            <p id="subtextoUpload">
-              Envie uma imagem como comprovação da meta.
+            <p>
+                Verifique os dados antes de enviar.
+                Informações incorretas ou falsas geram penalidades.
             </p>
 
-            <input
-              type="file"
-              id="fotoComprovante"
-              accept="image/*"
-              required
-            >
+        </div>
 
-          </label>
+    </div>
 
-          <div class="preview" id="preview">
-            <img id="previewImagem" alt="Pré-visualização">
-          </div>
+
+    <form class="formulario" id="formMetas">
+
+        <h3 class="secao-titulo">
+            <i class="fas fa-user"></i>
+            <span>Dados do Membro</span>
+        </h3>
+
+
+        <div class="grid-campos">
+
+            <div class="campo">
+
+                <div class="campo-label">
+
+                    <div class="campo-label-esquerda">
+                        <i class="fas fa-id-card"></i>
+                        <label>Nº Passaporte</label>
+                    </div>
+
+                    <span class="obrigatorio">*</span>
+
+                </div>
+
+                <div class="input-wrap">
+
+                    <input
+                        type="tel"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
+                        class="input"
+                        id="passaporte"
+                        placeholder="Ex: 17274"
+                        required
+                    >
+
+                    <i class="fas fa-check status-check"></i>
+
+                </div>
+
+            </div>
+
+
+            <div class="campo">
+
+                <div class="campo-label">
+
+                    <div class="campo-label-esquerda">
+                        <i class="fas fa-calendar"></i>
+                        <label>Data</label>
+                    </div>
+
+                    <span class="obrigatorio">*</span>
+
+                </div>
+
+                <div class="input-wrap">
+
+                    <input
+                        type="date"
+                        class="input"
+                        id="dataMeta"
+                        required
+                    >
+
+                    <i class="fas fa-check status-check"></i>
+
+                </div>
+
+            </div>
 
         </div>
 
 
-        <!-- ENVIAR -->
+        <div class="campo" style="margin-top:16px;">
+
+            <div class="campo-label">
+
+                <div class="campo-label-esquerda">
+                    <i class="fas fa-file-alt"></i>
+                    <label>Descrição / Objetivo</label>
+                </div>
+
+                <span class="obrigatorio">*</span>
+
+            </div>
+
+            <div class="input-wrap">
+
+                <input
+                    type="text"
+                    class="input"
+                    id="descricao"
+                    placeholder="Descreva o que foi realizado..."
+                    required
+                >
+
+                <i class="fas fa-check status-check"></i>
+
+            </div>
+
+        </div>
+
+
+        <h3 class="secao-titulo" style="margin-top:20px;">
+
+            <i class="fas fa-camera"></i>
+            <span>Comprovação</span>
+
+        </h3>
+
+
+        <div class="upload" id="areaUpload">
+
+            <input
+                type="file"
+                accept="image/*"
+                id="fotoComprovante"
+                required
+            >
+
+            <div class="upload-icone" id="uploadIcone">
+                <i class="fas fa-cloud-upload-alt"></i>
+            </div>
+
+            <strong id="textoUpload">
+                Clique ou arraste a foto aqui
+            </strong>
+
+            <p id="subtextoUpload">
+                JPG, PNG · Até 5MB
+            </p>
+
+
+            <div class="preview" id="previewFoto">
+
+                <img id="imagemPreview" src="" alt="Pré-visualização">
+
+                <div class="preview-info">
+
+                    <span id="nomeArquivo"></span>
+
+                    <i class="fas fa-check-circle"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="foto-status" id="fotoStatus">
+            <i class="fas fa-check-circle"></i>
+            FOTO ENVIADA ✓
+        </div>
+
+
+        <div class="mensagem-erro" id="mensagemErro"></div>
+
+
         <button
-          type="submit"
-          class="btn-enviar"
+            type="submit"
+            class="enviar"
+            id="btnEnviar"
         >
-          ENVIAR REGISTRO
+            <span id="textoBotao">Registrar Meta</span>
+            <i class="fas fa-paper-plane" id="iconeBotao"></i>
         </button>
 
-      </form>
 
-    </div>
+        <div class="rodape-form">
 
-  </main>
+            <i class="fas fa-shield-alt"></i>
+            Dados protegidos · Sistema Interno Itália
 
+        </div>
 
-  <!-- MODAL -->
-  <div class="modal" id="modalSucesso">
+    </form>
 
-    <div class="modal-box">
+</main>
 
-      <div class="modal-icon">
-        ✅
-      </div>
 
-      <h2>Registro enviado!</h2>
+<div class="modal" id="modalSucesso">
 
-      <p>
-        Sua meta foi registrada com sucesso.
-      </p>
+    <div class="modal-card">
 
-      <button
-        class="btn-fechar"
-        id="btnFecharModal"
-      >
-        FECHAR
-      </button>
+        <div class="modal-sucesso">
+            <i class="fas fa-check"></i>
+        </div>
 
-    </div>
+        <h3 style="margin-bottom:10px;">
+            Registro Enviado!
+        </h3>
 
-  </div>
-
-
-  <script>
-
-    const form = document.getElementById("formMetas");
-
-    const areaUpload = document.getElementById("areaUpload");
-
-    const inputFoto = document.getElementById("fotoComprovante");
-
-    const preview = document.getElementById("preview");
-
-    const previewImagem = document.getElementById("previewImagem");
-
-    const uploadIcon = document.getElementById("uploadIcon");
-
-    const textoUpload = document.getElementById("textoUpload");
-
-    const subtextoUpload = document.getElementById("subtextoUpload");
-
-    const modalSucesso = document.getElementById("modalSucesso");
-
-    const btnFecharModal = document.getElementById("btnFecharModal");
-
-    const btnVoltar = document.getElementById("btnVoltar");
-
-
-    /* VOLTAR */
-
-    btnVoltar.addEventListener("click", function() {
-
-      if (document.referrer) {
-        window.history.back();
-      } else {
-        window.location.href = "index.html";
-      }
-
-    });
-
-
-    /* FOTO */
-
-    inputFoto.addEventListener("change", function() {
-
-      const arquivo = this.files[0];
-
-      if (!arquivo) {
-        return;
-      }
-
-      areaUpload.style.borderColor = "#168f3d";
-
-      areaUpload.style.background =
-        "rgba(22,143,61,0.08)";
-
-      uploadIcon.textContent = "✅";
-
-      textoUpload.textContent =
-        "FOTO ENVIADA ✓";
-
-      subtextoUpload.textContent =
-        arquivo.name;
-
-
-      const leitor = new FileReader();
-
-      leitor.onload = function(e) {
-
-        previewImagem.src = e.target.result;
-
-        preview.style.display = "block";
-
-      };
-
-      leitor.readAsDataURL(arquivo);
-
-    });
-
-
-    /* ENVIO */
-
-    form.addEventListener("submit", function(event) {
-
-      event.preventDefault();
-
-      if (!form.checkValidity()) {
-
-        form.reportValidity();
-
-        return;
-
-      }
-
-      modalSucesso.style.display = "flex";
-
-    });
-
-
-    /* FECHAR MODAL */
-
-    btnFecharModal.addEventListener("click", function() {
-
-      modalSucesso.style.display = "none";
-
-      form.reset();
-
-      preview.style.display = "none";
-
-      areaUpload.style.borderColor =
-        "rgba(255,255,255,0.2)";
-
-      areaUpload.style.background =
-        "rgba(0,0,0,0.18)";
-
-      uploadIcon.textContent = "📷";
-
-      textoUpload.textContent =
-        "CLIQUE PARA ENVIAR A FOTO";
-
-      subtextoUpload.textContent =
-        "Envie uma imagem como comprovação da meta.";
-
-    });
-
-  </script>
-
-</body>
-</html>
+      
