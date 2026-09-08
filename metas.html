@@ -119,16 +119,17 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--borda);
+            border: 2px solid var(--vermelho);
             border-radius: 10px;
             background: var(--card);
-            color: var(--subtexto);
+            color: var(--vermelho-claro);
             transition: all 0.2s;
         }
 
         .voltar:hover {
             color: white;
-            border-color: var(--vermelho-claro);
+            background: var(--vermelho);
+            border-color: var(--vermelho);
         }
 
         .container {
@@ -543,7 +544,6 @@
             display: block;
         }
 
-        /* MENSAGEM DE FOTO */
         .foto-status {
             display: none;
             margin-top: 10px;
@@ -567,254 +567,157 @@
 
 <header class="topo">
     <div class="topo-conteudo">
-
         <div class="marca">
             <div class="marca-icone">
                 <i class="fas fa-flag"></i>
             </div>
-
             <div class="marca-texto">
                 <h1>ORGANIZAÇÃO ITÁLIA</h1>
                 <p>Sistema de Registro</p>
             </div>
         </div>
 
-        <!-- BOTÃO DE SAIR - FUNCIONAL -->
+        <!-- BOTÃO DE VOLTAR MELHORADO -->
         <button class="voltar" id="btnVoltar" title="Voltar ao Painel">
             <i class="fas fa-arrow-left"></i>
         </button>
-
     </div>
 </header>
 
-
 <main class="container">
-
     <div class="cabecalho">
-
         <div class="cabecalho-tag">
             <i class="fas fa-bullseye"></i>
             REGISTRO DE METAS
         </div>
-
-        <h2>
-            Registre sua <span>meta cumprida</span>
-        </h2>
-
-        <p>
-            Informe os dados da sua participação e comprovação para análise da administração.
-        </p>
-
+        <h2>Registre sua <span>meta cumprida</span></h2>
+        <p>Informe os dados da sua participação e comprovação para análise da administração.</p>
     </div>
 
-
     <div class="aviso">
-
         <div class="aviso-icone">
             <i class="fas fa-exclamation-triangle"></i>
         </div>
-
         <div class="aviso-conteudo">
-
             <strong>Aviso Importante</strong>
-
-            <p>
-                Verifique os dados antes de enviar.
-                Informações incorretas ou falsas geram penalidades.
-            </p>
-
+            <p>Verifique os dados antes de enviar. Informações incorretas ou falsas geram penalidades.</p>
         </div>
-
     </div>
 
-
     <form class="formulario" id="formMetas">
-
         <h3 class="secao-titulo">
             <i class="fas fa-user"></i>
             <span>Dados do Membro</span>
         </h3>
 
-
         <div class="grid-campos">
-
             <div class="campo">
-
                 <div class="campo-label">
-
                     <div class="campo-label-esquerda">
                         <i class="fas fa-id-card"></i>
                         <label>Nº Passaporte</label>
                     </div>
-
                     <span class="obrigatorio">*</span>
-
                 </div>
-
                 <div class="input-wrap">
-
-                    <input
-                        type="tel"
-                        inputmode="numeric"
-                        pattern="[0-9]*"
-                        class="input"
-                        id="passaporte"
-                        placeholder="Ex: 17274"
-                        required
-                    >
-
+                    <input type="tel" inputmode="numeric" pattern="[0-9]*" class="input" id="passaporte" placeholder="Ex: 17274" required>
                     <i class="fas fa-check status-check"></i>
-
                 </div>
-
             </div>
 
-
             <div class="campo">
-
                 <div class="campo-label">
-
                     <div class="campo-label-esquerda">
                         <i class="fas fa-calendar"></i>
                         <label>Data</label>
                     </div>
-
                     <span class="obrigatorio">*</span>
-
                 </div>
-
                 <div class="input-wrap">
-
-                    <input
-                        type="date"
-                        class="input"
-                        id="dataMeta"
-                        required
-                    >
-
+                    <input type="date" class="input" id="dataMeta" required>
                     <i class="fas fa-check status-check"></i>
-
                 </div>
-
             </div>
-
         </div>
 
-
         <div class="campo" style="margin-top:16px;">
-
             <div class="campo-label">
-
                 <div class="campo-label-esquerda">
                     <i class="fas fa-file-alt"></i>
                     <label>Descrição / Objetivo</label>
                 </div>
-
                 <span class="obrigatorio">*</span>
-
             </div>
-
             <div class="input-wrap">
-
-                <input
-                    type="text"
-                    class="input"
-                    id="descricao"
-                    placeholder="Descreva o que foi realizado..."
-                    required
-                >
-
+                <input type="text" class="input" id="descricao" placeholder="Descreva o que foi realizado..." required>
                 <i class="fas fa-check status-check"></i>
-
             </div>
-
         </div>
 
-
         <h3 class="secao-titulo" style="margin-top:20px;">
-
             <i class="fas fa-camera"></i>
             <span>Comprovação</span>
-
         </h3>
 
-
         <div class="upload" id="areaUpload">
-
-            <input
-                type="file"
-                accept="image/*"
-                id="fotoComprovante"
-                required
-            >
-
+            <input type="file" accept="image/*" id="fotoComprovante" required>
             <div class="upload-icone" id="uploadIcone">
                 <i class="fas fa-cloud-upload-alt"></i>
             </div>
-
-            <strong id="textoUpload">
-                Clique ou arraste a foto aqui
-            </strong>
-
-            <p id="subtextoUpload">
-                JPG, PNG · Até 5MB
-            </p>
-
+            <strong id="textoUpload">Clique ou arraste a foto aqui</strong>
+            <p id="subtextoUpload">JPG, PNG · Até 5MB</p>
 
             <div class="preview" id="previewFoto">
-
                 <img id="imagemPreview" src="" alt="Pré-visualização">
-
                 <div class="preview-info">
-
                     <span id="nomeArquivo"></span>
-
                     <i class="fas fa-check-circle"></i>
-
                 </div>
-
             </div>
-
         </div>
-
 
         <div class="foto-status" id="fotoStatus">
             <i class="fas fa-check-circle"></i>
             FOTO ENVIADA COM SUCESSO ✓
         </div>
 
-
         <div class="mensagem-erro" id="mensagemErro"></div>
 
-
-        <button
-            type="submit"
-            class="enviar"
-            id="btnEnviar"
-        >
+        <button type="submit" class="enviar" id="btnEnviar">
             <span id="textoBotao">Registrar Meta</span>
             <i class="fas fa-paper-plane" id="iconeBotao"></i>
         </button>
 
-
         <div class="rodape-form">
-
             <i class="fas fa-shield-alt"></i>
             Dados protegidos · Sistema Interno Itália
-
         </div>
-
     </form>
-
 </main>
 
-
 <div class="modal" id="modalSucesso">
-
     <div class="modal-card">
-
         <div class="modal-sucesso">
             <i class="fas fa-check"></i>
         </div>
+        <h3 style="margin-bottom:10px;">Registro Enviado!</h3>
+        <p style="color:#9ca3af; font-size:14px;">Será analisado pela administração.</p>
+        <button class="modal-fechar" id="btnFecharModal">Entendido</button>
+    </div>
+</div>
 
-        <h3 style="margin-b
+<script>
+// ESPERA TUDO CARREGAR PRIMEIRO
+document.addEventListener('DOMContentLoaded', function() {
+    const btnVoltar = document.getElementById('btnVoltar');
+    
+    // ✅ BOTÃO DE VOLTAR - ENDEREÇO EXATO DO SEU SITE
+    btnVoltar.addEventListener('click', function(e) {
+        e.preventDefault();
+        // VAI DIRETO PARA A PÁGINA PRINCIPAL: italia-reduto.github.io
+        window.location.replace("https://italia-reduto.github.io/");
+    });
+
+    // RESTO DO SISTEMA
+    const form = document.getElementById('formMetas');
+    const 
