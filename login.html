@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="pt-BR">
-<head>
+<!DOCTYPE html><html lang="pt-BR"><head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Organização Itália · Acesso</title><meta name="theme-color" content="#0b0d12">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Organização Itália · Acesso</title><meta name="theme-color" content="#080a0f">
 <meta name="color-scheme" content="dark"><link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><style>
+
 * {
     margin: 0;
     padding: 0;
@@ -12,6 +12,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 html,
 body {
+    width: 100%;
     min-height: 100%;
     background: #080a0f;
     color: #f1f1f3;
@@ -20,37 +21,42 @@ body {
 
 body {
     min-height: 100dvh;
+
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 24px 16px;
+
+    padding: 20px 16px;
+
     background:
         radial-gradient(
-            circle at 50% 0%,
+            circle at top,
             rgba(196, 30, 58, 0.10),
-            transparent 42%
+            transparent 45%
         ),
         #080a0f;
 }
-
-/* CONTAINER */
 
 .container {
     width: 100%;
     max-width: 430px;
 }
 
-/* CABEÇALHO */
+
+/* =========================
+   CABEÇALHO
+========================= */
 
 .header {
     text-align: center;
-    margin-bottom: 34px;
+    margin-bottom: 32px;
 }
 
 .logo {
-    width: 94px;
-    height: 94px;
-    margin: 0 auto 24px;
+    width: 90px;
+    height: 90px;
+
+    margin: 0 auto 22px;
 
     display: flex;
     align-items: center;
@@ -59,60 +65,79 @@ body {
     border-radius: 24px;
 
     background: #151821;
-    border: 1px solid #2b303c;
+
+    border: 1px solid #2a2f3a;
 
     box-shadow:
         0 15px 40px rgba(0,0,0,.35);
 }
 
 .logo i {
-    font-size: 42px;
-    color: #e7e8eb;
+    font-size: 30px;
+    color: #eeeeef;
 }
 
 .header h1 {
-    font-size: 29px;
+    font-size: 28px;
     font-weight: 800;
+
     letter-spacing: 1px;
 }
 
 .header p {
-    margin-top: 10px;
+    margin-top: 9px;
+
     color: #8d95a5;
+
     font-size: 16px;
-    line-height: 1.5;
 }
 
 .status {
-    margin-top: 22px;
-    color: #697181;
-    font-size: 12px;
-    letter-spacing: 1.8px;
+    margin-top: 21px;
+
+    color: #646c7b;
+
+    font-size: 11px;
+
+    letter-spacing: 1.7px;
+
     text-transform: uppercase;
 }
 
-/* CARTÃO */
+
+/* =========================
+   CARTÃO
+========================= */
 
 .login-card {
+    width: 100%;
+
+    padding: 30px 28px;
+
     background: #12151d;
+
     border: 1px solid #252a35;
+
     border-top: 3px solid #c41e3a;
 
-    border-radius: 25px;
-
-    padding: 31px 28px 29px;
+    border-radius: 24px;
 
     box-shadow:
         0 25px 70px rgba(0,0,0,.35);
 }
 
 .login-title {
+    margin-bottom: 27px;
+
     font-size: 25px;
+
     font-weight: 800;
-    margin-bottom: 28px;
 }
 
-/* CAMPOS */
+
+/* =========================
+   CAMPOS
+========================= */
 
 .field {
     margin-bottom: 22px;
@@ -120,12 +145,16 @@ body {
 
 .field label {
     display: block;
-    margin-bottom: 10px;
+
+    margin-bottom: 9px;
 
     color: #aeb6c6;
+
     font-size: 15px;
+
     font-weight: 700;
-    letter-spacing: .8px;
+
+    letter-spacing: .5px;
 }
 
 .input-box {
@@ -134,12 +163,14 @@ body {
 
 .input-box > i {
     position: absolute;
-    left: 19px;
+
+    left: 18px;
     top: 50%;
 
     transform: translateY(-50%);
 
     color: #8993a5;
+
     font-size: 17px;
 
     pointer-events: none;
@@ -151,15 +182,15 @@ body {
 
     padding: 0 52px;
 
-    border-radius: 18px;
+    background: #0d1724;
 
     border: 1px solid #29303c;
 
-    background: #0d1724;
-
-    color: #f1f1f3;
+    border-radius: 18px;
 
     outline: none;
+
+    color: #f1f1f3;
 
     font-size: 16px;
 
@@ -174,12 +205,15 @@ body {
     border-color: #c41e3a;
 
     box-shadow:
-        0 0 0 3px rgba(196,30,58,.13);
+        0 0 0 3px rgba(196,30,58,.12);
 }
 
-/* OLHO */
 
-.eye {
+/* =========================
+   OLHO
+========================= */
+
+.eye-button {
     position: absolute;
 
     right: 17px;
@@ -187,84 +221,100 @@ body {
 
     transform: translateY(-50%);
 
-    border: 0;
+    border: none;
+
     background: transparent;
 
-    color: #8d96a8;
+    color: #8993a5;
 
     font-size: 19px;
 
     cursor: pointer;
 }
 
-/* CHECKBOX */
 
-.remember {
+/* =========================
+   CHECKBOX
+========================= */
+
+.recovery {
     display: flex;
-    align-items: center;
-    gap: 11px;
 
-    margin: 4px 0 25px;
+    align-items: center;
+
+    gap: 10px;
+
+    margin: 2px 0 24px;
 
     color: #9ca7b9;
+
     font-size: 14px;
 }
 
-.remember input {
+.recovery input {
     width: 18px;
     height: 18px;
 
     accent-color: #c41e3a;
 }
 
-/* BOTÃO */
+
+/* =========================
+   BOTÃO
+========================= */
 
 .login-button {
     width: 100%;
     height: 60px;
 
     border: none;
+
     border-radius: 18px;
 
     background: #c41e3a;
+
     color: white;
 
     font-size: 17px;
+
     font-weight: 800;
 
     cursor: pointer;
 
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     gap: 12px;
 
     transition: .2s;
-
-    box-shadow:
-        0 10px 28px rgba(196,30,58,.18);
 }
 
 .login-button:hover {
     background: #d32342;
-    transform: translateY(-1px);
 }
 
 .login-button:active {
-    transform: translateY(0);
+    transform: scale(.99);
 }
 
 .login-button:disabled {
     opacity: .75;
+
     cursor: wait;
 }
 
-/* ESQUECI SENHA */
+
+/* =========================
+   ESQUECI SENHA
+========================= */
 
 .forgot {
     display: block;
 
-    margin-top: 27px;
+    margin-top: 26px;
 
     text-align: center;
 
@@ -273,6 +323,7 @@ body {
     text-decoration: none;
 
     font-size: 15px;
+
     font-weight: 700;
 }
 
@@ -280,12 +331,15 @@ body {
     color: #e83b59;
 }
 
-/* RODAPÉ */
+
+/* =========================
+   RODAPÉ
+========================= */
 
 .footer {
-    text-align: center;
+    margin-top: 32px;
 
-    margin-top: 34px;
+    text-align: center;
 
     color: #515968;
 
@@ -296,27 +350,31 @@ body {
     text-transform: uppercase;
 }
 
-/* MOBILE */
 
-@media (max-height: 720px) {
+/* =========================
+   CELULAR PEQUENO
+========================= */
+
+@media (max-height: 700px) {
 
     body {
         align-items: flex-start;
-        padding-top: 20px;
+        padding-top: 18px;
     }
 
     .header {
-        margin-bottom: 22px;
+        margin-bottom: 20px;
     }
 
     .logo {
-        width: 70px;
-        height: 70px;
-        margin-bottom: 15px;
+        width: 68px;
+        height: 68px;
+
+        margin-bottom: 14px;
     }
 
     .logo i {
-        font-size: 30px;
+        font-size: 24px;
     }
 
     .header h1 {
@@ -326,7 +384,9 @@ body {
     .login-card {
         padding: 25px 22px;
     }
+
 }
+
 </style></head><body><div class="container"><!-- CABEÇALHO -->
 
 <div class="header">
@@ -335,7 +395,9 @@ body {
         <i class="fas fa-crown"></i>
     </div>
 
-    <h1>Organização Itália</h1>
+    <h1>
+        Organização Itália
+    </h1>
 
     <p>
         Sistema de Gestão Interna
@@ -372,9 +434,9 @@ body {
             <input
                 type="text"
                 id="passaporte"
+                placeholder="Digite seu passaporte"
                 inputmode="numeric"
                 autocomplete="username"
-                placeholder="Digite seu passaporte"
             >
 
         </div>
@@ -397,13 +459,13 @@ body {
             <input
                 type="password"
                 id="senha"
-                autocomplete="current-password"
                 placeholder="Digite sua senha"
+                autocomplete="current-password"
             >
 
             <button
                 type="button"
-                class="eye"
+                class="eye-button"
                 id="btnOlho"
                 aria-label="Mostrar senha"
             >
@@ -417,11 +479,11 @@ body {
 
     <!-- RECUPERAÇÃO -->
 
-    <label class="remember">
+    <label class="recovery">
 
         <input
             type="checkbox"
-            id="autorizar"
+            id="recuperacao"
         >
 
         <span>
@@ -431,7 +493,7 @@ body {
     </label>
 
 
-    <!-- ENTRAR -->
+    <!-- BOTÃO -->
 
     <button
         type="button"
@@ -451,7 +513,7 @@ body {
     </button>
 
 
-    <!-- ESQUECI -->
+    <!-- ESQUECI SENHA -->
 
     <a
         href="#"
@@ -472,56 +534,89 @@ body {
 
 </div><script>
 
-/* ELEMENTOS */
+/* =========================
+   ELEMENTOS
+========================= */
 
 const passaporte =
-    document.getElementById('passaporte');
+    document.getElementById("passaporte");
 
 const senha =
-    document.getElementById('senha');
+    document.getElementById("senha");
 
 const btnOlho =
-    document.getElementById('btnOlho');
+    document.getElementById("btnOlho");
 
 const btnEntrar =
-    document.getElementById('btnEntrar');
+    document.getElementById("btnEntrar");
 
 const textoBotao =
-    document.getElementById('textoBotao');
+    document.getElementById("textoBotao");
 
 const iconeBotao =
-    document.getElementById('iconeBotao');
+    document.getElementById("iconeBotao");
 
 const esqueciSenha =
-    document.getElementById('esqueciSenha');
+    document.getElementById("esqueciSenha");
 
 
-/* MOSTRAR / ESCONDER SENHA */
+/* =========================
+   MOSTRAR / ESCONDER SENHA
+========================= */
 
-btnOlho.addEventListener('click', function () {
+btnOlho.addEventListener("click", function() {
 
-    if (senha.type === 'password') {
+    if (senha.type === "password") {
 
-        senha.type = 'text';
+        senha.type = "text";
 
         btnOlho.innerHTML =
             '<i class="fas fa-eye-slash"></i>';
 
+        btnOlho.setAttribute(
+            "aria-label",
+            "Esconder senha"
+        );
+
     } else {
 
-        senha.type = 'password';
+        senha.type = "password";
 
         btnOlho.innerHTML =
             '<i class="fas fa-eye"></i>';
+
+        btnOlho.setAttribute(
+            "aria-label",
+            "Mostrar senha"
+        );
 
     }
 
 });
 
 
-/* ENTRAR */
+/* =========================
+   RESETAR BOTÃO
+========================= */
 
-function entrar() {
+function resetarBotao() {
+
+    btnEntrar.disabled = false;
+
+    textoBotao.textContent =
+        "Entrar no sistema";
+
+    iconeBotao.className =
+        "fas fa-arrow-right";
+
+}
+
+
+/* =========================
+   ENTRAR NO SISTEMA
+========================= */
+
+function entrarNoSistema() {
 
     if (btnEntrar.disabled) {
         return;
@@ -529,70 +624,111 @@ function entrar() {
 
     btnEntrar.disabled = true;
 
-    textoBotao.textContent = 'Entrando...';
+    textoBotao.textContent =
+        "Entrando...";
 
     iconeBotao.className =
-        'fas fa-spinner fa-spin';
+        "fas fa-spinner fa-spin";
 
-    setTimeout(function () {
+    setTimeout(function() {
 
         window.location.href =
-            './painel.html';
+            "./painel.html";
 
-    }, 350);
+    }, 400);
 
 }
 
 
-/* CLIQUE */
+/* =========================
+   CLIQUE
+========================= */
 
 btnEntrar.addEventListener(
-    'click',
-    entrar
+    "click",
+    entrarNoSistema
 );
 
 
-/* ENTER */
+/* =========================
+   ENTER
+========================= */
 
 passaporte.addEventListener(
-    'keydown',
-    function (event) {
+    "keydown",
+    function(event) {
 
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
+
             event.preventDefault();
-            entrar();
+
+            entrarNoSistema();
+
         }
 
     }
 );
 
 senha.addEventListener(
-    'keydown',
-    function (event) {
+    "keydown",
+    function(event) {
 
-        if (event.key === 'Enter') {
+        if (event.key === "Enter") {
+
             event.preventDefault();
-            entrar();
+
+            entrarNoSistema();
+
         }
 
     }
 );
 
 
-/* ESQUECI SENHA */
+/* =========================
+   ESQUECI MINHA SENHA
+========================= */
 
 esqueciSenha.addEventListener(
-    'click',
-    function (event) {
+    "click",
+    function(event) {
 
         event.preventDefault();
 
         alert(
-            'Entre em contato com a administração da Organização Itália para recuperar seu acesso.'
+            "Entre em contato com a administração da Organização Itália para recuperar seu acesso."
         );
 
     }
 );
 
+
+/* =========================
+   VOLTOU PARA O LOGIN
+========================= */
+
+window.addEventListener(
+    "pageshow",
+    function() {
+
+        resetarBotao();
+
+    }
+);
+
+
+/* =========================
+   CARREGAMENTO
+========================= */
+
+window.addEventListener(
+    "load",
+    function() {
+
+        resetarBotao();
+
+    }
+);
+
 </script></body>
-</html>
+    </html>
