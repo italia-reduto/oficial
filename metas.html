@@ -230,7 +230,7 @@
             text-transform: uppercase;
         }
 
-        .campo { margin-bottom: 16px; }
+        .campo { margin-bottom: 16px; position: relative; }
         .campo:last-child { margin-bottom: 0; }
 
         .campo-label {
@@ -265,20 +265,47 @@
             font-weight: 800;
         }
 
+        .input-wrap { position: relative; }
+
         .input {
             width: 100%;
             min-height: 48px;
-            padding: 0 14px;
+            padding: 0 45px 0 14px;
             background: #101217;
             color: var(--texto);
             border: 1px solid var(--borda);
             border-radius: 12px;
             outline: none;
             font-size: 14px;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
         .input::placeholder { color: #555b66; }
         .input:focus { border-color: rgba(196, 30, 58, 0.65); }
+
+        /* Ícone de validação */
+        .status-check {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: transparent;
+            opacity: 0;
+            font-size: 16px;
+            transition: all 0.25s ease;
+            pointer-events: none;
+        }
+
+        /* Estado preenchido/valido */
+        .campo.valido .input {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 2px var(--verde-fraco);
+        }
+
+        .campo.valido .status-check {
+            color: var(--verde);
+            opacity: 1;
+        }
 
         .grid-campos {
             display: grid;
@@ -459,7 +486,10 @@
                         </div>
                         <span class="obrigatorio">*</span>
                     </div>
-                    <input type="text" class="input" placeholder="Ex: 17274" required>
+                    <div class="input-wrap">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" class="input" placeholder="Ex: 17274" required>
+                        <i class="fas fa-check status-check"></i>
+                    </div>
                 </div>
 
                 <div class="campo">
@@ -469,7 +499,10 @@
                         </div>
                         <span class="obrigatorio">*</span>
                     </div>
-                    <input type="date" class="input" required>
+                    <div class="input-wrap">
+                        <input type="date" class="input" required>
+                        <i class="fas fa-check status-check"></i>
+                    </div>
                 </div>
             </div>
 
@@ -480,7 +513,10 @@
                     </div>
                     <span class="obrigatorio">*</span>
                 </div>
-                <input type="text" class="input" placeholder="Descreva o que foi realizado..." required>
+                <div class="input-wrap">
+                    <input type="text" class="input" placeholder="Descreva o que foi realizado..." required>
+                    <i class="fas fa-check status-check"></i>
+                </div>
             </div>
 
             <h3 class="secao-titulo" style="margin-top:20px;">
@@ -524,6 +560,29 @@
         const preview = document.getElementById('previewFoto');
         const modal = document.getElementById('modalSucesso');
         const btnFecharModal = document.getElementById('btnFecharModal');
+        const campos = document.querySelectorAll('.input');
+        const passaporte = form.querySelector('input[inputmode="numeric"]');
+
+        // Bloqueia letras no campo passaporte
+        passaporte.addEventListener('keydown', function(e) {
+            const permitidos = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End'];
+            if (permitidos.includes(e.key)) return;
+            if (!/^\d$/.test(e.key)) e.preventDefault();
+        });
+
+        function verificarCampo(campo) {
+            const container = campo.closest('.campo');
+            if (campo.value.trim() !== '') {
+                container.classList.add('valido');
+            } else {
+                container.classList.remove('valido');
+            }
+        }
+
+        campos.forEach(campo => {
+            campo.addEventListener('input', () => verificarCampo(campo));
+            campo.addEventListener('blur', () => verificarCampo(campo));
+        });
 
         inputFoto.addEventListener('change', e => {
             const arq = e.target.files[0];
@@ -541,6 +600,7 @@
             modal.classList.add('aberto');
             form.reset();
             preview.style.display = 'none';
+            document.querySelectorAll('.campo').forEach(el => el.classList.remove('valido'));
         });
 
         btnFecharModal.addEventListener('click', () => modal.classList.remove('aberto'));
