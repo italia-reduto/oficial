@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0f0f14">
     <meta name="color-scheme" content="dark">
+
     <title>ORGANIZAÇÃO ITÁLIA · REGISTRO DE METAS</title>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -20,16 +24,18 @@
 
         :root {
             --fundo: #0b0c10;
-            --fundo-2: #101218;
             --card: #15171d;
-            --card-2: #191b22;
             --borda: #292c35;
+
             --vermelho: #c41e3a;
             --vermelho-claro: #ef334f;
+
             --verde: #22c55e;
-            --verde-fraco: rgba(34, 197, 94, 0.10);
+            --verde-fraco: rgba(34,197,94,.10);
+
             --erro: #ef4444;
-            --erro-fraco: rgba(239, 68, 68, 0.10);
+            --erro-fraco: rgba(239,68,68,.10);
+
             --texto: #f3f4f6;
             --subtexto: #9ca3af;
             --muted: #6b7280;
@@ -42,35 +48,71 @@
 
         body {
             min-height: 100vh;
+
             background:
-                radial-gradient(circle at top right, rgba(196, 30, 58, 0.10), transparent 30%),
-                radial-gradient(circle at bottom left, rgba(196, 30, 58, 0.05), transparent 28%),
+                radial-gradient(
+                    circle at top right,
+                    rgba(196,30,58,.10),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at bottom left,
+                    rgba(196,30,58,.05),
+                    transparent 28%
+                ),
                 var(--fundo);
+
             color: var(--texto);
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            padding: 0 0 30px 0;
+
+            font-family:
+                Inter,
+                system-ui,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                sans-serif;
+
+            padding-bottom: 30px;
         }
 
-        button, input { font: inherit; }
-        button { cursor: pointer; }
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =========================
+           TOPO
+        ========================= */
 
         .topo {
             position: sticky;
             top: 0;
             z-index: 50;
-            background: rgba(11, 12, 16, 0.88);
+
+            background: rgba(11,12,16,.88);
+
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
+
+            border-bottom:
+                1px solid rgba(255,255,255,.06);
         }
 
         .topo-conteudo {
             width: min(760px, calc(100% - 24px));
+
             margin: auto;
+
             min-height: 68px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             gap: 12px;
         }
 
@@ -83,21 +125,34 @@
         .marca-icone {
             width: 40px;
             height: 40px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             border-radius: 12px;
+
             color: var(--vermelho-claro);
-            background: linear-gradient(145deg, rgba(196, 30, 58, 0.20), rgba(196, 30, 58, 0.06));
-            border: 1px solid rgba(196, 30, 58, 0.25);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(196,30,58,.20),
+                    rgba(196,30,58,.06)
+                );
+
+            border:
+                1px solid rgba(196,30,58,.25);
         }
 
-        .marca-icone i { font-size: 17px; }
+        .marca-icone i {
+            font-size: 17px;
+        }
 
         .marca-texto h1 {
             font-size: 14px;
             font-weight: 800;
-            letter-spacing: 0.3px;
+            letter-spacing: .3px;
         }
 
         .marca-texto p {
@@ -109,15 +164,24 @@
         .voltar {
             width: 38px;
             height: 38px;
+
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid var(--borda);
+
+            border:
+                1px solid var(--borda);
+
             border-radius: 10px;
+
             background: var(--card);
             color: var(--subtexto);
-            text-decoration: none;
-            transition: all 0.2s;
+
+            transition:
+                transform .2s,
+                color .2s,
+                border-color .2s,
+                background .2s;
         }
 
         .voltar:hover {
@@ -125,102 +189,172 @@
             border-color: var(--vermelho-claro);
         }
 
+        .voltar:active {
+            transform: scale(.92);
+        }
+
+        /* =========================
+           CONTAINER
+        ========================= */
+
         .container {
             width: min(680px, calc(100% - 24px));
+
             margin: 0 auto;
+
             padding-top: 20px;
         }
 
-        .cabecalho { margin-bottom: 20px; }
+        .cabecalho {
+            margin-bottom: 20px;
+        }
 
         .cabecalho-tag {
             display: inline-flex;
             align-items: center;
             gap: 6px;
+
             padding: 6px 10px;
+
             border-radius: 999px;
-            background: rgba(196, 30, 58, 0.08);
-            border: 1px solid rgba(196, 30, 58, 0.18);
+
+            background:
+                rgba(196,30,58,.08);
+
+            border:
+                1px solid rgba(196,30,58,.18);
+
             color: #fca5b5;
+
             font-size: 10px;
             font-weight: 800;
+
             text-transform: uppercase;
+
             margin-bottom: 10px;
         }
 
         .cabecalho h2 {
-            font-size: clamp(24px, 6vw, 32px);
+            font-size: clamp(24px,6vw,32px);
             line-height: 1.1;
             font-weight: 850;
         }
 
-        .cabecalho h2 span { color: var(--vermelho-claro); }
+        .cabecalho h2 span {
+            color: var(--vermelho-claro);
+        }
 
         .cabecalho p {
             color: var(--subtexto);
+
             font-size: 14px;
+
             line-height: 1.5;
+
             margin-top: 8px;
         }
 
+        /* =========================
+           AVISO
+        ========================= */
+
         .aviso {
             position: relative;
+
             display: flex;
+
             gap: 12px;
+
             padding: 15px;
+
             margin-bottom: 20px;
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.13), rgba(239, 68, 68, 0.045));
-            border: 1px solid rgba(239, 68, 68, 0.35);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(239,68,68,.13),
+                    rgba(239,68,68,.045)
+                );
+
+            border:
+                1px solid rgba(239,68,68,.35);
+
             border-radius: 16px;
         }
 
         .aviso::before {
             content: "";
+
             position: absolute;
+
             top: 0;
             bottom: 0;
             left: 0;
+
             width: 3px;
+
             background: var(--erro);
         }
 
         .aviso-icone {
             width: 36px;
             height: 36px;
+
             flex: 0 0 auto;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             border-radius: 10px;
-            background: rgba(239, 68, 68, 0.13);
+
+            background:
+                rgba(239,68,68,.13);
+
             color: #ff6b78;
         }
 
         .aviso-conteudo strong {
             display: block;
+
             color: #ff7a86;
+
             font-size: 13px;
             font-weight: 800;
+
             margin-bottom: 4px;
         }
 
         .aviso-conteudo p {
             color: #d1d5db;
+
             font-size: 13px;
+
             line-height: 1.5;
         }
 
+        /* =========================
+           FORMULÁRIO
+        ========================= */
+
         .formulario {
-            background: rgba(21, 23, 29, 0.76);
-            border: 1px solid rgba(255,255,255,0.06);
+            background:
+                rgba(21,23,29,.76);
+
+            border:
+                1px solid rgba(255,255,255,.06);
+
             border-radius: 20px;
+
             padding: 18px;
         }
 
         .secao-titulo {
             display: flex;
             align-items: center;
+
             gap: 8px;
+
             margin-bottom: 16px;
         }
 
@@ -231,8 +365,10 @@
 
         .secao-titulo span {
             color: var(--texto);
+
             font-size: 13px;
             font-weight: 800;
+
             text-transform: uppercase;
         }
 
@@ -241,38 +377,41 @@
             position: relative;
         }
 
-        .campo:last-child {
-            margin-bottom: 0;
-        }
-
         .campo-label {
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             gap: 8px;
+
             margin-bottom: 7px;
         }
 
         .campo-label-esquerda {
             display: flex;
             align-items: center;
+
             gap: 7px;
         }
 
         .campo-label i {
             width: 18px;
+
             color: var(--subtexto);
+
             font-size: 12px;
         }
 
         .campo-label label {
             color: #d9dce2;
+
             font-size: 13px;
             font-weight: 700;
         }
 
         .obrigatorio {
             color: var(--erro);
+
             font-size: 11px;
             font-weight: 800;
         }
@@ -283,15 +422,28 @@
 
         .input {
             width: 100%;
+
             min-height: 48px;
-            padding: 0 45px 0 14px;
+
+            padding:
+                0 45px 0 14px;
+
             background: #101217;
+
             color: var(--texto);
-            border: 1px solid var(--borda);
+
+            border:
+                1px solid var(--borda);
+
             border-radius: 12px;
+
             outline: none;
+
             font-size: 14px;
-            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+
+            transition:
+                border-color .25s,
+                box-shadow .25s;
         }
 
         .input::placeholder {
@@ -299,24 +451,35 @@
         }
 
         .input:focus {
-            border-color: rgba(196, 30, 58, 0.65);
+            border-color:
+                rgba(196,30,58,.65);
         }
 
         .status-check {
             position: absolute;
+
             right: 14px;
             top: 50%;
-            transform: translateY(-50%);
+
+            transform:
+                translateY(-50%);
+
             color: transparent;
+
             opacity: 0;
+
             font-size: 16px;
-            transition: all 0.25s ease;
+
+            transition: .25s;
+
             pointer-events: none;
         }
 
         .campo.valido .input {
             border-color: var(--verde);
-            box-shadow: 0 0 0 2px var(--verde-fraco);
+
+            box-shadow:
+                0 0 0 2px var(--verde-fraco);
         }
 
         .campo.valido .status-check {
@@ -326,7 +489,9 @@
 
         .grid-campos {
             display: grid;
+
             grid-template-columns: 1fr;
+
             gap: 14px;
         }
 
@@ -334,124 +499,336 @@
             color-scheme: dark;
         }
 
+        /* =========================
+           UPLOAD
+        ========================= */
+
         .upload {
             position: relative;
-            min-height: 130px;
+
+            min-height: 150px;
+
             display: flex;
             flex-direction: column;
+
             align-items: center;
             justify-content: center;
+
             text-align: center;
+
             padding: 16px;
+
             border-radius: 16px;
-            background: rgba(255,255,255,0.02);
-            border: 1px dashed #3b3f49;
+
+            background:
+                rgba(255,255,255,.02);
+
+            border:
+                1px dashed #3b3f49;
+
             overflow: hidden;
+
+            transition:
+                border-color .3s,
+                background .3s,
+                transform .2s;
+        }
+
+        .upload:hover {
+            border-color:
+                rgba(239,51,79,.65);
+
+            background:
+                rgba(196,30,58,.035);
+        }
+
+        .upload.foto-selecionada {
+            border:
+                1px solid var(--verde);
+
+            background:
+                rgba(34,197,94,.07);
+
+            animation:
+                fotoSelecionada .45s ease;
+        }
+
+        @keyframes fotoSelecionada {
+
+            0% {
+                transform: scale(.98);
+            }
+
+            60% {
+                transform: scale(1.015);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+
         }
 
         .upload input {
             position: absolute;
+
             inset: 0;
+
             width: 100%;
             height: 100%;
+
             opacity: 0;
+
             cursor: pointer;
+
+            z-index: 5;
         }
 
         .upload-icone {
             width: 42px;
             height: 42px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             border-radius: 12px;
+
             margin-bottom: 8px;
-            background: rgba(196, 30, 58, 0.10);
+
+            background:
+                rgba(196,30,58,.10);
+
             color: #f05a70;
+
+            transition: .3s;
+        }
+
+        .foto-selecionada .upload-icone {
+            background:
+                rgba(34,197,94,.13);
+
+            color: var(--verde);
+
+            transform: scale(1.08);
         }
 
         .upload strong {
             font-size: 13px;
             color: #e5e7eb;
+
+            transition: .25s;
+        }
+
+        .foto-selecionada .upload strong {
+            color: var(--verde);
         }
 
         .upload p {
             margin-top: 4px;
+
             font-size: 11px;
+
             color: var(--muted);
+        }
+
+        .foto-nome {
+            display: none;
+
+            margin-top: 7px;
+
+            max-width: 90%;
+
+            overflow: hidden;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+
+            color: #a7f3d0;
+
+            font-size: 11px;
+        }
+
+        .foto-selecionada .foto-nome {
+            display: block;
         }
 
         .preview {
             display: none;
+
             position: absolute;
+
             inset: 0;
+
             background: #0b0c10;
+
+            z-index: 2;
         }
 
         .preview img {
             width: 100%;
             height: 100%;
+
             object-fit: contain;
         }
 
         .preview-info {
             position: absolute;
+
             left: 10px;
             right: 10px;
             bottom: 10px;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             gap: 10px;
+
             padding: 9px 11px;
+
             border-radius: 10px;
-            background: rgba(0,0,0,0.72);
+
+            background:
+                rgba(0,0,0,.75);
+
             backdrop-filter: blur(8px);
-            color: #e5e7eb;
+
+            color: white;
+
             font-size: 11px;
         }
 
         .preview-info i {
             color: var(--verde);
+            font-size: 16px;
         }
+
+        /* =========================
+           ERRO
+        ========================= */
+
+        .mensagem-erro {
+            display: none;
+
+            margin-top: 14px;
+
+            padding: 12px;
+
+            border-radius: 12px;
+
+            background:
+                var(--erro-fraco);
+
+            border:
+                1px solid rgba(239,68,68,.28);
+
+            color: #fca5a5;
+
+            font-size: 12px;
+
+            line-height: 1.4;
+        }
+
+        .mensagem-erro.mostrar {
+            display: block;
+
+            animation:
+                aparecer .25s ease;
+        }
+
+        @keyframes aparecer {
+
+            from {
+                opacity: 0;
+                transform: translateY(-5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+        /* =========================
+           BOTÃO
+        ========================= */
 
         .enviar {
             width: 100%;
+
             min-height: 50px;
+
             margin-top: 20px;
+
             border: 0;
+
             border-radius: 14px;
-            background: linear-gradient(135deg, #c41e3a, #a51630);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #c41e3a,
+                    #a51630
+                );
+
             color: white;
+
             font-size: 14px;
             font-weight: 800;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             gap: 8px;
+
+            transition:
+                transform .2s,
+                opacity .2s;
+        }
+
+        .enviar:active {
+            transform: scale(.98);
         }
 
         .enviar:disabled {
-            opacity: 0.65;
+            opacity: .65;
             cursor: not-allowed;
         }
 
         .rodape-form {
             margin-top: 12px;
+
             text-align: center;
+
             color: #666c76;
+
             font-size: 11px;
         }
 
+        /* =========================
+           MODAL
+        ========================= */
+
         .modal {
             position: fixed;
+
             inset: 0;
+
             z-index: 200;
+
             display: none;
+
             align-items: center;
             justify-content: center;
+
             padding: 20px;
-            background: rgba(0,0,0,0.8);
+
+            background:
+                rgba(0,0,0,.8);
         }
 
         .modal.aberto {
@@ -459,61 +836,86 @@
         }
 
         .modal-card {
-            width: min(340px, 100%);
+            width: min(340px,100%);
+
             padding: 24px;
+
             background: #171920;
-            border: 1px solid #2b2e38;
+
+            border:
+                1px solid #2b2e38;
+
             border-radius: 20px;
+
             text-align: center;
+
+            animation:
+                modalEntrada .3s ease;
+        }
+
+        @keyframes modalEntrada {
+
+            from {
+                opacity: 0;
+                transform: scale(.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+
         }
 
         .modal-sucesso {
             width: 56px;
             height: 56px;
+
             margin: 0 auto 14px;
+
             display: flex;
             align-items: center;
             justify-content: center;
+
             border-radius: 50%;
+
             color: var(--verde);
-            background: rgba(34,197,94,0.10);
+
+            background:
+                rgba(34,197,94,.10);
+
+            font-size: 20px;
         }
 
         .modal-fechar {
             width: 100%;
+
             margin-top: 18px;
+
             padding: 12px;
+
             border: 0;
+
             border-radius: 10px;
+
             background: #252832;
+
             color: white;
+
             font-weight: 700;
         }
 
-        .mensagem-erro {
-            display: none;
-            margin-top: 14px;
-            padding: 12px;
-            border-radius: 12px;
-            background: var(--erro-fraco);
-            border: 1px solid rgba(239, 68, 68, 0.28);
-            color: #fca5a5;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .mensagem-erro.mostrar {
-            display: block;
-        }
     </style>
 </head>
 
 <body>
 
     <header class="topo">
+
         <div class="topo-conteudo">
 
             <div class="marca">
+
                 <div class="marca-icone">
                     <i class="fas fa-flag"></i>
                 </div>
@@ -522,22 +924,33 @@
                     <h1>ORGANIZAÇÃO ITÁLIA</h1>
                     <p>Sistema de Registro</p>
                 </div>
+
             </div>
 
-            <button class="voltar" id="btnVoltar" title="Voltar / Sair">
+            <button
+                class="voltar"
+                id="btnVoltar"
+                type="button"
+                title="Voltar / Sair"
+            >
                 <i class="fas fa-arrow-left"></i>
             </button>
 
         </div>
+
     </header>
+
 
     <main class="container">
 
         <div class="cabecalho">
 
             <div class="cabecalho-tag">
+
                 <i class="fas fa-bullseye"></i>
+
                 REGISTRO DE METAS
+
             </div>
 
             <h2>
@@ -549,6 +962,7 @@
             </p>
 
         </div>
+
 
         <div class="aviso">
 
@@ -569,27 +983,41 @@
 
         </div>
 
-        <form class="formulario" id="formMetas">
+
+        <form
+            class="formulario"
+            id="formMetas"
+            novalidate
+        >
 
             <h3 class="secao-titulo">
+
                 <i class="fas fa-user"></i>
+
                 <span>Dados do Membro</span>
+
             </h3>
 
+
             <div class="grid-campos">
+
 
                 <div class="campo">
 
                     <div class="campo-label">
 
                         <div class="campo-label-esquerda">
+
                             <i class="fas fa-id-card"></i>
+
                             <label>Nº Passaporte</label>
+
                         </div>
 
                         <span class="obrigatorio">*</span>
 
                     </div>
+
 
                     <div class="input-wrap">
 
@@ -600,7 +1028,6 @@
                             class="input"
                             id="passaporte"
                             placeholder="Ex: 17274"
-                            required
                         >
 
                         <i class="fas fa-check status-check"></i>
@@ -610,181 +1037,4 @@
                 </div>
 
 
-                <div class="campo">
-
-                    <div class="campo-label">
-
-                        <div class="campo-label-esquerda">
-                            <i class="fas fa-calendar"></i>
-                            <label>Data</label>
-                        </div>
-
-                        <span class="obrigatorio">*</span>
-
-                    </div>
-
-                    <div class="input-wrap">
-
-                        <input
-                            type="date"
-                            class="input"
-                            id="dataMeta"
-                            required
-                        >
-
-                        <i class="fas fa-check status-check"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="campo" style="margin-top:16px;">
-
-                <div class="campo-label">
-
-                    <div class="campo-label-esquerda">
-                        <i class="fas fa-file-alt"></i>
-                        <label>Descrição / Objetivo</label>
-                    </div>
-
-                    <span class="obrigatorio">*</span>
-
-                </div>
-
-                <div class="input-wrap">
-
-                    <input
-                        type="text"
-                        class="input"
-                        id="descricao"
-                        placeholder="Descreva o que foi realizado..."
-                        required
-                    >
-
-                    <i class="fas fa-check status-check"></i>
-
-                </div>
-
-            </div>
-
-
-            <h3 class="secao-titulo" style="margin-top:20px;">
-
-                <i class="fas fa-camera"></i>
-                <span>Comprovação</span>
-
-            </h3>
-
-
-            <div class="upload" id="areaUpload">
-
-                <input
-                    type="file"
-                    accept="image/*"
-                    id="fotoComprovante"
-                    required
-                >
-
-                <div class="upload-icone">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                </div>
-
-                <strong>Clique ou arraste a foto aqui</strong>
-
-                <p>JPG, PNG · Até 5MB</p>
-
-                <div class="preview" id="previewFoto">
-
-                    <img src="" alt="Pré-visualização">
-
-                    <div class="preview-info">
-
-                        <span id="nomeArquivo"></span>
-
-                        <i class="fas fa-check-circle"></i>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="mensagem-erro" id="mensagemErro"></div>
-
-
-            <button
-                type="submit"
-                class="enviar"
-                id="btnEnviar"
-            >
-                <span id="textoBotao">Registrar Meta</span>
-                <i class="fas fa-paper-plane" id="iconeBotao"></i>
-            </button>
-
-
-            <div class="rodape-form">
-
-                <i class="fas fa-shield-alt"></i>
-                Dados protegidos · Sistema Interno Itália
-
-            </div>
-
-        </form>
-
-    </main>
-
-
-    <div class="modal" id="modalSucesso">
-
-        <div class="modal-card">
-
-            <div class="modal-sucesso">
-                <i class="fas fa-check"></i>
-            </div>
-
-            <h3 style="margin-bottom:10px;">
-                Registro Enviado!
-            </h3>
-
-            <p style="color:#9ca3af; font-size:14px;">
-                Será analisado pela administração.
-            </p>
-
-            <button
-                class="modal-fechar"
-                id="btnFecharModal"
-            >
-                Entendido
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <script>
-
-        /* =========================================================
-           CONFIGURAÇÃO DO SUPABASE
-        ========================================================= */
-
-        const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
-
-        const SUPABASE_PUBLISHABLE_KEY =
-            'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
-
-        const { createClient } = supabase;
-
-        const supabaseClient = createClient(
-            SUPABASE_URL,
-            SUPABASE_PUBLISHABLE_KEY
-        );
-
-
-        /* =========================================================
-           ELEMENTOS
-        ==================================================
+     
