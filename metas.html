@@ -51,13 +51,8 @@
             padding: 0 0 30px 0;
         }
 
-        button, input {
-            font: inherit;
-        }
-
-        button {
-            cursor: pointer;
-        }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
 
         .topo {
             position: sticky;
@@ -97,9 +92,7 @@
             border: 1px solid rgba(196, 30, 58, 0.25);
         }
 
-        .marca-icone i {
-            font-size: 17px;
-        }
+        .marca-icone i { font-size: 17px; }
 
         .marca-texto h1 {
             font-size: 14px;
@@ -123,7 +116,6 @@
             border-radius: 10px;
             background: var(--card);
             color: var(--subtexto);
-            text-decoration: none;
             transition: all 0.2s;
         }
 
@@ -138,9 +130,7 @@
             padding-top: 20px;
         }
 
-        .cabecalho {
-            margin-bottom: 20px;
-        }
+        .cabecalho { margin-bottom: 20px; }
 
         .cabecalho-tag {
             display: inline-flex;
@@ -163,9 +153,7 @@
             font-weight: 850;
         }
 
-        .cabecalho h2 span {
-            color: var(--vermelho-claro);
-        }
+        .cabecalho h2 span { color: var(--vermelho-claro); }
 
         .cabecalho p {
             color: var(--subtexto);
@@ -247,14 +235,8 @@
             text-transform: uppercase;
         }
 
-        .campo {
-            margin-bottom: 16px;
-            position: relative;
-        }
-
-        .campo:last-child {
-            margin-bottom: 0;
-        }
+        .campo { margin-bottom: 16px; position: relative; }
+        .campo:last-child { margin-bottom: 0; }
 
         .campo-label {
             display: flex;
@@ -288,9 +270,7 @@
             font-weight: 800;
         }
 
-        .input-wrap {
-            position: relative;
-        }
+        .input-wrap { position: relative; }
 
         .input {
             width: 100%;
@@ -305,13 +285,8 @@
             transition: border-color 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .input::placeholder {
-            color: #555b66;
-        }
-
-        .input:focus {
-            border-color: rgba(196, 30, 58, 0.65);
-        }
+        .input::placeholder { color: #555b66; }
+        .input:focus { border-color: rgba(196, 30, 58, 0.65); }
 
         .status-check {
             position: absolute;
@@ -341,19 +316,18 @@
             gap: 14px;
         }
 
-        input[type="date"] {
-            color-scheme: dark;
-        }
+        input[type="date"] { color-scheme: dark; }
 
+        /* ÁREA DE UPLOAD COM ANIMAÇÃO */
         .upload {
             position: relative;
-            min-height: 130px;
+            min-height: 140px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 16px;
+            padding: 20px;
             border-radius: 16px;
             background: rgba(255,255,255,0.02);
             border: 1px dashed #3b3f49;
@@ -361,10 +335,10 @@
             transition: all 0.3s ease;
         }
 
-        .upload.foto-selecionada {
+        /* ESTADO QUANDO TEM FOTO */
+        .upload.pronto {
             border-color: var(--verde);
-            background: rgba(34,197,94,0.08);
-            box-shadow: 0 0 20px rgba(34,197,94,0.10);
+            background: rgba(34, 197, 94, 0.05);
         }
 
         .upload input {
@@ -374,7 +348,7 @@
             height: 100%;
             opacity: 0;
             cursor: pointer;
-            z-index: 5;
+            z-index: 10;
         }
 
         .upload-icone {
@@ -390,20 +364,18 @@
             transition: all 0.3s ease;
         }
 
-        .upload.foto-selecionada .upload-icone {
-            background: rgba(34,197,94,0.12);
+        .upload.pronto .upload-icone {
+            background: rgba(34, 197, 94, 0.15);
             color: var(--verde);
-            transform: scale(1.08);
         }
 
         .upload strong {
             font-size: 13px;
             color: #e5e7eb;
+            transition: color 0.3s;
         }
 
-        .upload.foto-selecionada strong {
-            color: var(--verde);
-        }
+        .upload.pronto strong { color: var(--verde); }
 
         .upload p {
             margin-top: 4px;
@@ -411,44 +383,47 @@
             color: var(--muted);
         }
 
+        /* PRÉ-VISUALIZAÇÃO DA FOTO */
         .preview {
             display: none;
-            position: absolute;
-            left: 12px;
-            right: 12px;
-            top: 12px;
-            height: 155px;
-            background: #0b0c10;
+            width: 100%;
+            max-height: 180px;
+            margin-top: 15px;
             border-radius: 12px;
             overflow: hidden;
-            z-index: 2;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .preview img {
             width: 100%;
-            height: 100%;
-            object-fit: contain;
+            height: auto;
+            display: block;
         }
 
-        .preview-info {
-            position: absolute;
-            left: 8px;
-            right: 8px;
-            bottom: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 9px 11px;
+        /* MENSAGEM DE SUCESSO DA FOTO */
+        .foto-sucesso {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 16px;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.2);
             border-radius: 10px;
-            background: rgba(0,0,0,0.72);
-            backdrop-filter: blur(8px);
-            color: #e5e7eb;
-            font-size: 11px;
+            color: var(--verde);
+            font-size: 13px;
+            font-weight: 600;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            animation: aparecer 0.3s ease;
         }
 
-        .preview-info i {
-            color: var(--verde);
+        .foto-sucesso.mostrar {
+            display: flex;
+        }
+
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .enviar {
@@ -466,11 +441,6 @@
             justify-content: center;
             gap: 8px;
             transition: 0.2s;
-        }
-
-        .enviar:disabled {
-            opacity: 0.65;
-            cursor: not-allowed;
         }
 
         .rodape-form {
@@ -491,9 +461,7 @@
             background: rgba(0,0,0,0.8);
         }
 
-        .modal.aberto {
-            display: flex;
-        }
+        .modal.aberto { display: flex; }
 
         .modal-card {
             width: min(340px, 100%);
@@ -526,298 +494,161 @@
             color: white;
             font-weight: 700;
         }
-
-        .mensagem-erro {
-            display: none;
-            margin-top: 14px;
-            padding: 12px;
-            border-radius: 12px;
-            background: var(--erro-fraco);
-            border: 1px solid rgba(239, 68, 68, 0.28);
-            color: #fca5a5;
-            font-size: 12px;
-            line-height: 1.4;
-        }
-
-        .mensagem-erro.mostrar {
-            display: block;
-        }
-
-        /* MENSAGEM DE FOTO */
-        .foto-status {
-            display: none;
-            margin-top: 10px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: rgba(34,197,94,0.10);
-            border: 1px solid rgba(34,197,94,0.25);
-            color: var(--verde);
-            font-size: 12px;
-            font-weight: 800;
-            text-align: center;
-        }
-
-        .foto-status.mostrar {
-            display: block;
-        }
     </style>
 </head>
-
 <body>
-
-<header class="topo">
-    <div class="topo-conteudo">
-
-        <div class="marca">
-            <div class="marca-icone">
-                <i class="fas fa-flag"></i>
+    <header class="topo">
+        <div class="topo-conteudo">
+            <div class="marca">
+                <div class="marca-icone"><i class="fas fa-flag"></i></div>
+                <div class="marca-texto">
+                    <h1>ORGANIZAÇÃO ITÁLIA</h1>
+                    <p>Sistema de Registro</p>
+                </div>
             </div>
+            <!-- BOTÃO FUNCIONAL -->
+            <button class="voltar" id="btnVoltar" title="Voltar / Sair">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+    </header>
 
-            <div class="marca-texto">
-                <h1>ORGANIZAÇÃO ITÁLIA</h1>
-                <p>Sistema de Registro</p>
+    <main class="container">
+        <div class="cabecalho">
+            <div class="cabecalho-tag">
+                <i class="fas fa-bullseye"></i> REGISTRO DE METAS
+            </div>
+            <h2>Registre sua <span>meta cumprida</span></h2>
+            <p>Informe os dados da sua participação e comprovação para análise da administração.</p>
+        </div>
+
+        <div class="aviso">
+            <div class="aviso-icone"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="aviso-conteudo">
+                <strong>Aviso Importante</strong>
+                <p>Verifique os dados antes de enviar. Informações incorretas ou falsas geram penalidades.</p>
             </div>
         </div>
 
-        <button class="voltar" id="btnVoltar" title="Voltar / Sair">
-            <i class="fas fa-arrow-left"></i>
-        </button>
+        <form class="formulario" id="formMetas">
+            <h3 class="secao-titulo"><i class="fas fa-user"></i><span>Dados do Membro</span></h3>
 
-    </div>
-</header>
-
-
-<main class="container">
-
-    <div class="cabecalho">
-
-        <div class="cabecalho-tag">
-            <i class="fas fa-bullseye"></i>
-            REGISTRO DE METAS
-        </div>
-
-        <h2>
-            Registre sua <span>meta cumprida</span>
-        </h2>
-
-        <p>
-            Informe os dados da sua participação e comprovação para análise da administração.
-        </p>
-
-    </div>
-
-
-    <div class="aviso">
-
-        <div class="aviso-icone">
-            <i class="fas fa-exclamation-triangle"></i>
-        </div>
-
-        <div class="aviso-conteudo">
-
-            <strong>Aviso Importante</strong>
-
-            <p>
-                Verifique os dados antes de enviar.
-                Informações incorretas ou falsas geram penalidades.
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <form class="formulario" id="formMetas">
-
-        <h3 class="secao-titulo">
-            <i class="fas fa-user"></i>
-            <span>Dados do Membro</span>
-        </h3>
-
-
-        <div class="grid-campos">
-
-            <div class="campo">
-
-                <div class="campo-label">
-
-                    <div class="campo-label-esquerda">
-                        <i class="fas fa-id-card"></i>
-                        <label>Nº Passaporte</label>
+            <div class="grid-campos">
+                <div class="campo">
+                    <div class="campo-label">
+                        <div class="campo-label-esquerda">
+                            <i class="fas fa-id-card"></i><label>Nº Passaporte</label>
+                        </div>
+                        <span class="obrigatorio">*</span>
                     </div>
-
-                    <span class="obrigatorio">*</span>
-
-                </div>
-
-                <div class="input-wrap">
-
-                    <input
-                        type="tel"
-                        inputmode="numeric"
-                        pattern="[0-9]*"
-                        class="input"
-                        id="passaporte"
-                        placeholder="Ex: 17274"
-                        required
-                    >
-
-                    <i class="fas fa-check status-check"></i>
-
-                </div>
-
-            </div>
-
-
-            <div class="campo">
-
-                <div class="campo-label">
-
-                    <div class="campo-label-esquerda">
-                        <i class="fas fa-calendar"></i>
-                        <label>Data</label>
+                    <div class="input-wrap">
+                        <input type="tel" inputmode="numeric" pattern="[0-9]*" class="input" id="passaporte" placeholder="Ex: 17274" required>
+                        <i class="fas fa-check status-check"></i>
                     </div>
+                </div>
 
+                <div class="campo">
+                    <div class="campo-label">
+                        <div class="campo-label-esquerda">
+                            <i class="fas fa-calendar"></i><label>Data</label>
+                        </div>
+                        <span class="obrigatorio">*</span>
+                    </div>
+                    <div class="input-wrap">
+                        <input type="date" class="input" id="dataMeta" required>
+                        <i class="fas fa-check status-check"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="campo" style="margin-top:16px;">
+                <div class="campo-label">
+                    <div class="campo-label-esquerda">
+                        <i class="fas fa-file-alt"></i><label>Descrição / Objetivo</label>
+                    </div>
                     <span class="obrigatorio">*</span>
-
                 </div>
-
                 <div class="input-wrap">
-
-                    <input
-                        type="date"
-                        class="input"
-                        id="dataMeta"
-                        required
-                    >
-
+                    <input type="text" class="input" id="descricao" placeholder="Descreva o que foi realizado..." required>
                     <i class="fas fa-check status-check"></i>
-
                 </div>
-
             </div>
 
-        </div>
+            <h3 class="secao-titulo" style="margin-top:20px;">
+                <i class="fas fa-camera"></i><span>Comprovação</span>
+            </h3>
 
-
-        <div class="campo" style="margin-top:16px;">
-
-            <div class="campo-label">
-
-                <div class="campo-label-esquerda">
-                    <i class="fas fa-file-alt"></i>
-                    <label>Descrição / Objetivo</label>
+            <!-- ÁREA DE UPLOAD -->
+            <div class="upload" id="areaUpload">
+                <input type="file" accept="image/*" id="fotoComprovante" required>
+                <div class="upload-icone"><i class="fas fa-cloud-upload-alt"></i></div>
+                <strong>Clique ou arraste a foto aqui</strong>
+                <p>JPG, PNG · Até 5MB</p>
+                <!-- Prévia dentro da caixa -->
+                <div class="preview" id="previewFoto">
+                    <img id="imgPreview" src="" alt="Prévia">
                 </div>
-
-                <span class="obrigatorio">*</span>
-
             </div>
 
-            <div class="input-wrap">
-
-                <input
-                    type="text"
-                    class="input"
-                    id="descricao"
-                    placeholder="Descreva o que foi realizado..."
-                    required
-                >
-
-                <i class="fas fa-check status-check"></i>
-
+            <!-- MENSAGEM DE SUCESSO -->
+            <div class="foto-sucesso" id="fotoSucesso">
+                <i class="fas fa-check-circle"></i>
+                FOTO ENVIADA COM SUCESSO
             </div>
 
-        </div>
+            <button type="submit" class="enviar" id="btnEnviar">
+                <span>Registrar Meta</span><i class="fas fa-paper-plane"></i>
+            </button>
 
-
-        <h3 class="secao-titulo" style="margin-top:20px;">
-
-            <i class="fas fa-camera"></i>
-            <span>Comprovação</span>
-
-        </h3>
-
-
-        <div class="upload" id="areaUpload">
-
-            <input
-                type="file"
-                accept="image/*"
-                id="fotoComprovante"
-                required
-            >
-
-            <div class="upload-icone" id="uploadIcone">
-                <i class="fas fa-cloud-upload-alt"></i>
+            <div class="rodape-form">
+                <i class="fas fa-shield-alt"></i> Dados protegidos · Sistema Interno Itália
             </div>
+        </form>
+    </main>
 
-            <strong id="textoUpload">
-                Clique ou arraste a foto aqui
-            </strong>
-
-            <p id="subtextoUpload">
-                JPG, PNG · Até 5MB
-            </p>
-
-
-            <div class="preview" id="previewFoto">
-
-                <img id="imagemPreview" src="" alt="Pré-visualização">
-
-                <div class="preview-info">
-
-                    <span id="nomeArquivo"></span>
-
-                    <i class="fas fa-check-circle"></i>
-
-                </div>
-
-            </div>
-
+    <div class="modal" id="modalSucesso">
+        <div class="modal-card">
+            <div class="modal-sucesso"><i class="fas fa-check"></i></div>
+            <h3 style="margin-bottom:10px;">Registro Enviado!</h3>
+            <p style="color:#9ca3af; font-size:14px;">Será analisado pela administração.</p>
+            <button class="modal-fechar" id="btnFecharModal">Entendido</button>
         </div>
+    </div>
 
+    <script>
+        const form = document.getElementById('formMetas');
+        const areaUpload = document.getElementById('areaUpload');
+        const inputFoto = document.getElementById('fotoComprovante');
+        const preview = document.getElementById('previewFoto');
+        const imgPreview = document.getElementById('imgPreview');
+        const fotoSucesso = document.getElementById('fotoSucesso');
+        const modal = document.getElementById('modalSucesso');
+        const btnFecharModal = document.getElementById('btnFecharModal');
+        const btnVoltar = document.getElementById('btnVoltar');
+        const campos = document.querySelectorAll('.input');
+        const passaporte = document.getElementById('passaporte');
 
-        <div class="foto-status" id="fotoStatus">
-            <i class="fas fa-check-circle"></i>
-            FOTO ENVIADA ✓
-        </div>
+        // ✅ BOTÃO VOLTAR FUNCIONAL
+        btnVoltar.addEventListener('click', () => {
+            // Volta para página anterior ou use window.location.href = 'pagina.html';
+            if (window.history.length > 1) window.history.back();
+        });
 
+        // ✅ UPLOAD COM ANIMAÇÃO E FEEDBACK
+        inputFoto.addEventListener('change', (e) => {
+            const arquivo = e.target.files[0];
+            if (!arquivo) return;
 
-        <div class="mensagem-erro" id="mensagemErro"></div>
+            const leitor = new FileReader();
+            leitor.onload = (evt) => {
+                imgPreview.src = evt.target.result;
+                preview.style.display = 'block';
+                areaUpload.classList.add('pronto');
+                fotoSucesso.classList.add('mostrar');
+            };
+            leitor.readAsDataURL(arquivo);
+        });
 
-
-        <button
-            type="submit"
-            class="enviar"
-            id="btnEnviar"
-        >
-            <span id="textoBotao">Registrar Meta</span>
-            <i class="fas fa-paper-plane" id="iconeBotao"></i>
-        </button>
-
-
-        <div class="rodape-form">
-
-            <i class="fas fa-shield-alt"></i>
-            Dados protegidos · Sistema Interno Itália
-
-        </div>
-
-    </form>
-
-</main>
-
-
-<div class="modal" id="modalSucesso">
-
-    <div class="modal-card">
-
-        <div class="modal-sucesso">
-            <i class="fas fa-check"></i>
-        </div>
-
-        <h3 style="margin-bottom:10px;">
-            Registro Enviado!
-        </h3>
-
-      
+        // Bloqueia letras no passaporte
+        passaporte.addEventListener('keydown', (e) => {
+            const permitidos = ['Backspace','Tab','ArrowLeft','ArrowRight','Delete','Home','En
