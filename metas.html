@@ -7,7 +7,6 @@
     <meta name="color-scheme" content="dark">
     <title>ORGANIZAÇÃO ITÁLIA · REGISTRO DE METAS</title>
     
-    <!-- Bibliotecas -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
@@ -25,16 +24,12 @@
             --card: #15171d;
             --card-2: #191b22;
             --borda: #292c35;
-
             --vermelho: #c41e3a;
             --vermelho-claro: #ef334f;
-
             --verde: #22c55e;
             --verde-fraco: rgba(34, 197, 94, 0.10);
-
             --erro: #ef4444;
             --erro-fraco: rgba(239, 68, 68, 0.10);
-
             --texto: #f3f4f6;
             --subtexto: #9ca3af;
             --muted: #6b7280;
@@ -48,27 +43,17 @@
         body {
             min-height: 100vh;
             background:
-                radial-gradient(
-                    circle at top right,
-                    rgba(196, 30, 58, 0.10),
-                    transparent 30%
-                ),
-                radial-gradient(
-                    circle at bottom left,
-                    rgba(196, 30, 58, 0.05),
-                    transparent 28%
-                ),
+                radial-gradient(circle at top right, rgba(196, 30, 58, 0.10), transparent 30%),
+                radial-gradient(circle at bottom left, rgba(196, 30, 58, 0.05), transparent 28%),
                 var(--fundo);
-
             color: var(--texto);
             font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            padding-bottom: 40px;
+            padding: 0 0 30px 0;
         }
 
         button, input { font: inherit; }
         button { cursor: pointer; }
 
-        /* TOPO */
         .topo {
             position: sticky;
             top: 0;
@@ -80,121 +65,107 @@
         }
 
         .topo-conteudo {
-            width: min(760px, calc(100% - 32px));
+            width: min(760px, calc(100% - 24px));
             margin: auto;
-            min-height: 76px;
+            min-height: 68px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 16px;
+            gap: 12px;
         }
 
         .marca {
             display: flex;
             align-items: center;
-            gap: 13px;
+            gap: 10px;
         }
 
         .marca-icone {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 13px;
+            border-radius: 12px;
             color: var(--vermelho-claro);
             background: linear-gradient(145deg, rgba(196, 30, 58, 0.20), rgba(196, 30, 58, 0.06));
             border: 1px solid rgba(196, 30, 58, 0.25);
-            box-shadow: 0 0 25px rgba(196, 30, 58, 0.08);
         }
 
-        .marca-icone i { font-size: 19px; }
+        .marca-icone i { font-size: 17px; }
 
         .marca-texto h1 {
             font-size: 14px;
             font-weight: 800;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.3px;
         }
 
         .marca-texto p {
-            margin-top: 2px;
+            margin-top: 1px;
             color: var(--muted);
             font-size: 11px;
         }
 
         .voltar {
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             border: 1px solid var(--borda);
-            border-radius: 12px;
+            border-radius: 10px;
             background: var(--card);
             color: var(--subtexto);
-            transition: 0.2s;
+            text-decoration: none;
         }
 
-        .voltar:hover {
-            color: white;
-            border-color: rgba(196, 30, 58, 0.45);
-        }
-
-        /* CONTAINER */
         .container {
-            width: min(680px, calc(100% - 28px));
+            width: min(680px, calc(100% - 24px));
             margin: 0 auto;
-            padding-top: 34px;
+            padding-top: 20px;
         }
 
-        /* CABEÇALHO */
-        .cabecalho { margin-bottom: 24px; }
+        .cabecalho { margin-bottom: 20px; }
 
         .cabecalho-tag {
             display: inline-flex;
             align-items: center;
-            gap: 7px;
-            padding: 7px 11px;
+            gap: 6px;
+            padding: 6px 10px;
             border-radius: 999px;
             background: rgba(196, 30, 58, 0.08);
             border: 1px solid rgba(196, 30, 58, 0.18);
             color: #fca5b5;
             font-size: 10px;
             font-weight: 800;
-            letter-spacing: 0.7px;
             text-transform: uppercase;
-            margin-bottom: 13px;
+            margin-bottom: 10px;
         }
 
         .cabecalho h2 {
-            font-size: clamp(27px, 7vw, 36px);
+            font-size: clamp(24px, 6vw, 32px);
             line-height: 1.1;
             font-weight: 850;
-            letter-spacing: -1px;
         }
 
         .cabecalho h2 span { color: var(--vermelho-claro); }
 
         .cabecalho p {
             color: var(--subtexto);
-            font-size: 13px;
-            line-height: 1.6;
-            margin-top: 10px;
-            max-width: 570px;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-top: 8px;
         }
 
-        /* AVISO */
         .aviso {
             position: relative;
-            overflow: hidden;
             display: flex;
-            gap: 13px;
-            padding: 17px;
-            margin-bottom: 22px;
+            gap: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
             background: linear-gradient(135deg, rgba(239, 68, 68, 0.13), rgba(239, 68, 68, 0.045));
             border: 1px solid rgba(239, 68, 68, 0.35);
-            border-radius: 17px;
-            animation: avisoPulse 2.8s ease-in-out infinite;
+            border-radius: 16px;
         }
 
         .aviso::before {
@@ -205,55 +176,46 @@
             left: 0;
             width: 3px;
             background: var(--erro);
-            box-shadow: 0 0 18px rgba(239, 68, 68, 0.7);
         }
 
         .aviso-icone {
-            width: 39px;
-            height: 39px;
+            width: 36px;
+            height: 36px;
             flex: 0 0 auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 11px;
+            border-radius: 10px;
             background: rgba(239, 68, 68, 0.13);
             color: #ff6b78;
-            border: 1px solid rgba(239, 68, 68, 0.20);
         }
 
         .aviso-conteudo strong {
             display: block;
             color: #ff7a86;
-            font-size: 12px;
-            font-weight: 850;
-            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 800;
+            margin-bottom: 4px;
         }
 
         .aviso-conteudo p {
             color: #d1d5db;
-            font-size: 12px;
-            line-height: 1.55;
+            font-size: 13px;
+            line-height: 1.5;
         }
 
-        @keyframes avisoPulse {
-            0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
-            50% { box-shadow: 0 0 26px rgba(239, 68, 68, 0.08); }
-        }
-
-        /* FORMULÁRIO */
         .formulario {
             background: rgba(21, 23, 29, 0.76);
             border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 22px;
-            padding: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.20);
+            border-radius: 20px;
+            padding: 18px;
         }
 
         .secao-titulo {
             display: flex;
             align-items: center;
-            gap: 9px;
-            margin-bottom: 18px;
+            gap: 8px;
+            margin-bottom: 16px;
         }
 
         .secao-titulo i {
@@ -263,164 +225,82 @@
 
         .secao-titulo span {
             color: var(--texto);
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
-            letter-spacing: 0.4px;
             text-transform: uppercase;
         }
 
-        .campo { margin-bottom: 17px; }
+        .campo { margin-bottom: 16px; }
         .campo:last-child { margin-bottom: 0; }
 
         .campo-label {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 7px;
         }
 
         .campo-label-esquerda {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 7px;
         }
 
         .campo-label i {
-            width: 19px;
+            width: 18px;
             color: var(--subtexto);
             font-size: 12px;
-            text-align: center;
         }
 
         .campo-label label {
             color: #d9dce2;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 700;
         }
 
         .obrigatorio {
             color: var(--erro);
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
         }
 
-        .input-wrap { position: relative; }
-
         .input {
             width: 100%;
-            min-height: 51px;
-            padding: 0 45px 0 15px;
+            min-height: 48px;
+            padding: 0 14px;
             background: #101217;
             color: var(--texto);
             border: 1px solid var(--borda);
-            border-radius: 13px;
+            border-radius: 12px;
             outline: none;
-            font-size: 13px;
-            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+            font-size: 14px;
         }
 
         .input::placeholder { color: #555b66; }
-
-        .input:focus {
-            border-color: rgba(196, 30, 58, 0.65);
-            background: #12141a;
-            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.08);
-        }
-
-        .status-icone {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 22px;
-            height: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            opacity: 0;
-            transform-origin: center;
-            transition: opacity 0.2s, transform 0.2s;
-        }
-
-        .status-icone i { font-size: 11px; }
-
-        .campo.valido .input {
-            border-color: rgba(34, 197, 94, 0.75);
-            background: linear-gradient(90deg, rgba(34,197,94,0.05), #101217);
-            box-shadow: 0 0 0 3px rgba(34,197,94,0.05);
-        }
-
-        .campo.valido .status-icone {
-            opacity: 1;
-            color: var(--verde);
-            background: var(--verde-fraco);
-            transform: translateY(-50%) scale(1);
-        }
-
-        .campo.invalido .input {
-            border-color: rgba(239, 68, 68, 0.85);
-            background: linear-gradient(90deg, rgba(239,68,68,0.05), #101217);
-            box-shadow: 0 0 0 3px rgba(239,68,68,0.05);
-        }
-
-        .campo.invalido .status-icone {
-            opacity: 1;
-            color: var(--erro);
-            background: var(--erro-fraco);
-            transform: translateY(-50%) scale(1);
-        }
-
-        .mensagem-campo {
-            display: none;
-            margin-top: 7px;
-            color: #f87171;
-            font-size: 11px;
-            line-height: 1.4;
-            animation: aparecer 0.2s ease;
-        }
-
-        .campo.invalido .mensagem-campo { display: block; }
-
-        @keyframes aparecer {
-            from { opacity: 0; transform: translateY(-3px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .input:focus { border-color: rgba(196, 30, 58, 0.65); }
 
         .grid-campos {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 13px;
+            grid-template-columns: 1fr;
+            gap: 14px;
         }
 
         input[type="date"] { color-scheme: dark; }
 
-        /* UPLOAD */
         .upload {
             position: relative;
-            min-height: 145px;
+            min-height: 130px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 20px;
+            padding: 16px;
             border-radius: 16px;
-            background: linear-gradient(145deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
+            background: rgba(255,255,255,0.02);
             border: 1px dashed #3b3f49;
-            transition: border-color 0.2s, background 0.2s, transform 0.2s;
             overflow: hidden;
-        }
-
-        .upload:hover {
-            border-color: rgba(196, 30, 58, 0.55);
-            background: rgba(196, 30, 58, 0.035);
-        }
-
-        .upload.ativo {
-            border-color: rgba(34, 197, 94, 0.65);
-            background: rgba(34, 197, 94, 0.04);
         }
 
         .upload input {
@@ -433,26 +313,25 @@
         }
 
         .upload-icone {
-            width: 46px;
-            height: 46px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 14px;
-            margin-bottom: 10px;
+            border-radius: 12px;
+            margin-bottom: 8px;
             background: rgba(196, 30, 58, 0.10);
-            border: 1px solid rgba(196, 30, 58, 0.18);
             color: #f05a70;
         }
 
         .upload strong {
-            font-size: 12px;
+            font-size: 13px;
             color: #e5e7eb;
         }
 
         .upload p {
-            margin-top: 5px;
-            font-size: 10px;
+            margin-top: 4px;
+            font-size: 11px;
             color: var(--muted);
         }
 
@@ -469,76 +348,29 @@
             object-fit: contain;
         }
 
-        .preview-info {
-            position: absolute;
-            left: 10px;
-            right: 10px;
-            bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.76);
-            backdrop-filter: blur(8px);
-        }
-
-        .preview-info span {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            font-size: 10px;
-            color: #d1d5db;
-        }
-
-        .preview-info i { color: var(--verde); }
-
-        /* BOTÃO ENVIAR */
         .enviar {
             width: 100%;
-            min-height: 54px;
-            margin-top: 22px;
+            min-height: 50px;
+            margin-top: 20px;
             border: 0;
             border-radius: 14px;
             background: linear-gradient(135deg, #c41e3a, #a51630);
             color: white;
-            font-size: 13px;
-            font-weight: 850;
-            letter-spacing: 0.2px;
-            box-shadow: 0 12px 30px rgba(196,30,58,0.18);
+            font-size: 14px;
+            font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 9px;
-            transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
-        }
-
-        .enviar:hover {
-            box-shadow: 0 15px 35px rgba(196,30,58,0.28);
-        }
-
-        .enviar:active { transform: scale(0.98); }
-        .enviar:disabled {
-            cursor: not-allowed;
-            opacity: 0.55;
-            transform: none;
+            gap: 8px;
         }
 
         .rodape-form {
-            margin-top: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 7px;
-            color: #666c76;
-            font-size: 10px;
+            margin-top: 12px;
             text-align: center;
+            color: #666c76;
+            font-size: 11px;
         }
 
-        .rodape-form i { color: #777e89; }
-
-        /* MODAL SUCESSO */
         .modal {
             position: fixed;
             inset: 0;
@@ -547,163 +379,171 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
-            background: rgba(0,0,0,0.78);
-            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.8);
         }
 
         .modal.aberto { display: flex; }
 
         .modal-card {
-            width: min(380px, 100%);
-            padding: 27px;
+            width: min(340px, 100%);
+            padding: 24px;
             background: #171920;
             border: 1px solid #2b2e38;
-            border-radius: 22px;
+            border-radius: 20px;
             text-align: center;
-            box-shadow: 0 25px 80px rgba(0,0,0,0.50);
-            animation: modalEntrada 0.25s ease;
-        }
-
-        @keyframes modalEntrada {
-            from { opacity: 0; transform: translateY(10px) scale(0.97); }
-            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .modal-sucesso {
-            width: 64px;
-            height: 64px;
-            margin: 0 auto 16px;
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             color: var(--verde);
             background: rgba(34,197,94,0.10);
-            border: 1px solid rgba(34,197,94,0.20);
-        }
-
-        .modal-sucesso i { font-size: 25px; }
-
-        .modal-card h3 {
-            font-size: 19px;
-            font-weight: 850;
-        }
-
-        .modal-card p {
-            margin-top: 8px;
-            color: var(--subtexto);
-            font-size: 12px;
-            line-height: 1.6;
         }
 
         .modal-fechar {
             width: 100%;
-            margin-top: 20px;
-            min-height: 46px;
+            margin-top: 18px;
+            padding: 12px;
             border: 0;
-            border-radius: 12px;
+            border-radius: 10px;
             background: #252832;
             color: white;
-            font-size: 12px;
-            font-weight: 750;
-        }
-
-        /* RESPONSIVO */
-        @media (max-width: 540px) {
-            .topo-conteudo {
-                width: min(100% - 22px, 760px);
-                min-height: 68px;
-            }
-
-            .container {
-                width: calc(100% - 20px);
-                padding-top: 25px;
-            }
-
-            .formulario {
-                padding: 16px;
-                border-radius: 18px;
-            }
-
-            .grid-campos {
-                grid-template-columns: 1fr;
-            }
+            font-weight: 700;
         }
     </style>
 </head>
 <body>
-    <!-- TOPO -->
     <header class="topo">
         <div class="topo-conteudo">
             <div class="marca">
-                <div class="marca-icone">
-                    <i class="fas fa-flag"></i>
-                </div>
+                <div class="marca-icone"><i class="fas fa-flag"></i></div>
                 <div class="marca-texto">
                     <h1>ORGANIZAÇÃO ITÁLIA</h1>
                     <p>Sistema de Registro</p>
                 </div>
             </div>
-            <a href="#" class="voltar" title="Voltar">
-                <i class="fas fa-arrow-left"></i>
-            </a>
+            <a href="#" class="voltar"><i class="fas fa-arrow-left"></i></a>
         </div>
     </header>
 
-    <!-- CONTEÚDO PRINCIPAL -->
     <main class="container">
-        <!-- CABEÇALHO -->
         <div class="cabecalho">
             <div class="cabecalho-tag">
-                <i class="fas fa-bullseye"></i>
-                REGISTRO DE METAS
+                <i class="fas fa-bullseye"></i> REGISTRO DE METAS
             </div>
             <h2>Registre sua <span>meta cumprida</span></h2>
             <p>Informe os dados da sua participação e comprovação para análise da administração.</p>
         </div>
 
-        <!-- AVISO -->
         <div class="aviso">
-            <div class="aviso-icone">
-                <i class="fas fa-exclamation-triangle"></i>
-            </div>
+            <div class="aviso-icone"><i class="fas fa-exclamation-triangle"></i></div>
             <div class="aviso-conteudo">
                 <strong>Aviso Importante</strong>
                 <p>Verifique os dados antes de enviar. Informações incorretas ou falsas geram penalidades.</p>
             </div>
         </div>
 
-        <!-- FORMULÁRIO -->
         <form class="formulario" id="formMetas">
-            <h3 class="secao-titulo">
-                <i class="fas fa-user"></i>
-                <span>Dados do Membro</span>
-            </h3>
+            <h3 class="secao-titulo"><i class="fas fa-user"></i><span>Dados do Membro</span></h3>
 
             <div class="grid-campos">
                 <div class="campo">
                     <div class="campo-label">
                         <div class="campo-label-esquerda">
-                            <i class="fas fa-id-card"></i>
-                            <label>Nº Passaporte</label>
+                            <i class="fas fa-id-card"></i><label>Nº Passaporte</label>
                         </div>
-                        <span class="obrigatório">*</span>
+                        <span class="obrigatorio">*</span>
                     </div>
-                    <div class="input-wrap">
-                        <input type="text" class="input" placeholder="Ex: 17274" required>
-                        <div class="status-icone"><i class="fas fa-check"></i></div>
-                    </div>
-                    <span class="mensagem-campo">Preencha corretamente</span>
+                    <input type="text" class="input" placeholder="Ex: 17274" required>
                 </div>
 
                 <div class="campo">
                     <div class="campo-label">
                         <div class="campo-label-esquerda">
-                            <i class="fas fa-calendar"></i>
-                            <label>Data</label>
+                            <i class="fas fa-calendar"></i><label>Data</label>
                         </div>
-                        <span class="obrigatório">*</span>
+                        <span class="obrigatorio">*</span>
                     </div>
-                    <div class="input-wrap">
-                        <input type="date" class="input" required>
-                        <div 
+                    <input type="date" class="input" required>
+                </div>
+            </div>
+
+            <div class="campo" style="margin-top:16px;">
+                <div class="campo-label">
+                    <div class="campo-label-esquerda">
+                        <i class="fas fa-file-alt"></i><label>Descrição / Objetivo</label>
+                    </div>
+                    <span class="obrigatorio">*</span>
+                </div>
+                <input type="text" class="input" placeholder="Descreva o que foi realizado..." required>
+            </div>
+
+            <h3 class="secao-titulo" style="margin-top:20px;">
+                <i class="fas fa-camera"></i><span>Comprovação</span>
+            </h3>
+
+            <div class="upload" id="areaUpload">
+                <input type="file" accept="image/*" id="fotoComprovante" required>
+                <div class="upload-icone"><i class="fas fa-cloud-upload-alt"></i></div>
+                <strong>Clique ou arraste a foto aqui</strong>
+                <p>JPG, PNG · Até 5MB</p>
+                <div class="preview" id="previewFoto">
+                    <img src="" alt="">
+                    <div class="preview-info"><span id="nomeArquivo"></span><i class="fas fa-check-circle"></i></div>
+                </div>
+            </div>
+
+            <button type="submit" class="enviar" id="btnEnviar">
+                <span>Registrar Meta</span><i class="fas fa-paper-plane"></i>
+            </button>
+
+            <div class="rodape-form">
+                <i class="fas fa-shield-alt"></i> Dados protegidos · Sistema Interno Itália
+            </div>
+        </form>
+    </main>
+
+    <div class="modal" id="modalSucesso">
+        <div class="modal-card">
+            <div class="modal-sucesso"><i class="fas fa-check"></i></div>
+            <h3 style="margin-bottom:10px;">Registro Enviado!</h3>
+            <p style="color:#9ca3af; font-size:14px;">Será analisado pela administração.</p>
+            <button class="modal-fechar" id="btnFecharModal">Entendido</button>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('formMetas');
+        const areaUpload = document.getElementById('areaUpload');
+        const inputFoto = document.getElementById('fotoComprovante');
+        const preview = document.getElementById('previewFoto');
+        const modal = document.getElementById('modalSucesso');
+        const btnFecharModal = document.getElementById('btnFecharModal');
+
+        inputFoto.addEventListener('change', e => {
+            const arq = e.target.files[0];
+            if (!arq) return;
+            const leitor = new FileReader();
+            leitor.onload = evt => {
+                preview.querySelector('img').src = evt.target.result;
+                preview.style.display = 'block';
+            };
+            leitor.readAsDataURL(arq);
+        });
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            modal.classList.add('aberto');
+            form.reset();
+            preview.style.display = 'none';
+        });
+
+        btnFecharModal.addEventListener('click', () => modal.classList.remove('aberto'));
+    </script>
+</body>
+</html>
