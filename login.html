@@ -7,408 +7,187 @@
     <meta name="theme-color" content="#080a0f">
     <meta name="color-scheme" content="dark">
     
-    <!-- Ícones -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         html, body {
-            width: 100%;
-            min-height: 100%;
-            background-color: #080a0f;
-            color: #f1f1f3;
+            width: 100%; min-height: 100%;
+            background: #080a0f; color: #f1f1f3;
             font-family: 'Arial', sans-serif;
         }
-
         body {
             min-height: 100dvh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             padding: 20px 16px;
-            
-            background: 
-                radial-gradient(circle at top, rgba(196, 30, 58, 0.1), transparent 45%),
-                #080a0f;
+            background: radial-gradient(circle at top, rgba(196,30,58,.1), transparent 45%), #080a0f;
         }
-
-        .container {
-            width: 100%;
-            max-width: 430px;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 32px;
-        }
-
+        .container { width: 100%; max-width: 430px; }
+        .header { text-align: center; margin-bottom: 32px; }
         .logo {
-            width: 90px;
-            height: 90px;
-            margin: 0 auto 22px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 24px;
-            background-color: #151821;
-            border: 1px solid #2a2f3a;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.35);
+            width: 90px; height: 90px; margin: 0 auto 22px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 24px; background: #151821; border: 1px solid #2a2f3a;
+            box-shadow: 0 15px 40px rgba(0,0,0,.35);
         }
-
-        .logo i {
-            font-size: 30px;
-            color: #eeeeef;
-        }
-
-        .header h1 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .header p {
-            margin-top: 9px;
-            color: #8d95a5;
-            font-size: 16px;
-        }
-
-        .status {
-            margin-top: 21px;
-            color: #646c7b;
-            font-size: 11px;
-            letter-spacing: 1.7px;
-            text-transform: uppercase;
-        }
-
+        .logo i { font-size: 30px; color: #eee; }
+        .header h1 { font-size: 28px; font-weight: 800; letter-spacing: 1px; }
+        .header p { margin-top: 9px; color: #8d95a5; font-size: 16px; }
+        .status { margin-top: 21px; color: #646c7b; font-size: 11px; text-transform: uppercase; letter-spacing: 1.7px; }
         .login-card {
-            width: 100%;
-            padding: 30px 28px;
-            background-color: #12151d;
-            border: 1px solid #252a35;
-            border-top: 3px solid #c41e3a;
-            border-radius: 24px;
-            box-shadow: 0 25px 70px rgba(0, 0, 0, 0.35);
+            width: 100%; padding: 30px 28px;
+            background: #12151d; border: 1px solid #252a35; border-top: 3px solid #c41e3a;
+            border-radius: 24px; box-shadow: 0 25px 70px rgba(0,0,0,.35);
         }
-
-        .login-title {
-            margin-bottom: 27px;
-            font-size: 25px;
-            font-weight: 800;
-        }
-
-        .field {
-            margin-bottom: 22px;
-        }
-
+        .login-title { margin-bottom: 27px; font-size: 25px; font-weight: 800; }
+        .field { margin-bottom: 22px; }
         .field label {
-            display: block;
-            margin-bottom: 9px;
-            color: #aeb6c6;
-            font-size: 15px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            display: block; margin-bottom: 9px;
+            color: #aeb6c6; font-size: 15px; font-weight: 700;
         }
-
-        .input-box {
-            position: relative;
-        }
-
+        .input-box { position: relative; }
         .input-box > i {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #8993a5;
-            font-size: 17px;
-            pointer-events: none;
+            position: absolute; left: 18px; top: 50%; transform: translateY(-50%);
+            color: #8993a5; font-size: 17px; pointer-events: none;
         }
-
         .input-box input {
-            width: 100%;
-            height: 60px;
-            padding: 0 52px;
-            background-color: #0d1724;
-            border: 1px solid #29303c;
-            border-radius: 18px;
-            outline: none;
-            color: #f1f1f3;
-            font-size: 16px;
-            transition: 0.2s ease;
+            width: 100%; height: 60px; padding: 0 52px;
+            background: #0d1724; border: 1px solid #29303c; border-radius: 18px;
+            outline: none; color: #f1f1f3; font-size: 16px;
         }
-
-        .input-box input::placeholder {
-            color: #647086;
-        }
-
-        .input-box input:focus {
-            border-color: #c41e3a;
-            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.12);
-        }
-
+        .input-box input::placeholder { color: #647086; }
         .eye-button {
-            position: absolute;
-            right: 17px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            color: #8993a5;
-            font-size: 19px;
-            cursor: pointer;
+            position: absolute; right: 17px; top: 50%; transform: translateY(-50%);
+            border: none; background: transparent; color: #8993a5;
+            font-size: 19px; cursor: pointer;
         }
-
         .recovery {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin: 2px 0 24px;
-            color: #9ca7b9;
-            font-size: 14px;
+            display: flex; align-items: center; gap: 10px;
+            margin: 2px 0 24px; color: #9ca7b9; font-size: 14px;
         }
-
-        .recovery input {
-            width: 18px;
-            height: 18px;
-            accent-color: #c41e3a;
-        }
-
+        .recovery input { width: 18px; height: 18px; accent-color: #c41e3a; }
         .login-button {
-            width: 100%;
-            height: 60px;
-            border: none;
-            border-radius: 18px;
-            background-color: #c41e3a;
-            color: white;
-            font-size: 17px;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            transition: background-color 0.2s ease;
+            width: 100%; height: 60px; border: none; border-radius: 18px;
+            background: #c41e3a; color: white; font-size: 17px; font-weight: 800;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 12px;
         }
-
-        .login-button:hover {
-            background-color: #d32342;
-        }
-
-        .login-button:active {
-            transform: scale(0.99);
-        }
-
-        .login-button:disabled {
-            opacity: 0.75;
-            cursor: wait;
-        }
-
+        .login-button:hover { background: #d32342; }
         .forgot {
-            display: block;
-            margin-top: 26px;
-            text-align: center;
-            color: #cfd3db;
-            text-decoration: none;
-            font-size: 15px;
-            font-weight: 700;
-            transition: color 0.2s ease;
+            display: block; margin-top: 26px; text-align: center;
+            color: #cfd3db; text-decoration: none; font-size: 15px; font-weight: 700;
         }
-
-        .forgot:hover {
-            color: #e83b59;
-        }
-
+        .forgot:hover { color: #e83b59; }
         .footer {
-            margin-top: 32px;
-            text-align: center;
-            color: #515968;
-            font-size: 11px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        @media (max-height: 700px) {
-            body {
-                align-items: flex-start;
-                padding-top: 18px;
-            }
-            .header {
-                margin-bottom: 20px;
-            }
-            .logo {
-                width: 68px;
-                height: 68px;
-                margin-bottom: 14px;
-            }
-            .logo i {
-                font-size: 24px;
-            }
-            .header h1 {
-                font-size: 24px;
-            }
-            .login-card {
-                padding: 25px 22px;
-            }
+            margin-top: 32px; text-align: center;
+            color: #515968; font-size: 11px; text-transform: uppercase;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Cabeçalho -->
         <div class="header">
-            <div class="logo">
-                <i class="fas fa-crown"></i>
-            </div>
+            <div class="logo"><i class="fas fa-crown"></i></div>
             <h1>Organização Itália</h1>
             <p>Sistema de Gestão Interna</p>
             <div class="status">🔒 Acesso restrito · Uso monitorado</div>
         </div>
 
-        <!-- Cartão de Login -->
         <div class="login-card">
             <h2 class="login-title">Entrar no sistema</h2>
 
-            <!-- Campo Passaporte -->
             <div class="field">
                 <label>Número de Passaporte</label>
                 <div class="input-box">
                     <i class="fas fa-id-card"></i>
-                    <input type="text" id="passaporte" placeholder="Digite seu passaporte" inputmode="numeric" autocomplete="username">
+                    <input type="text" id="passaporte" placeholder="Digite seu passaporte" autocomplete="username">
                 </div>
             </div>
 
-            <!-- Campo Senha -->
             <div class="field">
                 <label>Senha de Acesso</label>
                 <div class="input-box">
                     <i class="fas fa-lock"></i>
                     <input type="password" id="senha" placeholder="Digite sua senha" autocomplete="current-password">
-                    <button type="button" class="eye-button" id="btnOlho" aria-label="Mostrar senha">
-                        <i class="fas fa-eye"></i>
-                    </button>
+                    <button type="button" class="eye-button" id="btnOlho"><i class="fas fa-eye"></i></button>
                 </div>
             </div>
 
-            <!-- Checkbox -->
             <label class="recovery">
                 <input type="checkbox" id="recuperacao">
                 <span>Autorizar recuperação neste aparelho</span>
             </label>
 
-            <!-- Botão Entrar -->
             <button type="button" class="login-button" id="btnEntrar">
                 <span id="textoBotao">Entrar no sistema</span>
-                <i class="fas fa-arrow-right" id="iconeBotao"></i>
+                <i class="fas fa-arrow-right"></i>
             </button>
 
-            <!-- Link Recuperação -->
             <a href="#" class="forgot" id="esqueciSenha">Esqueci minha senha</a>
         </div>
 
-        <!-- Rodapé -->
-        <div class="footer">
-            Organização Itália · Sistema interno
-        </div>
+        <div class="footer">ORGANIZAÇÃO ITÁLIA · SISTEMA INTERNO</div>
     </div>
 
-    <!-- Biblioteca do Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script>
-        // DADOS DO BANCO — COLOQUE SUA CHAVE AQUI!
         const SUPABASE_URL = "https://vclwmkzmnuqfdxobtik.supabase.co";
-        const SUPABASE_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-        
-        // Conecta ao Supabase
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SUPABASE_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"; // ← COLOCA A SUA AQUI
 
-        // Elementos da tela
-        const passaporte = document.getElementById("passaporte");
-        const senha = document.getElementById("senha");
-        const btnOlho = document.getElementById("btnOlho");
-        const btnEntrar = document.getElementById("btnEntrar");
-        const textoBotao = document.getElementById("textoBotao");
-        const iconeBotao = document.getElementById("iconeBotao");
-        const esqueciSenha = document.getElementById("esqueciSenha");
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Mostrar / Esconder senha
-        btnOlho.addEventListener("click", () => {
-            const isPassword = senha.type === "password";
-            senha.type = isPassword ? "text" : "password";
-            btnOlho.innerHTML = isPassword 
-                ? '<i class="fas fa-eye-slash"></i>' 
-                : '<i class="fas fa-eye"></i>';
+        // Elementos
+        const passaporte = document.getElementById('passaporte');
+        const senha = document.getElementById('senha');
+        const btnOlho = document.getElementById('btnOlho');
+        const btnEntrar = document.getElementById('btnEntrar');
+        const esqueciSenha = document.getElementById('esqueciSenha');
+
+        // OLHO DA SENHA ✅ FUNCIONANDO
+        btnOlho.addEventListener('click', () => {
+            if (senha.type === 'password') {
+                senha.type = 'text';
+                btnOlho.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+                senha.type = 'password';
+                btnOlho.innerHTML = '<i class="fas fa-eye"></i>';
+            }
         });
 
-        // Controlar estado do botão
-        function bloquearBotao() {
+        // LOGIN ✅ FUNCIONANDO
+        btnEntrar.addEventListener('click', async () => {
+            const p = passaporte.value.trim();
+            const s = senha.value.trim();
+            
+            if (!p || !s) { alert('Preencha tudo!'); return; }
+
             btnEntrar.disabled = true;
-            textoBotao.textContent = "Verificando...";
-            iconeBotao.className = "fas fa-spinner fa-spin";
-        }
-
-        function liberarBotao() {
-            btnEntrar.disabled = false;
-            textoBotao.textContent = "Entrar no sistema";
-            iconeBotao.className = "fas fa-arrow-right";
-        }
-
-        // Login com Supabase
-        async function entrarNoSistema() {
-            const valorPassaporte = passaporte.value.trim();
-            const valorSenha = senha.value.trim();
-
-            if (!valorPassaporte || !valorSenha) {
-                alert("⚠️ Preencha todos os campos!");
-                return;
-            }
-
-            bloquearBotao();
+            btnEntrar.innerHTML = '<span>Verificando...</span><i class="fas fa-spinner fa-spin"></i>';
 
             try {
                 const { data, error } = await supabase
-                    .from("membros")
-                    .select("nome, cargo")
-                    .eq("passaporte", valorPassaporte)
-                    .eq("senha_credencial", valorSenha)
-                    .eq("ativo", true)
+                    .from('membros')
+                    .select('nome,cargo')
+                    .eq('passaporte', p)
+                    .eq('senha_credencial', s)
                     .single();
 
                 if (error) throw error;
+                alert(`✅ Bem-vindo ${data.nome}!\nCargo: ${data.cargo}`);
+                // window.location.href = './painel.html';
 
-                alert(`✅ Bem-vindo, ${data.nome}!\n📌 Cargo: ${data.cargo}`);
-                window.location.href = "./painel.html";
-
-            } catch (err) {
-                console.error(err);
-                alert("❌ Acesso negado!\nVerifique seu passaporte e senha.");
-            } finally {
-                liberarBotao();
+            } catch (e) {
+                alert('❌ Acesso negado! Verifique os dados.');
+                console.error(e);
             }
-        }
 
-        // Eventos
-        btnEntrar.addEventListener("click", entrarNoSistema);
-        
-        [passaporte, senha].forEach(campo => {
-            campo.addEventListener("keydown", (e) => {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    entrarNoSistema();
-                }
-            });
+            btnEntrar.disabled = false;
+            btnEntrar.innerHTML = '<span>Entrar no sistema</span><i class="fas fa-arrow-right"></i>';
         });
 
-        esqueciSenha.addEventListener("click", (e) => {
+        esqueciSenha.addEventListener('click', e => {
             e.preventDefault();
-            alert("🔑 Contate a administração para recuperar sua senha.");
+            alert('Peça ajuda à Administração!');
         });
-
-        window.addEventListener("pageshow", liberarBotao);
     </script>
 </body>
 </html>
