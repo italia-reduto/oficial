@@ -1,117 +1,598 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORGANIZAÇÃO ITÁLIA · ACESSO</title>
-    
-    <meta name="cor-tema" content="#0a0a0d">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="preto-translúcido">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Organização Itália · Acesso</title><meta name="theme-color" content="#0b0d12">
+<meta name="color-scheme" content="dark"><link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"><style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        fundo: '#0a0a0d',
-                        cartao: '#14141a',
-                        destaque: '#c41e3a',
-                        texto: '#e4e4e7',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif']
-                    }
-                }
-            }
-        }
-    </script>
+html,
+body {
+    min-height: 100%;
+    background: #080a0f;
+    color: #f1f1f3;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body {
-            background-color: #0a0a0d !important;
-            min-height: 100vh;
-            height: 100%;
-        }
-        body {
-            background-image: radial-gradient(circle at top, rgba(196,30,58,0.06), transparent 50%);
-        }
-    </style>
-</head>
-<body class="bg-fundo text-texto font-sans flex items-center justify-center min-h-screen p-4">
-    <div class="w-full max-w-md">
-        
-        <!-- CABEÇALHO COM BANDEIRA -->
-        <div class="text-center mb-10">
-            <div class="text-5xl mb-4">🇮🇹</div>
-            <h1 class="text-xl font-bold tracking-widest uppercase">Organização Itália</h1>
-            <p class="text-slate-500 text-sm mt-2">Sistema de Gestão Interna</p>
-            <div class="mt-6 text-xs text-slate-600 uppercase tracking-wider">🔒 Acesso Restrito • Uso Monitorado</div>
-        </div>
+body {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px 16px;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(196, 30, 58, 0.10),
+            transparent 42%
+        ),
+        #080a0f;
+}
 
-        <!-- CARTÃO DE LOGIN -->
-        <div class="bg-cartao/80 rounded-2xl p-8 border border-slate-800/50 shadow-2xl">
-            
-            <!-- CAMPO PASSAPORTE -->
-            <div class="mb-6">
-                <label class="flex items-center gap-2 text-sm text-slate-300 mb-2">
-                    <i class="fas fa-id-card"></i>
-                    Número de Passaporte
-                </label>
-                <input type="text" id="passaporte" placeholder="Ex: 17274"
-                    class="w-full bg-transparent border-2 border-slate-300/80 rounded-xl px-4 py-3.5 focus:outline-none focus:border-red-500">
-            </div>
+/* CONTAINER */
 
-            <!-- CAMPO SENHA -->
-            <div class="mb-8">
-                <label class="flex items-center gap-2 text-sm text-slate-300 mb-2">
-                    <i class="fas fa-lock"></i>
-                    Senha de Acesso
-                </label>
-                <div class="relative">
-                    <input type="password" id="senha" placeholder="Sua senha"
-                        class="w-full bg-transparent border-2 border-slate-300/80 rounded-xl px-4 py-3.5 pr-12 focus:outline-none focus:border-red-500">
-                    
-                    <button type="button" id="btnOlho" class="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200">
-                        <i class="fas fa-eye"></i>
-                    </button>
-                </div>
-            </div>
+.container {
+    width: 100%;
+    max-width: 430px;
+}
 
-            <!-- BOTÃO → DEFINITIVO, VAI PARA O PAINEL -->
-            <button id="btnAcessar" class="w-full bg-destaque hover:bg-destaque/90 text-white font-semibold py-4 rounded-xl transition-all">
-                <span>Entrar no Sistema</span>
-                <i class="fas fa-arrow-right ml-2"></i>
-            </button>
+/* CABEÇALHO */
 
-            <div class="text-center mt-6">
-                <a href="#" id="linkEsqueci" class="text-slate-400 hover:text-destaque text-sm transition-colors">
-                    <i class="fas fa-lock mr-1"></i> Esqueci minha senha
-                </a>
-            </div>
-        </div>
+.header {
+    text-align: center;
+    margin-bottom: 34px;
+}
 
-        <div class="text-center text-slate-700 text-xs mt-10">USO EXCLUSIVO • PROIBIDA DIVULGAÇÃO EXTERNA</div>
+.logo {
+    width: 94px;
+    height: 94px;
+    margin: 0 auto 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 24px;
+
+    background: #151821;
+    border: 1px solid #2b303c;
+
+    box-shadow:
+        0 15px 40px rgba(0,0,0,.35);
+}
+
+.logo i {
+    font-size: 42px;
+    color: #e7e8eb;
+}
+
+.header h1 {
+    font-size: 29px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.header p {
+    margin-top: 10px;
+    color: #8d95a5;
+    font-size: 16px;
+    line-height: 1.5;
+}
+
+.status {
+    margin-top: 22px;
+    color: #697181;
+    font-size: 12px;
+    letter-spacing: 1.8px;
+    text-transform: uppercase;
+}
+
+/* CARTÃO */
+
+.login-card {
+    background: #12151d;
+    border: 1px solid #252a35;
+    border-top: 3px solid #c41e3a;
+
+    border-radius: 25px;
+
+    padding: 31px 28px 29px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,.35);
+}
+
+.login-title {
+    font-size: 25px;
+    font-weight: 800;
+    margin-bottom: 28px;
+}
+
+/* CAMPOS */
+
+.field {
+    margin-bottom: 22px;
+}
+
+.field label {
+    display: block;
+    margin-bottom: 10px;
+
+    color: #aeb6c6;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: .8px;
+}
+
+.input-box {
+    position: relative;
+}
+
+.input-box > i {
+    position: absolute;
+    left: 19px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #8993a5;
+    font-size: 17px;
+
+    pointer-events: none;
+}
+
+.input-box input {
+    width: 100%;
+    height: 60px;
+
+    padding: 0 52px;
+
+    border-radius: 18px;
+
+    border: 1px solid #29303c;
+
+    background: #0d1724;
+
+    color: #f1f1f3;
+
+    outline: none;
+
+    font-size: 16px;
+
+    transition: .2s;
+}
+
+.input-box input::placeholder {
+    color: #647086;
+}
+
+.input-box input:focus {
+    border-color: #c41e3a;
+
+    box-shadow:
+        0 0 0 3px rgba(196,30,58,.13);
+}
+
+/* OLHO */
+
+.eye {
+    position: absolute;
+
+    right: 17px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border: 0;
+    background: transparent;
+
+    color: #8d96a8;
+
+    font-size: 19px;
+
+    cursor: pointer;
+}
+
+/* CHECKBOX */
+
+.remember {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+
+    margin: 4px 0 25px;
+
+    color: #9ca7b9;
+    font-size: 14px;
+}
+
+.remember input {
+    width: 18px;
+    height: 18px;
+
+    accent-color: #c41e3a;
+}
+
+/* BOTÃO */
+
+.login-button {
+    width: 100%;
+    height: 60px;
+
+    border: none;
+    border-radius: 18px;
+
+    background: #c41e3a;
+    color: white;
+
+    font-size: 17px;
+    font-weight: 800;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+
+    transition: .2s;
+
+    box-shadow:
+        0 10px 28px rgba(196,30,58,.18);
+}
+
+.login-button:hover {
+    background: #d32342;
+    transform: translateY(-1px);
+}
+
+.login-button:active {
+    transform: translateY(0);
+}
+
+.login-button:disabled {
+    opacity: .75;
+    cursor: wait;
+}
+
+/* ESQUECI SENHA */
+
+.forgot {
+    display: block;
+
+    margin-top: 27px;
+
+    text-align: center;
+
+    color: #cfd3db;
+
+    text-decoration: none;
+
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.forgot:hover {
+    color: #e83b59;
+}
+
+/* RODAPÉ */
+
+.footer {
+    text-align: center;
+
+    margin-top: 34px;
+
+    color: #515968;
+
+    font-size: 11px;
+
+    letter-spacing: 1px;
+
+    text-transform: uppercase;
+}
+
+/* MOBILE */
+
+@media (max-height: 720px) {
+
+    body {
+        align-items: flex-start;
+        padding-top: 20px;
+    }
+
+    .header {
+        margin-bottom: 22px;
+    }
+
+    .logo {
+        width: 70px;
+        height: 70px;
+        margin-bottom: 15px;
+    }
+
+    .logo i {
+        font-size: 30px;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .login-card {
+        padding: 25px 22px;
+    }
+}
+</style></head><body><div class="container"><!-- CABEÇALHO -->
+
+<div class="header">
+
+    <div class="logo">
+        <i class="fas fa-crown"></i>
     </div>
 
-    <script>
-        // Mostrar/ocultar senha
-        const inputSenha = document.getElementById('senha');
-        const btnOlho = document.getElementById('btnOlho');
-        btnOlho.addEventListener('click', () => {
-            const tipo = inputSenha.type === 'password' ? 'text' : 'password';
-            inputSenha.type = tipo;
-            btnOlho.innerHTML = tipo === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
-        });
+    <h1>Organização Itália</h1>
 
-        // ✅ COMANDO PRINCIPAL: BOTÃO LEVA AO PAINEL
-        document.getElementById('btnAcessar').addEventListener('click', () => {
-            window.location.href = 'painel.html';
-        });
-    </script>
-</body>
+    <p>
+        Sistema de Gestão Interna
+    </p>
+
+    <div class="status">
+        🔒 Acesso restrito · Uso monitorado
+    </div>
+
+</div>
+
+
+<!-- LOGIN -->
+
+<div class="login-card">
+
+    <div class="login-title">
+        Entrar no sistema
+    </div>
+
+
+    <!-- PASSAPORTE -->
+
+    <div class="field">
+
+        <label>
+            Número de Passaporte
+        </label>
+
+        <div class="input-box">
+
+            <i class="fas fa-id-card"></i>
+
+            <input
+                type="text"
+                id="passaporte"
+                inputmode="numeric"
+                autocomplete="username"
+                placeholder="Digite seu passaporte"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- SENHA -->
+
+    <div class="field">
+
+        <label>
+            Senha de Acesso
+        </label>
+
+        <div class="input-box">
+
+            <i class="fas fa-lock"></i>
+
+            <input
+                type="password"
+                id="senha"
+                autocomplete="current-password"
+                placeholder="Digite sua senha"
+            >
+
+            <button
+                type="button"
+                class="eye"
+                id="btnOlho"
+                aria-label="Mostrar senha"
+            >
+                <i class="fas fa-eye"></i>
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- RECUPERAÇÃO -->
+
+    <label class="remember">
+
+        <input
+            type="checkbox"
+            id="autorizar"
+        >
+
+        <span>
+            Autorizar recuperação neste aparelho
+        </span>
+
+    </label>
+
+
+    <!-- ENTRAR -->
+
+    <button
+        type="button"
+        class="login-button"
+        id="btnEntrar"
+    >
+
+        <span id="textoBotao">
+            Entrar no sistema
+        </span>
+
+        <i
+            class="fas fa-arrow-right"
+            id="iconeBotao"
+        ></i>
+
+    </button>
+
+
+    <!-- ESQUECI -->
+
+    <a
+        href="#"
+        class="forgot"
+        id="esqueciSenha"
+    >
+        Esqueci minha senha
+    </a>
+
+</div>
+
+
+<!-- RODAPÉ -->
+
+<div class="footer">
+    Organização Itália · Sistema interno
+</div>
+
+</div><script>
+
+/* ELEMENTOS */
+
+const passaporte =
+    document.getElementById('passaporte');
+
+const senha =
+    document.getElementById('senha');
+
+const btnOlho =
+    document.getElementById('btnOlho');
+
+const btnEntrar =
+    document.getElementById('btnEntrar');
+
+const textoBotao =
+    document.getElementById('textoBotao');
+
+const iconeBotao =
+    document.getElementById('iconeBotao');
+
+const esqueciSenha =
+    document.getElementById('esqueciSenha');
+
+
+/* MOSTRAR / ESCONDER SENHA */
+
+btnOlho.addEventListener('click', function () {
+
+    if (senha.type === 'password') {
+
+        senha.type = 'text';
+
+        btnOlho.innerHTML =
+            '<i class="fas fa-eye-slash"></i>';
+
+    } else {
+
+        senha.type = 'password';
+
+        btnOlho.innerHTML =
+            '<i class="fas fa-eye"></i>';
+
+    }
+
+});
+
+
+/* ENTRAR */
+
+function entrar() {
+
+    if (btnEntrar.disabled) {
+        return;
+    }
+
+    btnEntrar.disabled = true;
+
+    textoBotao.textContent = 'Entrando...';
+
+    iconeBotao.className =
+        'fas fa-spinner fa-spin';
+
+    setTimeout(function () {
+
+        window.location.href =
+            './painel.html';
+
+    }, 350);
+
+}
+
+
+/* CLIQUE */
+
+btnEntrar.addEventListener(
+    'click',
+    entrar
+);
+
+
+/* ENTER */
+
+passaporte.addEventListener(
+    'keydown',
+    function (event) {
+
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            entrar();
+        }
+
+    }
+);
+
+senha.addEventListener(
+    'keydown',
+    function (event) {
+
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            entrar();
+        }
+
+    }
+);
+
+
+/* ESQUECI SENHA */
+
+esqueciSenha.addEventListener(
+    'click',
+    function (event) {
+
+        event.preventDefault();
+
+        alert(
+            'Entre em contato com a administração da Organização Itália para recuperar seu acesso.'
+        );
+
+    }
+);
+
+</script></body>
 </html>
