@@ -3,19 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <meta name="theme-color" content="#0f0f14">
     <meta name="color-scheme" content="dark">
-
     <title>ORGANIZAÇÃO ITÁLIA · REGISTRO DE METAS</title>
-
+    
+    <!-- Bibliotecas -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-    <link
-        rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
-    >
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
     <style>
         * {
             margin: 0;
@@ -66,48 +61,28 @@
                 var(--fundo);
 
             color: var(--texto);
-            font-family:
-                Inter,
-                system-ui,
-                -apple-system,
-                BlinkMacSystemFont,
-                "Segoe UI",
-                sans-serif;
-
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             padding-bottom: 40px;
         }
 
-        button,
-        input {
-            font: inherit;
-        }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
 
-        button {
-            cursor: pointer;
-        }
-
-        /* =========================================
-           TOPO
-        ========================================= */
-
+        /* TOPO */
         .topo {
             position: sticky;
             top: 0;
             z-index: 50;
-
             background: rgba(11, 12, 16, 0.88);
             backdrop-filter: blur(18px);
             -webkit-backdrop-filter: blur(18px);
-
             border-bottom: 1px solid rgba(255,255,255,0.06);
         }
 
         .topo-conteudo {
             width: min(760px, calc(100% - 32px));
             margin: auto;
-
             min-height: 76px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -123,31 +98,17 @@
         .marca-icone {
             width: 44px;
             height: 44px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border-radius: 13px;
-
             color: var(--vermelho-claro);
-
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(196, 30, 58, 0.20),
-                    rgba(196, 30, 58, 0.06)
-                );
-
+            background: linear-gradient(145deg, rgba(196, 30, 58, 0.20), rgba(196, 30, 58, 0.06));
             border: 1px solid rgba(196, 30, 58, 0.25);
-
-            box-shadow:
-                0 0 25px rgba(196, 30, 58, 0.08);
+            box-shadow: 0 0 25px rgba(196, 30, 58, 0.08);
         }
 
-        .marca-icone i {
-            font-size: 19px;
-        }
+        .marca-icone i { font-size: 19px; }
 
         .marca-texto h1 {
             font-size: 14px;
@@ -164,17 +125,13 @@
         .voltar {
             width: 42px;
             height: 42px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border: 1px solid var(--borda);
             border-radius: 12px;
-
             background: var(--card);
             color: var(--subtexto);
-
             transition: 0.2s;
         }
 
@@ -183,43 +140,29 @@
             border-color: rgba(196, 30, 58, 0.45);
         }
 
-        /* =========================================
-           CONTAINER
-        ========================================= */
-
+        /* CONTAINER */
         .container {
             width: min(680px, calc(100% - 28px));
             margin: 0 auto;
             padding-top: 34px;
         }
 
-        /* =========================================
-           CABEÇALHO
-        ========================================= */
-
-        .cabecalho {
-            margin-bottom: 24px;
-        }
+        /* CABEÇALHO */
+        .cabecalho { margin-bottom: 24px; }
 
         .cabecalho-tag {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-
             padding: 7px 11px;
-
             border-radius: 999px;
-
             background: rgba(196, 30, 58, 0.08);
             border: 1px solid rgba(196, 30, 58, 0.18);
-
             color: #fca5b5;
-
             font-size: 10px;
             font-weight: 800;
             letter-spacing: 0.7px;
             text-transform: uppercase;
-
             margin-bottom: 13px;
         }
 
@@ -230,9 +173,7 @@
             letter-spacing: -1px;
         }
 
-        .cabecalho h2 span {
-            color: var(--vermelho-claro);
-        }
+        .cabecalho h2 span { color: var(--vermelho-claro); }
 
         .cabecalho p {
             color: var(--subtexto);
@@ -242,117 +183,76 @@
             max-width: 570px;
         }
 
-        /* =========================================
-           AVISO
-        ========================================= */
-
+        /* AVISO */
         .aviso {
             position: relative;
             overflow: hidden;
-
             display: flex;
             gap: 13px;
-
             padding: 17px;
-
             margin-bottom: 22px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    rgba(239, 68, 68, 0.13),
-                    rgba(239, 68, 68, 0.045)
-                );
-
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.13), rgba(239, 68, 68, 0.045));
             border: 1px solid rgba(239, 68, 68, 0.35);
             border-radius: 17px;
-
             animation: avisoPulse 2.8s ease-in-out infinite;
         }
 
         .aviso::before {
             content: "";
-
             position: absolute;
             top: 0;
             bottom: 0;
             left: 0;
-
             width: 3px;
-
             background: var(--erro);
-
             box-shadow: 0 0 18px rgba(239, 68, 68, 0.7);
         }
 
         .aviso-icone {
             width: 39px;
             height: 39px;
-
             flex: 0 0 auto;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border-radius: 11px;
-
             background: rgba(239, 68, 68, 0.13);
             color: #ff6b78;
-
             border: 1px solid rgba(239, 68, 68, 0.20);
         }
 
         .aviso-conteudo strong {
             display: block;
-
             color: #ff7a86;
-
             font-size: 12px;
             font-weight: 850;
-
             margin-bottom: 5px;
         }
 
         .aviso-conteudo p {
             color: #d1d5db;
-
             font-size: 12px;
             line-height: 1.55;
         }
 
         @keyframes avisoPulse {
-            0%, 100% {
-                box-shadow: 0 0 0 rgba(239, 68, 68, 0);
-            }
-
-            50% {
-                box-shadow: 0 0 26px rgba(239, 68, 68, 0.08);
-            }
+            0%, 100% { box-shadow: 0 0 0 rgba(239, 68, 68, 0); }
+            50% { box-shadow: 0 0 26px rgba(239, 68, 68, 0.08); }
         }
 
-        /* =========================================
-           FORMULÁRIO
-        ========================================= */
-
+        /* FORMULÁRIO */
         .formulario {
             background: rgba(21, 23, 29, 0.76);
-
             border: 1px solid rgba(255,255,255,0.06);
-
             border-radius: 22px;
-
             padding: 20px;
-
-            box-shadow:
-                0 20px 60px rgba(0,0,0,0.20);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.20);
         }
 
         .secao-titulo {
             display: flex;
             align-items: center;
             gap: 9px;
-
             margin-bottom: 18px;
         }
 
@@ -363,28 +263,20 @@
 
         .secao-titulo span {
             color: var(--texto);
-
             font-size: 12px;
             font-weight: 800;
             letter-spacing: 0.4px;
             text-transform: uppercase;
         }
 
-        .campo {
-            margin-bottom: 17px;
-        }
-
-        .campo:last-child {
-            margin-bottom: 0;
-        }
+        .campo { margin-bottom: 17px; }
+        .campo:last-child { margin-bottom: 0; }
 
         .campo-label {
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             gap: 10px;
-
             margin-bottom: 8px;
         }
 
@@ -403,7 +295,6 @@
 
         .campo-label label {
             color: #d9dce2;
-
             font-size: 12px;
             font-weight: 700;
         }
@@ -414,46 +305,27 @@
             font-weight: 800;
         }
 
-        .input-wrap {
-            position: relative;
-        }
+        .input-wrap { position: relative; }
 
         .input {
             width: 100%;
-
             min-height: 51px;
-
-            padding:
-                0 45px 0 15px;
-
+            padding: 0 45px 0 15px;
             background: #101217;
-
             color: var(--texto);
-
             border: 1px solid var(--borda);
             border-radius: 13px;
-
             outline: none;
-
             font-size: 13px;
-
-            transition:
-                border-color 0.2s,
-                background 0.2s,
-                box-shadow 0.2s;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
         }
 
-        .input::placeholder {
-            color: #555b66;
-        }
+        .input::placeholder { color: #555b66; }
 
         .input:focus {
             border-color: rgba(196, 30, 58, 0.65);
-
             background: #12141a;
-
-            box-shadow:
-                0 0 0 3px rgba(196, 30, 58, 0.08);
+            box-shadow: 0 0 0 3px rgba(196, 30, 58, 0.08);
         }
 
         .status-icone {
@@ -461,110 +333,60 @@
             right: 14px;
             top: 50%;
             transform: translateY(-50%);
-
             width: 22px;
             height: 22px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border-radius: 50%;
-
             opacity: 0;
             transform-origin: center;
-
-            transition:
-                opacity 0.2s,
-                transform 0.2s;
+            transition: opacity 0.2s, transform 0.2s;
         }
 
-        .status-icone i {
-            font-size: 11px;
-        }
+        .status-icone i { font-size: 11px; }
 
         .campo.valido .input {
             border-color: rgba(34, 197, 94, 0.75);
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(34,197,94,0.05),
-                    #101217
-                );
-
-            box-shadow:
-                0 0 0 3px rgba(34,197,94,0.05);
+            background: linear-gradient(90deg, rgba(34,197,94,0.05), #101217);
+            box-shadow: 0 0 0 3px rgba(34,197,94,0.05);
         }
 
         .campo.valido .status-icone {
             opacity: 1;
-
             color: var(--verde);
             background: var(--verde-fraco);
-
-            transform:
-                translateY(-50%)
-                scale(1);
+            transform: translateY(-50%) scale(1);
         }
 
         .campo.invalido .input {
             border-color: rgba(239, 68, 68, 0.85);
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(239,68,68,0.05),
-                    #101217
-                );
-
-            box-shadow:
-                0 0 0 3px rgba(239,68,68,0.05);
+            background: linear-gradient(90deg, rgba(239,68,68,0.05), #101217);
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.05);
         }
 
         .campo.invalido .status-icone {
             opacity: 1;
-
             color: var(--erro);
             background: var(--erro-fraco);
-
-            transform:
-                translateY(-50%)
-                scale(1);
+            transform: translateY(-50%) scale(1);
         }
 
         .mensagem-campo {
             display: none;
-
             margin-top: 7px;
-
             color: #f87171;
-
             font-size: 11px;
             line-height: 1.4;
-
             animation: aparecer 0.2s ease;
         }
 
-        .campo.invalido .mensagem-campo {
-            display: block;
-        }
+        .campo.invalido .mensagem-campo { display: block; }
 
         @keyframes aparecer {
-            from {
-                opacity: 0;
-                transform: translateY(-3px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(-3px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        /* =========================================
-           GRID DOS NÚMEROS
-        ========================================= */
 
         .grid-campos {
             display: grid;
@@ -572,48 +394,22 @@
             gap: 13px;
         }
 
-        /* =========================================
-           DATA
-        ========================================= */
+        input[type="date"] { color-scheme: dark; }
 
-        input[type="date"] {
-            color-scheme: dark;
-        }
-
-        /* =========================================
-           UPLOAD
-        ========================================= */
-
+        /* UPLOAD */
         .upload {
             position: relative;
-
             min-height: 145px;
-
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-
             text-align: center;
-
             padding: 20px;
-
             border-radius: 16px;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(255,255,255,0.025),
-                    rgba(255,255,255,0.01)
-                );
-
+            background: linear-gradient(145deg, rgba(255,255,255,0.025), rgba(255,255,255,0.01));
             border: 1px dashed #3b3f49;
-
-            transition:
-                border-color 0.2s,
-                background 0.2s,
-                transform 0.2s;
-
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
             overflow: hidden;
         }
 
@@ -630,30 +426,22 @@
         .upload input {
             position: absolute;
             inset: 0;
-
             width: 100%;
             height: 100%;
-
             opacity: 0;
-
             cursor: pointer;
         }
 
         .upload-icone {
             width: 46px;
             height: 46px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border-radius: 14px;
-
             margin-bottom: 10px;
-
             background: rgba(196, 30, 58, 0.10);
             border: 1px solid rgba(196, 30, 58, 0.18);
-
             color: #f05a70;
         }
 
@@ -664,44 +452,34 @@
 
         .upload p {
             margin-top: 5px;
-
             font-size: 10px;
             color: var(--muted);
         }
 
         .preview {
             display: none;
-
             position: absolute;
             inset: 0;
-
             background: #0b0c10;
         }
 
         .preview img {
             width: 100%;
             height: 100%;
-
             object-fit: contain;
         }
 
         .preview-info {
             position: absolute;
-
             left: 10px;
             right: 10px;
             bottom: 10px;
-
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             gap: 10px;
-
             padding: 8px 10px;
-
             border-radius: 10px;
-
             background: rgba(0,0,0,0.76);
             backdrop-filter: blur(8px);
         }
@@ -710,66 +488,37 @@
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
-
             font-size: 10px;
             color: #d1d5db;
         }
 
-        .preview-info i {
-            color: var(--verde);
-        }
+        .preview-info i { color: var(--verde); }
 
-        /* =========================================
-           BOTÃO
-        ========================================= */
-
+        /* BOTÃO ENVIAR */
         .enviar {
             width: 100%;
-
             min-height: 54px;
-
             margin-top: 22px;
-
             border: 0;
             border-radius: 14px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    #c41e3a,
-                    #a51630
-                );
-
+            background: linear-gradient(135deg, #c41e3a, #a51630);
             color: white;
-
             font-size: 13px;
             font-weight: 850;
-
             letter-spacing: 0.2px;
-
-            box-shadow:
-                0 12px 30px rgba(196,30,58,0.18);
-
+            box-shadow: 0 12px 30px rgba(196,30,58,0.18);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 9px;
-
-            transition:
-                transform 0.15s,
-                box-shadow 0.2s,
-                opacity 0.2s;
+            transition: transform 0.15s, box-shadow 0.2s, opacity 0.2s;
         }
 
         .enviar:hover {
-            box-shadow:
-                0 15px 35px rgba(196,30,58,0.28);
+            box-shadow: 0 15px 35px rgba(196,30,58,0.28);
         }
 
-        .enviar:active {
-            transform: scale(0.98);
-        }
-
+        .enviar:active { transform: scale(0.98); }
         .enviar:disabled {
             cursor: not-allowed;
             opacity: 0.55;
@@ -778,98 +527,62 @@
 
         .rodape-form {
             margin-top: 13px;
-
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 7px;
-
             color: #666c76;
-
             font-size: 10px;
             text-align: center;
         }
 
-        .rodape-form i {
-            color: #777e89;
-        }
+        .rodape-form i { color: #777e89; }
 
-        /* =========================================
-           MODAL DE SUCESSO
-        ========================================= */
-
+        /* MODAL SUCESSO */
         .modal {
             position: fixed;
             inset: 0;
-
             z-index: 200;
-
             display: none;
             align-items: center;
             justify-content: center;
-
             padding: 20px;
-
             background: rgba(0,0,0,0.78);
-
             backdrop-filter: blur(10px);
         }
 
-        .modal.aberto {
-            display: flex;
-        }
+        .modal.aberto { display: flex; }
 
         .modal-card {
             width: min(380px, 100%);
-
             padding: 27px;
-
             background: #171920;
-
             border: 1px solid #2b2e38;
             border-radius: 22px;
-
             text-align: center;
-
-            box-shadow:
-                0 25px 80px rgba(0,0,0,0.50);
-
+            box-shadow: 0 25px 80px rgba(0,0,0,0.50);
             animation: modalEntrada 0.25s ease;
         }
 
         @keyframes modalEntrada {
-            from {
-                opacity: 0;
-                transform: translateY(10px) scale(0.97);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(10px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         .modal-sucesso {
             width: 64px;
             height: 64px;
-
             margin: 0 auto 16px;
-
             display: flex;
             align-items: center;
             justify-content: center;
-
             border-radius: 50%;
-
             color: var(--verde);
-
             background: rgba(34,197,94,0.10);
             border: 1px solid rgba(34,197,94,0.20);
         }
 
-        .modal-sucesso i {
-            font-size: 25px;
-        }
+        .modal-sucesso i { font-size: 25px; }
 
         .modal-card h3 {
             font-size: 19px;
@@ -878,34 +591,24 @@
 
         .modal-card p {
             margin-top: 8px;
-
             color: var(--subtexto);
-
             font-size: 12px;
             line-height: 1.6;
         }
 
         .modal-fechar {
             width: 100%;
-
             margin-top: 20px;
-
             min-height: 46px;
-
             border: 0;
             border-radius: 12px;
-
             background: #252832;
             color: white;
-
             font-size: 12px;
             font-weight: 750;
         }
 
-        /* =========================================
-           RESPONSIVO
-        ========================================= */
-
+        /* RESPONSIVO */
         @media (max-width: 540px) {
             .topo-conteudo {
                 width: min(100% - 22px, 760px);
@@ -923,4 +626,84 @@
             }
 
             .grid-campos {
-                grid-template-columns
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- TOPO -->
+    <header class="topo">
+        <div class="topo-conteudo">
+            <div class="marca">
+                <div class="marca-icone">
+                    <i class="fas fa-flag"></i>
+                </div>
+                <div class="marca-texto">
+                    <h1>ORGANIZAÇÃO ITÁLIA</h1>
+                    <p>Sistema de Registro</p>
+                </div>
+            </div>
+            <a href="#" class="voltar" title="Voltar">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="container">
+        <!-- CABEÇALHO -->
+        <div class="cabecalho">
+            <div class="cabecalho-tag">
+                <i class="fas fa-bullseye"></i>
+                REGISTRO DE METAS
+            </div>
+            <h2>Registre sua <span>meta cumprida</span></h2>
+            <p>Informe os dados da sua participação e comprovação para análise da administração.</p>
+        </div>
+
+        <!-- AVISO -->
+        <div class="aviso">
+            <div class="aviso-icone">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="aviso-conteudo">
+                <strong>Aviso Importante</strong>
+                <p>Verifique os dados antes de enviar. Informações incorretas ou falsas geram penalidades.</p>
+            </div>
+        </div>
+
+        <!-- FORMULÁRIO -->
+        <form class="formulario" id="formMetas">
+            <h3 class="secao-titulo">
+                <i class="fas fa-user"></i>
+                <span>Dados do Membro</span>
+            </h3>
+
+            <div class="grid-campos">
+                <div class="campo">
+                    <div class="campo-label">
+                        <div class="campo-label-esquerda">
+                            <i class="fas fa-id-card"></i>
+                            <label>Nº Passaporte</label>
+                        </div>
+                        <span class="obrigatório">*</span>
+                    </div>
+                    <div class="input-wrap">
+                        <input type="text" class="input" placeholder="Ex: 17274" required>
+                        <div class="status-icone"><i class="fas fa-check"></i></div>
+                    </div>
+                    <span class="mensagem-campo">Preencha corretamente</span>
+                </div>
+
+                <div class="campo">
+                    <div class="campo-label">
+                        <div class="campo-label-esquerda">
+                            <i class="fas fa-calendar"></i>
+                            <label>Data</label>
+                        </div>
+                        <span class="obrigatório">*</span>
+                    </div>
+                    <div class="input-wrap">
+                        <input type="date" class="input" required>
+                        <div 
