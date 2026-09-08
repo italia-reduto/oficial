@@ -1,1193 +1,1193 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-<meta name="viewport"
-    content="width=device-width, initial-scale=1.0">
+<head>
 
-<title>ORGANIZAÇÃO ITÁLIA · PAINEL</title>
+    <meta charset="UTF-8">
 
-<meta name="theme-color"
-    content="#0f0f14">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
-<meta name="color-scheme"
-    content="dark">
+    <title>ORGANIZAÇÃO ITÁLIA · PAINEL</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color"
+        content="#08090d">
 
-<link rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="color-scheme"
+        content="dark">
 
-<script>
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    tailwind.config = {
+    <style>
 
-        theme: {
+        /* =====================================================
+           RESET
+        ===================================================== */
 
-            extend: {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-                colors: {
 
-                    fundo: '#0f0f14',
+        html {
+            scroll-behavior: smooth;
+        }
 
-                    cartao: '#18181f',
 
-                    destaque: '#c41e3a',
+        body {
+            min-height: 100vh;
+            background: #08090d;
+            color: #f5f5f5;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", sans-serif;
+            padding-bottom: 90px;
+        }
 
-                    neutro: '#24242e',
 
-                    texto: '#e2e2e8',
+        button {
+            font-family: inherit;
+        }
 
-                    subtexto: '#9ca3af',
 
-                }
+        /* =====================================================
+           VARIÁVEIS
+        ===================================================== */
 
-            }
+        :root {
+
+            --bg: #08090d;
+            --bg2: #0d0f14;
+
+            --card: #12151b;
+            --card2: #171a21;
+
+            --border: rgba(255,255,255,0.07);
+
+            --red: #e11d48;
+            --red2: #fb365d;
+
+            --green: #22c55e;
+            --blue: #3b82f6;
+            --yellow: #f59e0b;
+            --purple: #8b5cf6;
+
+            --text: #f5f5f5;
+            --muted: #8b929f;
+            --dark-muted: #5d6470;
+        }
+
+
+        /* =====================================================
+           BOTÕES
+        ===================================================== */
+
+        .btn {
+            border: none;
+            cursor: pointer;
+            transition: 0.18s ease;
+        }
+
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+
+        /* =====================================================
+           CARREGAMENTO
+        ===================================================== */
+
+        #carregando {
+
+            position: fixed;
+            inset: 0;
+
+            background: var(--bg);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex-direction: column;
+
+            gap: 14px;
+
+            z-index: 5000;
+        }
+
+
+        #carregando i {
+
+            font-size: 28px;
+            color: var(--red);
 
         }
 
-    }
 
-</script>
+        #carregando span {
 
-
-<style>
-
-    * {
-        -webkit-tap-highlight-color: transparent;
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-
-    html,
-    body {
-
-        background-color: #0f0f14;
-
-        min-height: 100vh;
-
-    }
-
-
-    body {
-
-        font-family: system-ui, sans-serif;
-
-        color: #e2e2e8;
-
-        padding-bottom: 80px;
-
-    }
-
-
-    .btn {
-
-        border: none;
-
-        cursor: pointer;
-
-        transition:
-            transform 0.15s ease;
-
-    }
-
-
-    .btn:active {
-
-        transform: scale(0.96);
-
-    }
-
-
-    /* =========================
-       BOTÃO DE SAÍDA
-    ========================= */
-
-    .btn-saida {
-
-        width: 40px;
-
-        height: 40px;
-
-        background:
-            rgba(196, 30, 58, 0.12);
-
-        color: #c41e3a;
-
-        border:
-            1px solid rgba(196, 30, 58, 0.25);
-
-        border-radius: 0.75rem;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        font-size: 1.1rem;
-
-        transition:
-            background 0.2s ease;
-
-    }
-
-
-    .btn-saida:active {
-
-        background:
-            rgba(196, 30, 58, 0.2);
-
-    }
-
-
-    /* =========================
-       MENU INFERIOR
-    ========================= */
-
-    .menu-container {
-
-        position: fixed;
-
-        bottom: 0;
-
-        left: 0;
-
-        right: 0;
-
-        background:
-            rgba(24,24,31,0.95);
-
-        backdrop-filter:
-            blur(8px);
-
-        border-top:
-            1px solid #24242e;
-
-        display: flex;
-
-        justify-content: space-around;
-
-        align-items: center;
-
-        padding: 12px 8px;
-
-        z-index: 100;
-
-    }
-
-
-    .menu-item {
-
-        display: flex;
-
-        flex-direction: column;
-
-        align-items: center;
-
-        justify-content: center;
-
-        color: #9ca3af;
-
-        background: transparent;
-
-        border: none;
-
-        cursor: pointer;
-
-        transition: color 0.2s;
-
-        min-width: 60px;
-
-    }
-
-
-    .menu-item.active {
-
-        color: #ffffff;
-
-    }
-
-
-    .menu-item i {
-
-        font-size: 20px;
-
-        margin-bottom: 4px;
-
-    }
-
-
-    .menu-item span {
-
-        font-size: 11px;
-
-    }
-
-
-    /* =========================
-       MODAL DE SAÍDA
-    ========================= */
-
-    .modal-fundo {
-
-        display: none;
-
-        position: fixed;
-
-        top: 0;
-
-        left: 0;
-
-        right: 0;
-
-        bottom: 0;
-
-        background:
-            rgba(0,0,0,0.75);
-
-        backdrop-filter:
-            blur(4px);
-
-        z-index: 999;
-
-        align-items: center;
-
-        justify-content: center;
-
-        padding: 1rem;
-
-    }
-
-
-    .modal-conteudo {
-
-        background: #18181f;
-
-        border:
-            1px solid #24242e;
-
-        border-radius: 1.25rem;
-
-        width: 100%;
-
-        max-width: 340px;
-
-        padding: 1.75rem;
-
-        text-align: center;
-
-        box-shadow:
-            0 10px 40px rgba(0,0,0,0.4);
-
-    }
-
-
-    .modal-icone {
-
-        width: 60px;
-
-        height: 60px;
-
-        background:
-            rgba(196, 30, 58, 0.15);
-
-        border-radius: 50%;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        margin:
-            0 auto 1.25rem;
-
-    }
-
-
-    .modal-icone i {
-
-        font-size: 1.5rem;
-
-        color: #c41e3a;
-
-    }
-
-
-    .modal-titulo {
-
-        font-size: 1.15rem;
-
-        font-weight: 600;
-
-        margin-bottom: 0.75rem;
-
-    }
-
-
-    .modal-texto {
-
-        color: #9ca3af;
-
-        font-size: 0.95rem;
-
-        margin-bottom: 1.5rem;
-
-        line-height: 1.5;
-
-    }
-
-
-    .modal-botoes {
-
-        display: flex;
-
-        gap: 0.75rem;
-
-    }
-
-
-    .btn-cancelar {
-
-        flex: 1;
-
-        padding: 0.75rem;
-
-        border-radius: 0.75rem;
-
-        background: #24242e;
-
-        color: #e2e2e8;
-
-        font-weight: 500;
-
-        border: none;
-
-        cursor: pointer;
-
-    }
-
-
-    .btn-confirmar {
-
-        flex: 1;
-
-        padding: 0.75rem;
-
-        border-radius: 0.75rem;
-
-        background: #c41e3a;
-
-        color: #fff;
-
-        font-weight: 500;
-
-        border: none;
-
-        cursor: pointer;
-
-    }
-
-
-    /* =========================
-       CARREGAMENTO
-    ========================= */
-
-    #carregando {
-
-        position: fixed;
-
-        inset: 0;
-
-        background: #0f0f14;
-
-        z-index: 2000;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content: center;
-
-        flex-direction: column;
-
-        gap: 14px;
-
-    }
-
-
-    #carregando i {
-
-        font-size: 28px;
-
-        color: #c41e3a;
-
-    }
-
-
-    #carregando span {
-
-        color: #9ca3af;
-
-        font-size: 14px;
-
-    }
-
-</style>
-
-</head><body class="bg-fundo"><!-- =========================
-     PROTEÇÃO DE CARREGAMENTO
-========================= -->
-
-<div id="carregando">
-
-    <i class="fas fa-spinner fa-spin"></i>
-
-    <span>
-        Verificando acesso...
-    </span>
-
-</div>
-
-
-<!-- =========================
-     MODAL DE SAÍDA
-========================= -->
-
-<div
-    id="modalSaida"
-    class="modal-fundo"
->
-
-    <div class="modal-conteudo">
-
-        <div class="modal-icone">
-
-            <i class="fas fa-sign-out-alt"></i>
-
-        </div>
-
-
-        <h3 class="modal-titulo">
-            Encerrar Sessão
-        </h3>
-
-
-        <p class="modal-texto">
-            Deseja realmente sair da sua conta e voltar para o início?
-        </p>
-
-
-        <div class="modal-botoes">
-
-            <button
-                class="btn-cancelar"
-                onclick="fecharModal()"
-            >
-                Cancelar
-            </button>
-
-
-            <button
-                class="btn-confirmar"
-                onclick="confirmarSaida()"
-            >
-                Sim, Sair
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     CABEÇALHO
-========================= -->
-
-<header
-    class="sticky top-0 bg-fundo/90 backdrop-blur border-b border-neutro/60 px-5 py-4"
->
-
-    <div class="flex items-center justify-between">
-
-
-        <div class="flex items-center gap-3">
-
-
-            <div
-                class="w-11 h-11 rounded-xl bg-destaque/20 flex items-center justify-center"
-            >
-
-                <i
-                    class="fas fa-user text-destaque text-xl"
-                ></i>
-
-            </div>
-
-
-            <div>
-
-                <h1
-                    id="nomeCabecalho"
-                    class="font-bold text-lg"
-                >
-                    Membro
-                </h1>
-
-
-                <p
-                    id="passaporteCabecalho"
-                    class="text-subtexto text-sm"
-                >
-                    Passaporte: —
-                </p>
-
-            </div>
-
-        </div>
-
-
-        <!-- BOTÃO DE SAÍDA -->
-
-        <button
-            onclick="abrirModal()"
-            class="btn btn-saida"
-            aria-label="Sair"
-        >
-
-            <i class="fas fa-sign-out-alt"></i>
-
-        </button>
-
-    </div>
-
-</header>
-
-
-<!-- =========================
-     CONTEÚDO
-========================= -->
-
-<main class="px-4 py-6 space-y-6">
-
-
-    <!-- BOAS-VINDAS -->
-
-    <div
-        class="bg-cartao p-5 rounded-2xl"
-    >
-
-        <h2
-            id="mensagemBoasVindas"
-            class="text-xl font-semibold mb-1"
-        >
-            Bem-vindo de volta
-        </h2>
-
-
-        <p
-            id="dataAtual"
-            class="text-subtexto"
-        >
-            —
-        </p>
-
-    </div>
-
-
-    <!-- =========================
-         INFORMAÇÕES
-    ========================= -->
-
-    <div class="grid grid-cols-2 gap-4">
-
-
-        <!-- STATUS -->
-
-        <div
-            class="bg-cartao p-4 rounded-2xl btn"
-            onclick="alert('Status de hoje: Inativo')"
-        >
-
-            <div class="flex items-center gap-3">
-
-                <div
-                    class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center"
-                >
-
-                    <i
-                        class="fas fa-clock text-subtexto"
-                    ></i>
-
-                </div>
-
-
-                <div>
-
-                    <p class="text-subtexto text-xs">
-                        Status de Hoje
-                    </p>
-
-                    <p class="font-semibold">
-                        Inativo
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- PONTOS -->
-
-        <div
-            class="bg-cartao p-4 rounded-2xl btn"
-            onclick="alert('Pontos: —')"
-        >
-
-            <div class="flex items-center gap-3">
-
-                <div
-                    class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center"
-                >
-
-                    <i
-                        class="fas fa-bolt text-subtexto"
-                    ></i>
-
-                </div>
-
-
-                <div>
-
-                    <p class="text-subtexto text-xs">
-                        Pontos do Mês
-                    </p>
-
-                    <p class="font-semibold">
-                        —
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- FALTAS -->
-
-        <div
-            class="bg-cartao p-4 rounded-2xl btn"
-            onclick="alert('Faltas: 0')"
-        >
-
-            <div class="flex items-center gap-3">
-
-                <div
-                    class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center"
-                >
-
-                    <i
-                        class="fas fa-user-times text-subtexto"
-                    ></i>
-
-                </div>
-
-
-                <div>
-
-                    <p class="text-subtexto text-xs">
-                        Faltas Acumuladas
-                    </p>
-
-                    <p class="font-semibold">
-                        0
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- CARGO -->
-
-        <div
-            class="bg-cartao p-4 rounded-2xl btn"
-            onclick="mostrarCargo()"
-        >
-
-            <div class="flex items-center gap-3">
-
-                <div
-                    class="w-10 h-10 rounded-lg bg-neutro/30 flex items-center justify-center"
-                >
-
-                    <i
-                        class="fas fa-briefcase text-subtexto"
-                    ></i>
-
-                </div>
-
-
-                <div>
-
-                    <p class="text-subtexto text-xs">
-                        Cargo Atual
-                    </p>
-
-                    <p
-                        id="cargoCard"
-                        class="font-semibold"
-                    >
-                        —
-                    </p>
-
-                </div>
-
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         AVISOS
-    ========================= -->
-
-    <div
-        class="bg-cartao p-5 rounded-2xl"
-    >
-
-        <h3
-            class="font-semibold mb-4 flex items-center gap-2 text-lg"
-        >
-
-            <i
-                class="fas fa-bullhorn text-destaque"
-            ></i>
-
-            Avisos Recentes
-
-        </h3>
-
-
-        <div class="space-y-3 text-sm">
-
-            <p class="text-subtexto">
-
-                <span class="text-destaque mr-2">
-                    •
-                </span>
-
-                Novo regulamento interno publicado.
-
-            </p>
-
-
-            <p class="text-subtexto">
-
-                <span class="text-subtexto mr-2">
-                    •
-                </span>
-
-                Sistema atualizado com sucesso.
-
-            </p>
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         ACESSOS
-    ========================= -->
-
-    <div class="grid grid-cols-4 gap-3">
-
-
-        <button
-            onclick="window.location.href='registros.html'"
-            class="bg-cartao p-4 rounded-xl text-center btn"
-        >
-
-            <i
-                class="fas fa-clipboard-list text-xl mb-2 block"
-            ></i>
-
-            <span class="text-xs">
-                Registros
-            </span>
-
-        </button>
-
-
-        <button
-            onclick="alert('Abrir Passaporte')"
-            class="bg-cartao p-4 rounded-xl text-center btn"
-        >
-
-            <i
-                class="fas fa-id-card text-xl mb-2 block"
-            ></i>
-
-            <span class="text-xs">
-                Passaporte
-            </span>
-
-        </button>
-
-
-        <button
-            onclick="window.location.href='manuais.html'"
-            class="bg-cartao p-4 rounded-xl text-center btn"
-        >
-
-            <i
-                class="fas fa-book text-xl mb-2 block"
-            ></i>
-
-            <span class="text-xs">
-                Manuais
-            </span>
-
-        </button>
-
-
-        <button
-            onclick="alert('Abrir Suporte')"
-            class="bg-cartao p-4 rounded-xl text-center btn"
-        >
-
-            <i
-                class="fas fa-headset text-xl mb-2 block"
-            ></i>
-
-            <span class="text-xs">
-                Suporte
-            </span>
-
-        </button>
-
-    </div>
-
-</main>
-
-
-<!-- =========================
-     MENU INFERIOR
-========================= -->
-
-<nav class="menu-container">
-
-
-    <button
-        class="menu-item active"
-        onclick="mudarMenu(this)"
-    >
-
-        <i class="fas fa-home"></i>
-
-        <span>
-            Início
-        </span>
-
-    </button>
-
-
-    <button
-        class="menu-item"
-        onclick="mudarMenu(this)"
-    >
-
-        <i class="fas fa-users"></i>
-
-        <span>
-            Equipe
-        </span>
-
-    </button>
-
-
-    <button
-        class="menu-item"
-        onclick="mudarMenu(this)"
-    >
-
-        <i class="fas fa-stopwatch"></i>
-
-        <span>
-            Ponto
-        </span>
-
-    </button>
-
-
-    <button
-        class="menu-item"
-        onclick="mudarMenu(this)"
-    >
-
-        <i class="fas fa-bell"></i>
-
-        <span>
-            Avisos
-        </span>
-
-    </button>
-
-
-    <button
-        class="menu-item"
-        onclick="mudarMenu(this)"
-    >
-
-        <i class="fas fa-ellipsis-h"></i>
-
-        <span>
-            Mais
-        </span>
-
-    </button>
-
-</nav>
-
-
-<!-- =========================
-     JAVASCRIPT
-========================= -->
-
-<script>
-
-
-    /* =====================================================
-       RECUPERAR USUÁRIO DO LOGIN
-    ===================================================== */
-
-    let usuario = null;
-
-
-    try {
-
-        const usuarioSalvo =
-            sessionStorage.getItem(
-                "italia_usuario"
-            );
-
-
-        if (usuarioSalvo) {
-
-            usuario =
-                JSON.parse(usuarioSalvo);
+            color: var(--muted);
+            font-size: 14px;
 
         }
 
-    } catch (erro) {
 
-        console.error(
-            "Erro ao recuperar sessão:",
-            erro
-        );
+        /* =====================================================
+           HEADER
+        ===================================================== */
 
-        usuario = null;
+        header {
 
-    }
+            position: sticky;
+            top: 0;
 
+            z-index: 100;
 
-    /* =====================================================
-       VERIFICAR ACESSO
-    ===================================================== */
+            background:
+                rgba(8,9,13,0.88);
 
-    if (
-        !usuario ||
-        !usuario.passaporte ||
-        !usuario.nome
-    ) {
+            backdrop-filter:
+                blur(18px);
 
-        window.location.replace(
-            "./login.html"
-        );
+            -webkit-backdrop-filter:
+                blur(18px);
 
-    }
+            border-bottom:
+                1px solid var(--border);
 
-
-    /* =====================================================
-       PREENCHER DADOS
-    ===================================================== */
-
-    if (usuario) {
-
-        document.getElementById(
-            "nomeCabecalho"
-        ).textContent =
-            "Membro: " + usuario.nome;
-
-
-        document.getElementById(
-            "passaporteCabecalho"
-        ).textContent =
-            "Passaporte: " +
-            usuario.passaporte;
-
-
-        document.getElementById(
-            "mensagemBoasVindas"
-        ).textContent =
-            "Bem-vindo de volta, " +
-            usuario.nome;
-
-
-        document.getElementById(
-            "cargoCard"
-        ).textContent =
-            usuario.cargo || "Membro";
-
-    }
-
-
-    /* =====================================================
-       DATA ATUAL
-    ===================================================== */
-
-    const hoje =
-        new Date();
-
-
-    const dataFormatada =
-        hoje.toLocaleDateString(
-            "pt-BR",
-            {
-                weekday: "long",
-                day: "numeric",
-                month: "long"
-            }
-        );
-
-
-    document.getElementById(
-        "dataAtual"
-    ).textContent =
-        dataFormatada;
-
-
-    /* =====================================================
-       MOSTRAR CARGO
-    ===================================================== */
-
-    function mostrarCargo() {
-
-        if (!usuario) {
-            return;
+            padding: 15px 18px;
         }
 
-        alert(
-            "Cargo: " +
-            (usuario.cargo || "Membro")
-        );
 
-    }
+        .header-content {
 
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
 
-    /* =====================================================
-       MODAL
-    ===================================================== */
-
-    function abrirModal() {
-
-        document.getElementById(
-            "modalSaida"
-        ).style.display =
-            "flex";
-
-    }
+            max-width: 900px;
+            margin: auto;
+        }
 
 
-    function fecharModal() {
+        .perfil {
 
-        document.getElementById(
-            "modalSaida"
-        ).style.display =
-            "none";
-
-    }
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
 
-    /* =====================================================
-       CONFIRMAR SAÍDA
-    ===================================================== */
+        .perfil-icon {
 
-    function confirmarSaida() {
+            width: 44px;
+            height: 44px;
 
-        sessionStorage.removeItem(
-            "italia_usuario"
-        );
+            border-radius: 13px;
 
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-        window.location.replace(
-            "./login.html"
-        );
+            background:
+                rgba(225,29,72,0.13);
 
-    }
+            border:
+                1px solid rgba(225,29,72,0.22);
 
+            color: var(--red2);
 
-    /* =====================================================
-       MENU INFERIOR
-    ===================================================== */
-
-    function mudarMenu(el) {
-
-        document
-            .querySelectorAll(".menu-item")
-            .forEach(
-                function(item) {
-
-                    item.classList.remove(
-                        "active"
-                    );
-
-                }
-            );
+            font-size: 18px;
+        }
 
 
-        el.classList.add(
-            "active"
-        );
+        .perfil-info h1 {
 
-    }
+            font-size: 15px;
+            font-weight: 700;
+
+            max-width: 210px;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 
-    /* =====================================================
-       FINALIZAR CARREGAMENTO
-    ===================================================== */
+        .perfil-info p {
 
-    window.addEventListener(
-        "load",
-        function() {
+            margin-top: 2px;
 
-            const tela =
-                document.getElementById(
-                    "carregando"
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+
+        .btn-saida {
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(225,29,72,0.10);
+
+            border:
+                1px solid rgba(225,29,72,0.20);
+
+            color: var(--red2);
+
+            font-size: 16px;
+        }
+
+
+        .btn-saida:hover {
+
+            background:
+                rgba(225,29,72,0.17);
+
+        }
+
+
+        /* =====================================================
+           CONTAINER
+        ===================================================== */
+
+        main {
+
+            width: 100%;
+            max-width: 900px;
+
+            margin: auto;
+
+            padding: 24px 16px 30px;
+        }
+
+
+        .secao {
+
+            margin-bottom: 22px;
+
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+
+            position: relative;
+            overflow: hidden;
+
+            padding: 23px;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #151820 0%,
+                    #101217 100%
                 );
 
+            border:
+                1px solid var(--border);
 
-            if (tela) {
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.18);
+        }
 
-                tela.style.display =
-                    "none";
 
-            }
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+            height: 180px;
+
+            right: -80px;
+            top: -90px;
+
+            background:
+                rgba(225,29,72,0.12);
+
+            filter: blur(30px);
+
+            border-radius: 50%;
+        }
+
+
+        .hero-label {
+
+            position: relative;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 10px;
+
+            border-radius: 999px;
+
+            background:
+                rgba(225,29,72,0.10);
+
+            border:
+                1px solid rgba(225,29,72,0.20);
+
+            color: var(--red2);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+
+        .hero-label i {
+
+            font-size: 8px;
 
         }
-    );
 
-</script>
 
-</body></html>
+        .hero h2 {
+
+            position: relative;
+
+            margin-top: 15px;
+
+            font-size: 27px;
+
+            line-height: 1.15;
+
+            font-weight: 800;
+        }
+
+
+        .hero h2 span {
+
+            color: var(--red2);
+
+        }
+
+
+        .hero p {
+
+            position: relative;
+
+            margin-top: 10px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.55;
+
+            max-width: 600px;
+        }
+
+
+        .hero-status {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin-top: 18px;
+
+            color: #b9c0ca;
+
+            font-size: 12px;
+        }
+
+
+        .status-dot {
+
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+
+            box-shadow:
+                0 0 12px rgba(34,197,94,0.65);
+        }
+
+
+        /* =====================================================
+           TÍTULO DE SEÇÃO
+        ===================================================== */
+
+        .titulo-secao {
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 12px;
+        }
+
+
+        .titulo-secao h3 {
+
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+
+        .titulo-secao span {
+
+            font-size: 11px;
+            color: var(--dark-muted);
+        }
+
+
+        /* =====================================================
+           RESUMO
+        ===================================================== */
+
+        .resumo-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 10px;
+        }
+
+
+        .resumo-card {
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 17px;
+
+            padding: 16px;
+
+            transition:
+                transform 0.18s ease,
+                border-color 0.18s ease;
+        }
+
+
+        .resumo-card:active {
+
+            transform: scale(0.98);
+
+        }
+
+
+        .resumo-top {
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+
+        .resumo-icon {
+
+            width: 38px;
+            height: 38px;
+
+            border-radius: 11px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 15px;
+        }
+
+
+        .icon-red {
+
+            background:
+                rgba(225,29,72,0.12);
+
+            color: var(--red2);
+
+        }
+
+
+        .icon-blue {
+
+            background:
+                rgba(59,130,246,0.12);
+
+            color: #60a5fa;
+
+        }
+
+
+        .icon-green {
+
+            background:
+                rgba(34,197,94,0.12);
+
+            color: #4ade80;
+
+        }
+
+
+        .icon-yellow {
+
+            background:
+                rgba(245,158,11,0.12);
+
+            color: #fbbf24;
+
+        }
+
+
+        .resumo-numero {
+
+            margin-top: 15px;
+
+            font-size: 23px;
+            font-weight: 800;
+        }
+
+
+        .resumo-label {
+
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           PERFIL
+        ===================================================== */
+
+        .perfil-card {
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+        }
+
+
+        .perfil-card-top {
+
+            padding: 18px;
+
+            display: flex;
+            align-items: center;
+            gap: 14px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(225,29,72,0.08),
+                    transparent
+                );
+        }
+
+
+        .avatar-grande {
+
+            width: 55px;
+            height: 55px;
+
+            border-radius: 16px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(225,29,72,0.13);
+
+            border:
+                1px solid rgba(225,29,72,0.22);
+
+            color: var(--red2);
+
+            font-size: 21px;
+        }
+
+
+        .perfil-card-top h4 {
+
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+
+        .perfil-card-top p {
+
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+
+        .cargo-badge {
+
+            display: inline-flex;
+
+            margin-top: 7px;
+
+            padding: 5px 9px;
+
+            border-radius: 7px;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            color: #d6d9df;
+
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+
+        .dados-perfil {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            border-top:
+                1px solid var(--border);
+        }
+
+
+        .dado {
+
+            padding: 14px 17px;
+
+            border-right:
+                1px solid var(--border);
+        }
+
+
+        .dado:nth-child(2n) {
+
+            border-right: none;
+
+        }
+
+
+        .dado-label {
+
+            color: var(--dark-muted);
+
+            font-size: 10px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+        }
+
+
+        .dado-valor {
+
+            margin-top: 5px;
+
+            color: #dfe2e7;
+
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           ACESSOS
+        ===================================================== */
+
+        .acessos-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 10px;
+        }
+
+
+        .acesso {
+
+            position: relative;
+
+            padding: 17px;
+
+            border-radius: 17px;
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            text-align: left;
+
+            color: var(--text);
+
+            transition:
+                transform 0.18s ease,
+                background 0.18s ease,
+                border-color 0.18s ease;
+        }
+
+
+        .acesso:active {
+
+            transform: scale(0.97);
+
+        }
+
+
+        .acesso:hover {
+
+            background: var(--card2);
+
+        }
+
+
+        .acesso-icon {
+
+            width: 39px;
+            height: 39px;
+
+            border-radius: 11px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(255,255,255,0.045);
+
+            color: #d5d8de;
+
+            margin-bottom: 13px;
+        }
+
+
+        .acesso h4 {
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+
+        .acesso p {
+
+            margin-top: 4px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            line-height: 1.4;
+        }
+
+
+        .acesso-arrow {
+
+            position: absolute;
+
+            right: 15px;
+            top: 17px;
+
+            color: var(--dark-muted);
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           STATUS DO SISTEMA
+        ===================================================== */
+
+        .sistema-card {
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 20px;
+
+            padding: 18px;
+        }
+
+
+        .sistema-item {
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 13px 0;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+
+        .sistema-item:first-child {
+
+            padding-top: 0;
+
+        }
+
+
+        .sistema-item:last-child {
+
+            padding-bottom: 0;
+
+            border-bottom: none;
+
+        }
+
+
+        .sistema-esquerda {
+
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+        }
+
+
+        .sistema-icone {
+
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(255,255,255,0.04);
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+
+        .sistema-nome {
+
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        .sistema-descricao {
+
+            margin-top: 2px;
+
+            color: var(--dark-muted);
+
+            font-size: 10px;
+        }
+
+
+        .online {
+
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            color: #4ade80;
+
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+
+        .online i {
+
+            font-size: 7px;
+
+        }
+
+
+        /* =====================================================
+           AVISOS
+        ===================================================== */
+
+        .avisos {
+
+            background: var(--card);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 20px;
+
+            padding: 18px;
+        }
+
+
+        .aviso {
+
+            display: flex;
+
+            gap: 12px;
+
+            padding: 13px 0;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+
+        .aviso:first-child {
+
+            padding-top: 0;
+
+        }
+
+
+        .aviso:last-child {
+
+            padding-bottom: 0;
+
+            border-bottom: none;
+
+        }
+
+
+        .aviso-icone {
+
+            width: 34px;
+            height: 34px;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(225,29,72,0.10);
+
+            color: var(--red2);
+
+            font-size: 12px;
+        }
+
+
+        .aviso h4 {
+
+            font-size: 12px;
+            font-weight: 650;
+        }
+
+
+        .aviso p {
+
+            margin-top: 3px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+
+            line-height: 1.45;
+        }
+
+
+        /* =====================================================
+           RODAPÉ
+        ===================================================== */
+
+        .rodape {
+
+            text-align: center;
+
+            color: var(--dark-muted);
+
+            font-size: 10px;
+
+            padding: 3px 0 10px;
+        }
+
+
+        .rodape strong {
+
+            color: #747b86;
+
+        }
+
+
+        /* =====================================================
+           MENU INFERIOR
+        ===================================================== */
+
+        .menu-container {
+
+            position: fixed;
+
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            z-index: 300;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+
+            padding:
+                10px 7px
+                calc(10px + env(safe-area-inset-bottom));
+
+            background:
+                rgba(14,16,21,0.94);
+
+            backdrop-filter:
+                blur(18px);
+
+            -webkit-backdrop-filter:
+                blur(18px);
+
+            border-top:
+                1px solid var(--border);
+        }
+
+
+        .menu-item {
+
+            min-width: 58px;
+
+            border: none;
+
+            background: transparent;
+
+            color: var(--dark-muted);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 5px;
+
+            cursor: pointer;
+
+            transition: 0.18s ease;
+        }
+
+
+        .menu-item i {
+
+            font-size: 17px;
+
+        }
+
+
+        .menu-item span {
+
+            font-size: 9px;
+
+            font-weight: 600;
+
+        }
+
+
+        .menu-item.active {
+
+            color: var(--red2);
+
+        }
+
+
+        .menu-item:active {
+
+            transform: scale(0.92);
+
+        }
+
+
+        /* =====================================================
+           MODAL DE SAÍDA
+        ===================================================== */
+
+        .modal-fundo {
+
+            position: fixed;
+            inset: 0;
+
+            z-index: 1000;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 18px;
+
+            background:
+                rgba(0,0,0,0.76);
+
+            backdrop-filter:
+                blur(8px);
+        }
+
+
+        .modal-conteudo {
+
+            width: 100%;
+            max-width: 350px;
+
+            background:
+                #14171d;
+
+            border:
+                1px solid var(--border);
+
+            border-radius: 22px;
+
+            padding: 24px;
+
+            text-align: center;
+
+          
