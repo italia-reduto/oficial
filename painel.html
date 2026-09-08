@@ -1,1 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORGANIZAÇÃO ITÁLIA · PAINEL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        fundo: '#121217', /* Fundo principal mais escuro e uniforme */
+                        cartao: '#1a1a20', /* Cards levemente destacados */
+                        destaque: '#c41e3a',
+                        neutro: '#22222b',
+                        texto: '#e4e4eb',
+                        subtexto: '#9494a3',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html, body { 
+            background-color: #121217 !important; 
+            min-height: 100vh; 
+            height: 100%;
+        }
+        body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            color: #e4e4eb; 
+            padding-bottom: 85px; 
+            background: #121217;
+        }
+        
+        .btn { border: none; cursor: pointer; transition: transform 0.15s ease; }
+        .btn:active { transform: scale(0.96); }
+        
+        /* Botão de Saída */
+        .btn-saida {
+            width: 42px; height: 42px;
+            background: rgba(196, 30, 58, 0.15);
+            color: #c41e3a;
+            border: 1px solid rgba(196, 30, 58, 0.3);
+            border-radius: 0.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            transition: background 0.2s ease;
+        }
+        .btn-saida:active { background: rgba(196, 30, 58, 0.25); }
+        
+        /* Menu Inferior */
+        .menu-container {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: #17171d;
+            border-top: 1px solid #22222b;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 12px 6px;
+            min-height: 70px;
+        }
+        .menu-item {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: #9494a3; background: transparent; border: none;
+            cursor: pointer; transition: color 0.2s;
+            min-width: 65px;
+        }
+        .menu-item.active { color: #ffffff; }
+        .menu-item i { font-size: 20px; margin-bottom: 4px; }
+        .menu-item span { font-size: 11px; }
+
+        /* MODAL DE CONFIRMAÇÃO */
+        .modal-fundo {
+            display: none;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            align-items: center; justify-content: center;
+            padding: 1.2rem;
+        }
+        .modal-conteudo {
+            background: #1a1a20;
+            border: 1px solid #22222b;
+            border-radius: 1.3rem;
+            width: 100%; max-width: 340px;
+            padding: 1.8rem;
+            text-align: center;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+        }
+        .modal-icone {
+            width: 65px; height: 65px;
+            background: rgba(196, 30, 58, 0.15);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 1.3rem;
+        }
+        .modal-icone i { font-size: 1.6rem; color: #c41e3a; }
+        .modal-titulo { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.8rem; }
+        .modal-texto { color: #9494a3; font-size: 1rem; margin-bottom: 1.6rem; line-height: 1.5; }
+        .modal-botoes { display: flex; gap: 0.8rem; }
+        .btn-cancelar {
+            flex: 1; padding: 0.85rem; border-radius: 0.8rem;
+            background: #22222b; color: #e4e4eb;
+            font-weight: 500; border: none; cursor: pointer;
+            font-size: 0.95rem;
+        }
+        .btn-confirmar {
+            flex: 1; padding: 0.85rem; border-radius: 0.8rem;
+            background: #c41e3a; color: #fff;
+            font-weight: 500; border: none; cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        /* Correção extra para fundo em dispositivos móveis */
+        body > * { background-color: inherit; }
+    </style>
+</head>
+<body class="bg-fundo">
+    <!-- MODAL DE CONFIRMAÇÃO DE SAÍDA -->
+    <div id="modalSaida" class="modal-fundo">
+        <div class="modal-conteudo">
+            <div class="modal-icone">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h3 class="modal-titulo">Encerrar Sessão</h3>
+            <p class="modal-texto">Deseja realmente sair da sua conta e voltar para o início?</p>
+            <div class="modal-botoes">
+                <button class="btn-cancelar" onclick="fecharModal()">Cancelar</button>
+                <button class="btn-confirmar" onclick="confirmarSaida()">Sim, Sair</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cabeçalho -->
+    <header class="sticky top-0 bg-[#121217]/95 backdrop-blur border-b border-neutro/40 px-5 py-4 z-10">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-xl bg-destaque/15 flex items-center justify-center">
+                    <i class="fas fa-user text-destaque text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg">Membro: Falcão</h1>
+                    <p class="text-subtexto text-sm">Passaporte: 17274</p>
+                </div>
+            </div>
+            <button onclick="abrirModal()" class="btn btn-saida">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="px-4 py-6 space-y-6 max-w-lg mx-auto">
+        <div class="bg-cartao p-6 rounded-2xl">
+            <h2 class="text-xl font-semibold mb-2">Bem-vindo de volta, Falcão</h2>
+            <p class="text-subtexto">Segunda-feira, 7 de setembro</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-cartao p-5 rounded-2xl btn">
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-xl bg-neutro/50 flex items-center justify-center">
+                        <i class="fas fa-clock text-subtexto text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-sm mb-1">Status de Hoje</p>
+                        <p class="font-semibold text-lg">Inativo</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-5 rounded-2xl btn">
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-xl bg-neutro/50 flex items-center justify-center">
+                        <i class="fas fa-bolt text-subtexto text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-sm mb-1">Pontos do Mês</p>
+                        <p class="font-semibold text-lg">—</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-5 rounded-2xl btn">
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-xl bg-neutro/50 flex items-center justify-center">
+                        <i class="fas fa-user-times text-subtexto text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-sm mb-1">Faltas Acumuladas</p>
+                        <p class="font-semibold text-lg">0</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-cartao p-5 rounded-2xl btn">
+                <div class="flex items-center gap-4">
+                    <div class="w-11 h-11 rounded-xl bg-neutro/50 flex items-center justify-center">
+                        <i class="fas fa-briefcase text-subtexto text-lg"></i>
+                    </div>
+                    <div>
+                        <p class="text-subtexto text-sm mb-1">Cargo Atual</p>
+                        <p class="font-semibold text-lg">Membro</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-cartao p-6 rounded-2xl">
+            <h3 class="font-semibold mb-5 flex items-center gap-3 text-xl">
+                <i class="fas fa-bullhorn text-destaque text-xl"></i> Avisos Recentes
+            </h3>
+            <div class="space-y-4 text-base">
+                <p class="text-subtexto flex items-start gap-3">
+                    <span class="text-destaque mt-1">•</span>
+                    <span>Novo regulamento interno publicado.</span>
+                </p>
+                <p class="text-subtexto flex items-start gap-3">
+                    <span class="text-subtexto mt-1">•</span>
+                    <span>Sistema atualizado com sucesso.</span>
+                </p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-4">
+            <button onclick="window.location.href='registros.html'" class="bg-cartao p-5 rounded-2xl text-center btn">
+                <i class="fas fa-clipboard-list text-xl mb-3 block"></i>
+                <span class="text-sm">Registros</span>
+            </button>
+            <button onclick="alert('Abrir Passaporte')" class="bg-cartao p-5 rounded-2xl text-center btn">
+                <i class="fas fa-id-card text-xl mb-3 block"></i>
+                <span class="text-sm">Passaporte</span>
+            </button>
+            <button onclick="window.location.href='manuais.html'" class="bg-cartao p-5 rounded-2xl text-center btn">
+                <i class="fas fa-book text-xl mb-3 block"></i>
+                <span class="text-sm">Manuais</span>
+            </button>
+            <button onclick="alert('Abrir Suporte')" class="bg-cartao p-5 rounded-2xl text-center btn">
+                <i class="fas fa-headset text-xl mb-3 block"></i>
+                <span class="text-sm">Suporte</span>
+            </button>
+        </div>
+    </main>
+
+    <nav class="menu-container">
+        <button class="menu-item active" onclick="mudarMenu(this)">
+            <i class="fas fa-home"></i>
+            <span>Início</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-users"></i>
+            <span>Equipe</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-stopwatch"></i>
+            <span>Ponto</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-bell"></i>
+            <span>Avisos</span>
+        </button>
+        <button class="menu-item" onclick="mudarMenu(this)">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>Mais</span>
+        </button>
+    </nav>
+
+    <script>
+        function abrirModal() { document.getElementById('modalSaida').style.display = 'flex'; }
+        function fecharModal() { document.getElementById('modalSaida').style.display = 'none'; }
+        function confirmarSaida() { window.location.href = 'index.html'; }
+
+        function mudarMenu(el) {
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            el.classList.add('active');
+        }
+    </script>
+</body>
+  </html>
 
