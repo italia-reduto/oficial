@@ -117,6 +117,12 @@
             background: var(--card);
             color: var(--subtexto);
             text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .voltar:hover {
+            color: white;
+            border-color: var(--vermelho-claro);
         }
 
         .container {
@@ -283,7 +289,6 @@
         .input::placeholder { color: #555b66; }
         .input:focus { border-color: rgba(196, 30, 58, 0.65); }
 
-        /* Ícone de validação */
         .status-check {
             position: absolute;
             right: 14px;
@@ -296,7 +301,6 @@
             pointer-events: none;
         }
 
-        /* Estado preenchido/valido */
         .campo.valido .input {
             border-color: var(--verde);
             box-shadow: 0 0 0 2px var(--verde-fraco);
@@ -454,7 +458,10 @@
                     <p>Sistema de Registro</p>
                 </div>
             </div>
-            <a href="#" class="voltar"><i class="fas fa-arrow-left"></i></a>
+            <!-- Botão Voltar/Sair FUNCIONAL -->
+            <button class="voltar" id="btnVoltar" title="Voltar / Sair">
+                <i class="fas fa-arrow-left"></i>
+            </button>
         </div>
     </header>
 
@@ -560,10 +567,19 @@
         const preview = document.getElementById('previewFoto');
         const modal = document.getElementById('modalSucesso');
         const btnFecharModal = document.getElementById('btnFecharModal');
+        const btnVoltar = document.getElementById('btnVoltar');
         const campos = document.querySelectorAll('.input');
         const passaporte = form.querySelector('input[inputmode="numeric"]');
 
-        // Bloqueia letras no campo passaporte
+        // Botão Voltar/Sair FUNCIONAL
+        btnVoltar.addEventListener('click', () => {
+            // Opção 1: Voltar para a página anterior (histórico)
+            if (window.history.length > 1) window.history.back();
+            // Opção 2: Se quiser ir para uma página específica, use:
+            // window.location.href = 'index.html'; 
+        });
+
+        // Bloqueia letras no passaporte
         passaporte.addEventListener('keydown', function(e) {
             const permitidos = ['Backspace', 'Tab', 'ArrowLeft', 'ArrowRight', 'Delete', 'Home', 'End'];
             if (permitidos.includes(e.key)) return;
@@ -572,11 +588,8 @@
 
         function verificarCampo(campo) {
             const container = campo.closest('.campo');
-            if (campo.value.trim() !== '') {
-                container.classList.add('valido');
-            } else {
-                container.classList.remove('valido');
-            }
+            if (campo.value.trim() !== '') container.classList.add('valido');
+            else container.classList.remove('valido');
         }
 
         campos.forEach(campo => {
