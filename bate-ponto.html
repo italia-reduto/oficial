@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bate-Ponto | Organização Itália</title>
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+    >
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #08090d;
+            --bg-secondary: #0d0f14;
+            --card: #12151b;
+            --card-hover: #171a21;
+            --border: rgba(255,255,255,0.07);
+
+            --red: #e11d48;
+            --red-light: #fb365d;
+
+            --green: #22c55e;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+            --purple: #8b5cf6;
+
+            --text: #f5f5f5;
+            --muted: #8b929f;
+            --dark-muted: #5d6470;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(225,29,72,0.08),
+                    transparent 35%
+                ),
+                var(--bg);
+
+            color: var(--text);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =========================
+           HEADER
+        ========================= */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+
+            height: 72px;
+            width: 100%;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 6%;
+
+            background: rgba(8,9,13,0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background: rgba(225,29,72,0.12);
+            border: 1px solid rgba(225,29,72,0.22);
+
+            color: var(--red-light);
+            font-size: 18px;
+        }
+
+        .brand-text strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .brand-text span {
+            display: block;
+            margin-top: 3px;
+
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .back-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 10px 15px;
+
+            border-radius: 10px;
+
+            background: var(--card);
+            border: 1px solid var(--border);
+
+            color: var(--muted);
+
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: var(--card-hover);
+            color: var(--text);
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        main {
+            width: min(1050px, 90%);
+            margin: 0 auto;
+
+            padding: 42px 0 70px;
+        }
+
+        .page-header {
+            margin-bottom: 28px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            padding: 7px 11px;
+
+            border-radius: 999px;
+
+            background: rgba(225,29,72,0.09);
+            border: 1px solid rgba(225,29,72,0.18);
+
+            color: var(--red-light);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .page-header h1 {
+            margin-top: 15px;
+
+            font-size: clamp(28px,5vw,42px);
+            line-height: 1.1;
+        }
+
+        .page-header p {
+            max-width: 700px;
+
+            margin-top: 10px;
+
+            color: var(--muted);
+
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           MEMBER
+        ========================= */
+
+        .member-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding: 20px;
+
+            margin-bottom: 18px;
+
+            background: var(--card);
+            border: 1px solid var(--border);
+
+            border-radius: 17px;
+        }
+
+        .member-info {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background: rgba(59,130,246,0.10);
+            border: 1px solid rgba(59,130,246,0.18);
+
+            color: var(--blue);
+        }
+
+        .member-info strong {
+            display: block;
+            font-size: 14px;
+        }
+
+        .member-info span {
+            display: block;
+
+            margin-top: 4px;
+
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 8px 12px;
+
+            border-radius: 999px;
+
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+
+            color: var(--muted);
+
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            border-radius: 50%;
+
+            background: var(--dark-muted);
+        }
+
+        /* =========================
+           TIMER
+        ========================= */
+
+        .timer-card {
+            position: relative;
+            overflow: hidden;
+
+            padding: 34px 25px;
+
+            text-align: center;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(225,29,72,0.08),
+                    rgba(18,21,27,0.98) 48%
+                );
+
+            border: 1px solid var(--border);
+            border-radius: 22px;
+
+            margin-bottom: 18px;
+        }
+
+        .timer-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 230px;
+            height: 230px;
+
+            top: -150px;
+            right: -90px;
+
+            border-radius: 50%;
+
+            background: rgba(225,29,72,0.10);
+
+            filter: blur(10px);
+        }
+
+        .timer-label {
+            position: relative;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 700;
+
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .timer {
+            position: relative;
+
+            margin-top: 10px;
+
+            font-size: clamp(45px,9vw,72px);
+            font-weight: 800;
+
+            letter-spacing: 2px;
+        }
+
+        .timer-description {
+            position: relative;
+
+            margin-top: 7px;
+
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .actions {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 12px;
+
+            margin-bottom: 20px;
+        }
+
+        .action-btn {
+            min-height: 58px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+
+            border-radius: 13px;
+
+            border: 1px solid var(--border);
+            background: var(--card);
+
+            color: var(--text);
+
+            font-size: 13px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            background: var(--card-hover);
+        }
+
+        .start {
+            color: var(--green);
+            background: rgba(34,197,94,0.08);
+            border-color: rgba(34,197,94,0.20);
+        }
+
+        .pause {
+            color: var(--yellow);
+            background: rgba(245,158,11,0.08);
+            border-color: rgba(245,158,11,0.20);
+        }
+
+        .finish {
+            color: var(--red-light);
+            background: rgba(225,29,72,0.08);
+            border-color: rgba(225,29,72,0.20);
+        }
+
+        /* =========================
+           INFO
+        ========================= */
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 14px;
+
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            padding: 19px;
+
+            background: var(--card);
+            border: 1px solid var(--border);
+
+            border-radius: 15px;
+        }
+
+        .info-icon {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 14px;
+
+            border-radius: 9px;
+
+            background: rgba(255,255,255,0.04);
+
+            color: var(--muted);
+        }
+
+        .info-card span {
+            display: block;
+
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .info-card strong {
+            display: block;
+
+            margin-top: 5px;
+
+            font-size: 15px;
+        }
+
+        /* =========================
+           TEAM
+        ========================= */
+
+        .team-card {
+            padding: 22px;
+
+            margin-bottom: 28px;
+
+            background: var(--card);
+            border: 1px solid var(--border);
+
+            border-radius: 19px;
+        }
+
+        .team-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding-bottom: 18px;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .team-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .team-icon {
+            width: 43px;
+            height: 43px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: rgba(139,92,246,0.11);
+            border: 1px solid rgba(139,92,246,0.20);
+
+            color: var(--purple);
+        }
+
+        .team-title h2 {
+            font-size: 17px;
+        }
+
+        .team-title p {
+            margin-top: 4px;
+
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .capacity {
+            padding: 7px 10px;
+
+            border-radius: 8px;
+
+            background: rgba(255,255,255,0.04);
+
+            color: var(--muted);
+
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .team-details {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 12px;
+
+            padding: 18px 0;
+        }
+
+        .detail {
+            padding: 13px;
+
+            border-radius: 11px;
+
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .detail span {
+            display: block;
+
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .detail strong {
+            display: block;
+
+            margin-top: 5px;
+
+            font-size: 12px;
+        }
+
+        /* =========================
+           MEMBERS
+        ========================= */
+
+        .members-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            margin-bottom: 12px;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .members-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .member-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 13px 14px;
+
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.045);
+
+            border-radius: 11px;
+        }
+
+        .member-row-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mini-avatar {
+            width: 32px;
+            height: 32px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 9px;
+
+            background: rgba(255,255,255,0.05);
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        .member-row strong {
+            display: block;
+
+            font-size: 12px;
+        }
+
+        .member-row small {
+            display: block;
+
+            margin-top: 3px;
+
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .member-state {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+
+            color: var(--green);
+
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        .member-state-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--green);
+        }
+
+        /* =========================
+           CHANGE TEAM
+        ========================= */
+
+        .change-team {
+            width: 100%;
+
+            margin-top: 16px;
+            padding: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+
+            border-radius: 11px;
+
+            background: transparent;
+
+            border: 1px solid rgba(59,130,246,0.20);
+
+            color: var(--blue);
+
+            font-size: 12px;
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .change-team:hover {
+            background: rgba(59,130,246,0.07);
+        }
+
+        /* =========================
+           HISTORY
+        ========================= */
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 13px;
+        }
+
+        .section-header h2 {
+            font-size: 17px;
+        }
+
+        .section-header span {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .history {
+            overflow: hidden;
+
+            background: var(--card);
+            border: 1px solid var(--border);
+
+            border-radius: 17px;
+        }
+
+        .history-head,
+        .history-row {
+            display: grid;
+            grid-template-columns:
+                1.1fr
+                0.8fr
+                0.8fr
+                1fr;
+
+            gap: 15px;
+            align-items: center;
+        }
+
+        .history-head {
+            padding: 15px 18px;
+
+            background: rgba(255,255,255,0.025);
+
+            color: var(--dark-muted);
+
+            font-size: 10px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .empty-history {
+            padding: 35px 20px;
+
+            text-align: center;
+        }
+
+        .empty-history i {
+            color: var(--dark-muted);
+            font-size: 25px;
+        }
+
+        .empty-history strong {
+            display: block;
+
+            margin-top: 12px;
+
+            font-size: 13px;
+        }
+
+        .empty-history p {
+            margin-top: 5px;
+
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        /* =========================
+           RESPONSIVO
+        ========================= */
+
+        @media (max-width: 700px) {
+
+            header {
+                padding: 0 5%;
+            }
+
+            .brand-text span {
+                display: none;
+            }
+
+            main {
+                width: 92%;
+                padding-top: 30px;
+            }
+
+            .member-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .actions {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .team-details {
+                grid-template-columns: 1fr;
+            }
+
+            .history {
+                overflow-x: auto;
+            }
+
+            .history-head {
+                min-width: 550px;
+            }
+        }
+
+        @media (max-width: 430px) {
+
+            .back-btn span {
+                display: none;
+            }
+
+            .timer {
+                font-size: 45px;
+            }
+
+            .team-header {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================= -->
+
+    <header>
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i class="fa-solid fa-clock"></i>
+            </div>
+
+            <div class="brand-text">
+                <strong>Organização Itália</strong>
+                <span>Sistema de Bate-Ponto</span>
+            </div>
+
+        </div>
+
+        <button class="back-btn" onclick="voltarRegistros()">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Voltar</span>
+        </button>
+
+    </header>
+
+
+    <!-- =========================
+         CONTEÚDO
+    ========================= -->
+
+    <main>
+
+        <section class="page-header">
+
+            <div class="eyebrow">
+                <i class="fa-solid fa-fingerprint"></i>
+                Controle de jornada
+            </div>
+
+            <h1>Bate-Ponto</h1>
+
+            <p>
+                Controle seu turno, acompanhe sua equipe e
+                mantenha sua operação organizada dentro da
+                Organização Itália.
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             MEMBRO
+        ========================= -->
+
+        <section class="member-card">
+
+            <div class="member-info">
+
+                <div class="avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div>
+
+                    <strong id="nomeUsuario">
+                        Falcão
+                    </strong>
+
+                    <span id="passaporteUsuario">
+                        Passaporte: 17274
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="status">
+
+                <div
+                    class="status-dot"
+                    id="statusDot"
+                ></div>
+
+                <span id="statusText">
+                    Offline
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             CRONÔMETRO
+        ========================= -->
+
+        <section class="timer-card">
+
+            <div class="timer-label">
+                Tempo de turno
+            </div>
+
+            <div
+                class="timer"
+                id="timer"
+            >
+                00:00:00
+            </div>
+
+            <div
+                class="timer-description"
+                id="timerDescription"
+            >
+                Nenhum turno iniciado
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             AÇÕES
+        ========================= -->
+
+        <section class="actions">
+
+            <button
+                class="action-btn start"
+                id="btnIniciar"
+                onclick="iniciarTurno()"
+            >
+                <i class="fa-solid fa-play"></i>
