@@ -8,9 +8,6 @@
     <meta name="color-scheme" content="dark">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        /* =====================================================
-           BASE
-        ===================================================== */
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; }
         body {
@@ -22,9 +19,7 @@
         .btn { border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
         .btn:active { transform: scale(0.97); }
 
-        /* =====================================================
-           CARREGAMENTO
-        ===================================================== */
+        /* Carregamento */
         #carregando {
             position: fixed; inset: 0; z-index: 2000; background: #08090d;
             display: flex; align-items: center; justify-content: center;
@@ -33,9 +28,7 @@
         #carregando i { color: #e11d48; font-size: 28px; }
         #carregando span { color: #8b929f; font-size: 13px; }
 
-        /* =====================================================
-           CABEÇALHO
-        ===================================================== */
+        /* Cabeçalho */
         .topo {
             position: sticky; top: 0; z-index: 100;
             background: rgba(8, 9, 13, 0.88);
@@ -64,9 +57,7 @@
         }
         .usuario-passaporte { margin-top: 2px; font-size: 12px; color: #8b929f; }
 
-        /* =====================================================
-           BOTÃO SAIR
-        ===================================================== */
+        /* Botão sair */
         .btn-saida {
             width: 42px; height: 42px; flex-shrink: 0;
             display: flex; align-items: center; justify-content: center;
@@ -77,17 +68,13 @@
         }
         .btn-saida:active { background: rgba(225,29,72,0.16); }
 
-        /* =====================================================
-           CONTEÚDO
-        ===================================================== */
+        /* Conteúdo */
         main {
             width: 100%; max-width: 700px; margin: 0 auto;
             padding: 20px 16px 25px;
         }
 
-        /* =====================================================
-           CABEÇALHO DA PÁGINA
-        ===================================================== */
+        /* Boas-vindas */
         .boas-vindas {
             position: relative; overflow: hidden;
             background: linear-gradient(145deg, #12151b 0%, #0f1116 100%);
@@ -114,9 +101,7 @@
         }
         .boas-vindas p { position: relative; z-index: 1; color: #8b929f; font-size: 13px; }
 
-        /* =====================================================
-           TÍTULO DE SEÇÃO
-        ===================================================== */
+        /* Título seção */
         .titulo-secao {
             display: flex; align-items: center; justify-content: space-between;
             margin: 20px 3px 10px;
@@ -126,9 +111,7 @@
             text-transform: uppercase; letter-spacing: 0.7px;
         }
 
-        /* =====================================================
-           CARDS DE INFORMAÇÕES
-        ===================================================== */
+        /* Cards info */
         .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
         .info-card {
             position: relative; min-width: 0; background: #12151b;
@@ -156,9 +139,7 @@
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
         }
 
-        /* =====================================================
-           ACESSO RÁPIDO (SÓ REGISTRO - TAMANHO PADRÃO)
-        ===================================================== */
+        /* Acesso rápido */
         .acesso-unico {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -175,9 +156,7 @@
         .acesso span { display: block; font-size: 10px; white-space: nowrap; }
         .acesso:hover i { color: #fb365d; }
 
-        /* =====================================================
-           AVISOS
-        ===================================================== */
+        /* Avisos */
         .avisos {
             background: #12151b; border: 1px solid rgba(255,255,255,0.065);
             border-radius: 18px; padding: 17px; box-shadow: 0 8px 25px rgba(0,0,0,0.12);
@@ -200,9 +179,7 @@
         }
         .aviso p { color: #8b929f; font-size: 12px; line-height: 1.5; }
 
-        /* =====================================================
-           MENU INFERIOR
-        ===================================================== */
+        /* MENU INFERIOR — FUNCIONALIDADE VISUAL ARRUMADA */
         .menu-container {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
             display: flex; align-items: center; justify-content: space-around;
@@ -221,6 +198,7 @@
         }
         .menu-item i { font-size: 17px; transition: transform 0.2s ease; }
         .menu-item span { font-size: 9px; font-weight: 600; }
+        /* CLASSE DE ATIVO — FUNCIONA PARA TODOS OS ITENS */
         .menu-item.active { color: #f5f5f5; }
         .menu-item.active i { color: #fb365d; transform: translateY(-1px); }
         .menu-item.active::before {
@@ -229,9 +207,7 @@
             background: #e11d48; box-shadow: 0 0 12px rgba(225,29,72,0.45);
         }
 
-        /* =====================================================
-           MODAL
-        ===================================================== */
+        /* Modal */
         .modal-fundo {
             display: none; position: fixed; inset: 0; z-index: 1000;
             align-items: center; justify-content: center; padding: 18px;
@@ -271,9 +247,7 @@
             box-shadow: 0 7px 20px rgba(225,29,72,0.20);
         }
 
-        /* =====================================================
-           RESPONSIVO
-        ===================================================== */
+        /* Responsivo */
         @media (max-width: 380px) {
             main { padding-left: 12px; padding-right: 12px; }
             .info-grid { gap: 8px; }
@@ -287,17 +261,13 @@
     </style>
 </head>
 <body>
-<!-- =====================================================
-     CARREGAMENTO
-===================================================== -->
+<!-- Carregamento -->
 <div id="carregando">
     <i class="fas fa-spinner fa-spin"></i>
     <span>Verificando acesso...</span>
 </div>
 
-<!-- =====================================================
-     MODAL DE SAÍDA
-===================================================== -->
+<!-- Modal saída -->
 <div id="modalSaida" class="modal-fundo">
     <div class="modal-conteudo">
         <div class="modal-icone">
@@ -312,9 +282,7 @@
     </div>
 </div>
 
-<!-- =====================================================
-     CABEÇALHO
-===================================================== -->
+<!-- Cabeçalho -->
 <header class="topo">
     <div class="topo-conteudo">
         <div class="usuario-topo">
@@ -330,106 +298,71 @@
     </div>
 </header>
 
-<!-- =====================================================
-     CONTEÚDO PRINCIPAL
-===================================================== -->
+<!-- Conteúdo principal -->
 <main>
-    <!-- Boas-vindas -->
     <section class="boas-vindas">
         <div class="boas-tag"><i class="fas fa-circle"></i> ÁREA RESTRITA</div>
         <h2>Bem-vindo de volta, Falcão</h2>
         <p>Sistema oficial da Organização Itália · Ambiente seguro e monitorado.</p>
     </section>
 
-    <!-- Resumo -->
-    <div class="titulo-secao">
-        <h3>Resumo Geral</h3>
-    </div>
+    <div class="titulo-secao"><h3>Resumo Geral</h3></div>
     <div class="info-grid">
         <div class="info-card">
             <div class="info-top">
                 <div class="info-icone"><i class="fas fa-clock"></i></div>
-                <div class="info-texto">
-                    <div class="info-label">Status de Hoje</div>
-                    <div class="info-valor">Ativo</div>
-                </div>
+                <div class="info-texto"><div class="info-label">Status de Hoje</div><div class="info-valor">Ativo</div></div>
             </div>
         </div>
         <div class="info-card">
             <div class="info-top">
                 <div class="info-icone"><i class="fas fa-chart-line"></i></div>
-                <div class="info-texto">
-                    <div class="info-label">Pontos do Mês</div>
-                    <div class="info-valor">—</div>
-                </div>
+                <div class="info-texto"><div class="info-label">Pontos do Mês</div><div class="info-valor">—</div></div>
             </div>
         </div>
         <div class="info-card">
             <div class="info-top">
                 <div class="info-icone"><i class="fas fa-user-times"></i></div>
-                <div class="info-texto">
-                    <div class="info-label">Faltas</div>
-                    <div class="info-valor">0</div>
-                </div>
+                <div class="info-texto"><div class="info-label">Faltas</div><div class="info-valor">0</div></div>
             </div>
         </div>
         <div class="info-card">
             <div class="info-top">
                 <div class="info-icone"><i class="fas fa-briefcase"></i></div>
-                <div class="info-texto">
-                    <div class="info-label">Cargo</div>
-                    <div class="info-valor">Coordenador</div>
-                </div>
+                <div class="info-texto"><div class="info-label">Cargo</div><div class="info-valor">Coordenador</div></div>
             </div>
         </div>
     </div>
 
-    <!-- ACESSO RÁPIDO: SÓ REGISTRO (PADRÃO, NÃO GIGANTE) -->
-    <div class="titulo-secao">
-        <h3>Acesso Rápido</h3>
-    </div>
+    <div class="titulo-secao"><h3>Acesso Rápido</h3></div>
     <div class="acesso-unico">
         <div class="acesso" id="btnRegistros">
-            <i class="fas fa-folder-open"></i>
-            <span>Registros</span>
+            <i class="fas fa-folder-open"></i><span>Registros</span>
         </div>
     </div>
 
-    <!-- Avisos -->
-    <div class="titulo-secao">
-        <h3>Avisos</h3>
-    </div>
+    <div class="titulo-secao"><h3>Avisos</h3></div>
     <section class="avisos">
-        <div class="aviso">
-            <div class="aviso-ponto"></div>
-            <p>Sistema em funcionamento normal · Área de registros ativa.</p>
-        </div>
-        <div class="aviso">
-            <div class="aviso-ponto"></div>
-            <p>Mantenha seus dados de acesso em sigilo.</p>
-        </div>
+        <div class="aviso"><div class="aviso-ponto"></div><p>Sistema em funcionamento normal · Área de registros ativa.</p></div>
+        <div class="aviso"><div class="aviso-ponto"></div><p>Mantenha seus dados de acesso em sigilo.</p></div>
     </section>
 </main>
 
-<!-- =====================================================
-     MENU INFERIOR
-===================================================== -->
+<!-- MENU FUNCIONAL: Início / Ponto / Registros -->
 <nav class="menu-container">
-    <button class="menu-item active">
-        <i class="fas fa-home"></i>
-        <span>Início</span>
+    <button class="menu-item active" data-pagina="inicio">
+        <i class="fas fa-home"></i><span>Início</span>
     </button>
-    <button class="menu-item" id="menuRegistros">
-        <i class="fas fa-folder-open"></i>
-        <span>Registros</span>
+    <button class="menu-item" data-pagina="ponto">
+        <i class="fas fa-clock"></i><span>Ponto</span>
+    </button>
+    <button class="menu-item" data-pagina="registros">
+        <i class="fas fa-folder-open"></i><span>Registros</span>
     </button>
 </nav>
 
-<!-- =====================================================
-     JAVASCRIPT
-===================================================== -->
 <script>
-// Esconder carregamento após inicialização
+// Carregamento
 window.addEventListener('load', () => {
     setTimeout(() => {
         const el = document.getElementById('carregando');
@@ -438,22 +371,36 @@ window.addEventListener('load', () => {
     }, 600);
 });
 
-// Controle do Modal
+// Modal saída
 function abrirModal() { document.getElementById('modalSaida').style.display = 'flex'; }
 function fecharModal() { document.getElementById('modalSaida').style.display = 'none'; }
 function confirmarSaida() { window.location.href = "login.html"; }
-
-// Link para Registros (botão e menu)
-document.getElementById('btnRegistros').addEventListener('click', () => {
-    window.location.href = "registros.html";
-});
-document.getElementById('menuRegistros').addEventListener('click', () => {
-    window.location.href = "registros.html";
-});
-
-// Fechar modal ao clicar fora
-document.getElementById('modalSaida').addEventListener('click', (e) => {
+document.getElementById('modalSaida').addEventListener('click', e => {
     if (e.target.id === 'modalSaida') fecharModal();
+});
+
+// ==== MENU CLICÁVEL COM DESTAQUE ====
+const itensMenu = document.querySelectorAll('.menu-item');
+
+itensMenu.forEach(item => {
+    item.addEventListener('click', () => {
+        // Remove destaque de todos
+        itensMenu.forEach(i => i.classList.remove('active'));
+        // Adiciona no clicado
+        item.classList.add('active');
+        
+        // Aqui você controla a navegação depois
+        const pagina = item.dataset.pagina;
+        console.log('Ir para:', pagina);
+        // Exemplo futuro: if (pagina === 'ponto') window.location.href = 'ponto.html';
+    });
+});
+
+// Botão acesso rápido registros
+document.getElementById('btnRegistros').addEventListener('click', () => {
+    itensMenu.forEach(i => i.classList.remove('active'));
+    document.querySelector('[data-pagina="registros"]').classList.add('active');
+    window.location.href = "registros.html";
 });
 </script>
 </body>
