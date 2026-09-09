@@ -7,6 +7,15 @@
     <meta name="theme-color" content="#08090d">
     <meta name="color-scheme" content="dark">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CONEXÃO SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjbHdtaWk6bW51cWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; }
@@ -179,7 +188,7 @@
         }
         .aviso p { color: #8b929f; font-size: 12px; line-height: 1.5; }
 
-        /* MENU INFERIOR — FUNCIONALIDADE VISUAL ARRUMADA */
+        /* MENU INFERIOR */
         .menu-container {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
             display: flex; align-items: center; justify-content: space-around;
@@ -198,7 +207,6 @@
         }
         .menu-item i { font-size: 17px; transition: transform 0.2s ease; }
         .menu-item span { font-size: 9px; font-weight: 600; }
-        /* CLASSE DE ATIVO — FUNCIONA PARA TODOS OS ITENS */
         .menu-item.active { color: #f5f5f5; }
         .menu-item.active i { color: #fb365d; transform: translateY(-1px); }
         .menu-item.active::before {
@@ -348,7 +356,7 @@
     </section>
 </main>
 
-<!-- MENU FUNCIONAL: Início / Ponto / Registros -->
+<!-- MENU FUNCIONAL -->
 <nav class="menu-container">
     <button class="menu-item active" data-pagina="inicio">
         <i class="fas fa-home"></i><span>Início</span>
@@ -379,20 +387,23 @@ document.getElementById('modalSaida').addEventListener('click', e => {
     if (e.target.id === 'modalSaida') fecharModal();
 });
 
-// ==== MENU CLICÁVEL COM DESTAQUE ====
+// MENU CLICÁVEL COM NAVEGAÇÃO REAL
 const itensMenu = document.querySelectorAll('.menu-item');
 
 itensMenu.forEach(item => {
     item.addEventListener('click', () => {
-        // Remove destaque de todos
         itensMenu.forEach(i => i.classList.remove('active'));
-        // Adiciona no clicado
         item.classList.add('active');
         
-        // Aqui você controla a navegação depois
         const pagina = item.dataset.pagina;
-        console.log('Ir para:', pagina);
-        // Exemplo futuro: if (pagina === 'ponto') window.location.href = 'ponto.html';
+        
+        if (pagina === 'ponto') {
+            window.location.href = "bate-ponto.html";
+        } else if (pagina === 'registros') {
+            window.location.href = "registros.html";
+        } else {
+            window.location.href = "painel.html";
+        }
     });
 });
 
