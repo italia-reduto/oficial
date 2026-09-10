@@ -2,17 +2,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ORGANIZAÇÃO ITÁLIA · MEU PONTO</title>
     <meta name="theme-color" content="#08090d">
     <meta name="color-scheme" content="dark">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { 
-            scroll-behavior: smooth; 
-            overscroll-behavior: none;
-        }
+        html { scroll-behavior: smooth; }
         body {
             min-height: 100vh;
             background: radial-gradient(circle at 100% 0%, rgba(225,29,72,.10), transparent 32%),
@@ -21,9 +18,6 @@
             color: #f5f5f5;
             font-family: Inter, system-ui, sans-serif;
             padding-bottom: 94px;
-            user-select: none;
-            -webkit-user-select: none;
-            -webkit-touch-callout: none;
         }
         .container { max-width: 720px; margin: 0 auto; padding: 0 16px; }
         .notificacoes-topo {
@@ -244,29 +238,14 @@
 
 <script>
 // ==================================================
-// 🔒 BLOQUEIO TOTAL DE ATUALIZAÇÃO / COMPORTAMENTO
+// ⏱️ LÓGICA DE PONTO 100% REAL: NÃO PARA NUNCA
 // ==================================================
-document.addEventListener('contextmenu', e => e.preventDefault());
-document.addEventListener('keydown', e => {
-    if (e.key === 'F5' || 
-        ((e.ctrlKey || e.metaKey) && (e.key === 'r' || e.key === 'R'))) {
-        e.preventDefault();
-        return false;
-    }
-});
-history.pushState(null, null, location.href);
-window.addEventListener('popstate', () => {
-    history.pushState(null, null, location.href);
-});
-
-// ==================================================
-// ⏱️ LÓGICA DE PONTO (TEMPO REAL, NÃO PARA)
-// ==================================================
-let inicioTimestamp = null;
-let tempoPausado = 0;
-let momentoPausa = null;
-let rodando = false;
-let pausado = false;
+// A lógica usa HORÁRIOS ABSOLUTOS, não depende de intervalo rodando visível
+let inicioTimestamp = null;   // Quando começou (milissegundos desde 1970)
+let tempoPausadoTotal = 0;    // Tempo perdido em pausas
+let momentoPausaAtual = null;  // Quando pausou agora
+let estaRodando = false;
+let estaPausado = false;
 
 const cronEl = document.getElementById('cronometro');
 const btnEl = document.getElementById('btnPrincipal');
@@ -283,19 +262,21 @@ const btnCancelarEl = document.getElementById('btnCancelar');
 const btnConfirmarEl = document.getElementById('btnConfirmar');
 const areaNotifEl = document.getElementById('areaNotif');
 
-function formatar(segundosTotais) {
-    const h = Math.floor(segundosTotais / 3600);
-    const m = Math.floor((segundosTotais % 3600) / 60);
-    const s = segundosTotais % 60;
+// Formata segundos para HH:MM:SS
+function formatarTempo(segundos) {
+    const h = Math.floor(segundos / 3600);
+    const m = Math.floor((segundos % 3600) / 60);
+    const s = Math.floor(segundos % 60);
     return [h, m, s].map(x => String(x).padStart(2, '0')).join(':');
 }
 
-function agora() {
-    const d = new Date();
-    return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+// Hora atual para exibir nos marcadores
+function horaAtualTexto() {
+    const agora = new Date();
+    return `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 }
 
-function notificar(titulo, texto, tipo='sucesso') {
+function mostrarNotificacao(titulo, texto, tipo='sucesso') {
     const div = document.createElement('div');
     div.className = `notif-card ${tipo === 'alerta' ? 'alerta' : 'sucesso'}`;
     div.innerHTML = `
@@ -310,57 +291,79 @@ function notificar(titulo, texto, tipo='sucesso') {
     setTimeout(() => div.remove(), 3000);
 }
 
-function salvarEstadoCompleto() {
+// ==================================================
+// 🔒 SALVAR/CARREGAR NO LOCALSTORAGE (PERMANECE SEMPRE)
+// ==================================================
+function salvarEstado() {
     const estado = {
         inicio: inicioTimestamp,
-        tempoPausado: tempoPausado,
-        momentoPausa: momentoPausa,
-        rodando: rodando,
-        pausado: pausado,
+        tempoPausado: tempoPausadoTotal,
+        momentoPausa: momentoPausaAtual,
+        rodando: estaRodando,
+        pausado: estaPausado,
         horaEntrada: horaEntradaEl.textContent,
         horaPausa: horaPausaEl.textContent
     };
-    localStorage.setItem('pontoEstadoTotal', JSON.stringify(estado));
+    localStorage.setItem('pontoEstado', JSON.stringify(estado));
 }
 
-function carregarEstadoCompleto() {
-    const dados = localStorage.getItem('pontoEstadoTotal');
+function carregarEstado() {
+    const dados = localStorage.getItem('pontoEstado');
     if (!dados) return false;
+    
     try {
         const estado = JSON.parse(dados);
         inicioTimestamp = estado.inicio;
-        tempoPausado = estado.tempoPausado || 0;
-        momentoPausa = estado.momentoPausa;
-        rodando = estado.rodando;
-        pausado = estado.pausado;
+        tempoPausadoTotal = estado.tempoPausado || 0;
+        momentoPausaAtual = estado.momentoPausa;
+        estaRodando = estado.rodando;
+        estaPausado = estado.pausado;
         horaEntradaEl.textContent = estado.horaEntrada || '--:--';
         horaPausaEl.textContent = estado.horaPausa || '--:--';
-        return rodando;
-    } catch (e) { return false; }
+        return estaRodando;
+    } catch (e) {
+        return false;
+    }
 }
 
 function limparEstado() {
-    localStorage.removeItem('pontoEstadoTotal');
+    localStorage.removeItem('pontoEstado');
 }
 
+// ==================================================
+// ⚡ CÁLCULO INTELIGENTE: FUNCIONA DE QUALQUER LUGAR
+// ==================================================
 function atualizarCronometro() {
-    if (!rodando || !inicioTimestamp) return;
-    let decorrido = pausado 
-        ? (momentoPausa - inicioTimestamp - tempoPausado) 
-        : (Date.now() - inicioTimestamp - tempoPausado);
-    cronEl.textContent = formatar(Math.floor(decorrido / 1000));
+    if (!estaRodando || !inicioTimestamp) return;
+
+    // TEMPO TOTAL = AGORA - INICIO - TEMPO QUE FICOU PAUSADO
+    let tempoDecorridoMs;
+    
+    if (estaPausado) {
+        // Se pausado: calcula até o momento da pausa
+        tempoDecorridoMs = momentoPausaAtual - inicioTimestamp - tempoPausadoTotal;
+    } else {
+        // Se rodando: calcula até o milissegundo atual
+        tempoDecorridoMs = Date.now() - inicioTimestamp - tempoPausadoTotal;
+    }
+
+    const segundos = Math.max(0, Math.floor(tempoDecorridoMs / 1000));
+    cronEl.textContent = formatarTempo(segundos);
 }
 
-function atualizarInterface() {
-    if (!rodando) return;
-    statusPillEl.classList.toggle('online', !pausado);
-    statusTextoEl.textContent = pausado ? 'Pausado' : 'Em serviço';
-    modoEl.textContent = pausado ? 'PAUSADO' : 'EM ANDAMENTO';
-    dicaEl.textContent = pausado ? 'Clique para retomar' : 'Jornada em andamento';
-    btnEl.innerHTML = pausado 
+function atualizarInterfaceVisual() {
+    if (!estaRodando) return;
+
+    statusPillEl.classList.toggle('online', !estaPausado);
+    statusTextoEl.textContent = estaPausado ? 'Pausado' : 'Em serviço';
+    modoEl.textContent = estaPausado ? 'PAUSADO' : 'EM ANDAMENTO';
+    dicaEl.textContent = estaPausado ? 'Clique para retomar' : 'Jornada em andamento';
+    
+    btnEl.innerHTML = estaPausado 
         ? '<i class="fas fa-play"></i> &nbsp; Continuar' 
         : '<i class="fas fa-pause"></i> &nbsp; Pausar';
-    btnEl.classList.toggle('pause', !pausado);
+    btnEl.classList.toggle('pause', !estaPausado);
+
     areaBotoesEl.classList.add('ativo');
     if (!document.getElementById('btnEncerrar')) {
         const btnEncerrar = document.createElement('button');
@@ -372,20 +375,34 @@ function atualizarInterface() {
     }
 }
 
+// ==================================================
+// 🚀 INICIALIZAÇÃO: AO ABRIR/ATUALIZAR PÁGINA
+// ==================================================
 window.addEventListener('load', () => {
-    const temPonto = carregarEstadoCompleto();
-    atualizarInterface();
-    setInterval(() => { if (rodando && !pausado) atualizarCronometro(); }, 250);
+    const temJornadaAtiva = carregarEstado();
+    atualizarInterfaceVisual();
+    
+    // ATUALIZA RÁPIDO E CONSTANTE: MESMO EM SEGUNDO PLANO
+    setInterval(() => {
+        if (estaRodando && !estaPausado) {
+            atualizarCronometro();
+        }
+    }, 200);
 });
 
+// ==================================================
+// 🎛️ BOTÃO PRINCIPAL: INICIAR / PAUSAR / RETOMAR
+// ==================================================
 btnEl.addEventListener('click', () => {
-    if (!rodando) {
+    if (!estaRodando) {
+        // 1. INICIAR NOVA JORNADA
         inicioTimestamp = Date.now();
-        tempoPausado = 0;
-        momentoPausa = null;
-        rodando = true;
-        pausado = false;
-        horaEntradaEl.textContent = agora();
+        tempoPausadoTotal = 0;
+        momentoPausaAtual = null;
+        estaRodando = true;
+        estaPausado = false;
+        horaEntradaEl.textContent = horaAtualTexto();
+        
         btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
         btnEl.classList.add('pause');
         modoEl.textContent = 'EM ANDAMENTO';
@@ -393,45 +410,31 @@ btnEl.addEventListener('click', () => {
         statusPillEl.classList.add('online');
         statusTextoEl.textContent = 'Em serviço';
         areaBotoesEl.classList.add('ativo');
+        
         const btnEncerrar = document.createElement('button');
         btnEncerrar.className = 'action action-danger';
         btnEncerrar.id = 'btnEncerrar';
         btnEncerrar.innerHTML = '<i class="fas fa-stop"></i> &nbsp; Encerrar';
         btnEncerrar.addEventListener('click', () => modalEl.classList.add('aberto'));
         areaBotoesEl.appendChild(btnEncerrar);
-        notificar('Ponto', 'Jornada iniciada com sucesso!');
-        salvarEstadoCompleto();
-    } else if (!pausado) {
-        pausado = true;
-        momentoPausa = Date.now();
-        horaPausaEl.textContent = agora();
+        
+        mostrarNotificacao('Ponto', 'Jornada iniciada com sucesso!');
+        salvarEstado();
+    } else if (!estaPausado) {
+        // 2. PAUSAR JORNADA ATIVA
+        estaPausado = true;
+        momentoPausaAtual = Date.now();
+        horaPausaEl.textContent = horaAtualTexto();
+        
         btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Continuar';
         modoEl.textContent = 'PAUSADO';
         dicaEl.textContent = 'Clique para retomar';
         statusPillEl.classList.remove('online');
         statusTextoEl.textContent = 'Pausado';
-        notificar('Pausado', 'Jornada interrompida', 'alerta');
-        salvarEstadoCompleto();
+        
+        mostrarNotificacao('Pausado', 'Jornada interrompida', 'alerta');
+        salvarEstado();
     } else {
-        pausado = false;
-        tempoPausado += Date.now() - momentoPausa;
-        momentoPausa = null;
-        btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
-        modoEl.textContent = 'EM ANDAMENTO';
-        dicaEl.textContent = 'Jornada em andamento';
-        statusPillEl.classList.add('online');
-        statusTextoEl.textContent = 'Em serviço';
-        notificar('Retomado', 'Jornada continuada');
-        salvarEstadoCompleto();
-    }
-});
-
-btnCancelarEl.addEventListener('click', () => modalEl.classList.remove('aberto'));
-btnConfirmarEl.addEventListener('click', () => {
-    modalEl.classList.remove('aberto');
-    rodando = false; pausado = false; inicioTimestamp = null;
-    tempoPausado = 0; momentoPausa = null;
-    cronEl.textContent = '00:00:00';
-    btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Iniciar jornada';
-    btnEl.classList.remove('pause');
-    modoE
+        // 3. RETOMAR APÓS PAUSA
+        estaPausado = false;
+        tempoPausadoTotal += Date.now
