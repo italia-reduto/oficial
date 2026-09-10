@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORGANIZAÇÃO ITÁLIA · MINHA EQUIPE</title>
+    <meta name="theme-color" content="#08090d">
+    <meta name="color-scheme" content="dark">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- CONEXÃO SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjbHdtaWk6bW51cWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body {
+            min-height: 100vh; background: #08090d; color: #f5f5f5;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            padding-bottom: 92px;
+        }
+        button { font-family: inherit; }
+
+        /* Carregamento */
+        #carregando {
+            position: fixed; inset: 0; z-index: 2000; background: #08090d;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 14px;
+        }
+        #carregando i { color: #e11d48; font-size: 28px; }
+        #carregando span { color: #8b929f; font-size: 13px; }
+
+        /* Cabeçalho */
+        .topo {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(8, 9, 13, 0.88);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 14px 18px;
+        }
+        .topo-conteudo {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 700px; margin: 0 auto;
+        }
+        .voltar-btn {
+            width: 42px; height: 42px; border: none; border-radius: 13px;
+            background: rgba(255,255,255,0.04); color: #8b929f;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; cursor: pointer; transition: 0.2s;
+        }
+        .voltar-btn:hover { background: rgba(255,255,255,0.08); }
+        .titulo-pagina { font-size: 17px; font-weight: 700; }
+        .espaco-vazio { width: 42px; }
+
+        /* Conteúdo */
+        main {
+            width: 100%; max-width: 700px; margin: 0 auto;
+            padding: 20px 16px 25px;
+        }
+        .cabecalho-secao {
+            margin-bottom: 24px;
+        }
+        .tag {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 10px; font-weight: 700; text-transform: uppercase;
+            color: #fb365d; background: rgba(225,29,72,0.09);
+            border: 1px solid rgba(225,29,72,0.16);
+            padding: 6px 9px; border-radius: 8px; margin-bottom: 12px;
+        }
+        .cabecalho-secao h1 { font-size: 22px; margin-bottom: 6px; }
+        .subtitulo { color: #8b929f; font-size: 14px; }
+
+        /* Estado Vazio */
+        .card-vazio {
+            background: #12151b; border: 1px solid rgba(255,255,255,0.065);
+            border-radius: 20px; padding: 50px 20px; text-align: center;
+        }
+        .icone-vazio {
+            width: 70px; height: 70px; border-radius: 18px;
+            background: rgba(139, 146, 159, 0.08);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px; font-size: 26px; color: #6b7280;
+        }
+        .card-vazio h2 { font-size: 19px; margin-bottom: 12px; }
+        .card-vazio p { color: #8b929f; font-size: 14px; line-height: 1.6; max-width: 380px; margin: 0 auto; }
+
+        /* Card Equipe */
+        .card-equipe {
+            background: #12151b; border: 1px solid rgba(255,255,255,0.065);
+            border-radius: 20px; padding: 22px; margin-bottom: 16px; display: none;
+        }
+        .nome-equipe { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+        .funcao-equipe { color: #8b929f; font-size: 14px; margin-bottom: 16px; }
+        .info-meta {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 12px; background: rgba(255,255,255,0.03);
+            border-radius: 12px; font-size: 13px; color: #9ca3af; margin-bottom: 20px;
+        }
+        .lista-membros-titulo {
+            font-size: 13px; font-weight: 600; color: #c9cdd4; margin-bottom: 12px;
+        }
+        .membro-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 14px; background: rgba(0,0,0,0.15);
+            border-radius: 12px; margin-bottom: 8px; font-size: 14px;
+        }
+        .membro-nome { display: flex; align-items: center; gap: 10px; }
+        .status { font-size: 12px; font-weight: 600; }
+        .status.ativo { color: #22c55e; }
+        .status.pausado { color: #f59e0b; }
+
+        /* Menu Inferior — MESMA ORDEM */
+        .menu-container {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+            display: flex; align-items: center; justify-content: space-around;
+            height: 78px;
+            padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+            background: rgba(13,15,20,0.94);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.07);
+        }
+        .menu-item {
+            width: 20%; max-width: 80px; height: 58px; border: none;
+            background: transparent; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 5px;
+            color: #5d6470; font-size: 9px; font-weight: 600;
+            cursor: pointer; transition: color 0.2s;
+        }
+        .menu-item i { font-size: 17px; }
+        .menu-item.active { color: #f5f5f5; }
+        .menu-item.active i { color: #fb365d; }
+    </style>
+</head>
+<body>
+<!-- Carregamento -->
+<div id="carregando">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Carregando equipe...</span>
+</div>
+
+<!-- Cabeçalho -->
+<header class="topo">
+    <div class="topo-conteudo">
+        <button class="voltar-btn" onclick="window.location.href='painel.html'">
+            <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="titulo-pagina">Minha Equipe</h1>
+        <div class="espaco-vazio"></div>
+    </div>
+</header>
+
+<main>
+    <div class="cabecalho-secao">
+        <div class="tag"><i class="fas fa-users"></i> INTEGRAÇÃO</div>
+        <h1>Minha Equipe</h1>
+        <p class="subtitulo">Dados da sua alocação e membros</p>
+    </div>
+
+    <!-- Estado sem equipe -->
+    <div class="card-vazio" id="semEquipe">
+        <div class="icone-vazio">
+            <i class="fas fa-user-slash"></i>
+        </div>
+        <h2>Você ainda não está vinculado a uma equipe</h2>
+        <p>Inicie seu ponto de trabalho para que o sistema defina automaticamente sua equipe conforme as regras de distribuição.</p>
+    </div>
+
+    <!-- Dados da equipe -->
+    <div class="card-equipe" id="dadosEquipe">
+        <h2 class="nome-equipe" id="nomeEquipe">—</h2>
+        <p class="funcao-equipe" id="funcaoEquipe">—</p>
+
+        <div class="info-meta">
+            <span>Área / Operação</span>
+            <span id="areaEquipe">—</span>
+        </div>
+        <div class="info-meta">
+            <span>Membros / Limite</span>
+            <span id="limiteEquipe">—</span>
+        </div>
+
+        <h3 class="lista-membros-titulo">Membros da Equipe</h3>
+        <div id="listaMembros"></div>
+    </div>
+</main>
+
+<!-- Menu Inferior -->
+<nav class="menu-container">
+    <button class="menu-item" onclick="window.location.href='painel.html'">
+        <i class="fas fa-home"></i><span>Início</span>
+    </button>
+    <button class="menu-item" onclick="window.location.href='bate-ponto.html'">
+        <i class="fas fa-clock"></i><span>Ponto</span>
+    </button>
+    <button class="menu-item active">
+        <i class="fas fa-users"></i><span>Equipe</span>
+    </button>
+    <button class="menu-item" onclick="window.location.href='registros.html'">
+        <i class="fas fa-folder-open"></i><span>Registros</span>
+    </button>
+</nav>
+
+<script>
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const el = document.getElementById('carregando');
+        if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 400); }
+    }, 500);
+});
+
+// Pronto para integração com Supabase
+async function carregarEquipe() {
+    // Aqui vai a lógica real quando implementar
+    console.log("Pronto para carregar dados da equipe do Supabase");
+}
+carregarEquipe();
+</script>
+</body>
+</html>
+
