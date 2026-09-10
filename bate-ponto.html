@@ -7,525 +7,155 @@
     <meta name="theme-color" content="#08090d">
     <meta name="color-scheme" content="dark">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; }
-
         body {
             min-height: 100vh;
-            background:
-                radial-gradient(circle at 100% 0%, rgba(225,29,72,.10), transparent 32%),
-                radial-gradient(circle at 0% 45%, rgba(139,92,246,.06), transparent 28%),
-                #08090d;
+            background: radial-gradient(circle at 100% 0%, rgba(225,29,72,.10), transparent 32%),
+                        radial-gradient(circle at 0% 45%, rgba(139,92,246,.06), transparent 28%),
+                        #08090d;
             color: #f5f5f5;
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            font-family: Inter, system-ui, sans-serif;
             padding-bottom: 94px;
         }
-
-        button { font-family: inherit; }
-        button:active { transform: scale(.97); }
-
-        .container {
-            width: 100%;
-            max-width: 720px;
-            margin: 0 auto;
-            padding: 0 16px;
-        }
-
-        /* Notificações */
+        .container { max-width: 720px; margin: 0 auto; padding: 0 16px; }
         .notificacoes-topo {
-            position: fixed;
-            top: 12px;
-            left: 16px;
-            right: 16px;
-            z-index: 99999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            pointer-events: none;
+            position: fixed; top: 12px; left: 16px; right: 16px; z-index: 99999;
+            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
         }
-
         .notif-card {
             background: linear-gradient(135deg, #1a1e27, #15181f);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 16px;
-            padding: 14px 18px;
-            box-shadow: 0 12px 40px rgba(0,0,0,.35);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transform: translateY(-20px);
-            opacity: 0;
-            transition: all .35s cubic-bezier(.4,0,.2,1);
-            pointer-events: auto;
-            max-width: 100%;
+            border: 1px solid rgba(255,255,255,.08); border-radius: 16px;
+            padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+            transform: translateY(-20px); opacity: 0; transition: all .35s ease;
         }
-
-        .notif-card.mostrar {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
+        .notif-card.mostrar { transform: translateY(0); opacity: 1; }
         .notif-card.sucesso { border-left: 3px solid #22c55e; }
-        .notif-card.alerta { border-left: 3px solid #f59e0b; }
+        .notif-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(34,197,94,.12); color: #22c55e; }
+        .notif-conteudo { flex: 1; }
+        .notif-titulo { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
+        .notif-texto { font-size: 12px; color: #94a3b8; }
 
-        .notif-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .sucesso .notif-icon { background: rgba(34,197,94,.12); color: #22c55e; }
-        .alerta .notif-icon { background: rgba(245,158,11,.12); color: #f59e0b; }
-
-        .notif-conteudo { flex: 1; min-width: 0; }
-        .notif-titulo { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: #f1f5f9; }
-        .notif-texto { font-size: 12px; color: #94a3b8; line-height: 1.4; }
-
-        /* Cabeçalho */
         .header {
-            position: sticky;
-            top: 0;
-            z-index: 500;
-            background: rgba(8,9,13,.88);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,.06);
-            margin-top: 10px;
+            position: sticky; top: 0; z-index: 500;
+            background: rgba(8,9,13,.88); backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255,255,255,.06); margin-top: 10px;
         }
-
-        .header-inner {
-            max-width: 720px;
-            margin: auto;
-            padding: 13px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .perfil {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            min-width: 0;
-        }
-
+        .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; }
+        .perfil { display: flex; align-items: center; gap: 11px; }
         .avatar {
-            width: 43px;
-            height: 43px;
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 43px; height: 43px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
             background: linear-gradient(145deg, rgba(225,29,72,.20), rgba(225,29,72,.05));
-            border: 1px solid rgba(225,29,72,.22);
-            color: #fb365d;
-            font-size: 17px;
-            flex-shrink: 0;
+            border: 1px solid rgba(225,29,72,.22); color: #fb365d; font-size: 17px;
         }
-
-        .perfil-nome {
-            font-size: 14px;
-            font-weight: 750;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .perfil-detalhe {
-            margin-top: 3px;
-            color: #777f8c;
-            font-size: 11px;
-        }
-
+        .perfil-nome { font-size: 14px; font-weight: 750; }
+        .perfil-passaporte { font-size: 11px; color: #777f8c; margin-top: 3px; }
         .btn-voltar {
-            border: 1px solid rgba(255,255,255,.07);
-            background: #11141a;
-            color: #9aa1ad;
-            border-radius: 12px;
-            padding: 10px 13px;
-            font-size: 12px;
-            font-weight: 700;
+            border: 1px solid rgba(255,255,255,.07); background: #11141a;
+            color: #9aa1ad; border-radius: 12px; padding: 10px 13px; font-size: 12px; font-weight: 700;
             cursor: pointer;
         }
 
-        /* Conteúdo */
         .page-title { padding: 24px 0 8px; }
-
         .eyebrow {
-            display: inline-flex;
-            align-items: center;
-            gap: 7px;
-            color: #fb365d;
-            background: rgba(225,29,72,.08);
-            border: 1px solid rgba(225,29,72,.15);
-            border-radius: 9px;
-            padding: 6px 9px;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .7px;
-            text-transform: uppercase;
+            display: inline-flex; align-items: center; gap: 7px;
+            color: #fb365d; background: rgba(225,29,72,.08); border: 1px solid rgba(225,29,72,.15);
+            border-radius: 9px; padding: 6px 9px; font-size: 10px; font-weight: 800; text-transform: uppercase;
             margin-bottom: 12px;
         }
+        .page-title h1 { font-size: 28px; margin-bottom: 7px; }
+        .subtitle { color: #8b929f; font-size: 13px; }
 
-        .eyebrow i { font-size: 8px; }
-
-        .page-title h1 {
-            font-size: 28px;
-            line-height: 1.15;
-            margin-bottom: 7px;
-        }
-
-        .subtitle {
-            color: #8b929f;
-            font-size: 13px;
-            line-height: 1.55;
-        }
-
-        /* Cartão Identidade */
         .identity {
-            margin-top: 18px;
-            padding: 16px;
-            border: 1px solid rgba(255,255,255,.065);
-            border-radius: 18px;
-            background: linear-gradient(135deg, rgba(18,21,27,.96), rgba(13,15,20,.96));
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
+            margin-top: 18px; padding: 16px; border: 1px solid rgba(255,255,255,.065);
+            border-radius: 18px; background: linear-gradient(135deg, rgba(18,21,27,.96), rgba(13,15,20,.96));
+            display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
-
-        .identity-left {
-            display: flex;
-            align-items: center;
-            gap: 11px;
-            min-width: 0;
-        }
-
+        .identity-left { display: flex; align-items: center; gap: 11px; }
         .identity-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #191c23;
-            color: #a78bfa;
-            border: 1px solid rgba(167,139,250,.13);
+            width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
+            background: #191c23; color: #a78bfa; border: 1px solid rgba(167,139,250,.13);
         }
-
         .identity-name { font-size: 13px; font-weight: 750; }
-        .identity-meta { margin-top: 3px; color: #6f7784; font-size: 11px; }
-
+        .identity-meta { font-size: 11px; color: #6f7784; margin-top: 3px; }
         .status-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 7px 9px;
-            border-radius: 999px;
-            background: rgba(148,163,184,.08);
-            border: 1px solid rgba(148,163,184,.12);
-            color: #89919e;
-            font-size: 10px;
-            font-weight: 750;
-            white-space: nowrap;
+            display: inline-flex; align-items: center; gap: 6px; padding: 7px 9px; border-radius: 999px;
+            background: rgba(148,163,184,.08); border: 1px solid rgba(148,163,184,.12);
+            color: #89919e; font-size: 10px; font-weight: 750;
         }
-
-        .status-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: #6b7280;
-        }
-
-        .status-pill.online {
-            color: #4ade80;
-            background: rgba(34,197,94,.08);
-            border-color: rgba(34,197,94,.16);
-        }
+        .status-pill.online { color: #4ade80; background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.16); }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #6b7280; }
         .status-pill.online .status-dot { background: #22c55e; }
 
-        .status-pill.paused {
-            color: #fbbf24;
-            background: rgba(245,158,11,.08);
-            border-color: rgba(245,158,11,.16);
-        }
-        .status-pill.paused .status-dot { background: #f59e0b; }
-
-        /* Cartão Cronômetro */
         .clock-card {
-            position: relative;
-            overflow: hidden;
-            margin-top: 12px;
-            padding: 25px 20px 20px;
-            border-radius: 22px;
-            border: 1px solid rgba(225,29,72,.14);
+            position: relative; overflow: hidden; margin-top: 12px; padding: 25px 20px 20px;
+            border-radius: 22px; border: 1px solid rgba(225,29,72,.14);
             background: linear-gradient(145deg, rgba(35,14,23,.90), rgba(15,17,22,.98) 58%);
-            box-shadow: 0 18px 45px rgba(0,0,0,.24);
         }
-
-        .clock-top {
-            position: relative;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: #777f8c;
-            font-size: 10px;
-            font-weight: 800;
-            letter-spacing: .8px;
-            text-transform: uppercase;
-        }
-
+        .clock-top { display: flex; justify-content: space-between; font-size: 10px; color: #777f8c; font-weight: 800; text-transform: uppercase; }
         .clock-mode { color: #fb365d; }
+        .timer { font-size: clamp(38px, 12vw, 55px); font-weight: 850; text-align: center; margin: 22px 0 5px; font-variant-numeric: tabular-nums; }
+        .timer-sub { text-align: center; color: #777f8c; font-size: 11px; margin-bottom: 21px; }
 
-        .timer {
-            position: relative;
-            margin: 22px 0 5px;
-            text-align: center;
-            font-size: clamp(38px, 12vw, 55px);
-            font-weight: 850;
-            letter-spacing: 1px;
-            font-variant-numeric: tabular-nums;
-        }
+        .markers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 4px 20px; }
+        .marker { background: #101319; border: 1px solid rgba(255,255,255,.055); border-radius: 13px; padding: 12px 8px; text-align: center; }
+        .marker-label { font-size: 9px; color: #626a77; text-transform: uppercase; margin-bottom: 5px; }
+        .marker-value { font-size: 12px; color: #dfe2e7; font-weight: 750; }
 
-        .timer-sub {
-            position: relative;
-            text-align: center;
-            color: #777f8c;
-            font-size: 11px;
-            margin-bottom: 21px;
-        }
-
-        /* Marcadores */
-        .markers {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin: 0 4px 20px;
-        }
-
-        .marker {
-            background: #101319;
-            border: 1px solid rgba(255,255,255,.055);
-            border-radius: 13px;
-            padding: 12px 8px;
-            text-align: center;
-        }
-
-        .marker-label {
-            display: block;
-            color: #626a77;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: .45px;
-            margin-bottom: 5px;
-        }
-
-        .marker-value {
-            display: block;
-            color: #dfe2e7;
-            font-size: 12px;
-            font-weight: 750;
-        }
-
-        /* Botões */
-        .actions {
-            position: relative;
-            display: grid;
-            gap: 9px;
-        }
-
+        .actions { display: grid; gap: 9px; }
         .actions.ativo { grid-template-columns: 1fr 1fr; }
-
         .action {
-            border: none;
-            min-height: 49px;
-            border-radius: 13px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 800;
-            transition: .18s ease;
+            border: none; min-height: 49px; border-radius: 13px; font-size: 12px; font-weight: 800;
+            cursor: pointer; transition: .18s ease;
         }
+        .action-main { background: linear-gradient(135deg, #e11d48, #c9183f); color: white; box-shadow: 0 9px 25px rgba(225,29,72,.17); }
+        .action-main.pause { background: linear-gradient(135deg, #b7791f, #d89b16); }
+        .action-danger { background: rgba(225,29,72,.08); color: #fb365d; border: 1px solid rgba(225,29,72,.14); }
 
-        .action-main {
-            background: linear-gradient(135deg, #e11d48, #c9183f);
-            color: white;
-            box-shadow: 0 9px 25px rgba(225,29,72,.17);
-        }
-
-        .action-main.pause {
-            background: linear-gradient(135deg, #b7791f, #d89b16);
-            box-shadow: 0 9px 25px rgba(245,158,11,.12);
-        }
-
-        .action-danger {
-            background: rgba(225,29,72,.08);
-            color: #fb365d;
-            border: 1px solid rgba(225,29,72,.14);
-        }
-
-        /* Menu Inferior */
         .bottom-menu {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: 800;
-            height: 76px;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
-            background: rgba(13,15,20,.95);
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            border-top: 1px solid rgba(255,255,255,.07);
+            position: fixed; bottom: 0; left: 0; right: 0; height: 76px;
+            background: rgba(13,15,20,.95); backdrop-filter: blur(22px);
+            display: flex; border-top: 1px solid rgba(255,255,255,.07);
         }
-
         .bottom-item {
-            width: 33.33%;
-            max-width: 90px;
-            height: 58px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            background: transparent;
-            border: none;
-            color: #5d6470;
-            cursor: pointer;
+            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; background: none; border: none; color: #5d6470; cursor: pointer;
         }
-
-        .bottom-item i { font-size: 17px; }
-        .bottom-item span { font-size: 9px; font-weight: 650; }
         .bottom-item.active { color: #f5f5f5; }
         .bottom-item.active i { color: #fb365d; }
+        .bottom-item i { font-size: 17px; }
+        .bottom-item span { font-size: 9px; font-weight: 650; }
 
-        /* Modal */
         .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,.75);
-            backdrop-filter: blur(6px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9998;
-            padding: 20px;
-            opacity: 0;
-            visibility: hidden;
-            transition: .25s ease;
+            position: fixed; inset: 0; background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
+            display: flex; align-items: center; justify-content: center; z-index: 9998;
+            opacity: 0; visibility: hidden; transition: .25s ease;
         }
-
-        .modal-overlay.aberto {
-            opacity: 1;
-            visibility: visible;
-        }
-
+        .modal-overlay.aberto { opacity: 1; visibility: visible; }
         .modal-box {
-            background: linear-gradient(145deg, #171a21, #12141a);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 340px;
-            padding: 26px 22px 22px;
-            box-shadow: 0 25px 60px rgba(0,0,0,.45);
-            transform: translateY(15px);
-            transition: transform .25s ease;
+            background: linear-gradient(145deg, #171a21, #12141a); border: 1px solid rgba(255,255,255,.08);
+            border-radius: 20px; padding: 26px 22px; max-width: 340px; width: 90%;
         }
-
-        .modal-overlay.aberto .modal-box { transform: translateY(0); }
-
-        .modal-icon {
-            text-align: center;
-            margin-bottom: 16px;
-        }
-
-        .modal-icon i {
-            font-size: 36px;
-            color: #f59e0b;
-        }
-
-        .modal-title {
-            font-size: 17px;
-            font-weight: 750;
-            text-align: center;
-            margin-bottom: 10px;
-            color: #f8fafc;
-        }
-
-        .modal-text {
-            font-size: 14px;
-            color: #a1a9b8;
-            text-align: center;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .modal-btn {
-            flex: 1;
-            padding: 12px;
-            border-radius: 12px;
-            border: none;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: .2s ease;
-        }
-
-        .btn-cancel {
-            background: #1e222b;
-            color: #cbd5e1;
-            border: 1px solid rgba(255,255,255,.06);
-        }
-
-        .btn-cancel:hover { background: #272c36; }
-
-        .btn-confirm {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            color: white;
-            box-shadow: 0 8px 20px rgba(220,38,38,.22);
-        }
-
-        .btn-confirm:hover { background: linear-gradient(135deg, #ef4444, #dc2626); }
-
-        @media (max-width: 380px) {
-            .container { padding: 0 12px; }
-            .clock-card { padding-left: 15px; padding-right: 15px; }
-            .timer { font-size: 36px; }
-        }
+        .modal-icon { text-align: center; margin-bottom: 16px; color: #f59e0b; font-size: 36px; }
+        .modal-titulo { font-size: 17px; text-align: center; margin-bottom: 10px; }
+        .modal-texto { color: #a1a9b8; text-align: center; margin-bottom: 24px; font-size: 14px; }
+        .modal-botoes { display: flex; gap: 10px; }
+        .modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; }
+        .btn-cancelar { background: #1e222b; color: #cbd5e1; }
+        .btn-confirmar { background: #dc2626; color: white; }
     </style>
 </head>
 <body>
+<div class="notificacoes-topo" id="areaNotif"></div>
 
-<!-- Notificações -->
-<div class="notificacoes-topo" id="notifArea"></div>
-
-<!-- Cabeçalho -->
 <header class="header">
     <div class="header-inner container">
         <div class="perfil">
             <div class="avatar"><i class="fas fa-user-shield"></i></div>
             <div>
                 <div class="perfil-nome">Falcão</div>
-                <div class="perfil-detalhe">Passaporte: 17274 · Meu Ponto</div>
+                <div class="perfil-passaporte">Passaporte: 17274 · Meu Ponto</div>
             </div>
         </div>
         <button class="btn-voltar" onclick="window.location.href='painel.html'">
@@ -538,7 +168,7 @@
     <section class="page-title">
         <div class="eyebrow"><i class="fas fa-circle"></i> CONTROLE DE JORNADA</div>
         <h1>Meu Ponto</h1>
-        <p class="subtitle">Registre sua jornada, acompanhe sua equipe e mantenha seu histórico organizado.</p>
+        <p class="subtitle">Registre sua jornada de trabalho</p>
     </section>
 
     <section class="identity">
@@ -550,117 +180,174 @@
             </div>
         </div>
         <div class="status-pill" id="statusPill">
-            <span class="status-dot"></span>
-            <span id="statusText">Fora</span>
+            <span class="status-dot"></span> <span id="statusTexto">Fora</span>
         </div>
     </section>
 
     <section class="clock-card">
         <div class="clock-top">
             <span>Jornada atual</span>
-            <span class="clock-mode" id="modeText">AGUARDANDO</span>
+            <span class="clock-mode" id="modoTexto">AGUARDANDO</span>
         </div>
 
-        <div class="timer" id="timer">00:00:00</div>
-        <div class="timer-sub" id="timerInfo">Nenhum turno aberto neste momento</div>
+        <div class="timer" id="cronometro">00:00:00</div>
+        <div class="timer-sub" id="dica">Nenhum turno aberto</div>
 
         <div class="markers">
-            <div class="marker">
-                <span class="marker-label">Entrada</span>
-                <span class="marker-value" id="inValue">--:--</span>
-            </div>
-            <div class="marker">
-                <span class="marker-label">Última Pausa</span>
-                <span class="marker-value" id="pauseValue">--:--</span>
-            </div>
-            <div class="marker">
-                <span class="marker-label">Saída</span>
-                <span class="marker-value" id="outValue">--:--</span>
-            </div>
+            <div class="marker"><span class="marker-label">Entrada</span> <span class="marker-value" id="horaEntrada">--:--</span></div>
+            <div class="marker"><span class="marker-label">Última Pausa</span> <span class="marker-value" id="horaPausa">--:--</span></div>
+            <div class="marker"><span class="marker-label">Saída</span> <span class="marker-value" id="horaSaida">--:--</span></div>
         </div>
 
-        <div class="actions" id="actionsArea">
-            <button class="action action-main" id="mainBtn">
+        <div class="actions" id="areaBotoes">
+            <button class="action action-main" id="btnPrincipal">
                 <i class="fas fa-play"></i> &nbsp; Iniciar jornada
             </button>
         </div>
     </section>
 </main>
 
-<!-- Modal -->
-<div class="modal-overlay" id="confirmModal">
+<div class="modal-overlay" id="modalConfirmar">
     <div class="modal-box">
         <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
-        <h3 class="modal-title">Encerrar Jornada</h3>
-        <p class="modal-text">
-            Você tem certeza que deseja finalizar sua jornada?<br>
-            <strong>Essa ação não pode ser desfeita.</strong>
-        </p>
-        <div class="modal-buttons">
-            <button class="modal-btn btn-cancel" id="cancelBtn">Cancelar</button>
-            <button class="modal-btn btn-confirm" id="confirmBtn">Sim, Encerrar</button>
+        <h3 class="modal-titulo">Encerrar Jornada</h3>
+        <p class="modal-texto">Tem certeza? Essa ação não pode ser desfeita.</p>
+        <div class="modal-botoes">
+            <button class="modal-btn btn-cancelar" id="btnCancelar">Cancelar</button>
+            <button class="modal-btn btn-confirmar" id="btnConfirmar">Sim, Encerrar</button>
         </div>
     </div>
 </div>
 
-<!-- Menu -->
 <nav class="bottom-menu">
     <button class="bottom-item" onclick="window.location.href='painel.html'">
-        <i class="fas fa-home"></i>
-        <span>Início</span>
+        <i class="fas fa-home"></i> <span>Início</span>
     </button>
     <button class="bottom-item active">
-        <i class="fas fa-clock"></i>
-        <span>Ponto</span>
+        <i class="fas fa-clock"></i> <span>Ponto</span>
     </button>
     <button class="bottom-item" onclick="window.location.href='registros.html'">
-        <i class="fas fa-folder-open"></i>
-        <span>Registros</span>
+        <i class="fas fa-folder-open"></i> <span>Registros</span>
     </button>
 </nav>
 
 <script>
-    // Variáveis
-    let estado = 'parado';
-    let tempoInicio = null;
-    let intervalo = null;
-    let tempoDecorrido = 0;
+let intervalo = null;
+let segundos = 0;
+let rodando = false;
+let pausado = false;
 
-    // Elementos
-    const timerEl = document.getElementById('timer');
-    const timerInfoEl = document.getElementById('timerInfo');
-    const modeTextEl = document.getElementById('modeText');
-    const statusPillEl = document.getElementById('statusPill');
-    const statusTextEl = document.getElementById('statusText');
-    const actionsAreaEl = document.getElementById('actionsArea');
-    const mainBtnEl = document.getElementById('mainBtn');
-    const inValueEl = document.getElementById('inValue');
-    const pauseValueEl = document.getElementById('pauseValue');
-    const outValueEl = document.getElementById('outValue');
-    const confirmModalEl = document.getElementById('confirmModal');
-    const cancelBtnEl = document.getElementById('cancelBtn');
-    const confirmBtnEl = document.getElementById('confirmBtn');
-    const notifAreaEl = document.getElementById('notifArea');
+const cronEl = document.getElementById('cronometro');
+const btnEl = document.getElementById('btnPrincipal');
+const modoEl = document.getElementById('modoTexto');
+const dicaEl = document.getElementById('dica');
+const statusPillEl = document.getElementById('statusPill');
+const statusTextoEl = document.getElementById('statusTexto');
+const areaBotoesEl = document.getElementById('areaBotoes');
+const horaEntradaEl = document.getElementById('horaEntrada');
+const horaPausaEl = document.getElementById('horaPausa');
+const horaSaidaEl = document.getElementById('horaSaida');
+const modalEl = document.getElementById('modalConfirmar');
+const btnCancelarEl = document.getElementById('btnCancelar');
+const btnConfirmarEl = document.getElementById('btnConfirmar');
+const areaNotifEl = document.getElementById('areaNotif');
 
-    // Notificação
-    function mostrarNotificacao(titulo, texto, tipo = 'sucesso') {
-        const notif = document.createElement('div');
-        notif.className = `notif-card ${tipo}`;
-        notif.innerHTML = `
-            <div class="notif-icon">
-                <i class="fas ${tipo === 'sucesso' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
-            </div>
-            <div class="notif-conteudo">
-                <div class="notif-titulo">${titulo}</div>
-                <div class="notif-texto">${texto}</div>
-            </div>
-        `;
-        notifAreaEl.appendChild(notif);
-        setTimeout(() => notif.classList.add('mostrar'), 10);
-        setTimeout(() => notif.remove(), 3500);
+function formatar(s) {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const seg = s % 60;
+    return [h,m,seg].map(x => String(x).padStart(2,'0')).join(':');
+}
+
+function agora() {
+    const d = new Date();
+    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function notificar(titulo, texto, tipo='sucesso') {
+    const div = document.createElement('div');
+    div.className = `notif-card ${tipo}`;
+    div.innerHTML = `
+        <div class="notif-icon"><i class="fas fa-check-circle"></i></div>
+        <div class="notif-conteudo">
+            <div class="notif-titulo">${titulo}</div>
+            <div class="notif-texto">${texto}</div>
+        </div>
+    `;
+    areaNotifEl.appendChild(div);
+    setTimeout(() => div.classList.add('mostrar'), 10);
+    setTimeout(() => div.remove(), 3000);
+}
+
+btnEl.addEventListener('click', () => {
+    if (!rodando) {
+        rodando = true;
+        intervalo = setInterval(() => {
+            segundos++;
+            cronEl.textContent = formatar(segundos);
+        }, 1000);
+        btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
+        btnEl.classList.add('pause');
+        modoEl.textContent = 'EM ANDAMENTO';
+        dicaEl.textContent = 'Jornada em andamento';
+        statusPillEl.classList.add('online');
+        statusTextoEl.textContent = 'Em serviço';
+        horaEntradaEl.textContent = agora();
+        areaBotoesEl.classList.add('ativo');
+        
+        const btnEncerrar = document.createElement('button');
+        btnEncerrar.className = 'action action-danger';
+        btnEncerrar.id = 'btnEncerrar';
+        btnEncerrar.innerHTML = '<i class="fas fa-stop"></i> &nbsp; Encerrar';
+        btnEncerrar.addEventListener('click', () => modalEl.classList.add('aberto'));
+        areaBotoesEl.appendChild(btnEncerrar);
+        
+        notificar('Ponto', 'Jornada iniciada com sucesso!');
+    } else if (!pausado) {
+        pausado = true;
+        clearInterval(intervalo);
+        btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Continuar';
+        modoEl.textContent = 'PAUSADO';
+        dicaEl.textContent = 'Clique para retomar';
+        statusPillEl.classList.remove('online');
+        statusTextoEl.textContent = 'Pausado';
+        horaPausaEl.textContent = agora();
+        notificar('Pausado', 'Jornada interrompida', 'alerta');
+    } else {
+        pausado = false;
+        intervalo = setInterval(() => {
+            segundos++;
+            cronEl.textContent = formatar(segundos);
+        }, 1000);
+        btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
+        modoEl.textContent = 'EM ANDAMENTO';
+        dicaEl.textContent = 'Jornada em andamento';
+        statusPillEl.classList.add('online');
+        statusTextoEl.textContent = 'Em serviço';
+        notificar('Retomado', 'Jornada continuada');
     }
+});
 
-    // Formatar tempo
-    function formatarTempo(segundos) {
-        const h = Math.floor(segundos / 3600);
-        const m = Math.
+btnCancelarEl.addEventListener('click', () => modalEl.classList.remove('aberto'));
+
+btnConfirmarEl.addEventListener('click', () => {
+    modalEl.classList.remove('aberto');
+    clearInterval(intervalo);
+    rodando = false;
+    pausado = false;
+    segundos = 0;
+    cronEl.textContent = '00:00:00';
+    btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Iniciar jornada';
+    btnEl.classList.remove('pause');
+    modoEl.textContent = 'AGUARDANDO';
+    dicaEl.textContent = 'Nenhum turno aberto';
+    statusPillEl.classList.remove('online');
+    statusTextoEl.textContent = 'Fora';
+    horaSaidaEl.textContent = agora();
+    document.getElementById('btnEncerrar')?.remove();
+    areaBotoesEl.classList.remove('ativo');
+    notificar('Encerrado', 'Jornada finalizada com sucesso!');
+});
+</script>
+</body>
+</html>
