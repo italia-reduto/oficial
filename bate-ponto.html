@@ -237,6 +237,7 @@
 </nav>
 
 <script>
+// ========== VARIÁVEIS ==========
 let intervalo = null;
 let segundos = 0;
 let rodando = false;
@@ -257,6 +258,7 @@ const btnCancelarEl = document.getElementById('btnCancelar');
 const btnConfirmarEl = document.getElementById('btnConfirmar');
 const areaNotifEl = document.getElementById('areaNotif');
 
+// ========== FUNÇÕES AUXILIARES ==========
 function formatar(s) {
     const h = Math.floor(s / 3600);
     const m = Math.floor((s % 3600) / 60);
@@ -284,20 +286,92 @@ function notificar(titulo, texto, tipo='sucesso') {
     setTimeout(() => div.remove(), 3000);
 }
 
-btnEl.addEventListener('click', () => {
-    if (!rodando) {
-        rodando = true;
+// ========== SALVAR / CARREGAR DADOS (LOCAL) ==========
+function salvarEstado() {
+    const estado = {
+        segundos, rodando, pausado,
+        horaEntrada: horaEntradaEl.textContent,
+        horaPausa: horaPausaEl.textContent
+    };
+    localStorage.setItem('meuPontoEstado', JSON.stringify(estado));
+}
+
+function carregarEstado() {
+    const dados = localStorage.getItem('meuPontoEstado');
+    if (!dados) return false;
+
+    try {
+        const estado = JSON.parse(dados);
+        segundos = estado.segundos || 0;
+        rodando = estado.rodando || false;
+        pausado = estado.pausado || false;
+        horaEntradaEl.textContent = estado.horaEntrada || '--:--';
+        horaPausaEl.textContent = estado.horaPausa || '--:--';
+        return rodando;
+    } catch (e) { return false; }
+}
+
+function limparEstado() {
+    localStorage.removeItem('meuPontoEstado');
+}
+
+function atualizarInterface() {
+    cronEl.textContent = formatar(segundos);
+
+    if (rodando) {
+        statusPillEl.classList.toggle('online', !pausado);
+        statusTextoEl.textContent = pausado ? 'Pausado' : 'Em serviço';
+        modoEl.textContent = pausado ? 'PAUSADO' : 'EM ANDAMENTO';
+        dicaEl.textContent = pausado ? 'Clique para retomar' : 'Jornada em andamento';
+        
+        btnEl.innerHTML = pausado 
+            ? '<i class="fas fa-play"></i> &nbsp; Continuar' 
+            : '<i class="fas fa-pause"></i> &nbsp; Pausar';
+        btnEl.classList.toggle('pause', !pausado);
+
+        areaBotoesEl.classList.add('ativo');
+        if (!document.getElementById('btnEncerrar')) {
+            const btnEncerrar = document.createElement('button');
+            btnEncerrar.className = 'action action-danger';
+            btnEncerrar.id = 'btnEncerrar';
+            btnEncerrar.innerHTML = '<i class="fas fa-stop"></i> &nbsp; Encerrar';
+            btnEncerrar.onclick = () => modalEl.classList.add('aberto');
+            areaBotoesEl.appendChild(btnEncerrar);
+        }
+    }
+}
+
+// ========== INICIAR AO ABRIR ==========
+window.addEventListener('load', () => {
+    const temPontoAtivo = carregarEstado();
+    atualizarInterface();
+    if (temPontoAtivo && !pausado) {
         intervalo = setInterval(() => {
             segundos++;
             cronEl.textContent = formatar(segundos);
+            salvarEstado(); // Salva a cada segundo
         }, 1000);
+    }
+});
+
+// ========== BOTÃO PRINCIPAL ==========
+btnEl.addEventListener('click', () => {
+    if (!rodando) {
+        rodando = true;
+        pausado = false;
+        horaEntradaEl.textContent = agora();
+        intervalo = setInterval(() => {
+            segundos++;
+            cronEl.textContent = formatar(segundos);
+            salvarEstado();
+        }, 1000);
+        
         btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
         btnEl.classList.add('pause');
         modoEl.textContent = 'EM ANDAMENTO';
         dicaEl.textContent = 'Jornada em andamento';
         statusPillEl.classList.add('online');
         statusTextoEl.textContent = 'Em serviço';
-        horaEntradaEl.textContent = agora();
         areaBotoesEl.classList.add('ativo');
         
         const btnEncerrar = document.createElement('button');
@@ -308,39 +382,50 @@ btnEl.addEventListener('click', () => {
         areaBotoesEl.appendChild(btnEncerrar);
         
         notificar('Ponto', 'Jornada iniciada com sucesso!');
+        salvarEstado();
     } else if (!pausado) {
         pausado = true;
         clearInterval(intervalo);
+        horaPausaEl.textContent = agora();
+        
         btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Continuar';
         modoEl.textContent = 'PAUSADO';
         dicaEl.textContent = 'Clique para retomar';
         statusPillEl.classList.remove('online');
         statusTextoEl.textContent = 'Pausado';
-        horaPausaEl.textContent = agora();
+        
         notificar('Pausado', 'Jornada interrompida', 'alerta');
+        salvarEstado();
     } else {
         pausado = false;
         intervalo = setInterval(() => {
             segundos++;
             cronEl.textContent = formatar(segundos);
+            salvarEstado();
         }, 1000);
+        
         btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
         modoEl.textContent = 'EM ANDAMENTO';
         dicaEl.textContent = 'Jornada em andamento';
         statusPillEl.classList.add('online');
         statusTextoEl.textContent = 'Em serviço';
+        
         notificar('Retomado', 'Jornada continuada');
+        salvarEstado();
     }
 });
 
+// ========== MODAL ENCERRAR ==========
 btnCancelarEl.addEventListener('click', () => modalEl.classList.remove('aberto'));
 
 btnConfirmarEl.addEventListener('click', () => {
     modalEl.classList.remove('aberto');
     clearInterval(intervalo);
+    
     rodando = false;
     pausado = false;
     segundos = 0;
+    
     cronEl.textContent = '00:00:00';
     btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Iniciar jornada';
     btnEl.classList.remove('pause');
@@ -349,11 +434,13 @@ btnConfirmarEl.addEventListener('click', () => {
     statusPillEl.classList.remove('online');
     statusTextoEl.textContent = 'Fora';
     horaSaidaEl.textContent = agora();
+    
     document.getElementById('btnEncerrar')?.remove();
     areaBotoesEl.classList.remove('ativo');
+    
+    limparEstado();
     notificar('Encerrado', 'Jornada finalizada com sucesso!');
 });
 </script>
 </body>
-    </html>
-    
+</html>
