@@ -51,7 +51,7 @@
             border: 1px solid rgba(225,29,72,.22); color: #fb365d; font-size: 17px;
         }
         .perfil-nome { font-size: 14px; font-weight: 750; }
-        .perfil-passaporte { font-size: 11px; color: #777f8c; margin-top: 3px; }
+        .perfil-dados { font-size: 11px; color: #777f8c; margin-top: 3px; }
         .btn-voltar {
             border: 1px solid rgba(255,255,255,.07); background: #11141a;
             color: #9aa1ad; border-radius: 12px; padding: 10px 13px; font-size: 12px; font-weight: 700;
@@ -95,27 +95,6 @@
         }
         .stat-value.status-online { color: #22c55e; }
         .stat-value.status-pausado { color: #f59e0b; }
-
-        .identity {
-            margin-bottom: 16px; padding: 16px; border: 1px solid rgba(255,255,255,.065);
-            border-radius: 18px; background: linear-gradient(135deg, rgba(18,21,27,.96), rgba(13,15,20,.96));
-            display: flex; align-items: center; justify-content: space-between; gap: 12px;
-        }
-        .identity-left { display: flex; align-items: center; gap: 11px; }
-        .identity-icon {
-            width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            background: #191c23; color: #a78bfa; border: 1px solid rgba(167,139,250,.13);
-        }
-        .identity-name { font-size: 13px; font-weight: 750; }
-        .identity-meta { font-size: 11px; color: #6f7784; margin-top: 3px; }
-        .status-pill {
-            display: inline-flex; align-items: center; gap: 6px; padding: 7px 9px; border-radius: 999px;
-            background: rgba(148,163,184,.08); border: 1px solid rgba(148,163,184,.12);
-            color: #89919e; font-size: 10px; font-weight: 750;
-        }
-        .status-pill.online { color: #4ade80; background: rgba(34,197,94,.08); border-color: rgba(34,197,94,.16); }
-        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: #6b7280; }
-        .status-pill.online .status-dot { background: #22c55e; }
 
         .clock-card {
             position: relative; overflow: hidden; padding: 25px 20px 20px;
@@ -185,7 +164,7 @@
             <div class="avatar"><i class="fas fa-user-shield"></i></div>
             <div>
                 <div class="perfil-nome">Falcão</div>
-                <div class="perfil-passaporte">Passaporte: 17274 · Meu Ponto</div>
+                <div class="perfil-dados">Passaporte: 17274 · Meu Ponto</div>
             </div>
         </div>
         <button class="btn-voltar" onclick="window.location.href='painel.html'">
@@ -198,7 +177,7 @@
     <section class="page-title">
         <div class="eyebrow"><i class="fas fa-circle"></i> CONTROLE DE JORNADA</div>
         <h1>Meu Ponto</h1>
-        <p class="subtitle">Gerencie sua jornada de serviço</p>
+        <p class="subtitle">Registre sua jornada de trabalho</p>
     </section>
 
     <div class="stats-grid">
@@ -212,22 +191,9 @@
         </div>
     </div>
 
-    <section class="identity">
-        <div class="identity-left">
-            <div class="identity-icon"><i class="fas fa-id-card"></i></div>
-            <div>
-                <div class="identity-name">Falcão</div>
-                <div class="identity-meta">Passaporte 17274 · Coordenador</div>
-            </div>
-        </div>
-        <div class="status-pill" id="statusPill">
-            <span class="status-dot"></span> <span id="statusTexto">Fora</span>
-        </div>
-    </section>
-
     <section class="clock-card">
         <div class="clock-top">
-            <span>Jornada atual</span>
+            <span>JORNADA ATUAL</span>
             <span class="clock-mode" id="modoTexto">AGUARDANDO</span>
         </div>
 
@@ -235,9 +201,9 @@
         <div class="timer-sub" id="dica">Nenhum turno aberto</div>
 
         <div class="markers">
-            <div class="marker"><span class="marker-label">Entrada</span> <span class="marker-value" id="horaEntrada">--:--</span></div>
-            <div class="marker"><span class="marker-label">Última Pausa</span> <span class="marker-value" id="horaPausa">--:--</span></div>
-            <div class="marker"><span class="marker-label">Saída</span> <span class="marker-value" id="horaSaida">--:--</span></div>
+            <div class="marker"><span class="marker-label">ENTRADA</span> <span class="marker-value" id="horaEntrada">--:--</span></div>
+            <div class="marker"><span class="marker-label">ÚLTIMA PAUSA</span> <span class="marker-value" id="horaPausa">--:--</span></div>
+            <div class="marker"><span class="marker-label">SAÍDA</span> <span class="marker-value" id="horaSaida">--:--</span></div>
         </div>
 
         <div class="actions" id="areaBotoes">
@@ -267,15 +233,13 @@
     <a class="bottom-item active">
         <i class="fas fa-clock"></i> <span>Ponto</span>
     </a>
-    <a class="bottom-item" href="equipe.html">
-        <i class="fas fa-users"></i> <span>Equipe</span>
-    </a>
     <a class="bottom-item" href="registros.html">
         <i class="fas fa-folder-open"></i> <span>Registros</span>
     </a>
 </nav>
 
 <script>
+// VARIÁVEIS PERMANENTES - NUNCA PERDEM FUNÇÃO
 let inicio = null;
 let pausadoTempo = 0;
 let pausadoMomento = null;
@@ -283,12 +247,11 @@ let rodando = false;
 let estaPausado = false;
 let contadorPausas = 0;
 
+// ELEMENTOS FIXOS
 const cron = document.getElementById('cronometro');
 const btn = document.getElementById('btnPrincipal');
 const modo = document.getElementById('modoTexto');
 const dica = document.getElementById('dica');
-const statusPill = document.getElementById('statusPill');
-const statusTexto = document.getElementById('statusTexto');
 const areaBotoes = document.getElementById('areaBotoes');
 const horaEntrada = document.getElementById('horaEntrada');
 const horaPausa = document.getElementById('horaPausa');
@@ -297,7 +260,6 @@ const modal = document.getElementById('modalConfirmar');
 const btnCancelar = document.getElementById('btnCancelar');
 const btnConfirmar = document.getElementById('btnConfirmar');
 const notifArea = document.getElementById('areaNotif');
-
 const statStatus = document.getElementById('statStatus');
 const statPausados = document.getElementById('statPausados');
 
@@ -324,7 +286,6 @@ function notificar(titulo, texto, tipo='sucesso') {
 
 function atualizarEstatisticas() {
     statPausados.textContent = contadorPausas;
-    
     if (!rodando) {
         statStatus.textContent = "Fora";
         statStatus.className = "stat-value";
@@ -370,34 +331,13 @@ function atualizarCronometro() {
     cron.textContent = formatar(Math.max(0, decorrido));
 }
 
-function atualizarTela() {
-    if (!rodando) return;
-    statusPill.classList.toggle('online', !estaPausado);
-    statusTexto.textContent = estaPausado ? 'Pausado' : 'Em serviço';
-    modo.textContent = estaPausado ? 'PAUSADO' : 'EM ANDAMENTO';
-    dica.textContent = estaPausado ? 'Clique para retomar' : 'Jornada em andamento';
-    btn.innerHTML = estaPausado ? '<i class="fas fa-play"></i> Continuar' : '<i class="fas fa-pause"></i> Pausar';
-    btn.classList.toggle('pause', !estaPausado);
-    areaBotoes.classList.add('ativo');
-    if (!document.getElementById('btnEncerrar')) {
-        const encerrar = document.createElement('button');
-        encerrar.id = 'btnEncerrar';
-        encerrar.className = 'action action-danger';
-        encerrar.innerHTML = '<i class="fas fa-stop"></i> Encerrar';
-        encerrar.onclick = ()=>modal.classList.add('aberto');
-        areaBotoes.appendChild(encerrar);
-    }
-    atualizarEstatisticas();
-}
-
 window.addEventListener('load', () => {
     carregar();
     atualizarEstatisticas();
-    atualizarTela();
     setInterval(atualizarCronometro, 200);
 });
 
-// ⚠️ Função do botão corrigida e direta
+// FUNÇÃO PRINCIPAL - PERMANENTE E INTACTA
 btn.onclick = function() {
     if (!rodando) {
         inicio = Date.now();
@@ -410,10 +350,8 @@ btn.onclick = function() {
         btn.classList.add('pause');
         modo.textContent = 'EM ANDAMENTO';
         dica.textContent = 'Jornada em andamento';
-        statusPill.classList.add('online');
-        statusTexto.textContent = 'Em serviço';
         areaBotoes.classList.add('ativo');
-        
+
         if (!document.getElementById('btnEncerrar')) {
             const encerrar = document.createElement('button');
             encerrar.id = 'btnEncerrar';
@@ -422,7 +360,7 @@ btn.onclick = function() {
             encerrar.onclick = ()=>modal.classList.add('aberto');
             areaBotoes.appendChild(encerrar);
         }
-        
+
         notificar('Sucesso','Jornada iniciada!');
         salvar();
         atualizarEstatisticas();
@@ -434,8 +372,6 @@ btn.onclick = function() {
         btn.innerHTML = '<i class="fas fa-play"></i> Continuar';
         modo.textContent = 'PAUSADO';
         dica.textContent = 'Clique para retomar';
-        statusPill.classList.remove('online');
-        statusTexto.textContent = 'Pausado';
         notificar('Pausado','Jornada interrompida','alerta');
         salvar();
         atualizarEstatisticas();
@@ -446,6 +382,29 @@ btn.onclick = function() {
         btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
         modo.textContent = 'EM ANDAMENTO';
         dica.textContent = 'Jornada em andamento';
-        statusPill.classList.add('online');
-        statusTexto.textContent = 'Em serviço';
-  
+        notificar('Retomado','Jornada continuada');
+        salvar();
+        atualizarEstatisticas();
+    }
+};
+
+btnCancelar.addEventListener('click', ()=>modal.classList.remove('aberto'));
+btnConfirmar.addEventListener('click', ()=>{
+    modal.classList.remove('aberto');
+    rodando = false; estaPausado = false; inicio = null;
+    pausadoTempo = 0; pausadoMomento = null; contadorPausas = 0;
+    cron.textContent = '00:00:00';
+    btn.innerHTML = '<i class="fas fa-play"></i> Iniciar jornada';
+    btn.classList.remove('pause');
+    modo.textContent = 'AGUARDANDO';
+    dica.textContent = 'Nenhum turno aberto';
+    horaSaida.textContent = agoraHora();
+    document.getElementById('btnEncerrar')?.remove();
+    areaBotoes.classList.remove('ativo');
+    limpar();
+    atualizarEstatisticas();
+    notificar('Encerrado','Jornada finalizada com sucesso!');
+});
+</script>
+</body>
+</html>
