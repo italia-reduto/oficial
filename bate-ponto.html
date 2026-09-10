@@ -7,15 +7,6 @@
     <meta name="theme-color" content="#08090d">
     <meta name="color-scheme" content="dark">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <!-- CONEXÃO SUPABASE -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjbHdtaWk6bW51cWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    </script>
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         html { scroll-behavior: smooth; }
@@ -242,16 +233,11 @@
 </nav>
 
 <script>
-// ========== VARIÁVEIS GERAIS ==========
 let intervalo = null;
-let pontoAtual = null;
-let tempoAcumulado = 0;
-let estaPausado = false;
-let passaporteUsuario = '17274'; // Pegamos do login/membro
-let nomeUsuario = 'Falcão';
-let equipeIdUsuario = null;
+let segundos = 0;
+let rodando = false;
+let pausado = false;
 
-// ELEMENTOS DA TELA
 const cronEl = document.getElementById('cronometro');
 const btnEl = document.getElementById('btnPrincipal');
 const modoEl = document.getElementById('modoTexto');
@@ -267,7 +253,6 @@ const btnCancelarEl = document.getElementById('btnCancelar');
 const btnConfirmarEl = document.getElementById('btnConfirmar');
 const areaNotifEl = document.getElementById('areaNotif');
 
-// ========== FUNÇÕES AUXILIARES ==========
 function formatar(s) {
     const h = Math.floor(s / 3600);
     const m = Math.floor((s % 3600) / 60);
@@ -295,139 +280,75 @@ function notificar(titulo, texto, tipo='sucesso') {
     setTimeout(() => div.remove(), 3000);
 }
 
-function atualizarInterface() {
-    cronEl.textContent = formatar(tempoAcumulado);
-    
-    if (pontoAtual) {
-        statusPillEl.classList.toggle('online', !estaPausado);
-        statusTextoEl.textContent = estaPausado ? 'Pausado' : 'Em serviço';
-        modoEl.textContent = estaPausado ? 'PAUSADO' : 'EM ANDAMENTO';
-        dicaEl.textContent = estaPausado ? 'Clique para retomar' : 'Jornada em andamento';
-        
-        btnEl.innerHTML = estaPausado 
-            ? '<i class="fas fa-play"></i> &nbsp; Continuar' 
-            : '<i class="fas fa-pause"></i> &nbsp; Pausar';
-        btnEl.classList.toggle('pause', !estaPausado);
-        
+btnEl.addEventListener('click', () => {
+    if (!rodando) {
+        rodando = true;
+        intervalo = setInterval(() => {
+            segundos++;
+            cronEl.textContent = formatar(segundos);
+        }, 1000);
+        btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
+        btnEl.classList.add('pause');
+        modoEl.textContent = 'EM ANDAMENTO';
+        dicaEl.textContent = 'Jornada em andamento';
+        statusPillEl.classList.add('online');
+        statusTextoEl.textContent = 'Em serviço';
+        horaEntradaEl.textContent = agora();
         areaBotoesEl.classList.add('ativo');
-        if (!document.getElementById('btnEncerrar')) {
-            const btnEncerrar = document.createElement('button');
-            btnEncerrar.className = 'action action-danger';
-            btnEncerrar.id = 'btnEncerrar';
-            btnEncerrar.innerHTML = '<i class="fas fa-stop"></i> &nbsp; Encerrar';
-            btnEncerrar.addEventListener('click', () => modalEl.classList.add('aberto'));
-            areaBotoesEl.appendChild(btnEncerrar);
-        }
-    } else {
+        
+        const btnEncerrar = document.createElement('button');
+        btnEncerrar.className = 'action action-danger';
+        btnEncerrar.id = 'btnEncerrar';
+        btnEncerrar.innerHTML = '<i class="fas fa-stop"></i> &nbsp; Encerrar';
+        btnEncerrar.addEventListener('click', () => modalEl.classList.add('aberto'));
+        areaBotoesEl.appendChild(btnEncerrar);
+        
+        notificar('Ponto', 'Jornada iniciada com sucesso!');
+    } else if (!pausado) {
+        pausado = true;
+        clearInterval(intervalo);
+        btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Continuar';
+        modoEl.textContent = 'PAUSADO';
+        dicaEl.textContent = 'Clique para retomar';
         statusPillEl.classList.remove('online');
-        statusTextoEl.textContent = 'Fora';
-        modoEl.textContent = 'AGUARDANDO';
-        dicaEl.textContent = 'Nenhum turno aberto';
-        btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Iniciar jornada';
-        btnEl.classList.remove('pause');
-        areaBotoesEl.classList.remove('ativo');
-        document.getElementById('btnEncerrar')?.remove();
-    }
-}
-
-function iniciarContagemLocal() {
-    if (intervalo) clearInterval(intervalo);
-    intervalo = setInterval(() => {
-        if (!estaPausado) {
-            tempoAcumulado++;
-            cronEl.textContent = formatar(tempoAcumulado);
-        }
-    }, 1000);
-}
-
-// ========== CARREGAR PONTO AO ABRIR PÁGINA ==========
-window.addEventListener('load', async () => {
-    try {
-        // 1. Pega dados do usuário logado
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
-
-        // 2. Busca dados do membro
-        const { data: membro } = await supabase
-            .from('membros')
-            .select('passaporte, nome, equipe_id')
-            .eq('id', user.id)
-            .single();
-
-        if (membro) {
-            passaporteUsuario = membro.passaporte;
-            nomeUsuario = membro.nome;
-            equipeIdUsuario = membro.equipe_id;
-        }
-
-        // 3. Busca último ponto ABERTO deste passaporte
-        const { data: pontos } = await supabase
-            .from('pontos')
-            .select('*')
-            .eq('passaporte', passaporteUsuario)
-            .neq('status', 'encerrado')
-            .order('criado_em', { ascending: false })
-            .limit(1);
-
-        if (pontos && pontos.length > 0) {
-            pontoAtual = pontos[0];
-            estaPausado = (pontoAtual.status === 'pausado');
-            
-            // 4. Calcula tempo decorrido real
-            const entrada = new Date(pontoAtual.entrada);
-            let pausaTotal = 0;
-            
-            if (pontoAtual.pausa_inicio) {
-                const inicioPausa = new Date(pontoAtual.pausa_inicio);
-                const fimPausa = pontoAtual.pausa_fim ? new Date(pontoAtual.pausa_fim) : new Date();
-                pausaTotal = (fimPausa - inicioPausa) / 1000;
-            }
-            
-            tempoAcumulado = Math.floor((Date.now() - entrada.getTime()) / 1000) - pausaTotal;
-            
-            // Preenche as datas visuais
-            horaEntradaEl.textContent = entrada.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-            if (pontoAtual.pausa_inicio) {
-                horaPausaEl.textContent = new Date(pontoAtual.pausa_inicio).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-            }
-            
-            atualizarInterface();
-            if (!estaPausado) iniciarContagemLocal();
-        }
-    } catch (err) {
-        console.error('Erro ao carregar ponto:', err);
+        statusTextoEl.textContent = 'Pausado';
+        horaPausaEl.textContent = agora();
+        notificar('Pausado', 'Jornada interrompida', 'alerta');
+    } else {
+        pausado = false;
+        intervalo = setInterval(() => {
+            segundos++;
+            cronEl.textContent = formatar(segundos);
+        }, 1000);
+        btnEl.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
+        modoEl.textContent = 'EM ANDAMENTO';
+        dicaEl.textContent = 'Jornada em andamento';
+        statusPillEl.classList.add('online');
+        statusTextoEl.textContent = 'Em serviço';
+        notificar('Retomado', 'Jornada continuada');
     }
 });
 
-// ========== BOTÃO PRINCIPAL: INICIAR / PAUSAR / RETOMAR ==========
-btnEl.addEventListener('click', async () => {
-    try {
-        if (!pontoAtual) {
-            // === INICIAR NOVO PONTO ===
-            const { data: novoPonto } = await supabase.from('pontos').insert({
-                passaporte: passaporteUsuario,
-                nome: nomeUsuario,
-                equipe_id: equipeIdUsuario,
-                entrada: new Date().toISOString(),
-                status: 'ativo'
-            }).select().single();
+btnCancelarEl.addEventListener('click', () => modalEl.classList.remove('aberto'));
 
-            pontoAtual = novoPonto;
-            estaPausado = false;
-            tempoAcumulado = 0;
-            horaEntradaEl.textContent = agora();
-            
-            notificar('Ponto', 'Jornada iniciada com sucesso!');
-            iniciarContagemLocal();
-        } else if (!estaPausado) {
-            // === PAUSAR ===
-            estaPausado = true;
-            clearInterval(intervalo);
-            
-            await supabase.from('pontos').update({
-                status: 'pausado',
-                pausa_inicio: new Date().toISOString()
-            }).eq('id', pontoAtual.id);
-            
-            horaPausaEl.textContent = agora();
-            notificar('Pausado', 'Jornada interro
+btnConfirmarEl.addEventListener('click', () => {
+    modalEl.classList.remove('aberto');
+    clearInterval(intervalo);
+    rodando = false;
+    pausado = false;
+    segundos = 0;
+    cronEl.textContent = '00:00:00';
+    btnEl.innerHTML = '<i class="fas fa-play"></i> &nbsp; Iniciar jornada';
+    btnEl.classList.remove('pause');
+    modoEl.textContent = 'AGUARDANDO';
+    dicaEl.textContent = 'Nenhum turno aberto';
+    statusPillEl.classList.remove('online');
+    statusTextoEl.textContent = 'Fora';
+    horaSaidaEl.textContent = agora();
+    document.getElementById('btnEncerrar')?.remove();
+    areaBotoesEl.classList.remove('ativo');
+    notificar('Encerrado', 'Jornada finalizada com sucesso!');
+});
+</script>
+</body>
+</html>
