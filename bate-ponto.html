@@ -58,7 +58,7 @@
             cursor: pointer;
         }
 
-        .page-title { padding: 24px 0 8px; }
+        .page-title { padding: 24px 0 16px; }
         .eyebrow {
             display: inline-flex; align-items: center; gap: 7px;
             color: #fb365d; background: rgba(225,29,72,.08); border: 1px solid rgba(225,29,72,.15);
@@ -68,8 +68,45 @@
         .page-title h1 { font-size: 28px; margin-bottom: 7px; }
         .subtitle { color: #8b929f; font-size: 13px; }
 
+        /* ✅ NOVO: PAINEL DE ESTATÍSTICAS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, rgba(26,30,39,.9), rgba(21,24,31,.9));
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 16px;
+            padding: 18px 16px;
+            transition: transform 0.2s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-2px);
+        }
+        .stat-label {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #8b929f;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+        .stat-value {
+            font-size: 22px;
+            font-weight: 800;
+            color: #f5f5f5;
+        }
+        .stat-value.status-online {
+            color: #22c55e;
+        }
+        .stat-value.status-pausado {
+            color: #f59e0b;
+        }
+
         .identity {
-            margin-top: 18px; padding: 16px; border: 1px solid rgba(255,255,255,.065);
+            margin-bottom: 16px; padding: 16px; border: 1px solid rgba(255,255,255,.065);
             border-radius: 18px; background: linear-gradient(135deg, rgba(18,21,27,.96), rgba(13,15,20,.96));
             display: flex; align-items: center; justify-content: space-between; gap: 12px;
         }
@@ -90,7 +127,7 @@
         .status-pill.online .status-dot { background: #22c55e; }
 
         .clock-card {
-            position: relative; overflow: hidden; margin-top: 12px; padding: 25px 20px 20px;
+            position: relative; overflow: hidden; padding: 25px 20px 20px;
             border-radius: 22px; border: 1px solid rgba(225,29,72,.14);
             background: linear-gradient(145deg, rgba(35,14,23,.90), rgba(15,17,22,.98) 58%);
         }
@@ -170,8 +207,20 @@
     <section class="page-title">
         <div class="eyebrow"><i class="fas fa-circle"></i> CONTROLE DE JORNADA</div>
         <h1>Meu Ponto</h1>
-        <p class="subtitle">Registre sua jornada de trabalho</p>
+        <p class="subtitle">Gerencie sua jornada de serviço</p>
     </section>
+
+    <!-- ✅ NOVO: PAINEL DE ESTATÍSTICAS (PASSO 1) -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-label">Meu Status</div>
+            <div class="stat-value" id="statStatus">Fora</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Pausados</div>
+            <div class="stat-value" id="statPausados">0</div>
+        </div>
+    </div>
 
     <section class="identity">
         <div class="identity-left">
@@ -243,6 +292,7 @@ let pausadoTempo = 0;
 let pausadoMomento = null;
 let rodando = false;
 let estaPausado = false;
+let contadorPausas = 0; // ✅ Contador de pausas
 
 const cron = document.getElementById('cronometro');
 const btn = document.getElementById('btnPrincipal');
@@ -258,6 +308,10 @@ const modal = document.getElementById('modalConfirmar');
 const btnCancelar = document.getElementById('btnCancelar');
 const btnConfirmar = document.getElementById('btnConfirmar');
 const notifArea = document.getElementById('areaNotif');
+
+// ✅ Elementos das estatísticas
+const statStatus = document.getElementById('statStatus');
+const statPausados = document.getElementById('statPausados');
 
 function formatar(seg) {
     const h = Math.floor(seg / 3600);
@@ -280,10 +334,26 @@ function notificar(titulo, texto, tipo='sucesso') {
     setTimeout(()=>el.remove(),3000);
 }
 
+// ATUALIZA ESTATÍSTICAS
+function atualizarEstatisticas() {
+    statPausados.textContent = contadorPausas;
+    
+    if (!rodando) {
+        statStatus.textContent = "Fora";
+        statStatus.className = "stat-value";
+    } else if (estaPausado) {
+        statStatus.textContent = "Pausado";
+        statStatus.className = "stat-value status-pausado";
+    } else {
+        statStatus.textContent = "Em Serviço";
+        statStatus.className = "stat-value status-online";
+    }
+}
+
 // SALVA/CARREGA: PERMANECE SEMPRE
 function salvar() {
     localStorage.setItem('pontoDados', JSON.stringify({
-        inicio, pausadoTempo, pausadoMomento, rodando, estaPausado,
+        inicio, pausadoTempo, pausadoMomento, rodando, estaPausado, contadorPausas,
         hEntrada: horaEntrada.textContent, hPausa: horaPausa.textContent
     }));
 }
@@ -295,6 +365,7 @@ function carregar() {
         inicio = dados.inicio; pausadoTempo = dados.pausadoTempo || 0;
         pausadoMomento = dados.pausadoMomento; rodando = dados.rodando;
         estaPausado = dados.estaPausado;
+        contadorPausas = dados.contadorPausas || 0;
         horaEntrada.textContent = dados.hEntrada || '--:--';
         horaPausa.textContent = dados.hPausa || '--:--';
     } catch(e) {}
@@ -331,11 +402,13 @@ function atualizarTela() {
         encerrar.onclick = ()=>modal.classList.add('aberto');
         areaBotoes.appendChild(encerrar);
     }
+    atualizarEstatisticas();
 }
 
 // INICIO
 window.addEventListener('load', () => {
     carregar();
+    atualizarEstatisticas();
     atualizarTela();
     setInterval(atualizarCronometro, 200); // ATUALIZA CONSTANTEMENTE
 });
@@ -364,49 +437,15 @@ btn.addEventListener('click', () => {
         areaBotoes.appendChild(encerrar);
         notificar('Sucesso','Jornada iniciada!');
         salvar();
+        atualizarEstatisticas();
     } else if (!estaPausado) {
         estaPausado = true;
         pausadoMomento = Date.now();
         horaPausa.textContent = agoraHora();
+        contadorPausas++; // ✅ Incrementa pausa
         btn.innerHTML = '<i class="fas fa-play"></i> Continuar';
         modo.textContent = 'PAUSADO';
         dica.textContent = 'Clique para retomar';
         statusPill.classList.remove('online');
         statusTexto.textContent = 'Pausado';
-        notificar('Pausado','Jornada interrompida','alerta');
-        salvar();
-    } else {
-        estaPausado = false;
-        pausadoTempo += Date.now() - pausadoMomento;
-        pausadoMomento = null;
-        btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        modo.textContent = 'EM ANDAMENTO';
-        dica.textContent = 'Jornada em andamento';
-        statusPill.classList.add('online');
-        statusTexto.textContent = 'Em serviço';
-        notificar('Retomado','Jornada continuada');
-        salvar();
-    }
-});
-
-btnCancelar.addEventListener('click', ()=>modal.classList.remove('aberto'));
-btnConfirmar.addEventListener('click', ()=>{
-    modal.classList.remove('aberto');
-    rodando = false; estaPausado = false; inicio = null;
-    pausadoTempo = 0; pausadoMomento = null;
-    cron.textContent = '00:00:00';
-    btn.innerHTML = '<i class="fas fa-play"></i> Iniciar jornada';
-    btn.classList.remove('pause');
-    modo.textContent = 'AGUARDANDO';
-    dica.textContent = 'Nenhum turno aberto';
-    statusPill.classList.remove('online');
-    statusTexto.textContent = 'Fora';
-    horaSaida.textContent = agoraHora();
-    document.getElementById('btnEncerrar')?.remove();
-    areaBotoes.classList.remove('ativo');
-    limpar();
-    notificar('Encerrado','Jornada finalizada com sucesso!');
-});
-</script>
-</body>
-</html>
+        notificar('Pausado','Jornada interrompida','aler
