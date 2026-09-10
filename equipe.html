@@ -94,27 +94,16 @@
             background: #12151b; border: 1px solid rgba(255,255,255,0.065);
             border-radius: 20px; padding: 22px; margin-bottom: 16px; display: none;
         }
-        .nome-equipe { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
-        .funcao-equipe { color: #8b929f; font-size: 14px; margin-bottom: 16px; }
-        .info-meta {
+        .nome-equipe { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #fff; }
+        .info-linha {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 12px; background: rgba(255,255,255,0.03);
-            border-radius: 12px; font-size: 13px; color: #9ca3af; margin-bottom: 20px;
+            padding: 12px; background: rgba(255,255,255,0.03);
+            border-radius: 12px; font-size: 14px; margin-bottom: 10px;
         }
-        .lista-membros-titulo {
-            font-size: 13px; font-weight: 600; color: #c9cdd4; margin-bottom: 12px;
-        }
-        .membro-item {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 14px; background: rgba(0,0,0,0.15);
-            border-radius: 12px; margin-bottom: 8px; font-size: 14px;
-        }
-        .membro-nome { display: flex; align-items: center; gap: 10px; }
-        .status { font-size: 12px; font-weight: 600; }
-        .status.ativo { color: #22c55e; }
-        .status.pausado { color: #f59e0b; }
+        .info-label { color: #aaa; }
+        .info-valor { color: #fff; font-weight: 500; }
 
-        /* Menu Inferior — MESMA ORDEM */
+        /* Menu Inferior — ORDEM: Início | Ponto | Equipe | Registros */
         .menu-container {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
             display: flex; align-items: center; justify-content: space-around;
@@ -157,8 +146,8 @@
 <main>
     <div class="cabecalho-secao">
         <div class="tag"><i class="fas fa-users"></i> INTEGRAÇÃO</div>
-        <h1>Minha Equipe</h1>
-        <p class="subtitulo">Dados da sua alocação e membros</p>
+        <h1>Dados da Equipe</h1>
+        <p class="subtitulo">Informações e metas da sua equipe</p>
     </div>
 
     <!-- Estado sem equipe -->
@@ -167,25 +156,32 @@
             <i class="fas fa-user-slash"></i>
         </div>
         <h2>Você ainda não está vinculado a uma equipe</h2>
-        <p>Inicie seu ponto de trabalho para que o sistema defina automaticamente sua equipe conforme as regras de distribuição.</p>
+        <p>Inicie seu ponto ou contate um administrador para ser alocado.</p>
     </div>
 
     <!-- Dados da equipe -->
     <div class="card-equipe" id="dadosEquipe">
         <h2 class="nome-equipe" id="nomeEquipe">—</h2>
-        <p class="funcao-equipe" id="funcaoEquipe">—</p>
-
-        <div class="info-meta">
-            <span>Área / Operação</span>
-            <span id="areaEquipe">—</span>
-        </div>
-        <div class="info-meta">
-            <span>Membros / Limite</span>
-            <span id="limiteEquipe">—</span>
+        
+        <div class="info-linha">
+            <span class="info-label">🎯 Meta Lockpick</span>
+            <span class="info-valor" id="metaLockpick">—</span>
         </div>
 
-        <h3 class="lista-membros-titulo">Membros da Equipe</h3>
-        <div id="listaMembros"></div>
+        <div class="info-linha">
+            <span class="info-label">🎯 Meta Flipper</span>
+            <span class="info-valor" id="metaFlipper">—</span>
+        </div>
+
+        <div class="info-linha">
+            <span class="info-label">💰 Venda Lockpick</span>
+            <span class="info-valor" id="vendaLockpick">—</span>
+        </div>
+
+        <div class="info-linha">
+            <span class="info-label">💰 Venda Flipper</span>
+            <span class="info-valor" id="vendaFlipper">—</span>
+        </div>
     </div>
 </main>
 
@@ -211,15 +207,71 @@ window.addEventListener('load', () => {
         const el = document.getElementById('carregando');
         if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 400); }
     }, 500);
+
+    carregarDadosEquipe();
 });
 
-// Pronto para integração com Supabase
-async function carregarEquipe() {
-    // Aqui vai a lógica real quando implementar
-    console.log("Pronto para carregar dados da equipe do Supabase");
+async function carregarDadosEquipe() {
+    try {
+        // Pega usuário logado
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+            mostrarSemEquipe();
+            return;
+        }
+
+        // Primeiro busca o membro para pegar o id da equipe
+        const { data: membro, error: erroMembro } = await supabase
+            .from('membros')
+            .select('equipe_id')
+            .eq('id', user.id)
+            .single();
+
+        if (erroMembro || !membro || !membro.equipe_id) {
+            mostrarSemEquipe();
+            return;
+        }
+
+        // Agora busca os dados da equipe com as colunas que você tem
+        const { data: equipe, error: erroEquipe } = await supabase
+            .from('equipes')
+            .select(`
+                nome,
+                farm_de_lockpick,
+                farm_de_flipper,
+                venda_de_lockpick,
+                venda_de_flipper
+            `)
+            .eq('id', membro.equipe_id)
+            .single();
+
+        if (erroEquipe || !equipe) {
+            mostrarSemEquipe();
+            return;
+        }
+
+        // Preenche na tela
+        document.getElementById('nomeEquipe').textContent = `📌 ${equipe.nome}`;
+        document.getElementById('metaLockpick').textContent = equipe.farm_de_lockpick || 'Não definida';
+        document.getElementById('metaFlipper').textContent = equipe.farm_de_flipper || 'Não definida';
+        document.getElementById('vendaLockpick').textContent = equipe.venda_de_lockpick || 'Não definida';
+        document.getElementById('vendaFlipper').textContent = equipe.venda_de_flipper || 'Não definida';
+
+        // Mostra o card
+        document.getElementById('semEquipe').style.display = 'none';
+        document.getElementById('dadosEquipe').style.display = 'block';
+
+    } catch (err) {
+        console.error('Erro:', err);
+        mostrarSemEquipe();
+    }
 }
-carregarEquipe();
+
+function mostrarSemEquipe() {
+    document.getElementById('semEquipe').style.display = 'block';
+    document.getElementById('dadosEquipe').style.display = 'none';
+}
 </script>
 </body>
 </html>
-
