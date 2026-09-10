@@ -188,7 +188,7 @@
         }
         .aviso p { color: #8b929f; font-size: 12px; line-height: 1.5; }
 
-        /* MENU INFERIOR */
+        /* MENU INFERIOR — ORDEM: Início | Ponto | Equipe | Registros */
         .menu-container {
             position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
             display: flex; align-items: center; justify-content: space-around;
@@ -356,13 +356,16 @@
     </section>
 </main>
 
-<!-- MENU FUNCIONAL -->
+<!-- MENU FUNCIONAL — ORDEM: Início | Ponto | Equipe | Registros -->
 <nav class="menu-container">
     <button class="menu-item active" data-pagina="inicio">
         <i class="fas fa-home"></i><span>Início</span>
     </button>
     <button class="menu-item" data-pagina="ponto">
         <i class="fas fa-clock"></i><span>Ponto</span>
+    </button>
+    <button class="menu-item" data-pagina="equipe">
+        <i class="fas fa-users"></i><span>Equipe</span>
     </button>
     <button class="menu-item" data-pagina="registros">
         <i class="fas fa-folder-open"></i><span>Registros</span>
@@ -387,7 +390,7 @@ document.getElementById('modalSaida').addEventListener('click', e => {
     if (e.target.id === 'modalSaida') fecharModal();
 });
 
-// MENU CLICÁVEL COM NAVEGAÇÃO REAL
+// NAVEGAÇÃO MENU COMPLETA
 const itensMenu = document.querySelectorAll('.menu-item');
 
 itensMenu.forEach(item => {
@@ -401,6 +404,8 @@ itensMenu.forEach(item => {
             window.location.href = "bate-ponto.html";
         } else if (pagina === 'registros') {
             window.location.href = "registros.html";
+        } else if (pagina === 'equipe') {
+            window.location.href = "equipe.html";
         } else {
             window.location.href = "painel.html";
         }
