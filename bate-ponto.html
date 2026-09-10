@@ -39,7 +39,7 @@
             padding: 0 16px;
         }
 
-        /* ÁREA DE NOTIFICAÇÕES NO TOPO */
+        /* Notificações */
         .notificacoes-topo {
             position: fixed;
             top: 12px;
@@ -63,7 +63,7 @@
             gap: 12px;
             transform: translateY(-20px);
             opacity: 0;
-            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all .35s cubic-bezier(.4,0,.2,1);
             pointer-events: auto;
             max-width: 100%;
         }
@@ -73,13 +73,8 @@
             opacity: 1;
         }
 
-        .notif-card.sucesso {
-            border-left: 3px solid #22c55e;
-        }
-
-        .notif-card.alerta {
-            border-left: 3px solid #f59e0b;
-        }
+        .notif-card.sucesso { border-left: 3px solid #22c55e; }
+        .notif-card.alerta { border-left: 3px solid #f59e0b; }
 
         .notif-icon {
             width: 36px;
@@ -91,35 +86,14 @@
             flex-shrink: 0;
         }
 
-        .notif-card.sucesso .notif-icon {
-            background: rgba(34, 197, 94, 0.12);
-            color: #22c55e;
-        }
+        .sucesso .notif-icon { background: rgba(34,197,94,.12); color: #22c55e; }
+        .alerta .notif-icon { background: rgba(245,158,11,.12); color: #f59e0b; }
 
-        .notif-card.alerta .notif-icon {
-            background: rgba(245, 158, 11, 0.12);
-            color: #f59e0b;
-        }
+        .notif-conteudo { flex: 1; min-width: 0; }
+        .notif-titulo { font-size: 13px; font-weight: 700; margin-bottom: 2px; color: #f1f5f9; }
+        .notif-texto { font-size: 12px; color: #94a3b8; line-height: 1.4; }
 
-        .notif-conteudo {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .notif-titulo {
-            font-size: 13px;
-            font-weight: 700;
-            margin-bottom: 2px;
-            color: #f1f5f9;
-        }
-
-        .notif-texto {
-            font-size: 12px;
-            color: #94a3b8;
-            line-height: 1.4;
-        }
-
-        /* CABEÇALHO */
+        /* Cabeçalho */
         .header {
             position: sticky;
             top: 0;
@@ -161,8 +135,6 @@
             flex-shrink: 0;
         }
 
-        .perfil-info { min-width: 0; }
-
         .perfil-nome {
             font-size: 14px;
             font-weight: 750;
@@ -171,7 +143,7 @@
             text-overflow: ellipsis;
         }
 
-        .perfil-passaporte {
+        .perfil-detalhe {
             margin-top: 3px;
             color: #777f8c;
             font-size: 11px;
@@ -188,10 +160,8 @@
             cursor: pointer;
         }
 
-        /* TÍTULO */
-        .page-title {
-            padding: 24px 0 8px;
-        }
+        /* Conteúdo */
+        .page-title { padding: 24px 0 8px; }
 
         .eyebrow {
             display: inline-flex;
@@ -223,7 +193,7 @@
             line-height: 1.55;
         }
 
-        /* PAINEL DE IDENTIDADE */
+        /* Cartão Identidade */
         .identity {
             margin-top: 18px;
             padding: 16px;
@@ -255,16 +225,8 @@
             border: 1px solid rgba(167,139,250,.13);
         }
 
-        .identity-name {
-            font-size: 13px;
-            font-weight: 750;
-        }
-
-        .identity-meta {
-            margin-top: 3px;
-            color: #6f7784;
-            font-size: 11px;
-        }
+        .identity-name { font-size: 13px; font-weight: 750; }
+        .identity-meta { margin-top: 3px; color: #6f7784; font-size: 11px; }
 
         .status-pill {
             display: inline-flex;
@@ -292,7 +254,6 @@
             background: rgba(34,197,94,.08);
             border-color: rgba(34,197,94,.16);
         }
-
         .status-pill.online .status-dot { background: #22c55e; }
 
         .status-pill.paused {
@@ -300,10 +261,9 @@
             background: rgba(245,158,11,.08);
             border-color: rgba(245,158,11,.16);
         }
-
         .status-pill.paused .status-dot { background: #f59e0b; }
 
-        /* CRONÔMETRO ITÁLIA */
+        /* Cartão Cronômetro */
         .clock-card {
             position: relative;
             overflow: hidden;
@@ -311,21 +271,8 @@
             padding: 25px 20px 20px;
             border-radius: 22px;
             border: 1px solid rgba(225,29,72,.14);
-            background:
-                linear-gradient(145deg, rgba(35,14,23,.90), rgba(15,17,22,.98) 58%);
+            background: linear-gradient(145deg, rgba(35,14,23,.90), rgba(15,17,22,.98) 58%);
             box-shadow: 0 18px 45px rgba(0,0,0,.24);
-        }
-
-        .clock-card::before {
-            content: "";
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            right: -80px;
-            top: -100px;
-            border-radius: 50%;
-            background: rgba(225,29,72,.10);
-            filter: blur(4px);
         }
 
         .clock-top {
@@ -340,9 +287,7 @@
             text-transform: uppercase;
         }
 
-        .clock-mode {
-            color: #fb365d;
-        }
+        .clock-mode { color: #fb365d; }
 
         .timer {
             position: relative;
@@ -362,7 +307,7 @@
             margin-bottom: 21px;
         }
 
-        /* MARCADORES ABAIXO DO CRONÔMETRO */
+        /* Marcadores */
         .markers {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -394,16 +339,14 @@
             font-weight: 750;
         }
 
-        /* ÁREA DOS BOTÕES */
+        /* Botões */
         .actions {
             position: relative;
             display: grid;
             gap: 9px;
         }
 
-        .actions.ativo {
-            grid-template-columns: 1fr 1fr;
-        }
+        .actions.ativo { grid-template-columns: 1fr 1fr; }
 
         .action {
             border: none;
@@ -432,7 +375,7 @@
             border: 1px solid rgba(225,29,72,.14);
         }
 
-        /* NAVEGAÇÃO INFERIOR — SEM O BOTÃO "MAIS" */
+        /* Menu Inferior */
         .bottom-menu {
             position: fixed;
             left: 0;
@@ -451,7 +394,7 @@
         }
 
         .bottom-item {
-            width: 33.33%; /* Ajusta para 3 itens */
+            width: 33.33%;
             max-width: 90px;
             height: 58px;
             display: flex;
@@ -466,20 +409,15 @@
         }
 
         .bottom-item i { font-size: 17px; }
-
-        .bottom-item span {
-            font-size: 9px;
-            font-weight: 650;
-        }
-
+        .bottom-item span { font-size: 9px; font-weight: 650; }
         .bottom-item.active { color: #f5f5f5; }
         .bottom-item.active i { color: #fb365d; }
 
-        /* MODAL PERSONALIZADO */
+        /* Modal */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0,0,0,.75);
             backdrop-filter: blur(6px);
             display: flex;
             align-items: center;
@@ -488,7 +426,7 @@
             padding: 20px;
             opacity: 0;
             visibility: hidden;
-            transition: all 0.25s ease;
+            transition: .25s ease;
         }
 
         .modal-overlay.aberto {
@@ -498,19 +436,17 @@
 
         .modal-box {
             background: linear-gradient(145deg, #171a21, #12141a);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255,255,255,.08);
             border-radius: 20px;
             width: 100%;
             max-width: 340px;
             padding: 26px 22px 22px;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 25px 60px rgba(0,0,0,.45);
             transform: translateY(15px);
-            transition: transform 0.25s ease;
+            transition: transform .25s ease;
         }
 
-        .modal-overlay.aberto .modal-box {
-            transform: translateY(0);
-        }
+        .modal-overlay.aberto .modal-box { transform: translateY(0); }
 
         .modal-icon {
             text-align: center;
@@ -522,7 +458,7 @@
             color: #f59e0b;
         }
 
-        .modal-titulo {
+        .modal-title {
             font-size: 17px;
             font-weight: 750;
             text-align: center;
@@ -530,7 +466,7 @@
             color: #f8fafc;
         }
 
-        .modal-texto {
+        .modal-text {
             font-size: 14px;
             color: #a1a9b8;
             text-align: center;
@@ -538,7 +474,7 @@
             margin-bottom: 24px;
         }
 
-        .modal-botoes {
+        .modal-buttons {
             display: flex;
             gap: 10px;
         }
@@ -551,28 +487,24 @@
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: .2s ease;
         }
 
-        .modal-btn-cancelar {
+        .btn-cancel {
             background: #1e222b;
             color: #cbd5e1;
             border: 1px solid rgba(255,255,255,.06);
         }
 
-        .modal-btn-cancelar:hover {
-            background: #272c36;
-        }
+        .btn-cancel:hover { background: #272c36; }
 
-        .modal-btn-confirmar {
+        .btn-confirm {
             background: linear-gradient(135deg, #dc2626, #b91c1c);
             color: white;
-            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.22);
+            box-shadow: 0 8px 20px rgba(220,38,38,.22);
         }
 
-        .modal-btn-confirmar:hover {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-        }
+        .btn-confirm:hover { background: linear-gradient(135deg, #ef4444, #dc2626); }
 
         @media (max-width: 380px) {
             .container { padding: 0 12px; }
@@ -581,24 +513,21 @@
         }
     </style>
 </head>
-
 <body>
 
-<!-- ÁREA DE NOTIFICAÇÕES (NO TOPO) -->
-<div class="notificacoes-topo" id="areaNotificacoes"></div>
+<!-- Notificações -->
+<div class="notificacoes-topo" id="notifArea"></div>
 
+<!-- Cabeçalho -->
 <header class="header">
-    <div class="header-inner">
+    <div class="header-inner container">
         <div class="perfil">
-            <div class="avatar">
-                <i class="fas fa-user-shield"></i>
-            </div>
-            <div class="perfil-info">
+            <div class="avatar"><i class="fas fa-user-shield"></i></div>
+            <div>
                 <div class="perfil-nome">Falcão</div>
-                <div class="perfil-passaporte">Passaporte: 17274 · Meu Ponto</div>
+                <div class="perfil-detalhe">Passaporte: 17274 · Meu Ponto</div>
             </div>
         </div>
-
         <button class="btn-voltar" onclick="window.location.href='painel.html'">
             <i class="fas fa-arrow-left"></i> Voltar
         </button>
@@ -606,92 +535,75 @@
 </header>
 
 <main class="container">
-
     <section class="page-title">
-        <div class="eyebrow">
-            <i class="fas fa-circle"></i>
-            CONTROLE DE JORNADA
-        </div>
-
+        <div class="eyebrow"><i class="fas fa-circle"></i> CONTROLE DE JORNADA</div>
         <h1>Meu Ponto</h1>
-        <p class="subtitle">
-            Registre sua jornada, acompanhe sua equipe e mantenha seu histórico organizado.
-        </p>
+        <p class="subtitle">Registre sua jornada, acompanhe sua equipe e mantenha seu histórico organizado.</p>
     </section>
 
     <section class="identity">
         <div class="identity-left">
-            <div class="identity-icon">
-                <i class="fas fa-id-card"></i>
-            </div>
+            <div class="identity-icon"><i class="fas fa-id-card"></i></div>
             <div>
                 <div class="identity-name">Falcão</div>
                 <div class="identity-meta">Passaporte 17274 · Coordenador</div>
             </div>
         </div>
-
         <div class="status-pill" id="statusPill">
             <span class="status-dot"></span>
-            <span id="statusPillText">Fora</span>
+            <span id="statusText">Fora</span>
         </div>
     </section>
 
     <section class="clock-card">
         <div class="clock-top">
             <span>Jornada atual</span>
-            <span class="clock-mode" id="modoTexto">AGUARDANDO</span>
+            <span class="clock-mode" id="modeText">AGUARDANDO</span>
         </div>
 
-        <div class="timer" id="cronometro">00:00:00</div>
-        <div class="timer-sub" id="dica">Nenhum turno aberto neste momento</div>
+        <div class="timer" id="timer">00:00:00</div>
+        <div class="timer-sub" id="timerInfo">Nenhum turno aberto neste momento</div>
 
         <div class="markers">
             <div class="marker">
                 <span class="marker-label">Entrada</span>
-                <span class="marker-value" id="entradaValor">--:--</span>
+                <span class="marker-value" id="inValue">--:--</span>
             </div>
             <div class="marker">
                 <span class="marker-label">Última Pausa</span>
-                <span class="marker-value" id="pausaValor">--:--</span>
+                <span class="marker-value" id="pauseValue">--:--</span>
             </div>
             <div class="marker">
                 <span class="marker-label">Saída</span>
-                <span class="marker-value" id="saidaValor">--:--</span>
+                <span class="marker-value" id="outValue">--:--</span>
             </div>
         </div>
 
-        <div class="actions" id="areaBotoes">
-            <button class="action action-main" id="btnPrincipal">
+        <div class="actions" id="actionsArea">
+            <button class="action action-main" id="mainBtn">
                 <i class="fas fa-play"></i> &nbsp; Iniciar jornada
             </button>
         </div>
     </section>
-
 </main>
 
-<!-- MODAL PERSONALIZADO -->
-<div class="modal-overlay" id="modalConfirmacao">
+<!-- Modal -->
+<div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
-        <div class="modal-icon">
-            <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        <h3 class="modal-titulo">Encerrar Jornada</h3>
-        <p class="modal-texto">
-            Você tem certeza que deseja finalizar sua jornada de trabalho?<br>
+        <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
+        <h3 class="modal-title">Encerrar Jornada</h3>
+        <p class="modal-text">
+            Você tem certeza que deseja finalizar sua jornada?<br>
             <strong>Essa ação não pode ser desfeita.</strong>
         </p>
-        <div class="modal-botoes">
-            <button class="modal-btn modal-btn-cancelar" id="btnModalCancelar">
-                Cancelar
-            </button>
-            <button class="modal-btn modal-btn-confirmar" id="btnModalConfirmar">
-                Sim, Encerrar
-            </button>
+        <div class="modal-buttons">
+            <button class="modal-btn btn-cancel" id="cancelBtn">Cancelar</button>
+            <button class="modal-btn btn-confirm" id="confirmBtn">Sim, Encerrar</button>
         </div>
     </div>
 </div>
 
-<!-- MENU COM 3 ITENS APENAS -->
+<!-- Menu -->
 <nav class="bottom-menu">
     <button class="bottom-item" onclick="window.location.href='painel.html'">
         <i class="fas fa-home"></i>
@@ -708,15 +620,47 @@
 </nav>
 
 <script>
+    // Variáveis
     let estado = 'parado';
     let tempoInicio = null;
-    let tempoPausado = 0;
-    let intervaloCronometro = null;
-    let btnEncerrar = null;
+    let intervalo = null;
+    let tempoDecorrido = 0;
 
-    const cronometroEl = document.getElementById('cronometro');
-    const modoTextoEl = document.getElementById('modoTexto');
-    const dicaEl = document.getElementById('dica');
+    // Elementos
+    const timerEl = document.getElementById('timer');
+    const timerInfoEl = document.getElementById('timerInfo');
+    const modeTextEl = document.getElementById('modeText');
     const statusPillEl = document.getElementById('statusPill');
-    const statusPillTextEl = document.getElementById('statusPillText');
-    const areaBotoes =
+    const statusTextEl = document.getElementById('statusText');
+    const actionsAreaEl = document.getElementById('actionsArea');
+    const mainBtnEl = document.getElementById('mainBtn');
+    const inValueEl = document.getElementById('inValue');
+    const pauseValueEl = document.getElementById('pauseValue');
+    const outValueEl = document.getElementById('outValue');
+    const confirmModalEl = document.getElementById('confirmModal');
+    const cancelBtnEl = document.getElementById('cancelBtn');
+    const confirmBtnEl = document.getElementById('confirmBtn');
+    const notifAreaEl = document.getElementById('notifArea');
+
+    // Notificação
+    function mostrarNotificacao(titulo, texto, tipo = 'sucesso') {
+        const notif = document.createElement('div');
+        notif.className = `notif-card ${tipo}`;
+        notif.innerHTML = `
+            <div class="notif-icon">
+                <i class="fas ${tipo === 'sucesso' ? 'fa-check-circle' : 'fa-info-circle'}"></i>
+            </div>
+            <div class="notif-conteudo">
+                <div class="notif-titulo">${titulo}</div>
+                <div class="notif-texto">${texto}</div>
+            </div>
+        `;
+        notifAreaEl.appendChild(notif);
+        setTimeout(() => notif.classList.add('mostrar'), 10);
+        setTimeout(() => notif.remove(), 3500);
+    }
+
+    // Formatar tempo
+    function formatarTempo(segundos) {
+        const h = Math.floor(segundos / 3600);
+        const m = Math.
