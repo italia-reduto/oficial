@@ -39,6 +39,86 @@
             padding: 0 16px;
         }
 
+        /* ÁREA DE NOTIFICAÇÕES NO TOPO */
+        .notificacoes-topo {
+            position: fixed;
+            top: 12px;
+            left: 16px;
+            right: 16px;
+            z-index: 99999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .notif-card {
+            background: linear-gradient(135deg, #1a1e27, #15181f);
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 16px;
+            padding: 14px 18px;
+            box-shadow: 0 12px 40px rgba(0,0,0,.35);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: auto;
+            max-width: 100%;
+        }
+
+        .notif-card.mostrar {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notif-card.sucesso {
+            border-left: 3px solid #22c55e;
+        }
+
+        .notif-card.alerta {
+            border-left: 3px solid #f59e0b;
+        }
+
+        .notif-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .notif-card.sucesso .notif-icon {
+            background: rgba(34, 197, 94, 0.12);
+            color: #22c55e;
+        }
+
+        .notif-card.alerta .notif-icon {
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b;
+        }
+
+        .notif-conteudo {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notif-titulo {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 2px;
+            color: #f1f5f9;
+        }
+
+        .notif-texto {
+            font-size: 12px;
+            color: #94a3b8;
+            line-height: 1.4;
+        }
+
         /* CABEÇALHO */
         .header {
             position: sticky;
@@ -48,6 +128,7 @@
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(255,255,255,.06);
+            margin-top: 10px;
         }
 
         .header-inner {
@@ -351,7 +432,7 @@
             border: 1px solid rgba(225,29,72,.14);
         }
 
-        /* NAVEGAÇÃO INFERIOR */
+        /* NAVEGAÇÃO INFERIOR — SEM O BOTÃO "MAIS" */
         .bottom-menu {
             position: fixed;
             left: 0;
@@ -370,7 +451,7 @@
         }
 
         .bottom-item {
-            width: 25%;
+            width: 33.33%; /* Ajusta para 3 itens */
             max-width: 90px;
             height: 58px;
             display: flex;
@@ -394,32 +475,103 @@
         .bottom-item.active { color: #f5f5f5; }
         .bottom-item.active i { color: #fb365d; }
 
-        /* TOAST */
-        .toast {
+        /* MODAL PERSONALIZADO */
+        .modal-overlay {
             position: fixed;
-            left: 16px;
-            right: 16px;
-            bottom: 88px;
-            z-index: 1200;
-            max-width: 500px;
-            margin: auto;
-            padding: 13px 15px;
-            border-radius: 13px;
-            background: #171a21;
-            border: 1px solid rgba(255,255,255,.08);
-            color: #dce0e5;
-            font-size: 11px;
-            font-weight: 650;
-            box-shadow: 0 18px 45px rgba(0,0,0,.38);
-            transform: translateY(20px);
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+            padding: 20px;
             opacity: 0;
-            pointer-events: none;
-            transition: .22s ease;
+            visibility: hidden;
+            transition: all 0.25s ease;
         }
 
-        .toast.show {
-            transform: translateY(0);
+        .modal-overlay.aberto {
             opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-box {
+            background: linear-gradient(145deg, #171a21, #12141a);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            width: 100%;
+            max-width: 340px;
+            padding: 26px 22px 22px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.45);
+            transform: translateY(15px);
+            transition: transform 0.25s ease;
+        }
+
+        .modal-overlay.aberto .modal-box {
+            transform: translateY(0);
+        }
+
+        .modal-icon {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .modal-icon i {
+            font-size: 36px;
+            color: #f59e0b;
+        }
+
+        .modal-titulo {
+            font-size: 17px;
+            font-weight: 750;
+            text-align: center;
+            margin-bottom: 10px;
+            color: #f8fafc;
+        }
+
+        .modal-texto {
+            font-size: 14px;
+            color: #a1a9b8;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-botoes {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .modal-btn-cancelar {
+            background: #1e222b;
+            color: #cbd5e1;
+            border: 1px solid rgba(255,255,255,.06);
+        }
+
+        .modal-btn-cancelar:hover {
+            background: #272c36;
+        }
+
+        .modal-btn-confirmar {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.22);
+        }
+
+        .modal-btn-confirmar:hover {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
         }
 
         @media (max-width: 380px) {
@@ -431,6 +583,9 @@
 </head>
 
 <body>
+
+<!-- ÁREA DE NOTIFICAÇÕES (NO TOPO) -->
+<div class="notificacoes-topo" id="areaNotificacoes"></div>
 
 <header class="header">
     <div class="header-inner">
@@ -512,10 +667,31 @@
         </div>
     </section>
 
-    <div class="toast" id="toast"></div>
-
 </main>
 
+<!-- MODAL PERSONALIZADO -->
+<div class="modal-overlay" id="modalConfirmacao">
+    <div class="modal-box">
+        <div class="modal-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
+        <h3 class="modal-titulo">Encerrar Jornada</h3>
+        <p class="modal-texto">
+            Você tem certeza que deseja finalizar sua jornada de trabalho?<br>
+            <strong>Essa ação não pode ser desfeita.</strong>
+        </p>
+        <div class="modal-botoes">
+            <button class="modal-btn modal-btn-cancelar" id="btnModalCancelar">
+                Cancelar
+            </button>
+            <button class="modal-btn modal-btn-confirmar" id="btnModalConfirmar">
+                Sim, Encerrar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MENU COM 3 ITENS APENAS -->
 <nav class="bottom-menu">
     <button class="bottom-item" onclick="window.location.href='painel.html'">
         <i class="fas fa-home"></i>
@@ -528,10 +704,6 @@
     <button class="bottom-item" onclick="window.location.href='registros.html'">
         <i class="fas fa-folder-open"></i>
         <span>Registros</span>
-    </button>
-    <button class="bottom-item">
-        <i class="fas fa-ellipsis-h"></i>
-        <span>Mais</span>
     </button>
 </nav>
 
@@ -547,124 +719,4 @@
     const dicaEl = document.getElementById('dica');
     const statusPillEl = document.getElementById('statusPill');
     const statusPillTextEl = document.getElementById('statusPillText');
-    const areaBotoes = document.getElementById('areaBotoes');
-    const btnPrincipal = document.getElementById('btnPrincipal');
-    const entradaValor = document.getElementById('entradaValor');
-    const pausaValor = document.getElementById('pausaValor');
-    const saidaValor = document.getElementById('saidaValor');
-    const toastEl = document.getElementById('toast');
-
-    btnPrincipal.addEventListener('click', () => {
-        if (estado === 'parado') iniciarJornada();
-        else if (estado === 'rodando') pausarJornada();
-        else if (estado === 'pausado') continuarJornada();
-    });
-
-    function formatarTempo(segundos) {
-        const h = Math.floor(segundos / 3600);
-        const m = Math.floor((segundos % 3600) / 60);
-        const s = segundos % 60;
-        return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    }
-
-    function mostrarToast(mensagem) {
-        toastEl.textContent = mensagem;
-        toastEl.classList.add('show');
-        setTimeout(() => toastEl.classList.remove('show'), 3000);
-    }
-
-    function atualizarStatus(texto, tipoClasse) {
-        statusPillEl.className = 'status-pill' + (tipoClasse ? ` ${tipoClasse}` : '');
-        statusPillTextEl.textContent = texto;
-    }
-
-    function horarioAgora() {
-        return new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
-    }
-
-    function iniciarContador() {
-        pararContador();
-        tempoInicio = Date.now() - tempoPausado * 1000;
-        intervaloCronometro = setInterval(() => {
-            const decorrido = Math.floor((Date.now() - tempoInicio) / 1000);
-            cronometroEl.textContent = formatarTempo(decorrido);
-        }, 1000);
-    }
-
-    function pararContador() {
-        if (intervaloCronometro) clearInterval(intervaloCronometro);
-        intervaloCronometro = null;
-    }
-
-    function iniciarJornada() {
-        estado = 'rodando';
-        tempoPausado = 0;
-        entradaValor.textContent = horarioAgora();
-        
-        areaBotoes.classList.add('ativo');
-        btnEncerrar = document.createElement('button');
-        btnEncerrar.className = 'action action-danger';
-        btnEncerrar.innerHTML = '<i class="fas fa-stop"></i> &nbsp; Encerrar';
-        btnEncerrar.onclick = encerrarJornada;
-        areaBotoes.appendChild(btnEncerrar);
-
-        modoTextoEl.textContent = 'EM ANDAMENTO';
-        dicaEl.textContent = 'Jornada ativa';
-        btnPrincipal.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
-        btnPrincipal.classList.add('pause');
-        atualizarStatus('Em serviço', 'online');
-        mostrarToast('✅ Jornada iniciada!');
-        iniciarContador();
-    }
-
-    function pausarJornada() {
-        if (estado !== 'rodando') return;
-        estado = 'pausado';
-        tempoPausado = Math.floor((Date.now() - tempoInicio) / 1000);
-        pararContador();
-        pausaValor.textContent = horarioAgora();
-        
-        modoTextoEl.textContent = 'PAUSADO';
-        dicaEl.textContent = 'Clique para continuar';
-        btnPrincipal.innerHTML = '<i class="fas fa-play"></i> &nbsp; Continuar';
-        btnPrincipal.classList.remove('pause');
-        atualizarStatus('Pausado', 'paused');
-        mostrarToast('⏸️ Jornada pausada');
-    }
-
-    function continuarJornada() {
-        if (estado !== 'pausado') return;
-        estado = 'rodando';
-        
-        modoTextoEl.textContent = 'EM ANDAMENTO';
-        dicaEl.textContent = 'Jornada ativa';
-        btnPrincipal.innerHTML = '<i class="fas fa-pause"></i> &nbsp; Pausar';
-        btnPrincipal.classList.add('pause');
-        atualizarStatus('Em serviço', 'online');
-        mostrarToast('▶️ Jornada retomada!');
-        iniciarContador();
-    }
-
-    // ✅ ENCERRAMENTO DIRETO — FUNCIONA RODANDO OU PAUSADO
-    function encerrarJornada() {
-        if (!confirm('⚠️ Tem certeza que deseja encerrar esta jornada?')) return;
-        
-        estado = 'parado';
-        pararContador();
-        saidaValor.textContent = horarioAgora();
-        
-        // Volta ao estado inicial
-        areaBotoes.classList.remove('ativo');
-        if (btnEncerrar) btnEncerrar.remove();
-
-        modoTextoEl.textContent = 'FINALIZADO';
-        dicaEl.textContent = 'Jornada concluída';
-        btnPrincipal.innerHTML = '<i class="fas fa-play"></i> &nbsp; Nova Jornada';
-        btnPrincipal.classList.remove('pause');
-        atualizarStatus('Fora');
-        mostrarToast('✅ Jornada encerrada com sucesso!');
-    }
-</script>
-
-</body>
-</html>
+    const areaBotoes =
