@@ -218,7 +218,7 @@
     <div class="modal-box">
         <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
         <h3 class="modal-titulo">Encerrar Jornada</h3>
-        <p class="modal-texto">Tem certeza? Essa ação não pode ser desfeita.</p>
+        <p class="modal-texto">Tem certeza que deseja encerrar sua jornada?</p>
         <div class="modal-botoes">
             <button class="modal-btn btn-cancelar" id="btnCancelar">Cancelar</button>
             <button class="modal-btn btn-confirmar" id="btnConfirmar">Sim, Encerrar</button>
@@ -239,7 +239,6 @@
 </nav>
 
 <script>
-// VARIÁVEIS PERMANENTES - NUNCA PERDEM FUNÇÃO
 let inicio = null;
 let pausadoTempo = 0;
 let pausadoMomento = null;
@@ -247,7 +246,6 @@ let rodando = false;
 let estaPausado = false;
 let contadorPausas = 0;
 
-// ELEMENTOS FIXOS
 const cron = document.getElementById('cronometro');
 const btn = document.getElementById('btnPrincipal');
 const modo = document.getElementById('modoTexto');
@@ -337,7 +335,6 @@ window.addEventListener('load', () => {
     setInterval(atualizarCronometro, 200);
 });
 
-// FUNÇÃO PRINCIPAL - PERMANENTE E INTACTA
 btn.onclick = function() {
     if (!rodando) {
         inicio = Date.now();
@@ -352,12 +349,13 @@ btn.onclick = function() {
         dica.textContent = 'Jornada em andamento';
         areaBotoes.classList.add('ativo');
 
+        // ✅ BOTÃO ENCERRAR CRIADO E FUNCIONAL
         if (!document.getElementById('btnEncerrar')) {
             const encerrar = document.createElement('button');
             encerrar.id = 'btnEncerrar';
             encerrar.className = 'action action-danger';
             encerrar.innerHTML = '<i class="fas fa-stop"></i> Encerrar';
-            encerrar.onclick = ()=>modal.classList.add('aberto');
+            encerrar.onclick = () => modal.classList.add('aberto');
             areaBotoes.appendChild(encerrar);
         }
 
@@ -388,8 +386,8 @@ btn.onclick = function() {
     }
 };
 
-btnCancelar.addEventListener('click', ()=>modal.classList.remove('aberto'));
-btnConfirmar.addEventListener('click', ()=>{
+btnCancelar.addEventListener('click', () => modal.classList.remove('aberto'));
+btnConfirmar.addEventListener('click', () => {
     modal.classList.remove('aberto');
     rodando = false; estaPausado = false; inicio = null;
     pausadoTempo = 0; pausadoMomento = null; contadorPausas = 0;
