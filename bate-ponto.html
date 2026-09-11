@@ -4,19 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#08090d">
-    <title>Meu Ponto · Organização Itália</title>
+    <title>Meu Ponto</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         :root { 
             --bg: #08090d; --bg2: #0d0f14; --card: #12151b; --card2: #171a21; 
             --border: rgba(255,255,255,.07); --text: #f5f5f5; --muted: #8b929f; 
-            --muted2: #5d6470; --red: #e11d48; --red2: #fb365d; --green: #22c55e; --yellow: #f59e0b; 
+            --muted2: #5d6470; --red: #e11d48; --red2: #fb365d; --green: #22c55e; --yellow: #f59e0b;
         }
         body { 
             min-height: 100vh; 
@@ -27,52 +26,49 @@
         }
         button { font-family: inherit; }
 
-        /* Barra Superior */
+        /* BARRA SUPERIOR COM INFORMAÇÕES DO USUÁRIO */
         .topbar { 
             position: sticky; top: 0; z-index: 20; height: 72px; 
-            display: flex; align-items: center; justify-content: space-between; padding: 0 18px; 
             background: rgba(8,9,13,.88); backdrop-filter: blur(16px); 
             border-bottom: 1px solid var(--border); 
+            display: flex;
+            align-items: center;
+            padding: 0 18px;
+            gap: 12px;
         }
-        .brand { display: flex; align-items: center; gap: 11px; }
-        .brand-icon { 
-            width: 42px; height: 42px; border-radius: 13px; 
-            display: flex; align-items: center; justify-content: center; 
-            background: rgba(225,29,72,.12); color: var(--red2); 
-            border: 1px solid rgba(225,29,72,.18); 
+        .topbar-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #242832, #111319);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #fff;
         }
-        .brand-text strong { display: block; font-size: 14px; font-weight: 800; }
-        .brand-text span { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
-        .notification { 
-            width: 42px; height: 42px; border-radius: 13px; 
-            border: 1px solid var(--border); background: var(--card); color: var(--muted); 
-            display: flex; align-items: center; justify-content: center; cursor: pointer; 
-            transition: all .2s;
+        .topbar-info {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
         }
-        .notification:hover { color: var(--text); border-color: var(--muted); }
+        .topbar-nome {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+        }
+        .topbar-detalhe {
+            font-size: 13px;
+            color: var(--muted);
+        }
 
-        /* Conteúdo */
-        .container { width: min(900px, calc(100% - 28px)); margin: 0 auto; padding-top: 22px; }
-        .profile { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
-        .profile-left { display: flex; align-items: center; gap: 12px; }
-        .avatar { 
-            width: 48px; height: 48px; border-radius: 15px; 
-            background: linear-gradient(145deg, #242832, #111319); border: 1px solid var(--border); 
-            display: flex; align-items: center; justify-content: center; 
-            color: #fff; font-weight: 800; 
-        }
-        .profile h2 { font-size: 15px; font-weight: 800; }
-        .profile p { color: var(--muted); font-size: 11px; margin-top: 4px; }
-        .back-btn { 
-            border: 1px solid var(--border); background: var(--card); color: var(--muted); 
-            width: 42px; height: 42px; border-radius: 13px; cursor: pointer; 
-            display: flex; align-items: center; justify-content: center; transition: all .2s;
-        }
-        .back-btn:hover { color: var(--text); border-color: var(--muted); }
+        .container { width: min(900px, calc(100% - 28px)); margin: 0 auto; padding: 22px 18px 0; }
 
-        .title { margin: 25px 0 16px; }
-        .title h1 { font-size: 27px; letter-spacing: -.8px; }
-        .title p { margin-top: 6px; color: var(--muted); font-size: 13px; }
+        /* TÍTULO À ESQUERDA */
+        .title { margin-bottom: 25px; }
+        .title h1 { font-size: 27px; letter-spacing: -.8px; margin-bottom: 6px; }
+        .title p { color: var(--muted); font-size: 13px; }
 
         .stats { 
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; 
@@ -86,7 +82,6 @@
         .stat-label { color: var(--muted); font-size: 11px; margin-bottom: 9px; }
         .stat-value { font-size: 17px; font-weight: 800; }
         .status-active { color: var(--green); }
-        .status-paused { color: var(--yellow); }
 
         .tabs { 
             display: flex; gap: 6px; background: var(--bg2); border: 1px solid var(--border); 
@@ -118,33 +113,45 @@
             background: rgba(255,255,255,.025); border: 1px solid var(--border); border-radius: 13px; 
             padding: 11px 5px; 
         }
+
+        /* APENAS OS 3 BLOCOS: mais brancos e destacados */
+        .marker:nth-child(1),
+        .marker:nth-child(2),
+        .marker:nth-child(3) {
+            background: rgba(255,255,255,.08);
+            border-color: rgba(255,255,255,.22);
+            box-shadow: 0 0 0 1px rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
+        }
+
         .marker span { display: block; color: var(--muted); font-size: 9px; margin-bottom: 5px; }
         .marker strong { display: block; font-size: 11px; }
 
-        .main-btn { 
+        /* BOTÕES */
+        .btn-principal { 
             width: 100%; border: none; border-radius: 15px; padding: 15px; color: white; 
             background: var(--red); font-weight: 800; font-size: 13px; cursor: pointer; 
-            transition: all .2s; 
+            transition: opacity .2s; 
         }
-        .main-btn:hover { background: var(--red2); transform: translateY(-2px); }
-        .main-btn:disabled { opacity: .7; cursor: not-allowed; transform: none; }
-        .secondary-btn { 
-            width: 100%; border: 1px solid var(--border); background: var(--card2); color: white; 
-            border-radius: 15px; padding: 14px; font-weight: 700; font-size: 12px; 
-            cursor: pointer; margin-top: 9px; transition: all .2s; 
+        .btn-principal:disabled { opacity: .8; }
+
+        .grupo-botoes { display: none; gap: 10px; margin-top: 10px; }
+        .btn-acao { 
+            flex: 1; border: none; border-radius: 15px; padding: 14px; color: white; 
+            font-weight: 800; font-size: 13px; cursor: pointer; transition: transform .2s; 
         }
-        .secondary-btn:hover { border-color: var(--muted); }
+        .btn-acao:hover { transform: translateY(-2px); }
+        .btn-pausar { background: var(--yellow); color: #000; }
+        .btn-encerrar { background: var(--red); }
 
         .journey, .history { display: none; }
         .journey.active, .history.active { display: block; }
         .loading { color: var(--muted); text-align: center; padding: 40px 20px; }
 
-        /* Navegação Inferior (AGORA COM 4 ITENS: Início, Ponto, Equipe, Registros) */
         .bottom-nav { 
             position: fixed; z-index: 30; left: 12px; right: 12px; bottom: 12px; height: 66px; 
             border-radius: 21px; background: rgba(18,21,27,.94); backdrop-filter: blur(16px); 
             border: 1px solid var(--border); 
-            display: grid; grid-template-columns: repeat(4, 1fr); /* 4 colunas agora */
+            display: grid; grid-template-columns: repeat(4, 1fr); 
             padding: 5px; 
         }
         .nav-item { 
@@ -156,55 +163,33 @@
         .nav-item i { font-size: 16px; }
         .nav-item.active { background: rgba(225,29,72,.1); color: var(--red2); }
         .nav-item:hover { color: var(--text); }
-
-        /* Mensagem de erro discreta */
-        .error { 
-            display: none; background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.2); 
-            color: #fca5a5; padding: 12px 16px; border-radius: 12px; margin-bottom: 16px; 
-            font-size: 13px; 
-        }
     </style>
 </head>
 <body>
 <header class="topbar">
-    <div class="brand">
-        <div class="brand-icon"><i class="fa-solid fa-flag"></i></div>
-        <div class="brand-text"><strong>ORGANIZAÇÃO ITÁLIA</strong><span>Sistema de Controle</span></div>
+    <div class="topbar-avatar">F</div>
+    <div class="topbar-info">
+        <div class="topbar-nome">Falcão</div>
+        <div class="topbar-detalhe">Passaporte: 17274 • Ponto</div>
     </div>
-    <button class="notification" id="btnNotif" title="Notificações"><i class="fa-regular fa-bell"></i></button>
 </header>
 
 <main class="container">
-    <div id="erro" class="error"></div>
-
-    <section class="profile">
-        <div class="profile-left">
-            <div class="avatar" id="avatar">F</div>
-            <div>
-                <h2 id="nomeUsuario">Falcão</h2>
-                <p>Passaporte: <span id="passaporteUsuario">17274</span> · Ponto</p>
-            </div>
-        </div>
-        <button class="back-btn" onclick="location.href='painel.html'" title="Voltar ao Painel">
-            <i class="fa-solid fa-arrow-left"></i>
-        </button>
-    </section>
-
     <section class="title">
         <h1>Meu Ponto</h1>
-        <p>Controle sua jornada e acompanhe sua jornada de trabalho.</p>
+        <p>Controle sua jornada de trabalho.</p>
     </section>
 
     <section class="stats">
         <div class="stat"><div class="stat-label">Meu Status</div><div class="stat-value" id="statusTexto">Offline</div></div>
         <div class="stat"><div class="stat-label">Pausas</div><div class="stat-value" id="pausasTexto">0</div></div>
         <div class="stat"><div class="stat-label">Entrada</div><div class="stat-value" id="entradaTexto">--:--</div></div>
-        <div class="stat"><div class="stat-label">Equipe</div><div class="stat-value" id="equipeTexto">--</div></div>
+        <div class="stat"><div class="stat-label">Equipe</div><div class="stat-value">--</div></div>
     </section>
 
     <div class="tabs">
-        <button class="tab active" id="tabJornada">Minha Jornada</button>
-        <button class="tab" id="tabHistorico">Meu Histórico</button>
+        <button class="tab active" onclick="mostrarAba('jornada')">Minha Jornada</button>
+        <button class="tab" onclick="mostrarAba('historico')">Meu Histórico</button>
     </div>
 
     <section id="jornada" class="journey active">
@@ -216,21 +201,27 @@
                 <div class="marker"><span>ÚLTIMA PAUSA</span><strong id="marcadorPausa">--:--</strong></div>
                 <div class="marker"><span>SAÍDA</span><strong id="marcadorSaida">--:--</strong></div>
             </div>
-            <button class="main-btn" id="btnPrincipal">
+
+            <button class="btn-principal" id="btnIniciar" onclick="iniciarJornada()">
                 <i class="fa-solid fa-play"></i> Iniciar Jornada
             </button>
-            <button class="secondary-btn" id="btnEncerrar" style="display:none;">
-                <i class="fa-solid fa-stop"></i> Encerrar Jornada
-            </button>
+
+            <div class="grupo-botoes" id="grupoBotoes">
+                <button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()">
+                    <i class="fa-solid fa-pause"></i> Pausar
+                </button>
+                <button class="btn-acao btn-encerrar" onclick="encerrarJornada()">
+                    <i class="fa-solid fa-stop"></i> Encerrar
+                </button>
+            </div>
         </div>
     </section>
 
     <section id="historico" class="history">
-        <div id="historicoLista"><div class="loading">Carregando histórico...</div></div>
+        <div class="loading">Carregando histórico...</div>
     </section>
 </main>
 
-<!-- BARRA DE NAVEGAÇÃO COM A ORDEM CORRETA: Início | Ponto | Equipe | Registros -->
 <nav class="bottom-nav">
     <a class="nav-item" href="painel.html">
         <i class="fa-solid fa-house"></i><br>Início
@@ -247,138 +238,92 @@
 </nav>
 
 <script>
-// Configurações
-const USUARIO = { 
-    nome: "Falcão", 
-    passaporte: "17274",
-    equipe: "EQUIPE RAÍZ" 
-};
-const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjbHdtaWt6bW51cWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
+let intervaloCronometro = null;
+let tempoDecorrido = 0;
+let estaPausado = false;
+let numeroPausas = 0;
 
-// Elementos DOM
-const elementos = {
-    erro: document.getElementById("erro"),
-    btnPrincipal: document.getElementById('btnPrincipal'),
-    btnEncerrar: document.getElementById('btnEncerrar'),
-    timer: document.getElementById('timer'),
+const el = {
     statusTexto: document.getElementById('statusTexto'),
+    timer: document.getElementById('timer'),
     entradaTexto: document.getElementById('entradaTexto'),
     marcadorEntrada: document.getElementById('marcadorEntrada'),
     marcadorPausa: document.getElementById('marcadorPausa'),
     marcadorSaida: document.getElementById('marcadorSaida'),
-    tabJornada: document.getElementById('tabJornada'),
-    tabHistorico: document.getElementById('tabHistorico'),
-    jornada: document.getElementById('jornada'),
-    historico: document.getElementById('historico'),
-    btnNotif: document.getElementById('btnNotif'),
     pausasTexto: document.getElementById('pausasTexto'),
-    equipeTexto: document.getElementById('equipeTexto')
+    btnIniciar: document.getElementById('btnIniciar'),
+    grupoBotoes: document.getElementById('grupoBotoes'),
+    btnPausar: document.getElementById('btnPausar')
 };
 
-// Variáveis globais
-let supabase;
-let tempoInicio, intervalo, pausas = 0;
+function formatarTempo(segundos) {
+    const h = Math.floor(segundos / 3600);
+    const m = Math.floor((segundos % 3600) / 60);
+    const s = Math.floor(segundos % 60);
+    return [h, m, s].map(n => String(n).padStart(2, '0')).join(':');
+}
 
-// Inicialização profissional
-document.addEventListener('DOMContentLoaded', () => {
-    try {
-        supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    } catch (erro) {
-        elementos.erro.textContent = "Sistema conectado com limitações temporárias.";
-        elementos.erro.style.display = "block";
-    }
-
-    // Exibe a equipe do usuário
-    if (USUARIO.equipe) {
-        elementos.equipeTexto.textContent = USUARIO.equipe;
-    }
-
-    // Eventos
-    elementos.btnPrincipal.addEventListener('click', aoClicarPrincipal);
-    elementos.tabJornada.addEventListener('click', abaJornada);
-    elementos.tabHistorico.addEventListener('click', abaHistorico);
-    elementos.btnNotif.addEventListener('click', () => {
-        elementos.btnNotif.style.transform = "rotate(20deg)";
-        setTimeout(() => elementos.btnNotif.style.transform = "", 200);
-    });
-});
-
-// Funções auxiliares
-function obterHoraAtual() {
+function horaAtual() {
     const agora = new Date();
     return `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
 }
 
-function formatarTempo(segundos) {
-    const horas = Math.floor(segundos / 3600);
-    const minutos = Math.floor((segundos % 3600) / 60);
-    const segs = Math.floor(segundos % 60);
-    return [horas, minutos, segs].map(unidade => String(unidade).padStart(2, '0')).join(':');
+function mostrarAba(nome) {
+    document.getElementById('jornada').style.display = nome === 'jornada' ? 'block' : 'none';
+    document.getElementById('historico').style.display = nome === 'historico' ? 'block' : 'none';
 }
 
-function exibirErro(mensagem) {
-    elementos.erro.textContent = mensagem;
-    elementos.erro.style.display = "block";
-    setTimeout(() => elementos.erro.style.display = "none", 5000);
+function iniciarJornada() {
+    el.btnIniciar.style.display = 'none';
+    el.grupoBotoes.style.display = 'flex';
+
+    el.statusTexto.textContent = 'Ativo';
+    el.statusTexto.style.color = 'var(--green)';
+    const hora = horaAtual();
+    el.entradaTexto.textContent = hora;
+    el.marcadorEntrada.textContent = hora;
+    el.marcadorSaida.textContent = '--:--';
+
+    tempoDecorrido = 0;
+    estaPausado = false;
+
+    clearInterval(intervaloCronometro);
+    intervaloCronometro = setInterval(() => {
+        if (!estaPausado) {
+            tempoDecorrido++;
+            el.timer.textContent = formatarTempo(tempoDecorrido);
+        }
+    }, 1000);
 }
 
-// Lógica principal
-async function aoClicarPrincipal() {
-    elementos.btnPrincipal.disabled = true;
-    elementos.btnPrincipal.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processando...';
-    
-    try {
-        if (!supabase) throw new Error("Banco de dados não conectado");
+function pausarContinuar() {
+    estaPausado = !estaPausado;
 
-        const { error } = await supabase.from('pontos').insert([{
-            passaporte: USUARIO.passaporte,
-            nome: USUARIO.nome,
-            equipe: USUARIO.equipe,
-            status: 'ativo',
-            entrada: new Date().toISOString()
-        }]);
-
-        if (error) throw error;
-
-        // Atualiza UI
-        elementos.statusTexto.textContent = "Ativo";
-        elementos.statusTexto.className = "stat-value status-active";
-        const hora = obterHoraAtual();
-        elementos.entradaTexto.textContent = hora;
-        elementos.marcadorEntrada.textContent = hora;
-        elementos.btnPrincipal.innerHTML = '<i class="fa-solid fa-check"></i> Jornada Ativa';
-        elementos.btnPrincipal.style.background = "var(--green)";
-        elementos.btnEncerrar.style.display = "block";
-        
-        // Inicia cronômetro
-        tempoInicio = Date.now();
-        intervalo = setInterval(() => {
-            const decorrido = Math.floor((Date.now() - tempoInicio) / 1000);
-            elementos.timer.textContent = formatarTempo(decorrido);
-        }, 1000);
-
-    } catch (erro) {
-        exibirErro(`Falha: ${erro.message || "Verifique sua conexão"}`);
-        elementos.btnPrincipal.innerHTML = '<i class="fa-solid fa-play"></i> Iniciar Jornada';
-    } finally {
-        elementos.btnPrincipal.disabled = false;
+    if (estaPausado) {
+        el.btnPausar.innerHTML = '<i class="fa-solid fa-play"></i> Continuar';
+        el.statusTexto.textContent = 'Pausado';
+        el.statusTexto.style.color = 'var(--yellow)';
+        numeroPausas++;
+        el.pausasTexto.textContent = numeroPausas;
+        el.marcadorPausa.textContent = horaAtual();
+    } else {
+        el.btnPausar.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
+        el.statusTexto.textContent = 'Ativo';
+        el.statusTexto.style.color = 'var(--green)';
     }
 }
 
-function abaJornada() {
-    elementos.tabJornada.classList.add('active');
-    elementos.tabHistorico.classList.remove('active');
-    elementos.jornada.classList.add('active');
-    elementos.historico.classList.remove('active');
-}
-
-function abaHistorico() {
-    elementos.tabHistorico.classList.add('active');
-    elementos.tabJornada.classList.remove('active');
-    elementos.historico.classList.add('active');
-    elementos.jornada.classList.remove('active');
+function encerrarJornada() {
+    clearInterval(intervaloCronometro);
+    el.marcadorSaida.textContent = horaAtual();
+    
+    el.btnIniciar.style.display = 'block';
+    el.grupoBotoes.style.display = 'none';
+    el.statusTexto.textContent = 'Offline';
+    el.statusTexto.style.color = '';
+    el.timer.textContent = '00:00:00';
 }
 </script>
 </body>
-</html>
+                </html>
+                
