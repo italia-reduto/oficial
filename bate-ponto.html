@@ -68,11 +68,65 @@
         .page-title h1 { font-size: 28px; margin-bottom: 7px; }
         .subtitle { color: #8b929f; font-size: 13px; }
 
+        .abas-navegacao {
+            display: flex;
+            gap: 8px;
+            margin: 0 0 20px 0;
+            border-bottom: 1px solid rgba(255,255,255,.06);
+            padding-bottom: 1px;
+        }
+        .aba {
+            padding: 12px 24px;
+            font-size: 15px;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            background: transparent;
+            color: #8b929f;
+            cursor: pointer;
+            transition: all .2s ease;
+        }
+        .aba:hover {
+            color: #b0b0c3;
+            background: rgba(255,255,255,.03);
+        }
+        .aba.ativa {
+            background: linear-gradient(135deg, rgba(225,29,72,.15), rgba(225,29,72,.05));
+            color: #f5f5f5;
+            border-bottom: 2px solid #fb365d;
+        }
+
+        .conteudo-aba {
+            display: none;
+            animation: aparecer .3s ease forwards;
+        }
+        .conteudo-aba.ativa {
+            display: block;
+        }
+        @keyframes aparecer {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .historico-vazio {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+            background: linear-gradient(135deg, rgba(26,30,39,.9), rgba(21,24,31,.9));
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 22px;
+        }
+        .historico-vazio i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: .5;
+        }
+
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
         .stat-card {
             background: linear-gradient(135deg, rgba(26,30,39,.9), rgba(21,24,31,.9));
@@ -111,7 +165,6 @@
         .marker-label { font-size: 9px; color: #626a77; text-transform: uppercase; margin-bottom: 5px; }
         .marker-value { font-size: 12px; color: #dfe2e7; font-weight: 750; }
 
-        /* BOTÕES 100% ALINHADOS */
         .actions { 
             display: grid; 
             grid-template-columns: 1fr;
@@ -193,7 +246,7 @@
             <div class="avatar"><i class="fas fa-user-shield"></i></div>
             <div>
                 <div class="perfil-nome">Falcão</div>
-                <div class="perfil-dados">Passaporte: 17274 · Meu Ponto</div>
+                <div class="perfil-dados">Passaporte: 17274 · Ponto</div>
             </div>
         </div>
         <button class="btn-voltar" onclick="window.location.href='painel.html'">
@@ -204,9 +257,9 @@
 
 <main class="container">
     <section class="page-title">
-        <div class="eyebrow"><i class="fas fa-circle"></i> CONTROLE DE JORNADA</div>
+        <div class="eyebrow"><i class="fas fa-clock"></i> CONTROLE DE JORNADA</div>
         <h1>Meu Ponto</h1>
-        <p class="subtitle">Registre sua jornada de trabalho</p>
+        <p class="subtitle">Gerencie sua jornada de trabalho</p>
     </section>
 
     <div class="stats-grid">
@@ -220,30 +273,47 @@
         </div>
     </div>
 
-    <section class="clock-card">
-        <div class="clock-top">
-            <span>JORNADA ATUAL</span>
-            <span class="clock-mode" id="modoTexto">AGUARDANDO</span>
-        </div>
+    <div class="abas-navegacao">
+        <button class="aba ativa" data-alvo="aba-jornada">Minha Jornada</button>
+        <button class="aba" data-alvo="aba-historico">Meu Histórico</button>
+    </div>
 
-        <div class="timer" id="cronometro">00:00:00</div>
-        <div class="timer-sub" id="dica">Nenhum turno aberto</div>
+    <!-- MINHA JORNADA: AQUI FICA O PAINEL DO CRONÔMETRO -->
+    <div id="aba-jornada" class="conteudo-aba ativa">
+        <section class="clock-card">
+            <div class="clock-top">
+                <span>JORNADA ATUAL</span>
+                <span class="clock-mode" id="modoTexto">AGUARDANDO</span>
+            </div>
 
-        <div class="markers">
-            <div class="marker"><span class="marker-label">ENTRADA</span> <span class="marker-value" id="horaEntrada">--:--</span></div>
-            <div class="marker"><span class="marker-label">ÚLTIMA PAUSA</span> <span class="marker-value" id="horaPausa">--:--</span></div>
-            <div class="marker"><span class="marker-label">SAÍDA</span> <span class="marker-value" id="horaSaida">--:--</span></div>
-        </div>
+            <div class="timer" id="cronometro">00:00:00</div>
+            <div class="timer-sub" id="dica">Nenhum turno aberto</div>
 
-        <div class="actions" id="areaBotoes">
-            <button class="action action-main" id="btnPrincipal">
-                <i class="fas fa-play"></i> Iniciar Jornada
-            </button>
-            <button class="action action-danger" id="btnEncerrar">
-                <i class="fas fa-stop"></i> Encerrar
-            </button>
-        </div>
-    </section>
+            <div class="markers">
+                <div class="marker"><span class="marker-label">ENTRADA</span> <span class="marker-value" id="horaEntrada">--:--</span></div>
+                <div class="marker"><span class="marker-label">ÚLTIMA PAUSA</span> <span class="marker-value" id="horaPausa">--:--</span></div>
+                <div class="marker"><span class="marker-label">SAÍDA</span> <span class="marker-value" id="horaSaida">--:--</span></div>
+            </div>
+
+            <div class="actions" id="areaBotoes">
+                <button class="action action-main" id="btnPrincipal">
+                    <i class="fas fa-play"></i> Iniciar Jornada
+                </button>
+                <button class="action action-danger" id="btnEncerrar">
+                    <i class="fas fa-stop"></i> Encerrar
+                </button>
+            </div>
+        </section>
+    </div>
+
+    <!-- MEU HISTÓRICO: TELA VAZIA -->
+    <div id="aba-historico" class="conteudo-aba">
+        <section class="historico-vazio">
+            <i class="fas fa-history"></i>
+            <h3>Nenhum registro ainda</h3>
+            <p>Seu histórico de jornadas aparecerá aqui</p>
+        </section>
+    </div>
 </main>
 
 <div class="modal-overlay" id="modalConfirmar">
@@ -271,6 +341,21 @@
 </nav>
 
 <script>
+// Lógica das abas
+const botoesAba = document.querySelectorAll('.aba');
+const conteudosAba = document.querySelectorAll('.conteudo-aba');
+
+botoesAba.forEach(botao => {
+    botao.addEventListener('click', () => {
+        botoesAba.forEach(b => b.classList.remove('ativa'));
+        conteudosAba.forEach(c => c.classList.remove('ativa'));
+        
+        botao.classList.add('ativa');
+        document.getElementById(botao.dataset.alvo).classList.add('ativa');
+    });
+});
+
+// Lógica do sistema de ponto
 let inicio = null;
 let pausadoTempo = 0;
 let pausadoMomento = null;
@@ -413,55 +498,4 @@ btnPrincipal.onclick = function() {
         
         this.innerHTML = '<i class="fas fa-play"></i> Continuar';
         modo.textContent = 'PAUSADO';
-        dica.textContent = 'Clique para retomar';
-        
-        notificar('Pausado','Jornada interrompida','alerta');
-        salvar();
-        atualizarEstatisticas();
-    } else {
-        estaPausado = false;
-        pausadoTempo += Date.now() - pausadoMomento;
-        pausadoMomento = null;
-        
-        this.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        modo.textContent = 'EM ANDAMENTO';
-        dica.textContent = 'Jornada em andamento';
-        
-        notificar('Retomado','Jornada continuada');
-        salvar();
-        atualizarEstatisticas();
-    }
-};
-
-btnEncerrar.onclick = function() {
-    modal.classList.add('aberto');
-};
-
-btnCancelar.addEventListener('click', () => modal.classList.remove('aberto'));
-btnConfirmar.addEventListener('click', () => {
-    modal.classList.remove('aberto');
-    
-    rodando = false; 
-    estaPausado = false; 
-    inicio = null;
-    pausadoTempo = 0; 
-    pausadoMomento = null; 
-    contadorPausas = 0;
-    
-    cron.textContent = '00:00:00';
-    btnPrincipal.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
-    btnEncerrar.style.display = 'none';
-    areaBotoes.classList.remove('ativo');
-    
-    modo.textContent = 'AGUARDANDO';
-    dica.textContent = 'Nenhum turno aberto';
-    horaSaida.textContent = agoraHora();
-    
-    limpar();
-    atualizarEstatisticas();
-    notificar('Encerrado','Jornada finalizada com sucesso!');
-});
-</script>
-</body>
-    </html>
-    
+        dica.textConte
