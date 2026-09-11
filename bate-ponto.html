@@ -335,7 +335,6 @@ window.addEventListener('load', () => {
     setInterval(atualizarCronometro, 200);
 });
 
-// LÓGICA PRINCIPAL COM BOTÃO ENCERRAR GARANTIDO
 btn.onclick = function() {
     if (!rodando) {
         inicio = Date.now();
@@ -350,7 +349,7 @@ btn.onclick = function() {
         dica.textContent = 'Jornada em andamento';
         areaBotoes.classList.add('ativo');
 
-        // CRIA BOTÃO ENCERRAR
+        // CRIA O BOTÃO ENCERRAR DE VERDADE
         if (!document.getElementById('btnEncerrar')) {
             const encerrar = document.createElement('button');
             encerrar.id = 'btnEncerrar';
@@ -407,4 +406,3 @@ btnConfirmar.addEventListener('click', () => {
 </script>
 </body>
 </html>
-
