@@ -119,7 +119,7 @@
         }
         .action-main { background: linear-gradient(135deg, #e11d48, #c9183f); color: white; box-shadow: 0 9px 25px rgba(225,29,72,.17); }
         .action-main.pause { background: linear-gradient(135deg, #b7791f, #d89b16); }
-        .action-danger { background: rgba(225,29,72,.08); color: #fb365d; border: 1px solid rgba(225,29,72,.14); }
+        .action-danger { background: rgba(225,29,72,.08); color: #fb365d; border: 1px solid rgba(225,29,72,.14); display: none; }
 
         .bottom-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 76px;
@@ -210,6 +210,9 @@
             <button class="action action-main" id="btnPrincipal">
                 <i class="fas fa-play"></i> &nbsp; Iniciar jornada
             </button>
+            <button class="action action-danger" id="btnEncerrar">
+                <i class="fas fa-stop"></i> &nbsp; Encerrar
+            </button>
         </div>
     </section>
 </main>
@@ -247,7 +250,8 @@ let estaPausado = false;
 let contadorPausas = 0;
 
 const cron = document.getElementById('cronometro');
-const btn = document.getElementById('btnPrincipal');
+const btnPrincipal = document.getElementById('btnPrincipal');
+const btnEncerrar = document.getElementById('btnEncerrar');
 const modo = document.getElementById('modoTexto');
 const dica = document.getElementById('dica');
 const areaBotoes = document.getElementById('areaBotoes');
@@ -307,12 +311,31 @@ function carregar() {
     try {
         const dados = JSON.parse(localStorage.getItem('pontoDados'));
         if (!dados) return;
-        inicio = dados.inicio; pausadoTempo = dados.pausadoTempo || 0;
-        pausadoMomento = dados.pausadoMomento; rodando = dados.rodando;
+        
+        inicio = dados.inicio; 
+        pausadoTempo = dados.pausadoTempo || 0;
+        pausadoMomento = dados.pausadoMomento; 
+        rodando = dados.rodando;
         estaPausado = dados.estaPausado;
         contadorPausas = dados.contadorPausas || 0;
         horaEntrada.textContent = dados.hEntrada || '--:--';
         horaPausa.textContent = dados.hPausa || '--:--';
+        
+        if (rodando) {
+            areaBotoes.classList.add('ativo');
+            btnEncerrar.style.display = 'flex';
+            btnPrincipal.classList.add('pause');
+            modo.textContent = 'EM ANDAMENTO';
+            dica.textContent = 'Jornada em andamento';
+            
+            if (estaPausado) {
+                btnPrincipal.innerHTML = '<i class="fas fa-play"></i> Continuar';
+                modo.textContent = 'PAUSADO';
+                dica.textContent = 'Clique para retomar';
+            } else {
+                btnPrincipal.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+            }
+        }
     } catch(e) {}
 }
 
@@ -335,7 +358,7 @@ window.addEventListener('load', () => {
     setInterval(atualizarCronometro, 200);
 });
 
-btn.onclick = function() {
+btnPrincipal.onclick = function() {
     if (!rodando) {
         inicio = Date.now();
         pausadoTempo = 0;
@@ -343,22 +366,15 @@ btn.onclick = function() {
         rodando = true;
         estaPausado = false;
         horaEntrada.textContent = agoraHora();
-        btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        btn.classList.add('pause');
+        
+        this.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+        this.classList.add('pause');
+        btnEncerrar.style.display = 'flex';
+        areaBotoes.classList.add('ativo');
+        
         modo.textContent = 'EM ANDAMENTO';
         dica.textContent = 'Jornada em andamento';
-        areaBotoes.classList.add('ativo');
-
-        // CRIA O BOTÃO ENCERRAR DE VERDADE
-        if (!document.getElementById('btnEncerrar')) {
-            const encerrar = document.createElement('button');
-            encerrar.id = 'btnEncerrar';
-            encerrar.className = 'action action-danger';
-            encerrar.innerHTML = '<i class="fas fa-stop"></i> Encerrar';
-            encerrar.onclick = () => modal.classList.add('aberto');
-            areaBotoes.appendChild(encerrar);
-        }
-
+        
         notificar('Sucesso','Jornada iniciada!');
         salvar();
         atualizarEstatisticas();
@@ -367,9 +383,11 @@ btn.onclick = function() {
         pausadoMomento = Date.now();
         horaPausa.textContent = agoraHora();
         contadorPausas++;
-        btn.innerHTML = '<i class="fas fa-play"></i> Continuar';
+        
+        this.innerHTML = '<i class="fas fa-play"></i> Continuar';
         modo.textContent = 'PAUSADO';
         dica.textContent = 'Clique para retomar';
+        
         notificar('Pausado','Jornada interrompida','alerta');
         salvar();
         atualizarEstatisticas();
@@ -377,28 +395,42 @@ btn.onclick = function() {
         estaPausado = false;
         pausadoTempo += Date.now() - pausadoMomento;
         pausadoMomento = null;
-        btn.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+        
+        this.innerHTML = '<i class="fas fa-pause"></i> Pausar';
         modo.textContent = 'EM ANDAMENTO';
         dica.textContent = 'Jornada em andamento';
+        
         notificar('Retomado','Jornada continuada');
         salvar();
         atualizarEstatisticas();
     }
 };
 
+btnEncerrar.onclick = function() {
+    modal.classList.add('aberto');
+};
+
 btnCancelar.addEventListener('click', () => modal.classList.remove('aberto'));
 btnConfirmar.addEventListener('click', () => {
     modal.classList.remove('aberto');
-    rodando = false; estaPausado = false; inicio = null;
-    pausadoTempo = 0; pausadoMomento = null; contadorPausas = 0;
+    
+    rodando = false; 
+    estaPausado = false; 
+    inicio = null;
+    pausadoTempo = 0; 
+    pausadoMomento = null; 
+    contadorPausas = 0;
+    
     cron.textContent = '00:00:00';
-    btn.innerHTML = '<i class="fas fa-play"></i> Iniciar jornada';
-    btn.classList.remove('pause');
+    btnPrincipal.innerHTML = '<i class="fas fa-play"></i> Iniciar jornada';
+    btnPrincipal.classList.remove('pause');
+    btnEncerrar.style.display = 'none';
+    areaBotoes.classList.remove('ativo');
+    
     modo.textContent = 'AGUARDANDO';
     dica.textContent = 'Nenhum turno aberto';
     horaSaida.textContent = agoraHora();
-    document.getElementById('btnEncerrar')?.remove();
-    areaBotoes.classList.remove('ativo');
+    
     limpar();
     atualizarEstatisticas();
     notificar('Encerrado','Jornada finalizada com sucesso!');
