@@ -7,13 +7,18 @@
     <meta name="theme-color" content="#08090d">
     <meta name="color-scheme" content="dark">
 
-    <!-- ✅ CONEXÃO SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
 
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        try {
+            const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log("✅ Supabase conectado com sucesso!");
+        } catch (e) {
+            console.error("❌ Erro ao conectar Supabase:", e);
+            alert("Erro no Supabase: " + e.message);
+        }
         
         const USUARIO = {
             nome: "Falcão",
@@ -357,10 +362,10 @@
             </div>
 
             <div class="actions" id="areaBotoes">
-                <button class="action action-main" id="btnPrincipal">
+                <button class="action action-main" id="btnPrincipal" onclick="clicouBotaoPrincipal()">
                     <i class="fas fa-play"></i> Iniciar Jornada
                 </button>
-                <button class="action action-danger" id="btnEncerrar">
+                <button class="action action-danger" id="btnEncerrar" onclick="abrirModal()">
                     <i class="fas fa-stop"></i> Encerrar
                 </button>
             </div>
@@ -382,8 +387,8 @@
         <h3 class="modal-titulo">Encerrar Jornada</h3>
         <p class="modal-texto">Tem certeza que deseja encerrar sua jornada?</p>
         <div class="modal-botoes">
-            <button class="modal-btn btn-cancelar" id="btnCancelar">Cancelar</button>
-            <button class="modal-btn btn-confirmar" id="btnConfirmar">Sim, Encerrar</button>
+            <button class="modal-btn btn-cancelar" onclick="fecharModal()">Cancelar</button>
+            <button class="modal-btn btn-confirmar" onclick="confirmarEncerrar()">Sim, Encerrar</button>
         </div>
     </div>
 </div>
@@ -401,6 +406,8 @@
 </nav>
 
 <script>
+console.log("📜 Script carregado!");
+
 // ========== ELEMENTOS ==========
 const botoesAba = document.querySelectorAll('.aba');
 const conteudosAba = document.querySelectorAll('.conteudo-aba');
@@ -414,12 +421,16 @@ const horaEntrada = document.getElementById('horaEntrada');
 const horaPausa = document.getElementById('horaPausa');
 const horaSaida = document.getElementById('horaSaida');
 const modal = document.getElementById('modalConfirmar');
-const btnCancelar = document.getElementById('btnCancelar');
-const btnConfirmar = document.getElementById('btnConfirmar');
 const notifArea = document.getElementById('areaNotif');
 const statStatus = document.getElementById('statStatus');
 const statPausados = document.getElementById('statPausados');
 const conteudoHistorico = document.getElementById('conteudoHistorico');
+
+console.log("✅ Elementos carregados:", {
+    btnPrincipal: !!btnPrincipal,
+    cronometro: !!cron,
+    abas: botoesAba.length
+});
 
 // ========== ESTADO ==========
 let registroId = null;
@@ -431,7 +442,7 @@ let estaPausado = false;
 let contadorPausas = 0;
 let intervalo = null;
 
-// ========== FUNÇÕES ==========
+// ========== FUNÇÕES BÁSICAS ==========
 function formatar(seg) {
     const h = Math.floor(seg / 3600);
     const m = Math.floor((seg % 3600) / 60);
@@ -461,9 +472,10 @@ function atualizarStatus() {
     else { statStatus.textContent = "Em Serviço"; statStatus.classList.add('status-online'); }
 }
 
-// ========== FUNÇÕES SUPABASE ==========
+// ========== SUPABASE ==========
 async function salvarInicio() {
     try {
+        console.log("💾 Salvando início no Supabase...");
         const { data, error } = await supabase
             .from('pontos')
             .insert([{
@@ -475,8 +487,10 @@ async function salvarInicio() {
             
         if (error) throw error;
         registroId = data[0].id;
-        notificar('Sucesso', 'Jornada iniciada e salva!');
+        console.log("✅ Registro criado com ID:", registroId);
+        notificar('Sucesso', 'Jornada salva no sistema!');
     } catch (e) {
+        console.error("❌ Erro Supabase:", e);
         notificar('Erro', 'Falha ao salvar: ' + e.message, 'erro');
     }
 }
@@ -491,27 +505,11 @@ async function atualizarRegistro(dados) {
             
         if (error) throw error;
     } catch (e) {
+        console.error("❌ Erro ao atualizar:", e);
         notificar('Erro', 'Falha ao atualizar: ' + e.message, 'erro');
     }
 }
 
 async function carregarHistorico() {
     conteudoHistorico.innerHTML = `
-        <div class="historico-vazio">
-            <i class="fas fa-spinner fa-spin"></i>
-            <h3>Carregando...</h3>
-        </div>
-    `;
-    
-    try {
-        const { data, error } = await supabase
-            .from('pontos')
-            .select('*')
-            .eq('passaporte', USUARIO.passaporte)
-            .order('entrada', {ascending: false});
-            
-        if (error) throw error;
-        
-        if (!data || data.length === 0) {
-            conteudoHistorico.innerHTML = `
-                <div class="histo
+  
