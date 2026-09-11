@@ -139,11 +139,12 @@
         .journey.active, .history.active { display: block; }
         .loading { color: var(--muted); text-align: center; padding: 40px 20px; }
 
-        /* Navegação Inferior */
+        /* Navegação Inferior (AGORA COM 4 ITENS: Início, Ponto, Equipe, Registros) */
         .bottom-nav { 
             position: fixed; z-index: 30; left: 12px; right: 12px; bottom: 12px; height: 66px; 
             border-radius: 21px; background: rgba(18,21,27,.94); backdrop-filter: blur(16px); 
-            border: 1px solid var(--border); display: grid; grid-template-columns: repeat(3, 1fr); 
+            border: 1px solid var(--border); 
+            display: grid; grid-template-columns: repeat(4, 1fr); /* 4 colunas agora */
             padding: 5px; 
         }
         .nav-item { 
@@ -229,12 +230,16 @@
     </section>
 </main>
 
+<!-- BARRA DE NAVEGAÇÃO COM A ORDEM CORRETA: Início | Ponto | Equipe | Registros -->
 <nav class="bottom-nav">
     <a class="nav-item" href="painel.html">
         <i class="fa-solid fa-house"></i><br>Início
     </a>
     <a class="nav-item active">
         <i class="fa-solid fa-clock"></i><br>Ponto
+    </a>
+    <a class="nav-item" href="equipe.html">
+        <i class="fa-solid fa-users"></i><br>Equipe
     </a>
     <a class="nav-item" href="registros.html">
         <i class="fa-solid fa-folder-open"></i><br>Registros
@@ -243,7 +248,11 @@
 
 <script>
 // Configurações
-const USUARIO = { nome: "Falcão", passaporte: "17274" };
+const USUARIO = { 
+    nome: "Falcão", 
+    passaporte: "17274",
+    equipe: "EQUIPE RAÍZ" 
+};
 const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjbHdtaWt6bW51cWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
 
@@ -263,7 +272,8 @@ const elementos = {
     jornada: document.getElementById('jornada'),
     historico: document.getElementById('historico'),
     btnNotif: document.getElementById('btnNotif'),
-    pausasTexto: document.getElementById('pausasTexto')
+    pausasTexto: document.getElementById('pausasTexto'),
+    equipeTexto: document.getElementById('equipeTexto')
 };
 
 // Variáveis globais
@@ -277,6 +287,11 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (erro) {
         elementos.erro.textContent = "Sistema conectado com limitações temporárias.";
         elementos.erro.style.display = "block";
+    }
+
+    // Exibe a equipe do usuário
+    if (USUARIO.equipe) {
+        elementos.equipeTexto.textContent = USUARIO.equipe;
     }
 
     // Eventos
@@ -319,6 +334,7 @@ async function aoClicarPrincipal() {
         const { error } = await supabase.from('pontos').insert([{
             passaporte: USUARIO.passaporte,
             nome: USUARIO.nome,
+            equipe: USUARIO.equipe,
             status: 'ativo',
             entrada: new Date().toISOString()
         }]);
