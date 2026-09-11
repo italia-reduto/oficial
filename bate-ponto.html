@@ -3,474 +3,820 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORGANIZAÇÃO ITÁLIA · MEU PONTO</title>
     <meta name="theme-color" content="#08090d">
-    <meta name="color-scheme" content="dark">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <title>Meu Ponto · Organização Itália</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #08090d;
+            --bg2: #0d0f14;
+            --card: #12151b;
+            --card2: #171a21;
+            --border: rgba(255,255,255,.07);
+            --text: #f5f5f5;
+            --muted: #8b929f;
+            --muted2: #5d6470;
+            --red: #e11d48;
+            --red2: #fb365d;
+            --green: #22c55e;
+            --yellow: #f59e0b;
+            --blue: #3b82f6;
+        }
+
         body {
             min-height: 100vh;
-            background: radial-gradient(circle at 100% 0%, rgba(225,29,72,.10), transparent 32%),
-                        radial-gradient(circle at 0% 45%, rgba(139,92,246,.06), transparent 28%),
-                        #08090d;
-            color: #f5f5f5;
-            font-family: Inter, system-ui, sans-serif;
-            padding-bottom: 94px;
-        }
-        .container { max-width: 720px; margin: 0 auto; padding: 0 16px; }
-        .notificacoes-topo {
-            position: fixed; top: 12px; left: 16px; right: 16px; z-index: 99999;
-            display: flex; flex-direction: column; gap: 10px; pointer-events: none;
-        }
-        .notif-card {
-            background: linear-gradient(135deg, #1a1e27, #15181f);
-            border: 1px solid rgba(255,255,255,.08); border-radius: 16px;
-            padding: 14px 18px; display: flex; align-items: center; gap: 12px;
-            transform: translateY(-20px); opacity: 0; transition: all .35s ease;
-        }
-        .notif-card.mostrar { transform: translateY(0); opacity: 1; }
-        .notif-card.sucesso { border-left: 3px solid #22c55e; }
-        .notif-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(34,197,94,.12); color: #22c55e; }
-        .notif-conteudo { flex: 1; }
-        .notif-titulo { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
-        .notif-texto { font-size: 12px; color: #94a3b8; }
-
-        .header {
-            position: sticky; top: 0; z-index: 500;
-            background: rgba(8,9,13,.88); backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255,255,255,.06); margin-top: 10px;
-        }
-        .header-inner { display: flex; justify-content: space-between; align-items: center; padding: 13px 16px; }
-        .perfil { display: flex; align-items: center; gap: 11px; }
-        .avatar {
-            width: 43px; height: 43px; border-radius: 14px; display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(145deg, rgba(225,29,72,.20), rgba(225,29,72,.05));
-            border: 1px solid rgba(225,29,72,.22); color: #fb365d; font-size: 17px;
-        }
-        .perfil-nome { font-size: 14px; font-weight: 750; }
-        .perfil-dados { font-size: 11px; color: #777f8c; margin-top: 3px; }
-        .btn-voltar {
-            border: 1px solid rgba(255,255,255,.07); background: #11141a;
-            color: #9aa1ad; border-radius: 12px; padding: 10px 13px; font-size: 12px; font-weight: 700;
-            cursor: pointer;
+            background:
+                radial-gradient(circle at top right, rgba(225,29,72,.07), transparent 35%),
+                var(--bg);
+            color: var(--text);
+            font-family: "Inter", sans-serif;
+            padding-bottom: 90px;
         }
 
-        .page-title { padding: 24px 0 16px; }
-        .eyebrow {
-            display: inline-flex; align-items: center; gap: 7px;
-            color: #fb365d; background: rgba(225,29,72,.08); border: 1px solid rgba(225,29,72,.15);
-            border-radius: 9px; padding: 6px 9px; font-size: 10px; font-weight: 800; text-transform: uppercase;
-            margin-bottom: 12px;
+        button {
+            font-family: inherit;
         }
-        .page-title h1 { font-size: 28px; margin-bottom: 7px; }
-        .subtitle { color: #8b929f; font-size: 13px; }
 
-        .abas-navegacao {
+        .topbar {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            height: 72px;
             display: flex;
-            gap: 8px;
-            margin: 0 0 20px 0;
-            border-bottom: 1px solid rgba(255,255,255,.06);
-            padding-bottom: 1px;
-        }
-        .aba {
-            padding: 12px 24px;
-            font-size: 15px;
-            font-weight: 700;
-            border: none;
-            border-radius: 10px 10px 0 0;
-            background: transparent;
-            color: #8b929f;
-            cursor: pointer;
-            transition: all .2s ease;
-        }
-        .aba:hover {
-            color: #b0b0c3;
-            background: rgba(255,255,255,.03);
-        }
-        .aba.ativa {
-            background: linear-gradient(135deg, rgba(225,29,72,.15), rgba(225,29,72,.05));
-            color: #f5f5f5;
-            border-bottom: 2px solid #fb365d;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 18px;
+            background: rgba(8,9,13,.88);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
         }
 
-        .conteudo-aba {
-            display: none;
-            animation: aparecer .3s ease forwards;
-        }
-        .conteudo-aba.ativa {
-            display: block;
-        }
-        @keyframes aparecer {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
         }
 
-        .historico-vazio {
-            text-align: center;
-            padding: 60px 20px;
-            color: #6b7280;
-            background: linear-gradient(135deg, rgba(26,30,39,.9), rgba(21,24,31,.9));
-            border: 1px solid rgba(255,255,255,.07);
-            border-radius: 22px;
-        }
-        .historico-vazio i {
-            font-size: 48px;
-            margin-bottom: 16px;
-            opacity: .5;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, rgba(26,30,39,.9), rgba(21,24,31,.9));
-            border: 1px solid rgba(255,255,255,.07);
-            border-radius: 16px;
-            padding: 18px 16px;
-        }
-        .stat-label {
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            color: #8b929f;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-        .stat-value {
-            font-size: 22px;
-            font-weight: 800;
-            color: #f5f5f5;
-        }
-        .stat-value.status-online { color: #22c55e; }
-        .stat-value.status-pausado { color: #f59e0b; }
-
-        .clock-card {
-            position: relative; overflow: hidden; padding: 25px 20px 20px;
-            border-radius: 22px; border: 1px solid rgba(225,29,72,.14);
-            background: linear-gradient(145deg, rgba(35,14,23,.90), rgba(15,17,22,.98) 58%);
-        }
-        .clock-top { display: flex; justify-content: space-between; font-size: 10px; color: #777f8c; font-weight: 800; text-transform: uppercase; }
-        .clock-mode { color: #fb365d; }
-        .timer { font-size: clamp(38px, 12vw, 55px); font-weight: 850; text-align: center; margin: 22px 0 5px; font-variant-numeric: tabular-nums; }
-        .timer-sub { text-align: center; color: #777f8c; font-size: 11px; margin-bottom: 21px; }
-
-        .markers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 4px 20px; }
-        .marker { background: #101319; border: 1px solid rgba(255,255,255,.055); border-radius: 13px; padding: 12px 8px; text-align: center; }
-        .marker-label { font-size: 9px; color: #626a77; text-transform: uppercase; margin-bottom: 5px; }
-        .marker-value { font-size: 12px; color: #dfe2e7; font-weight: 750; }
-
-        .actions { 
-            display: grid; 
-            grid-template-columns: 1fr;
-            gap: 10px; 
-            margin-top: 10px;
-        }
-        .actions.ativo { 
-            grid-template-columns: 1fr 1fr; 
-            gap: 10px;
-        }
-        .action {
-            border: none; 
-            min-height: 52px; 
-            border-radius: 14px; 
-            font-size: 15px; 
-            font-weight: 700;
-            cursor: pointer; 
-            transition: all .18s ease;
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: rgba(225,29,72,.12);
+            color: var(--red2);
+            border: 1px solid rgba(225,29,72,.18);
+        }
+
+        .brand-text strong {
+            display: block;
+            font-size: 14px;
+            font-weight: 800;
+        }
+
+        .brand-text span {
+            display: block;
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 2px;
+        }
+
+        .notification {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .container {
+            width: min(900px, calc(100% - 28px));
+            margin: 0 auto;
+            padding-top: 22px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+        }
+
+        .profile-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 15px;
+            background: linear-gradient(145deg, #242832, #111319);
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .profile h2 {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .profile p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .back-btn {
+            border: 1px solid var(--border);
+            background: var(--card);
+            color: var(--muted);
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            cursor: pointer;
+        }
+
+        .title {
+            margin: 25px 0 16px;
+        }
+
+        .title h1 {
+            font-size: 27px;
+            letter-spacing: -.8px;
+        }
+
+        .title p {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .stat {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 15px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 9px;
+        }
+
+        .stat-value {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .status-active {
+            color: var(--green);
+        }
+
+        .status-paused {
+            color: var(--yellow);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 6px;
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 5px;
+            border-radius: 14px;
+            margin: 16px 0;
+        }
+
+        .tab {
+            flex: 1;
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            padding: 11px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .tab.active {
+            background: var(--card2);
+            color: #fff;
+        }
+
+        .clock-card {
+            background:
+                radial-gradient(circle at top right, rgba(225,29,72,.13), transparent 38%),
+                var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .clock-label {
+            color: var(--muted);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            font-weight: 700;
+        }
+
+        .timer {
+            font-size: clamp(42px, 12vw, 70px);
+            font-weight: 800;
+            letter-spacing: -2px;
+            margin: 10px 0 18px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .markers {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .marker {
+            background: rgba(255,255,255,.025);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 11px 5px;
+        }
+
+        .marker span {
+            display: block;
+            color: var(--muted);
+            font-size: 9px;
+            margin-bottom: 5px;
+        }
+
+        .marker strong {
+            display: block;
+            font-size: 11px;
+        }
+
+        .main-btn {
             width: 100%;
+            border: none;
+            border-radius: 15px;
+            padding: 15px;
+            color: white;
+            background: var(--red);
+            font-weight: 800;
+            font-size: 13px;
+            cursor: pointer;
+            transition: .2s;
         }
-        .action-main { 
-            background: linear-gradient(135deg, #e11d48, #c9183f); 
-            color: white; 
-            box-shadow: 0 9px 25px rgba(225,29,72,.17); 
+
+        .main-btn:hover {
+            background: var(--red2);
         }
-        .action-main:hover { filter: brightness(1.05); }
-        .action-danger { 
-            background: rgba(225,29,72,.10); 
-            color: #fb365d; 
-            border: 1px solid rgba(225,29,72,.20); 
+
+        .main-btn.pause {
+            background: var(--yellow);
+            color: #17120a;
+        }
+
+        .main-btn.resume {
+            background: var(--green);
+            color: #06130a;
+        }
+
+        .secondary-btn {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: var(--card2);
+            color: white;
+            border-radius: 15px;
+            padding: 14px;
+            font-weight: 700;
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 9px;
+        }
+
+        .team-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 18px;
+            margin-top: 14px;
+        }
+
+        .team-head {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .team-title {
+            display: flex;
+            gap: 11px;
+            align-items: center;
+        }
+
+        .team-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            background: rgba(59,130,246,.12);
+            color: #60a5fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .team-title h3 {
+            font-size: 14px;
+        }
+
+        .team-title p {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        .team-badge {
+            border-radius: 999px;
+            padding: 6px 9px;
+            background: rgba(34,197,94,.1);
+            color: var(--green);
+            font-size: 9px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .team-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .team-info-box {
+            background: rgba(255,255,255,.025);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 10px;
+        }
+
+        .team-info-box span {
+            display: block;
+            color: var(--muted2);
+            font-size: 9px;
+            margin-bottom: 4px;
+        }
+
+        .team-info-box strong {
+            font-size: 11px;
+        }
+
+        .members-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 14px 0 9px;
+        }
+
+        .members-title strong {
+            font-size: 12px;
+        }
+
+        .members-title span {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .member {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 11px 0;
+            border-top: 1px solid var(--border);
+        }
+
+        .member-left {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .member-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 10px;
+            background: #1c2028;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .member-name {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .member-pass {
+            font-size: 9px;
+            color: var(--muted);
+            margin-top: 3px;
+        }
+
+        .member-status {
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .empty-team {
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+            padding: 18px 0 8px;
+        }
+
+        .history {
             display: none;
         }
-        .action-danger:hover { background: rgba(225,29,72,.15); }
 
-        .bottom-menu {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 76px;
-            background: rgba(13,15,20,.95); backdrop-filter: blur(22px);
-            display: flex; border-top: 1px solid rgba(255,255,255,.07);
+        .history.active {
+            display: block;
         }
-        .bottom-item {
-            flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 5px; background: none; border: none; color: #5d6470; cursor: pointer;
-            text-decoration: none;
-        }
-        .bottom-item.active { color: #f5f5f5; }
-        .bottom-item.active i { color: #fb365d; }
-        .bottom-item i { font-size: 17px; }
-        .bottom-item span { font-size: 9px; font-weight: 650; }
 
-        .modal-overlay {
-            position: fixed; inset: 0; background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
-            display: flex; align-items: center; justify-content: center; z-index: 9998;
-            opacity: 0; visibility: hidden; transition: .25s ease;
+        .journey.active {
+            display: block;
         }
-        .modal-overlay.aberto { opacity: 1; visibility: visible; }
-        .modal-box {
-            background: linear-gradient(145deg, #171a21, #12141a); border: 1px solid rgba(255,255,255,.08);
-            border-radius: 20px; padding: 26px 22px; max-width: 340px; width: 90%;
+
+        .journey.hidden {
+            display: none;
         }
-        .modal-icon { text-align: center; margin-bottom: 16px; color: #f59e0b; font-size: 36px; }
-        .modal-titulo { font-size: 17px; text-align: center; margin-bottom: 10px; }
-        .modal-texto { color: #a1a9b8; text-align: center; margin-bottom: 24px; font-size: 14px; }
-        .modal-botoes { display: flex; gap: 10px; }
-        .modal-btn { flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: bold; cursor: pointer; }
-        .btn-cancelar { background: #1e222b; color: #cbd5e1; }
-        .btn-confirmar { background: #dc2626; color: white; }
+
+        .history-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 17px;
+            padding: 15px;
+            margin-bottom: 9px;
+        }
+
+        .history-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .history-date {
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .history-status {
+            color: var(--green);
+            font-size: 9px;
+            font-weight: 800;
+        }
+
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .history-grid div {
+            background: rgba(255,255,255,.025);
+            border-radius: 10px;
+            padding: 9px;
+        }
+
+        .history-grid span {
+            display: block;
+            color: var(--muted2);
+            font-size: 8px;
+            margin-bottom: 4px;
+        }
+
+        .history-grid strong {
+            font-size: 10px;
+        }
+
+        .loading {
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error {
+            background: rgba(225,29,72,.08);
+            border: 1px solid rgba(225,29,72,.2);
+            color: #ff718e;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 11px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        .cooldown {
+            color: var(--yellow);
+            text-align: center;
+            font-size: 10px;
+            margin-top: 9px;
+            display: none;
+        }
+
+        .modal-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0,0,0,.72);
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-bg.show {
+            display: flex;
+        }
+
+        .modal {
+            width: min(390px, 100%);
+            background: #111318;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 22px;
+        }
+
+        .modal h3 {
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .modal p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 9px;
+            margin-top: 18px;
+        }
+
+        .modal-actions button {
+            padding: 13px;
+            border-radius: 13px;
+            border: 1px solid var(--border);
+            background: var(--card2);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .modal-actions .danger {
+            background: var(--red);
+            border-color: var(--red);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            z-index: 30;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            height: 66px;
+            border-radius: 21px;
+            background: rgba(18,21,27,.94);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding: 5px;
+        }
+
+        .nav-item {
+            border: none;
+            background: transparent;
+            color: var(--muted);
+            border-radius: 16px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .nav-item i {
+            display: block;
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item.active {
+            background: rgba(225,29,72,.1);
+            color: var(--red2);
+        }
+
+        @media (min-width: 700px) {
+            .stats {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .bottom-nav {
+                width: 520px;
+                left: 50%;
+                right: auto;
+                transform: translateX(-50%);
+            }
+        }
     </style>
 </head>
-<body>
-<div class="notificacoes-topo" id="areaNotif"></div>
 
-<header class="header">
-    <div class="header-inner container">
-        <div class="perfil">
-            <div class="avatar"><i class="fas fa-user-shield"></i></div>
-            <div>
-                <div class="perfil-nome">Falcão</div>
-                <div class="perfil-dados">Passaporte: 17274 · Ponto</div>
-            </div>
+<body>
+
+<header class="topbar">
+    <div class="brand">
+        <div class="brand-icon">
+            <i class="fa-solid fa-flag"></i>
         </div>
-        <button class="btn-voltar" onclick="window.location.href='painel.html'">
-            <i class="fas fa-arrow-left"></i> Voltar
-        </button>
+
+        <div class="brand-text">
+            <strong>ORGANIZAÇÃO ITÁLIA</strong>
+            <span>Sistema de Controle</span>
+        </div>
     </div>
+
+    <button class="notification" onclick="mostrarAviso()">
+        <i class="fa-regular fa-bell"></i>
+    </button>
 </header>
 
 <main class="container">
-    <section class="page-title">
-        <div class="eyebrow"><i class="fas fa-clock"></i> CONTROLE DE JORNADA</div>
-        <h1>Meu Ponto</h1>
-        <p class="subtitle">Gerencie sua jornada de trabalho</p>
+
+    <div id="erro" class="error"></div>
+
+    <section class="profile">
+        <div class="profile-left">
+            <div class="avatar" id="avatar">F</div>
+
+            <div>
+                <h2 id="nomeUsuario">Falcão</h2>
+                <p>Passaporte: <span id="passaporteUsuario">17274</span> · Ponto</p>
+            </div>
+        </div>
+
+        <button class="back-btn" onclick="location.href='painel.html'">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
     </section>
 
-    <div class="stats-grid">
-        <div class="stat-card">
+    <section class="title">
+        <h1>Meu Ponto</h1>
+        <p>Controle sua jornada e acompanhe sua equipe.</p>
+    </section>
+
+    <section class="stats">
+
+        <div class="stat">
             <div class="stat-label">Meu Status</div>
-            <div class="stat-value" id="statStatus">Fora</div>
+            <div class="stat-value" id="statusTexto">Offline</div>
         </div>
-        <div class="stat-card">
-            <div class="stat-label">Pausados</div>
-            <div class="stat-value" id="statPausados">0</div>
+
+        <div class="stat">
+            <div class="stat-label">Pausas</div>
+            <div class="stat-value" id="pausasTexto">0</div>
         </div>
+
+        <div class="stat">
+            <div class="stat-label">Entrada</div>
+            <div class="stat-value" id="entradaTexto">--:--</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-label">Equipe</div>
+            <div class="stat-value" id="equipeTexto">--</div>
+        </div>
+
+    </section>
+
+    <div class="tabs">
+
+        <button class="tab active" id="tabJornada">
+            Minha Jornada
+        </button>
+
+        <button class="tab" id="tabHistorico">
+            Meu Histórico
+        </button>
+
     </div>
 
-    <div class="abas-navegacao">
-        <button class="aba ativa" data-alvo="aba-jornada">Minha Jornada</button>
-        <button class="aba" data-alvo="aba-historico">Meu Histórico</button>
-    </div>
+    <section id="jornada" class="journey active">
 
-    <div id="aba-jornada" class="conteudo-aba ativa">
-        <section class="clock-card">
-            <div class="clock-top">
-                <span>JORNADA ATUAL</span>
-                <span class="clock-mode" id="modoTexto">AGUARDANDO</span>
+        <div class="clock-card">
+
+            <div class="clock-label">Tempo em serviço</div>
+
+            <div class="timer" id="timer">
+                00:00:00
             </div>
-
-            <div class="timer" id="cronometro">00:00:00</div>
-            <div class="timer-sub" id="dica">Nenhum turno aberto</div>
 
             <div class="markers">
-                <div class="marker"><span class="marker-label">ENTRADA</span> <span class="marker-value" id="horaEntrada">--:--</span></div>
-                <div class="marker"><span class="marker-label">ÚLTIMA PAUSA</span> <span class="marker-value" id="horaPausa">--:--</span></div>
-                <div class="marker"><span class="marker-label">SAÍDA</span> <span class="marker-value" id="horaSaida">--:--</span></div>
+
+                <div class="marker">
+                    <span>ENTRADA</span>
+                    <strong id="marcadorEntrada">--:--</strong>
+                </div>
+
+                <div class="marker">
+                    <span>ÚLTIMA PAUSA</span>
+                    <strong id="marcadorPausa">--:--</strong>
+                </div>
+
+                <div class="marker">
+                    <span>SAÍDA</span>
+                    <strong id="marcadorSaida">--:--</strong>
+                </div>
+
             </div>
 
-            <div class="actions" id="areaBotoes">
-                <button class="action action-main" id="btnPrincipal">
-                    <i class="fas fa-play"></i> Iniciar Jornada
-                </button>
-                <button class="action action-danger" id="btnEncerrar">
-                    <i class="fas fa-stop"></i> Encerrar
-                </button>
-            </div>
-        </section>
-    </div>
+            <button class="main-btn" id="btnPrincipal">
+                <i class="fa-solid fa-play"></i>
+                Iniciar Jornada
+            </button>
 
-    <div id="aba-historico" class="conteudo-aba">
-        <section class="historico-vazio">
-            <i class="fas fa-history"></i>
-            <h3>Nenhum registro ainda</h3>
-            <p>Seu histórico de jornadas aparecerá aqui</p>
-        </section>
-    </div>
+            <button class="secondary-btn" id="btnEncerrar" style="display:none;">
+                <i class="fa-solid fa-stop"></i>
+                Encerrar Jornada
+            </button>
+
+        </div>
+
+        <div id="teamArea"></div>
+
+    </section>
+
+    <section id="historico" class="history">
+        <div id="historicoLista">
+            <div class="loading">
+                Carregando histórico...
+            </div>
+        </div>
+    </section>
+
 </main>
 
-<div class="modal-overlay" id="modalConfirmar">
-    <div class="modal-box">
-        <div class="modal-icon"><i class="fas fa-exclamation-triangle"></i></div>
-        <h3 class="modal-titulo">Encerrar Jornada</h3>
-        <p class="modal-texto">Tem certeza que deseja encerrar sua jornada?</p>
-        <div class="modal-botoes">
-            <button class="modal-btn btn-cancelar" id="btnCancelar">Cancelar</button>
-            <button class="modal-btn btn-confirmar" id="btnConfirmar">Sim, Encerrar</button>
-        </div>
-    </div>
-</div>
-
-<nav class="bottom-menu">
-    <a class="bottom-item" href="painel.html">
-        <i class="fas fa-home"></i> <span>Início</span>
-    </a>
-    <a class="bottom-item active">
-        <i class="fas fa-clock"></i> <span>Ponto</span>
-    </a>
-    <a class="bottom-item" href="registros.html">
-        <i class="fas fa-folder-open"></i> <span>Registros</span>
-    </a>
-</nav>
-
-<script>
-// ========== ELEMENTOS ==========
-const botoesAba = document.querySelectorAll('.aba');
-const conteudosAba = document.querySelectorAll('.conteudo-aba');
-const cron = document.getElementById('cronometro');
-const btnPrincipal = document.getElementById('btnPrincipal');
-const btnEncerrar = document.getElementById('btnEncerrar');
-const modo = document.getElementById('modoTexto');
-const dica = document.getElementById('dica');
-const areaBotoes = document.getElementById('areaBotoes');
-const horaEntrada = document.getElementById('horaEntrada');
-const horaPausa = document.getElementById('horaPausa');
-const horaSaida = document.getElementById('horaSaida');
-const modal = document.getElementById('modalConfirmar');
-const btnCancelar = document.getElementById('btnCancelar');
-const btnConfirmar = document.getElementById('btnConfirmar');
-const notifArea = document.getElementById('areaNotif');
-const statStatus = document.getElementById('statStatus');
-const statPausados = document.getElementById('statPausados');
-
-// ========== ESTADO ==========
-let inicio = null;
-let pausadoTempo = 0;
-let pausadoMomento = null;
-let rodando = false;
-let estaPausado = false;
-let contadorPausas = 0;
-let intervalo = null;
-
-// ========== FUNÇÕES ==========
-function formatar(seg) {
-    const h = Math.floor(seg / 3600);
-    const m = Math.floor((seg % 3600) / 60);
-    const s = Math.floor(seg % 60);
-    return [h,m,s].map(x=>String(x).padStart(2,'0')).join(':');
-}
-
-function agoraHora() {
-    const d = new Date();
-    return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-}
-
-function notificar(titulo, texto) {
-    const el = document.createElement('div');
-    el.className = 'notif-card sucesso';
-    el.innerHTML = `<div class="notif-icon"><i class="fas fa-check-circle"></i></div><div class="notif-conteudo"><div class="notif-titulo">${titulo}</div><div class="notif-texto">${texto}</div></div>`;
-    notifArea.appendChild(el);
-    setTimeout(()=>el.classList.add('mostrar'),10);
-    setTimeout(()=>el.remove(),3000);
-}
-
-function atualizarStatus() {
-    statPausados.textContent = contadorPausas;
-    statStatus.className = 'stat-value';
-    if (!rodando) statStatus.textContent = "Fora";
-    else if (estaPausado) { statStatus.textContent = "Pausado"; statStatus.classList.add('status-pausado'); }
-    else { statStatus.textContent = "Em Serviço"; statStatus.classList.add('status-online'); }
-}
-
-// ========== ABAS ==========
-botoesAba.forEach(botao => {
-    botao.addEventListener('click', () => {
-        botoesAba.forEach(b => b.classList.remove('ativa'));
-        conteudosAba.forEach(c => c.classList.remove('ativa'));
-        botao.classList.add('ativa');
-        document.getElementById(botao.dataset.alvo).classList.add('ativa');
-    });
-});
-
-// ========== BOTÃO PRINCIPAL (INICIAR/PAUSAR) ==========
-btnPrincipal.addEventListener('click', function() {
-    if (!rodando) {
-        // INICIAR
-        inicio = Date.now();
-        pausadoTempo = 0;
-        rodando = true;
-        estaPausado = false;
-        horaEntrada.textContent = agoraHora();
-        
-        this.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        btnEncerrar.style.display = 'flex';
-        areaBotoes.classList.add('ativo');
-        modo.textContent = 'EM ANDAMENTO';
-        dica.textContent = 'Jornada em andamento';
-        notificar('Sucesso','Jornada iniciada!');
-        atualizarStatus();
-        
-        intervalo = setInterval(() => {
-            if (!estaPausado) cron.textContent = formatar((Date.now() - inicio - pausadoTempo)/1000);
-        }, 200);
-
-    } else if (!estaPausado) {
-        // PAUSAR
-        estaPausado = true;
-        pausadoMomento = Date.now();
-        horaPausa.textContent = agoraHora();
-        contadorPausas++;
-        
-        this.innerHTML = '<i class="fas fa-play"></i> Continuar';
-        modo.textContent = 'PAUSADO';
-        dica.textContent = 'Clique para retomar';
-        atualizarStatus();
-
-    } else {
-        // RETOMAR
-        estaPausado = false;
-        pausadoTempo += Date.now() - pausadoMomento;
-        
-        this.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        modo.textContent = 'EM ANDAMENTO';
-        dica.textContent = 'Jornada em andamento';
-        atualizarStatus();
-    }
-});
-
-// ========== ENCERRAR ==========
-btnEncerrar.addEventListener('click', () => modal.classList.add('aberto'));
-btnCancelar.addEventListener('click', () => modal.classList.remove('aberto'));
-btnConfirmar.addEventListener('click', () => {
-    modal.classList.remove('aberto');
-    clearInterval(intervalo);
-    rodando = false;
-    estaPausado = false;
-    horaSaida.textContent = agoraHora();
-    
-    btnPrincipal.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
-    btnEncerrar.style.display = 'none';
-    areaBotoes.classList.remove('ativo');
-    modo.textContent = 'AGUARDANDO';
-    dica.textContent = 'Nenhum turno aberto';
-    cron.textContent = '00:00:00';
-    atualizarStatus();
-    notificar('Concluído','Jornada finalizada!');
-});
-</script>
-</body>
-</html>
+<nav class="bottom-nav">
+    <button class="nav-item" onclick="location.href='painel.html'">
+        <i class="fa-solid fa-house"></i>
+        Início
+    </button>
+    <button class="nav-item active">
+        <i class="fa-solid fa-clock"></i>
+        Ponto
+    </button>
+    <button class="nav-item" onclick="location.href='registros.html'">
+        <i class="fa-solid fa-folder-open"></i>
+  
