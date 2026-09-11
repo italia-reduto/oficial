@@ -7,16 +7,14 @@
     <meta name="theme-color" content="#08090d">
     <meta name="color-scheme" content="dark">
 
-    <!-- ✅ CONEXÃO SUPABASE ADICIONADA AQUI -->
+    <!-- ✅ CONEXÃO SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // COLOQUE SEUS DADOS ABAIXO (PEGUE NO SEU PAINEL SUPABASE > Settings > API)
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
 
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
         
-        // Dados do usuário (depois virá do login)
         const USUARIO = {
             nome: "Falcão",
             passaporte: "17274"
@@ -477,7 +475,7 @@ async function salvarInicio() {
             
         if (error) throw error;
         registroId = data[0].id;
-        notificar('Sucesso', 'Jornada salva no sistema!');
+        notificar('Sucesso', 'Jornada iniciada e salva!');
     } catch (e) {
         notificar('Erro', 'Falha ao salvar: ' + e.message, 'erro');
     }
@@ -514,4 +512,6 @@ async function carregarHistorico() {
             
         if (error) throw error;
         
-   
+        if (!data || data.length === 0) {
+            conteudoHistorico.innerHTML = `
+                <div class="histo
