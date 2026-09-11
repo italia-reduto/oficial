@@ -32,7 +32,6 @@
         }
         .notif-card.mostrar { transform: translateY(0); opacity: 1; }
         .notif-card.sucesso { border-left: 3px solid #22c55e; }
-        .notif-card.alerta { border-left: 3px solid #f59e0b; }
         .notif-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: rgba(34,197,94,.12); color: #22c55e; }
         .notif-conteudo { flex: 1; }
         .notif-titulo { font-size: 13px; font-weight: 700; margin-bottom: 2px; }
@@ -278,7 +277,6 @@
         <button class="aba" data-alvo="aba-historico">Meu Histórico</button>
     </div>
 
-    <!-- MINHA JORNADA: AQUI FICA O PAINEL DO CRONÔMETRO -->
     <div id="aba-jornada" class="conteudo-aba ativa">
         <section class="clock-card">
             <div class="clock-top">
@@ -306,7 +304,6 @@
         </section>
     </div>
 
-    <!-- MEU HISTÓRICO: TELA VAZIA -->
     <div id="aba-historico" class="conteudo-aba">
         <section class="historico-vazio">
             <i class="fas fa-history"></i>
@@ -341,28 +338,9 @@
 </nav>
 
 <script>
-// Lógica das abas
+// ========== ELEMENTOS ==========
 const botoesAba = document.querySelectorAll('.aba');
 const conteudosAba = document.querySelectorAll('.conteudo-aba');
-
-botoesAba.forEach(botao => {
-    botao.addEventListener('click', () => {
-        botoesAba.forEach(b => b.classList.remove('ativa'));
-        conteudosAba.forEach(c => c.classList.remove('ativa'));
-        
-        botao.classList.add('ativa');
-        document.getElementById(botao.dataset.alvo).classList.add('ativa');
-    });
-});
-
-// Lógica do sistema de ponto
-let inicio = null;
-let pausadoTempo = 0;
-let pausadoMomento = null;
-let rodando = false;
-let estaPausado = false;
-let contadorPausas = 0;
-
 const cron = document.getElementById('cronometro');
 const btnPrincipal = document.getElementById('btnPrincipal');
 const btnEncerrar = document.getElementById('btnEncerrar');
@@ -379,6 +357,16 @@ const notifArea = document.getElementById('areaNotif');
 const statStatus = document.getElementById('statStatus');
 const statPausados = document.getElementById('statPausados');
 
+// ========== ESTADO ==========
+let inicio = null;
+let pausadoTempo = 0;
+let pausadoMomento = null;
+let rodando = false;
+let estaPausado = false;
+let contadorPausas = 0;
+let intervalo = null;
+
+// ========== FUNÇÕES ==========
 function formatar(seg) {
     const h = Math.floor(seg / 3600);
     const m = Math.floor((seg % 3600) / 60);
@@ -391,91 +379,39 @@ function agoraHora() {
     return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
 }
 
-function notificar(titulo, texto, tipo='sucesso') {
+function notificar(titulo, texto) {
     const el = document.createElement('div');
-    el.className = `notif-card ${tipo==='alerta'?'alerta':'sucesso'}`;
-    el.innerHTML = `<div class="notif-icon"><i class="fas fa-${tipo==='alerta'?'exclamation-triangle':'check-circle'}"></i></div><div class="notif-conteudo"><div class="notif-titulo">${titulo}</div><div class="notif-texto">${texto}</div></div>`;
+    el.className = 'notif-card sucesso';
+    el.innerHTML = `<div class="notif-icon"><i class="fas fa-check-circle"></i></div><div class="notif-conteudo"><div class="notif-titulo">${titulo}</div><div class="notif-texto">${texto}</div></div>`;
     notifArea.appendChild(el);
     setTimeout(()=>el.classList.add('mostrar'),10);
     setTimeout(()=>el.remove(),3000);
 }
 
-function atualizarEstatisticas() {
+function atualizarStatus() {
     statPausados.textContent = contadorPausas;
-    if (!rodando) {
-        statStatus.textContent = "Fora";
-        statStatus.className = "stat-value";
-    } else if (estaPausado) {
-        statStatus.textContent = "Pausado";
-        statStatus.className = "stat-value status-pausado";
-    } else {
-        statStatus.textContent = "Em Serviço";
-        statStatus.className = "stat-value status-online";
-    }
+    statStatus.className = 'stat-value';
+    if (!rodando) statStatus.textContent = "Fora";
+    else if (estaPausado) { statStatus.textContent = "Pausado"; statStatus.classList.add('status-pausado'); }
+    else { statStatus.textContent = "Em Serviço"; statStatus.classList.add('status-online'); }
 }
 
-function salvar() {
-    localStorage.setItem('pontoDados', JSON.stringify({
-        inicio, pausadoTempo, pausadoMomento, rodando, estaPausado, contadorPausas,
-        hEntrada: horaEntrada.textContent, hPausa: horaPausa.textContent
-    }));
-}
-
-function carregar() {
-    try {
-        const dados = JSON.parse(localStorage.getItem('pontoDados'));
-        if (!dados) return;
-        
-        inicio = dados.inicio; 
-        pausadoTempo = dados.pausadoTempo || 0;
-        pausadoMomento = dados.pausadoMomento; 
-        rodando = dados.rodando;
-        estaPausado = dados.estaPausado;
-        contadorPausas = dados.contadorPausas || 0;
-        horaEntrada.textContent = dados.hEntrada || '--:--';
-        horaPausa.textContent = dados.hPausa || '--:--';
-        
-        if (rodando) {
-            areaBotoes.classList.add('ativo');
-            btnEncerrar.style.display = 'flex';
-            
-            if (estaPausado) {
-                btnPrincipal.innerHTML = '<i class="fas fa-play"></i> Continuar';
-                modo.textContent = 'PAUSADO';
-                dica.textContent = 'Clique para retomar';
-            } else {
-                btnPrincipal.innerHTML = '<i class="fas fa-pause"></i> Pausar';
-                modo.textContent = 'EM ANDAMENTO';
-                dica.textContent = 'Jornada em andamento';
-            }
-        }
-    } catch(e) {}
-}
-
-function limpar() { localStorage.removeItem('pontoDados'); }
-
-function atualizarCronometro() {
-    if (!rodando || !inicio) return;
-    let decorrido;
-    if (estaPausado) {
-        decorrido = (pausadoMomento - inicio - pausadoTempo) / 1000;
-    } else {
-        decorrido = (Date.now() - inicio - pausadoTempo) / 1000;
-    }
-    cron.textContent = formatar(Math.max(0, decorrido));
-}
-
-window.addEventListener('load', () => {
-    carregar();
-    atualizarEstatisticas();
-    setInterval(atualizarCronometro, 200);
+// ========== ABAS ==========
+botoesAba.forEach(botao => {
+    botao.addEventListener('click', () => {
+        botoesAba.forEach(b => b.classList.remove('ativa'));
+        conteudosAba.forEach(c => c.classList.remove('ativa'));
+        botao.classList.add('ativa');
+        document.getElementById(botao.dataset.alvo).classList.add('ativa');
+    });
 });
 
-btnPrincipal.onclick = function() {
+// ========== BOTÃO PRINCIPAL (INICIAR/PAUSAR) ==========
+btnPrincipal.addEventListener('click', function() {
     if (!rodando) {
+        // INICIAR
         inicio = Date.now();
         pausadoTempo = 0;
-        pausadoMomento = null;
         rodando = true;
         estaPausado = false;
         horaEntrada.textContent = agoraHora();
@@ -483,14 +419,17 @@ btnPrincipal.onclick = function() {
         this.innerHTML = '<i class="fas fa-pause"></i> Pausar';
         btnEncerrar.style.display = 'flex';
         areaBotoes.classList.add('ativo');
-        
         modo.textContent = 'EM ANDAMENTO';
         dica.textContent = 'Jornada em andamento';
-        
         notificar('Sucesso','Jornada iniciada!');
-        salvar();
-        atualizarEstatisticas();
+        atualizarStatus();
+        
+        intervalo = setInterval(() => {
+            if (!estaPausado) cron.textContent = formatar((Date.now() - inicio - pausadoTempo)/1000);
+        }, 200);
+
     } else if (!estaPausado) {
+        // PAUSAR
         estaPausado = true;
         pausadoMomento = Date.now();
         horaPausa.textContent = agoraHora();
@@ -498,4 +437,41 @@ btnPrincipal.onclick = function() {
         
         this.innerHTML = '<i class="fas fa-play"></i> Continuar';
         modo.textContent = 'PAUSADO';
-        dica.textConte
+        dica.textContent = 'Clique para retomar';
+        atualizarStatus();
+
+    } else {
+        // RETOMAR
+        estaPausado = false;
+        pausadoTempo += Date.now() - pausadoMomento;
+        
+        this.innerHTML = '<i class="fas fa-pause"></i> Pausar';
+        modo.textContent = 'EM ANDAMENTO';
+        dica.textContent = 'Jornada em andamento';
+        atualizarStatus();
+    }
+});
+
+// ========== ENCERRAR ==========
+btnEncerrar.addEventListener('click', () => modal.classList.add('aberto'));
+btnCancelar.addEventListener('click', () => modal.classList.remove('aberto'));
+btnConfirmar.addEventListener('click', () => {
+    modal.classList.remove('aberto');
+    clearInterval(intervalo);
+    rodando = false;
+    estaPausado = false;
+    horaSaida.textContent = agoraHora();
+    
+    btnPrincipal.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
+    btnEncerrar.style.display = 'none';
+    areaBotoes.classList.remove('ativo');
+    modo.textContent = 'AGUARDANDO';
+    dica.textContent = 'Nenhum turno aberto';
+    cron.textContent = '00:00:00';
+    atualizarStatus();
+    notificar('Concluído','Jornada finalizada!');
+});
+</script>
+</body>
+</html>
+
