@@ -1,404 +1,453 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#08090d">
-    <title>Meu Ponto</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#08090d">
+<title>Meu Ponto</title>
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        :root { 
-            --bg: #08090d; --bg2: #0d0f14; --card: #12151b; --card2: #171a21; 
-            --border: rgba(255,255,255,.07); --text: #f5f5f5; --muted: #8b929f; 
-            --muted2: #5d6470; --red: #e11d48; --red2: #fb365d; --green: #22c55e; --yellow: #f59e0b;
-        }
-        body { 
-            min-height: 100vh; 
-            background: radial-gradient(circle at top right, rgba(225,29,72,.07), transparent 35%), var(--bg); 
-            color: var(--text); 
-            font-family: "Inter", sans-serif; 
-            padding-bottom: 90px; 
-        }
-        button { font-family: inherit; }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        .topbar { 
-            position: sticky; top: 0; z-index: 20; height: 72px; 
-            background: rgba(8,9,13,.88); backdrop-filter: blur(16px); 
-            border-bottom: 1px solid var(--border); 
-            display: flex;
-            align-items: center;
-            padding: 0 18px;
-            gap: 12px;
-        }
-        .topbar-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 12px;
-            background: linear-gradient(145deg, #242832, #111319);
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: #fff;
-        }
-        .topbar-info {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-        .topbar-nome {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text);
-        }
-        .topbar-detalhe {
-            font-size: 13px;
-            color: var(--muted);
-        }
-
-        .container { width: min(900px, calc(100% - 28px)); margin: 0 auto; padding: 22px 18px 0; }
-
-        .title { margin-bottom: 25px; }
-        .title h1 { font-size: 27px; letter-spacing: -.8px; margin-bottom: 6px; }
-        .title p { color: var(--muted); font-size: 13px; }
-
-        .stats { 
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; 
-            margin-bottom: 14px; 
-        }
-        .stat { 
-            background: var(--card); border: 1px solid var(--border); border-radius: 18px; 
-            padding: 15px; transition: transform .2s; 
-        }
-        .stat:hover { transform: translateY(-2px); }
-        .stat-label { color: var(--muted); font-size: 11px; margin-bottom: 9px; }
-        .stat-value { font-size: 17px; font-weight: 800; }
-        .status-active { color: var(--green); }
-
-        .tabs { 
-            display: flex; gap: 6px; background: var(--bg2); border: 1px solid var(--border); 
-            padding: 5px; border-radius: 14px; margin: 16px 0; 
-        }
-        .tab { 
-            flex: 1; border: none; background: transparent; color: var(--muted); 
-            padding: 11px 8px; border-radius: 10px; font-size: 12px; font-weight: 700; 
-            cursor: pointer; transition: all .2s; 
-        }
-        .tab:hover { color: var(--text); }
-        .tab.active { background: var(--card2); color: #fff; }
-
-        .clock-card { 
-            background: radial-gradient(circle at top right, rgba(225,29,72,.13), transparent 38%), var(--card); 
-            border: 1px solid var(--border); border-radius: 22px; padding: 24px; text-align: center; 
-            margin-bottom: 14px; 
-        }
-        .clock-label { 
-            color: var(--muted); font-size: 11px; text-transform: uppercase; 
-            letter-spacing: 1.2px; font-weight: 700; 
-        }
-        .timer { 
-            font-size: clamp(42px, 12vw, 70px); font-weight: 800; letter-spacing: -2px; 
-            margin: 10px 0 18px; font-variant-numeric: tabular-nums; 
-        }
-        .markers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 18px; }
-        .marker { 
-            background: rgba(255,255,255,.025); border: 1px solid var(--border); border-radius: 13px; 
-            padding: 11px 5px; 
-        }
-        .marker:nth-child(1),
-        .marker:nth-child(2),
-        .marker:nth-child(3) {
-            background: rgba(255,255,255,.08);
-            border-color: rgba(255,255,255,.22);
-            box-shadow: 0 0 0 1px rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
-        }
-        .marker span { display: block; color: var(--muted); font-size: 9px; margin-bottom: 5px; }
-        .marker strong { display: block; font-size: 11px; }
-
-        .btn-principal { 
-            width: 100%; border: none; border-radius: 15px; padding: 15px; color: white; 
-            background: var(--red); font-weight: 800; font-size: 13px; cursor: pointer; 
-            transition: opacity .2s; 
-        }
-        .btn-principal:disabled { opacity: .8; }
-
-        .grupo-botoes { display: none; gap: 10px; margin-top: 10px; }
-        .btn-acao { 
-            flex: 1; border: none; border-radius: 15px; padding: 14px; color: white; 
-            font-weight: 800; font-size: 13px; cursor: pointer; transition: transform .2s; 
-        }
-        .btn-acao:hover { transform: translateY(-2px); }
-        .btn-pausar { background: var(--yellow); color: #000; }
-        .btn-encerrar { background: var(--red); }
-
-        .journey, .history { display: none; }
-        .journey.active, .history.active { display: block; }
-        .loading { color: var(--muted); text-align: center; padding: 40px 20px; }
-
-        .bottom-nav { 
-            position: fixed; z-index: 30; left: 12px; right: 12px; bottom: 12px; height: 66px; 
-            border-radius: 21px; background: rgba(18,21,27,.94); backdrop-filter: blur(16px); 
-            border: 1px solid var(--border); 
-            display: grid; grid-template-columns: repeat(4, 1fr); 
-            padding: 5px; 
-        }
-        .nav-item { 
-            border: none; background: transparent; color: var(--muted); border-radius: 16px; 
-            font-size: 10px; font-weight: 700; cursor: pointer; transition: all .2s; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            text-decoration: none; gap: 4px;
-        }
-        .nav-item i { font-size: 16px; }
-        .nav-item.active { background: rgba(225,29,72,.1); color: var(--red2); }
-        .nav-item:hover { color: var(--text); }
-    </style>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+--bg:#08090d;--bg2:#0d0f14;--card:#12151b;--card2:#171a21;
+--border:rgba(255,255,255,.07);--text:#f5f5f5;--muted:#8b929f;
+--red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b
+}
+body{
+min-height:100vh;background:radial-gradient(circle at top right,rgba(225,29,72,.07),transparent 35%),var(--bg);
+color:var(--text);font-family:Inter,sans-serif;padding-bottom:90px
+}
+button{font-family:inherit}
+.topbar{
+height:72px;position:sticky;top:0;z-index:20;background:rgba(8,9,13,.88);
+backdrop-filter:blur(16px);border-bottom:1px solid var(--border);
+display:flex;align-items:center;padding:0 18px;gap:12px
+}
+.avatar{
+width:40px;height:40px;border-radius:12px;background:#181b22;
+border:1px solid var(--border);display:flex;align-items:center;
+justify-content:center;font-weight:800
+}
+.topbar-info{display:flex;flex-direction:column;gap:2px}
+.topbar-nome{font-size:15px;font-weight:700}
+.topbar-detalhe{font-size:13px;color:var(--muted)}
+.container{width:min(900px,calc(100% - 28px));margin:auto;padding:22px 18px 0}
+.title{margin-bottom:25px}
+.title h1{font-size:27px;letter-spacing:-.8px;margin-bottom:6px}
+.title p{color:var(--muted);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px}
+.stat-label{color:var(--muted);font-size:11px;margin-bottom:9px}
+.stat-value{font-size:17px;font-weight:800}
+.tabs{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:5px;border-radius:14px;margin:16px 0}
+.tab{
+flex:1;border:0;background:transparent;color:var(--muted);padding:11px 8px;
+border-radius:10px;font-size:12px;font-weight:700;cursor:pointer
+}
+.tab.active{background:var(--card2);color:#fff}
+.clock-card{
+background:radial-gradient(circle at top right,rgba(225,29,72,.13),transparent 38%),var(--card);
+border:1px solid var(--border);border-radius:22px;padding:24px;text-align:center
+}
+.clock-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
+.timer{font-size:clamp(42px,12vw,70px);font-weight:800;letter-spacing:-2px;margin:10px 0 18px;font-variant-numeric:tabular-nums}
+.markers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.marker{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 5px}
+.marker span{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}
+.marker strong{display:block;font-size:11px}
+.btn-principal{
+width:100%;border:0;border-radius:15px;padding:15px;color:white;
+background:var(--red);font-weight:800;font-size:13px;cursor:pointer
+}
+.grupo-botoes{display:none;gap:10px;margin-top:10px}
+.btn-acao{
+flex:1;border:0;border-radius:15px;padding:14px;color:white;
+font-weight:800;font-size:13px;cursor:pointer
+}
+.btn-pausar{background:var(--yellow);color:#000}
+.btn-encerrar{background:var(--red)}
+.history{display:none}
+.history-card{
+background:var(--card);border:1px solid var(--border);border-radius:16px;
+padding:15px;margin-bottom:10px
+}
+.history-card div{font-size:12px;color:var(--muted);margin-top:5px}
+.loading{color:var(--muted);text-align:center;padding:40px 20px}
+.bottom-nav{
+position:fixed;z-index:30;left:12px;right:12px;bottom:12px;height:66px;
+border-radius:21px;background:rgba(18,21,27,.94);backdrop-filter:blur(16px);
+border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:5px
+}
+.nav-item{
+border:0;background:transparent;color:var(--muted);border-radius:16px;font-size:10px;
+font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;
+text-decoration:none;gap:4px
+}
+.nav-item i{font-size:16px}
+.nav-item.active{background:rgba(225,29,72,.1);color:var(--red2)}
+</style>
 </head>
+
 <body>
+
 <header class="topbar">
-    <div class="topbar-avatar">F</div>
-    <div class="topbar-info">
-        <div class="topbar-nome">Falcão</div>
-        <div class="topbar-detalhe">Passaporte: 17274 • Ponto</div>
-    </div>
+<div class="avatar" id="avatar">?</div>
+<div class="topbar-info">
+<div class="topbar-nome" id="nomeUsuario">Carregando...</div>
+<div class="topbar-detalhe" id="passaporteUsuario">Passaporte: -- • Ponto</div>
+</div>
 </header>
 
 <main class="container">
-    <section class="title">
-        <h1>Meu Ponto</h1>
-        <p>Controle sua jornada de trabalho.</p>
-    </section>
 
-    <section class="stats">
-        <div class="stat"><div class="stat-label">Meu Status</div><div class="stat-value" id="statusTexto">Offline</div></div>
-        <div class="stat"><div class="stat-label">Pausas</div><div class="stat-value" id="pausasTexto">0</div></div>
-        <div class="stat"><div class="stat-label">Entrada</div><div class="stat-value" id="entradaTexto">--:--</div></div>
-        <div class="stat"><div class="stat-label">Equipe</div><div class="stat-value">--</div></div>
-    </section>
+<section class="title">
+<h1>Meu Ponto</h1>
+<p>Controle sua jornada de trabalho.</p>
+</section>
 
-    <div class="tabs">
-        <button class="tab active" onclick="mostrarAba('jornada')">Minha Jornada</button>
-        <button class="tab" onclick="mostrarAba('historico')">Meu Histórico</button>
-    </div>
+<section class="stats">
+<div class="stat">
+<div class="stat-label">Meu Status</div>
+<div class="stat-value" id="statusTexto">Offline</div>
+</div>
 
-    <section id="jornada" class="journey active">
-        <div class="clock-card">
-            <div class="clock-label">Tempo em Serviço</div>
-            <div class="timer" id="timer">00:00:00</div>
-            <div class="markers">
-                <div class="marker"><span>ENTRADA</span><strong id="marcadorEntrada">--:--</strong></div>
-                <div class="marker"><span>ÚLTIMA PAUSA</span><strong id="marcadorPausa">--:--</strong></div>
-                <div class="marker"><span>SAÍDA</span><strong id="marcadorSaida">--:--</strong></div>
-            </div>
+<div class="stat">
+<div class="stat-label">Pausas</div>
+<div class="stat-value" id="pausasTexto">0</div>
+</div>
 
-            <button class="btn-principal" id="btnIniciar" onclick="iniciarJornada()">
-                <i class="fa-solid fa-play"></i> Iniciar Jornada
-            </button>
+<div class="stat">
+<div class="stat-label">Entrada</div>
+<div class="stat-value" id="entradaTexto">--:--</div>
+</div>
 
-            <div class="grupo-botoes" id="grupoBotoes">
-                <button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()">
-                    <i class="fa-solid fa-pause"></i> Pausar
-                </button>
-                <button class="btn-acao btn-encerrar" onclick="encerrarJornada()">
-                    <i class="fa-solid fa-stop"></i> Encerrar
-                </button>
-            </div>
-        </div>
-    </section>
+<div class="stat">
+<div class="stat-label">Equipe</div>
+<div class="stat-value" id="equipeTexto">--</div>
+</div>
+</section>
 
-    <section id="historico" class="history">
-        <div class="loading">Carregando histórico...</div>
-    </section>
+<div class="tabs">
+<button class="tab active" onclick="mostrarAba('jornada',this)">Minha Jornada</button>
+<button class="tab" onclick="mostrarAba('historico',this)">Meu Histórico</button>
+</div>
+
+<section id="jornada">
+<div class="clock-card">
+
+<div class="clock-label">Tempo em Serviço</div>
+<div class="timer" id="timer">00:00:00</div>
+
+<div class="markers">
+<div class="marker">
+<span>ENTRADA</span>
+<strong id="marcadorEntrada">--:--</strong>
+</div>
+
+<div class="marker">
+<span>ÚLTIMA PAUSA</span>
+<strong id="marcadorPausa">--:--</strong>
+</div>
+
+<div class="marker">
+<span>SAÍDA</span>
+<strong id="marcadorSaida">--:--</strong>
+</div>
+</div>
+
+<button class="btn-principal" id="btnIniciar" onclick="iniciarJornada()">
+<i class="fa-solid fa-play"></i> Iniciar Jornada
+</button>
+
+<div class="grupo-botoes" id="grupoBotoes">
+<button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()">
+<i class="fa-solid fa-pause"></i> Pausar
+</button>
+
+<button class="btn-acao btn-encerrar" onclick="encerrarJornada()">
+<i class="fa-solid fa-stop"></i> Encerrar
+</button>
+</div>
+
+</div>
+</section>
+
+<section id="historico" class="history">
+<div class="loading">Carregando histórico...</div>
+</section>
+
 </main>
 
 <nav class="bottom-nav">
-    <a class="nav-item" href="painel.html">
-        <i class="fa-solid fa-house"></i><br>Início
-    </a>
-    <a class="nav-item active">
-        <i class="fa-solid fa-clock"></i><br>Ponto
-    </a>
-    <a class="nav-item" href="equipe.html">
-        <i class="fa-solid fa-users"></i><br>Equipe
-    </a>
-    <a class="nav-item" href="registros.html">
-        <i class="fa-solid fa-folder-open"></i><br>Registros
-    </a>
+<a class="nav-item" href="painel.html">
+<i class="fa-solid fa-house"></i>Início
+</a>
+
+<a class="nav-item active">
+<i class="fa-solid fa-clock"></i>Ponto
+</a>
+
+<a class="nav-item" href="equipe.html">
+<i class="fa-solid fa-users"></i>Equipe
+</a>
+
+<a class="nav-item" href="registros.html">
+<i class="fa-solid fa-folder-open"></i>Registros
+</a>
 </nav>
 
 <script>
-const el = {
-    statusTexto: document.getElementById('statusTexto'),
-    timer: document.getElementById('timer'),
-    entradaTexto: document.getElementById('entradaTexto'),
-    marcadorEntrada: document.getElementById('marcadorEntrada'),
-    marcadorPausa: document.getElementById('marcadorPausa'),
-    marcadorSaida: document.getElementById('marcadorSaida'),
-    pausasTexto: document.getElementById('pausasTexto'),
-    btnIniciar: document.getElementById('btnIniciar'),
-    grupoBotoes: document.getElementById('grupoBotoes'),
-    btnPausar: document.getElementById('btnPausar')
+const supabaseClient=window.supabase.createClient(
+"https://vclwmikzmnuqfdxobtik.supabase.co",
+"sb_publishable_oJgT_8VwEL3AdZPpIYCsA_xk9PyoDF"
+);
+
+const sessao=sessionStorage.getItem("italia_usuario");
+
+if(!sessao){
+location.href="login.html";
+throw new Error("Usuário não autenticado.");
+}
+
+const usuario=JSON.parse(sessao);
+
+const el={
+nome:document.getElementById("nomeUsuario"),
+pass:document.getElementById("passaporteUsuario"),
+avatar:document.getElementById("avatar"),
+status:document.getElementById("statusTexto"),
+pausas:document.getElementById("pausasTexto"),
+entrada:document.getElementById("entradaTexto"),
+equipe:document.getElementById("equipeTexto"),
+timer:document.getElementById("timer"),
+marcEntrada:document.getElementById("marcadorEntrada"),
+marcPausa:document.getElementById("marcadorPausa"),
+marcSaida:document.getElementById("marcadorSaida"),
+btnIniciar:document.getElementById("btnIniciar"),
+grupo:document.getElementById("grupoBotoes"),
+btnPausar:document.getElementById("btnPausar"),
+historico:document.getElementById("historico")
 };
 
-let intervaloCronometro = null;
-let tempoDecorrido = 0;
-let estaPausado = false;
-let numeroPausas = 0;
-let inicioTimestamp = null;
-let pausaAcumulada = 0;
+let ponto=null;
+let intervalo=null;
+let pausado=false;
+let inicio=null;
+let pausaInicio=null;
+let tempoPausa=0;
+let pausas=0;
 
-function formatarTempo(segundos) {
-    const h = Math.floor(segundos / 3600);
-    const m = Math.floor((segundos % 3600) / 60);
-    const s = Math.floor(segundos % 60);
-    return [h, m, s].map(n => String(n).padStart(2, '0')).join(':');
+el.nome.textContent=usuario.nome||"Usuário";
+el.pass.textContent=`Passaporte: ${usuario.passaporte} • Ponto`;
+el.avatar.textContent=(usuario.nome||"?").charAt(0).toUpperCase();
+
+function hora(data=new Date()){
+return data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
 }
 
-function horaAtual() {
-    const agora = new Date();
-    return `${String(agora.getHours()).padStart(2, '0')}:${String(agora.getMinutes()).padStart(2, '0')}`;
+function tempo(seg){
+let h=Math.floor(seg/3600);
+let m=Math.floor(seg%3600/60);
+let s=Math.floor(seg%60);
+return [h,m,s].map(x=>String(x).padStart(2,"0")).join(":");
 }
 
-function mostrarAba(nome) {
-    document.getElementById('jornada').style.display = nome === 'jornada' ? 'block' : 'none';
-    document.getElementById('historico').style.display = nome === 'historico' ? 'block' : 'none';
+function atualizarTimer(){
+if(!inicio||pausado)return;
+let segundos=Math.floor((Date.now()-inicio)/1000)-tempoPausa;
+el.timer.textContent=tempo(Math.max(0,segundos));
 }
 
-function salvarEstado() {
-    const estado = {
-        tempoDecorrido,
-        estaPausado,
-        numeroPausas,
-        inicioTimestamp,
-        pausaAcumulada,
-        statusTexto: el.statusTexto.textContent,
-        statusCor: el.statusTexto.style.color,
-        entrada: el.entradaTexto.textContent,
-        marcadorEntrada: el.marcadorEntrada.textContent,
-        marcadorPausa: el.marcadorPausa.textContent,
-        marcadorSaida: el.marcadorSaida.textContent,
-        btnIniciarVisivel: el.btnIniciar.style.display !== 'none',
-        grupoBotoesVisivel: el.grupoBotoes.style.display === 'flex',
-        btnPausarHTML: el.btnPausar.innerHTML
-    };
-    localStorage.setItem('estadoPonto', JSON.stringify(estado));
+function iniciarCronometro(){
+clearInterval(intervalo);
+intervalo=setInterval(atualizarTimer,1000);
 }
 
-function calcularTempoAtual() {
-    if (!inicioTimestamp) return 0;
-    if (estaPausado) return tempoDecorrido;
-    const decorrido = Math.floor((Date.now() - inicioTimestamp) / 1000) - pausaAcumulada;
-    return Math.max(0, decorrido);
+function mostrarAba(nome,botao){
+document.getElementById("jornada").style.display=nome==="jornada"?"block":"none";
+el.historico.style.display=nome==="historico"?"block":"none";
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+botao.classList.add("active");
+if(nome==="historico")carregarHistorico();
 }
 
-function iniciarCronometro() {
-    clearInterval(intervaloCronometro);
-    intervaloCronometro = setInterval(() => {
-        if (!estaPausado) {
-            tempoDecorrido = calcularTempoAtual();
-            el.timer.textContent = formatarTempo(tempoDecorrido);
-            salvarEstado();
-        }
-    }, 1000);
+async function iniciarJornada(){
+
+el.btnIniciar.disabled=true;
+
+const agora=new Date().toISOString();
+
+const {data,error}=await supabaseClient
+.from("pontos")
+.insert([{
+passaporte:usuario.passaporte,
+nome:usuario.nome,
+entrada:agora,
+status:"ativo",
+"criado em":agora
+}])
+.select()
+.single();
+
+if(error){
+console.error(error);
+alert("Não foi possível iniciar o ponto.");
+el.btnIniciar.disabled=false;
+return;
 }
 
-function iniciarJornada() {
-    el.btnIniciar.style.display = 'none';
-    el.grupoBotoes.style.display = 'flex';
-    el.statusTexto.textContent = 'Ativo';
-    el.statusTexto.style.color = 'var(--green)';
-    
-    const hora = horaAtual();
-    el.entradaTexto.textContent = hora;
-    el.marcadorEntrada.textContent = hora;
-    el.marcadorSaida.textContent = '--:--';
-    
-    tempoDecorrido = 0;
-    estaPausado = false;
-    numeroPausas = 0;
-    pausaAcumulada = 0;
-    inicioTimestamp = Date.now();
-    el.pausasTexto.textContent = '0';
-    
-    iniciarCronometro();
-    salvarEstado();
+ponto=data;
+inicio=Date.now();
+pausado=false;
+pausas=0;
+tempoPausa=0;
+
+el.status.textContent="Ativo";
+el.status.style.color="var(--green)";
+el.pausas.textContent="0";
+el.entrada.textContent=hora();
+el.marcEntrada.textContent=hora();
+el.marcPausa.textContent="--:--";
+el.marcSaida.textContent="--:--";
+el.btnIniciar.style.display="none";
+el.grupo.style.display="flex";
+
+iniciarCronometro();
 }
 
-function pausarContinuar() {
-    estaPausado = !estaPausado;
-    if (estaPausado) {
-        el.btnPausar.innerHTML = '<i class="fa-solid fa-play"></i> Continuar';
-        el.statusTexto.textContent = 'Pausado';
-        el.statusTexto.style.color = 'var(--yellow)';
-        numeroPausas++;
-        el.pausasTexto.textContent = numeroPausas;
-        el.marcadorPausa.textContent = horaAtual();
-    } else {
-        el.btnPausar.innerHTML = '<i class="fa-solid fa-pause"></i> Pausar';
-        el.statusTexto.textContent = 'Ativo';
-        el.statusTexto.style.color = 'var(--green)';
-    }
-    salvarEstado();
+async function pausarContinuar(){
+
+if(!ponto)return;
+
+if(!pausado){
+
+const agora=new Date().toISOString();
+
+const {error}=await supabaseClient
+.from("pontos")
+.update({
+"pausa inicio":agora,
+status:"pausado"
+})
+.eq("id",ponto.id);
+
+if(error){
+alert("Não foi possível pausar o ponto.");
+return;
 }
 
-function encerrarJornada() {
-    clearInterval(intervaloCronometro);
-    el.marcadorSaida.textContent = horaAtual();
-    
-    el.btnIniciar.style.display = 'block';
-    el.grupoBotoes.style.display = 'none';
-    el.statusTexto.textContent = 'Offline';
-    el.statusTexto.style.color = '';
-    
-    localStorage.removeItem('estadoPonto');
-    tempoDecorrido = 0;
-    estaPausado = false;
-    numeroPausas = 0;
-    inicioTimestamp = null;
-    pausaAcumulada = 0;
-    el.timer.textContent = '00:00:00';
-    el.entradaTexto.textContent = '--:--';
-    el.marcadorEntrada.textContent = '--:--';
-    el.marcadorPausa.textContent = '--:--';
-    el.pausasTexto.textContent = '0';
+pausaInicio=Date.now();
+pausado=true;
+pausas++;
+
+el.status.textContent="Pausado";
+el.status.style.color="var(--yellow)";
+el.pausas.textContent=pausas;
+el.marcPausa.textContent=hora();
+el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
+
+}else{
+
+const agora=new Date().toISOString();
+
+const {error}=await supabaseClient
+.from("pontos")
+.update({
+"pausa fim":agora,
+status:"ativo"
+})
+.eq("id",ponto.id);
+
+if(error){
+alert("Não foi possível retomar o ponto.");
+return;
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const dados = localStorage.getItem('estadoPonto');
-    if (!dados) return;
-    
-    try {
-        const estado = JSON.parse(dados);
-        tempoDecorrido = estado.tempoDecorrido || 0;
-        estaPausado = estado.estaPausado || false;
-        numeroPausas = estado.numeroPausas || 0;
-        inicioTimestamp = estado.inicioTimestamp || null;
-        pausaAcumulada = estado.pausaAcumulada || 0;
-        
-        el.statusTexto.textContent = estado.statusTexto || 'Offline';
-        el.statusTexto.style.color = estado.statusCor || '';
-        el.entradaTexto.textContent = estado.entrada || '--:--';
-        el.marcadorEntrada.textContent = estado.marcadorEntrada || '--:--';
-        el.marcadorPausa.textContent = estado.marcadorPausa || '--:--';
-        el.marcadorSaida.textContent = estado.marcadorSaida || '--:--';
-        el.pausasTexto.textContent = numeroPausas;
-        
-        el.btnIniciar.style.display = estado.btnIniciarVisivel ? 'block' : 'none';
-        el.grupoBotoes.style.display = estado.grupoBotoesVisivel ? 'flex' : 'none';
-        if (estado.btnPausarHTML) el.btnPausar.innerHTML = estado.btnPausarHTML;
-        
-        el.timer.textContent = formatarTempo(calcularTempoAtual());
-        iniciarCronometro();
-    } catch (e) {
-        localStorage.removeItem('estadoPonto');
-    }
-});
+tempoPausa+=Math.floor((Date.now()-pausaInicio)/1000);
+pausado=false;
+
+el.status.textContent="Ativo";
+el.status.style.color="var(--green)";
+el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+}
+}
+
+async function encerrarJornada(){
+
+if(!ponto)return;
+
+const agora=new Date().toISOString();
+
+const {error}=await supabaseClient
+.from("pontos")
+.update({
+saida:agora,
+status:"encerrado"
+})
+.eq("id",ponto.id);
+
+if(error){
+alert("Não foi possível encerrar o ponto.");
+return;
+}
+
+clearInterval(intervalo);
+
+el.marcSaida.textContent=hora();
+el.status.textContent="Offline";
+el.status.style.color="";
+el.btnIniciar.style.display="block";
+el.btnIniciar.disabled=false;
+el.grupo.style.display="none";
+el.timer.textContent="00:00:00";
+el.entrada.textContent="--:--";
+el.marcEntrada.textContent="--:--";
+el.marcPausa.textContent="--:--";
+el.pausas.textContent="0";
+
+ponto=null;
+inicio=null;
+pausado=false;
+pausas=0;
+tempoPausa=0;
+}
+
+async function carregarHistorico(){
+
+el.historico.innerHTML='<div class="loading">Carregando histórico...</div>';
+
+const {data,error}=await supabaseClient
+.from("pontos")
+.select("*")
+.eq("passaporte",usuario.passaporte)
+.order("criado em",{ascending:false});
+
+if(error){
+console.error(error);
+el.historico.innerHTML='<div class="loading">Erro ao carregar histórico.</div>';
+return;
+}
+
+if(!data.length){
+el.historico.innerHTML='<div class="loading">Nenhum registro encontrado.</div>';
+return;
+}
+
+el.historico.innerHTML=data.map(p=>`
+<div class="history-card">
+<strong>${p.status||"Registro"}</strong>
+<div>Entrada: ${p.entrada?new Date(p.entrada).toLocaleString("pt-BR"):"--"}</div>
+<div>Pausa: ${p["pausa inicio"]?new Date(p["pausa inicio"]).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"--"}</div>
+<div>Saída: ${p.saida?new Date(p.saida).toLocaleString("pt-BR"):"--"}</div>
+</div>
+`).join("");
+}
 </script>
+
 </body>
-    </html>
-    
+</html>
