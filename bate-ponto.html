@@ -6,9 +6,6 @@
     <meta name="theme-color" content="#08090d">
     <title>Meu Ponto</title>
     
-    <!-- SUPABASE -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -160,19 +157,9 @@
         .nav-item i { font-size: 16px; }
         .nav-item.active { background: rgba(225,29,72,.1); color: var(--red2); }
         .nav-item:hover { color: var(--text); }
-
-        .aviso {
-            position: fixed; top: 90px; left: 50%; transform: translateX(-50%);
-            background: var(--card); border: 1px solid var(--border);
-            padding: 12px 20px; border-radius: 12px; z-index: 100;
-            box-shadow: 0 8px 25px rgba(0,0,0,.3); display: none;
-        }
     </style>
 </head>
 <body>
-<!-- AVISO DE SALVAMENTO -->
-<div class="aviso" id="aviso">Jornada salva com sucesso! ✅</div>
-
 <header class="topbar">
     <div class="topbar-avatar">F</div>
     <div class="topbar-info">
@@ -245,20 +232,6 @@
 </nav>
 
 <script>
-// 🔧 CONFIGURAÇÃO DO SUPABASE — COLOQUE SEUS DADOS AQUI!
-const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co/rest/v1/";
-const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-
-// Inicializa
-const { createClient } = supabase;
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Dados do usuário (depois pegamos do login, por enquanto fixo)
-const USUARIO = {
-    nome: "Falcão",
-    passaporte: "17274"
-};
-
 const el = {
     statusTexto: document.getElementById('statusTexto'),
     timer: document.getElementById('timer'),
@@ -269,8 +242,7 @@ const el = {
     pausasTexto: document.getElementById('pausasTexto'),
     btnIniciar: document.getElementById('btnIniciar'),
     grupoBotoes: document.getElementById('grupoBotoes'),
-    btnPausar: document.getElementById('btnPausar'),
-    aviso: document.getElementById('aviso')
+    btnPausar: document.getElementById('btnPausar')
 };
 
 let intervaloCronometro = null;
@@ -299,10 +271,17 @@ function mostrarAba(nome) {
 
 function salvarEstado() {
     const estado = {
-        tempoDecorrido, estaPausado, numeroPausas, inicioTimestamp, pausaAcumulada,
-        statusTexto: el.statusTexto.textContent, statusCor: el.statusTexto.style.color,
-        entrada: el.entradaTexto.textContent, marcadorEntrada: el.marcadorEntrada.textContent,
-        marcadorPausa: el.marcadorPausa.textContent, marcadorSaida: el.marcadorSaida.textContent,
+        tempoDecorrido,
+        estaPausado,
+        numeroPausas,
+        inicioTimestamp,
+        pausaAcumulada,
+        statusTexto: el.statusTexto.textContent,
+        statusCor: el.statusTexto.style.color,
+        entrada: el.entradaTexto.textContent,
+        marcadorEntrada: el.marcadorEntrada.textContent,
+        marcadorPausa: el.marcadorPausa.textContent,
+        marcadorSaida: el.marcadorSaida.textContent,
         btnIniciarVisivel: el.btnIniciar.style.display !== 'none',
         grupoBotoesVisivel: el.grupoBotoes.style.display === 'flex',
         btnPausarHTML: el.btnPausar.innerHTML
@@ -313,7 +292,8 @@ function salvarEstado() {
 function calcularTempoAtual() {
     if (!inicioTimestamp) return 0;
     if (estaPausado) return tempoDecorrido;
-    return Math.max(0, Math.floor((Date.now() - inicioTimestamp) / 1000) - pausaAcumulada);
+    const decorrido = Math.floor((Date.now() - inicioTimestamp) / 1000) - pausaAcumulada;
+    return Math.max(0, decorrido);
 }
 
 function iniciarCronometro() {
@@ -327,23 +307,6 @@ function iniciarCronometro() {
     }, 1000);
 }
 
-function mostrarAviso(texto) {
-    el.aviso.textContent = texto;
-    el.aviso.style.display = 'block';
-    setTimeout(() => el.aviso.style.display = 'none', 2500);
-}
-
-async function salvarNoSupabase(dados) {
-    try {
-        const { error } = await supabase.from('pontos').insert([dados]);
-        if (error) throw error;
-        mostrarAviso("✅ Jornada salva no sistema!");
-    } catch (err) {
-        console.error(err);
-        mostrarAviso("⚠️ Erro ao salvar: " + err.message);
-    }
-}
-
 function iniciarJornada() {
     el.btnIniciar.style.display = 'none';
     el.grupoBotoes.style.display = 'flex';
@@ -355,7 +318,10 @@ function iniciarJornada() {
     el.marcadorEntrada.textContent = hora;
     el.marcadorSaida.textContent = '--:--';
     
-    tempoDecorrido = 0; estaPausado = false; numeroPausas = 0; pausaAcumulada = 0;
+    tempoDecorrido = 0;
+    estaPausado = false;
+    numeroPausas = 0;
+    pausaAcumulada = 0;
     inicioTimestamp = Date.now();
     el.pausasTexto.textContent = '0';
     
@@ -380,30 +346,21 @@ function pausarContinuar() {
     salvarEstado();
 }
 
-async function encerrarJornada() {
+function encerrarJornada() {
     clearInterval(intervaloCronometro);
-    const horaSaida = horaAtual();
-    el.marcadorSaida.textContent = horaSaida;
+    el.marcadorSaida.textContent = horaAtual();
     
-    // Salva no Supabase
-    await salvarNoSupabase({
-        nome: USUARIO.nome,
-        passaporte: USUARIO.passaporte,
-        entrada: el.marcadorEntrada.textContent,
-        saida: horaSaida,
-        duracao_segundos: calcularTempoAtual(),
-        pausas: numeroPausas,
-        status: "concluido"
-    });
-    
-    // Reseta interface
     el.btnIniciar.style.display = 'block';
     el.grupoBotoes.style.display = 'none';
     el.statusTexto.textContent = 'Offline';
     el.statusTexto.style.color = '';
     
     localStorage.removeItem('estadoPonto');
-    tempoDecorrido = 0; estaPausado = false; numeroPausas = 0; inicioTimestamp = null; pausaAcumulada = 0;
+    tempoDecorrido = 0;
+    estaPausado = false;
+    numeroPausas = 0;
+    inicioTimestamp = null;
+    pausaAcumulada = 0;
     el.timer.textContent = '00:00:00';
     el.entradaTexto.textContent = '--:--';
     el.marcadorEntrada.textContent = '--:--';
@@ -443,5 +400,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 </body>
-                                                                   </html>
-                                                                   
+    </html>
+    
