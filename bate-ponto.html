@@ -13,83 +13,28 @@
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{
---bg:#08090d;--bg2:#0d0f14;--card:#12151b;--card2:#171a21;
---border:rgba(255,255,255,.07);--text:#f5f5f5;--muted:#8b929f;
---red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b
-}
-body{
-min-height:100vh;background:radial-gradient(circle at top right,rgba(225,29,72,.07),transparent 35%),var(--bg);
-color:var(--text);font-family:Inter,sans-serif;padding-bottom:90px
-}
+:root{--bg:#08090d;--bg2:#0d0f14;--card:#12151b;--card2:#171a21;--border:rgba(255,255,255,.07);--text:#f5f5f5;--muted:#8b929f;--red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b}
+body{min-height:100vh;background:radial-gradient(circle at top right,rgba(225,29,72,.07),transparent 35%),var(--bg);color:var(--text);font-family:Inter,sans-serif;padding-bottom:90px}
 button{font-family:inherit}
-.topbar{
-height:72px;position:sticky;top:0;z-index:20;background:rgba(8,9,13,.88);
-backdrop-filter:blur(16px);border-bottom:1px solid var(--border);
-display:flex;align-items:center;padding:0 18px;gap:12px
-}
-.avatar{
-width:40px;height:40px;border-radius:12px;background:#181b22;
-border:1px solid var(--border);display:flex;align-items:center;
-justify-content:center;font-weight:800
-}
-.topbar-info{display:flex;flex-direction:column;gap:2px}
-.topbar-nome{font-size:15px;font-weight:700}
-.topbar-detalhe{font-size:13px;color:var(--muted)}
+.topbar{height:72px;position:sticky;top:0;z-index:20;background:rgba(8,9,13,.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 18px;gap:12px}
+.avatar{width:40px;height:40px;border-radius:12px;background:#181b22;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-weight:800}
+.topbar-info{display:flex;flex-direction:column;gap:2px}.topbar-nome{font-size:15px;font-weight:700}.topbar-detalhe{font-size:13px;color:var(--muted)}
 .container{width:min(900px,calc(100% - 28px));margin:auto;padding:22px 18px 0}
-.title{margin-bottom:25px}
-.title h1{font-size:27px;letter-spacing:-.8px;margin-bottom:6px}
-.title p{color:var(--muted);font-size:13px}
+.title{margin-bottom:25px}.title h1{font-size:27px;letter-spacing:-.8px;margin-bottom:6px}.title p{color:var(--muted);font-size:13px}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px}
-.stat-label{color:var(--muted);font-size:11px;margin-bottom:9px}
-.stat-value{font-size:17px;font-weight:800}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px}.stat-label{color:var(--muted);font-size:11px;margin-bottom:9px}.stat-value{font-size:17px;font-weight:800}
 .tabs{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:5px;border-radius:14px;margin:16px 0}
-.tab{
-flex:1;border:0;background:transparent;color:var(--muted);padding:11px 8px;
-border-radius:10px;font-size:12px;font-weight:700;cursor:pointer
-}
-.tab.active{background:var(--card2);color:#fff}
-.clock-card{
-background:radial-gradient(circle at top right,rgba(225,29,72,.13),transparent 38%),var(--card);
-border:1px solid var(--border);border-radius:22px;padding:24px;text-align:center
-}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:11px 8px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}.tab.active{background:var(--card2);color:#fff}
+.clock-card{background:radial-gradient(circle at top right,rgba(225,29,72,.13),transparent 38%),var(--card);border:1px solid var(--border);border-radius:22px;padding:24px;text-align:center}
 .clock-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
 .timer{font-size:clamp(42px,12vw,70px);font-weight:800;letter-spacing:-2px;margin:10px 0 18px;font-variant-numeric:tabular-nums}
 .markers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
-.marker{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 5px}
-.marker span{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}
-.marker strong{display:block;font-size:11px}
-.btn-principal{
-width:100%;border:0;border-radius:15px;padding:15px;color:white;
-background:var(--red);font-weight:800;font-size:13px;cursor:pointer
-}
-.grupo-botoes{display:none;gap:10px;margin-top:10px}
-.btn-acao{
-flex:1;border:0;border-radius:15px;padding:14px;color:white;
-font-weight:800;font-size:13px;cursor:pointer
-}
-.btn-pausar{background:var(--yellow);color:#000}
-.btn-encerrar{background:var(--red)}
-.history{display:none}
-.history-card{
-background:var(--card);border:1px solid var(--border);border-radius:16px;
-padding:15px;margin-bottom:10px
-}
-.history-card div{font-size:12px;color:var(--muted);margin-top:5px}
-.loading{color:var(--muted);text-align:center;padding:40px 20px}
-.bottom-nav{
-position:fixed;z-index:30;left:12px;right:12px;bottom:12px;height:66px;
-border-radius:21px;background:rgba(18,21,27,.94);backdrop-filter:blur(16px);
-border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:5px
-}
-.nav-item{
-border:0;background:transparent;color:var(--muted);border-radius:16px;font-size:10px;
-font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;
-text-decoration:none;gap:4px
-}
-.nav-item i{font-size:16px}
-.nav-item.active{background:rgba(225,29,72,.1);color:var(--red2)}
+.marker{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 5px}.marker span{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}.marker strong{display:block;font-size:11px}
+.btn-principal{width:100%;border:0;border-radius:15px;padding:15px;color:white;background:var(--red);font-weight:800;font-size:13px;cursor:pointer}.btn-principal:disabled{opacity:.7}
+.grupo-botoes{display:none;gap:10px;margin-top:10px}.btn-acao{flex:1;border:0;border-radius:15px;padding:14px;color:white;font-weight:800;font-size:13px;cursor:pointer}.btn-pausar{background:var(--yellow);color:#000}.btn-encerrar{background:var(--red)}
+#historico{display:none}.history-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:10px}.history-card div{font-size:12px;color:var(--muted);margin-top:5px}.loading{color:var(--muted);text-align:center;padding:40px 20px}
+.bottom-nav{position:fixed;z-index:30;left:12px;right:12px;bottom:12px;height:66px;border-radius:21px;background:rgba(18,21,27,.94);backdrop-filter:blur(16px);border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:5px}
+.nav-item{border:0;background:transparent;color:var(--muted);border-radius:16px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;gap:4px}.nav-item i{font-size:16px}.nav-item.active{background:rgba(225,29,72,.1);color:var(--red2)}
 </style>
 </head>
 
@@ -111,25 +56,10 @@ text-decoration:none;gap:4px
 </section>
 
 <section class="stats">
-<div class="stat">
-<div class="stat-label">Meu Status</div>
-<div class="stat-value" id="statusTexto">Offline</div>
-</div>
-
-<div class="stat">
-<div class="stat-label">Pausas</div>
-<div class="stat-value" id="pausasTexto">0</div>
-</div>
-
-<div class="stat">
-<div class="stat-label">Entrada</div>
-<div class="stat-value" id="entradaTexto">--:--</div>
-</div>
-
-<div class="stat">
-<div class="stat-label">Equipe</div>
-<div class="stat-value" id="equipeTexto">--</div>
-</div>
+<div class="stat"><div class="stat-label">Meu Status</div><div class="stat-value" id="statusTexto">Offline</div></div>
+<div class="stat"><div class="stat-label">Pausas</div><div class="stat-value" id="pausasTexto">0</div></div>
+<div class="stat"><div class="stat-label">Entrada</div><div class="stat-value" id="entradaTexto">--:--</div></div>
+<div class="stat"><div class="stat-label">Equipe</div><div class="stat-value" id="equipeTexto">--</div></div>
 </section>
 
 <div class="tabs">
@@ -144,20 +74,9 @@ text-decoration:none;gap:4px
 <div class="timer" id="timer">00:00:00</div>
 
 <div class="markers">
-<div class="marker">
-<span>ENTRADA</span>
-<strong id="marcadorEntrada">--:--</strong>
-</div>
-
-<div class="marker">
-<span>ÚLTIMA PAUSA</span>
-<strong id="marcadorPausa">--:--</strong>
-</div>
-
-<div class="marker">
-<span>SAÍDA</span>
-<strong id="marcadorSaida">--:--</strong>
-</div>
+<div class="marker"><span>ENTRADA</span><strong id="marcadorEntrada">--:--</strong></div>
+<div class="marker"><span>ÚLTIMA PAUSA</span><strong id="marcadorPausa">--:--</strong></div>
+<div class="marker"><span>SAÍDA</span><strong id="marcadorSaida">--:--</strong></div>
 </div>
 
 <button class="btn-principal" id="btnIniciar" onclick="iniciarJornada()">
@@ -168,7 +87,6 @@ text-decoration:none;gap:4px
 <button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()">
 <i class="fa-solid fa-pause"></i> Pausar
 </button>
-
 <button class="btn-acao btn-encerrar" onclick="encerrarJornada()">
 <i class="fa-solid fa-stop"></i> Encerrar
 </button>
@@ -177,28 +95,17 @@ text-decoration:none;gap:4px
 </div>
 </section>
 
-<section id="historico" class="history">
+<section id="historico">
 <div class="loading">Carregando histórico...</div>
 </section>
 
 </main>
 
 <nav class="bottom-nav">
-<a class="nav-item" href="painel.html">
-<i class="fa-solid fa-house"></i>Início
-</a>
-
-<a class="nav-item active">
-<i class="fa-solid fa-clock"></i>Ponto
-</a>
-
-<a class="nav-item" href="equipe.html">
-<i class="fa-solid fa-users"></i>Equipe
-</a>
-
-<a class="nav-item" href="registros.html">
-<i class="fa-solid fa-folder-open"></i>Registros
-</a>
+<a class="nav-item" href="painel.html"><i class="fa-solid fa-house"></i>Início</a>
+<a class="nav-item active"><i class="fa-solid fa-clock"></i>Ponto</a>
+<a class="nav-item" href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
+<a class="nav-item" href="registros.html"><i class="fa-solid fa-folder-open"></i>Registros</a>
 </nav>
 
 <script>
@@ -234,38 +141,24 @@ btnPausar:document.getElementById("btnPausar"),
 historico:document.getElementById("historico")
 };
 
-let ponto=null;
-let intervalo=null;
-let pausado=false;
-let inicio=null;
-let pausaInicio=null;
-let tempoPausa=0;
-let pausas=0;
+let ponto=null,intervalo=null,pausado=false,inicio=null,pausaInicio=null,tempoPausa=0,pausas=0;
 
 el.nome.textContent=usuario.nome||"Usuário";
 el.pass.textContent=`Passaporte: ${usuario.passaporte} • Ponto`;
-el.avatar.textContent=(usuario.nome||"?").charAt(0).toUpperCase();
+el.avatar.textContent=(usuario.nome||"?")[0].toUpperCase();
 
 function hora(data=new Date()){
 return data.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
 }
 
 function tempo(seg){
-let h=Math.floor(seg/3600);
-let m=Math.floor(seg%3600/60);
-let s=Math.floor(seg%60);
+let h=Math.floor(seg/3600),m=Math.floor(seg%3600/60),s=Math.floor(seg%60);
 return [h,m,s].map(x=>String(x).padStart(2,"0")).join(":");
 }
 
 function atualizarTimer(){
 if(!inicio||pausado)return;
-let segundos=Math.floor((Date.now()-inicio)/1000)-tempoPausa;
-el.timer.textContent=tempo(Math.max(0,segundos));
-}
-
-function iniciarCronometro(){
-clearInterval(intervalo);
-intervalo=setInterval(atualizarTimer,1000);
+el.timer.textContent=tempo(Math.max(0,Math.floor((Date.now()-inicio)/1000)-tempoPausa));
 }
 
 function mostrarAba(nome,botao){
@@ -289,13 +182,13 @@ passaporte:usuario.passaporte,
 nome:usuario.nome,
 entrada:agora,
 status:"ativo",
-"criado em":agora
+criado_em:agora
 }])
 .select()
 .single();
 
 if(error){
-console.error(error);
+console.error("ERRO SUPABASE:",error);
 alert("Não foi possível iniciar o ponto.");
 el.btnIniciar.disabled=false;
 return;
@@ -317,7 +210,7 @@ el.marcSaida.textContent="--:--";
 el.btnIniciar.style.display="none";
 el.grupo.style.display="flex";
 
-iniciarCronometro();
+intervalo=setInterval(atualizarTimer,1000);
 }
 
 async function pausarContinuar(){
@@ -330,13 +223,11 @@ const agora=new Date().toISOString();
 
 const {error}=await supabaseClient
 .from("pontos")
-.update({
-"pausa inicio":agora,
-status:"pausado"
-})
+.update({pausa_inicio:agora,status:"pausado"})
 .eq("id",ponto.id);
 
 if(error){
+console.error(error);
 alert("Não foi possível pausar o ponto.");
 return;
 }
@@ -357,13 +248,11 @@ const agora=new Date().toISOString();
 
 const {error}=await supabaseClient
 .from("pontos")
-.update({
-"pausa fim":agora,
-status:"ativo"
-})
+.update({pausa_fim:agora,status:"ativo"})
 .eq("id",ponto.id);
 
 if(error){
+console.error(error);
 alert("Não foi possível retomar o ponto.");
 return;
 }
@@ -385,13 +274,11 @@ const agora=new Date().toISOString();
 
 const {error}=await supabaseClient
 .from("pontos")
-.update({
-saida:agora,
-status:"encerrado"
-})
+.update({saida:agora,status:"encerrado"})
 .eq("id",ponto.id);
 
 if(error){
+console.error(error);
 alert("Não foi possível encerrar o ponto.");
 return;
 }
@@ -425,7 +312,7 @@ const {data,error}=await supabaseClient
 .from("pontos")
 .select("*")
 .eq("passaporte",usuario.passaporte)
-.order("criado em",{ascending:false});
+.order("criado_em",{ascending:false});
 
 if(error){
 console.error(error);
@@ -442,7 +329,7 @@ el.historico.innerHTML=data.map(p=>`
 <div class="history-card">
 <strong>${p.status||"Registro"}</strong>
 <div>Entrada: ${p.entrada?new Date(p.entrada).toLocaleString("pt-BR"):"--"}</div>
-<div>Pausa: ${p["pausa inicio"]?new Date(p["pausa inicio"]).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"--"}</div>
+<div>Pausa: ${p.pausa_inicio?new Date(p.pausa_inicio).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"--"}</div>
 <div>Saída: ${p.saida?new Date(p.saida).toLocaleString("pt-BR"):"--"}</div>
 </div>
 `).join("");
