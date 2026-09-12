@@ -26,7 +26,6 @@
         }
         button { font-family: inherit; }
 
-        /* BARRA SUPERIOR COM INFORMAÇÕES DO USUÁRIO */
         .topbar { 
             position: sticky; top: 0; z-index: 20; height: 72px; 
             background: rgba(8,9,13,.88); backdrop-filter: blur(16px); 
@@ -65,7 +64,6 @@
 
         .container { width: min(900px, calc(100% - 28px)); margin: 0 auto; padding: 22px 18px 0; }
 
-        /* TÍTULO À ESQUERDA */
         .title { margin-bottom: 25px; }
         .title h1 { font-size: 27px; letter-spacing: -.8px; margin-bottom: 6px; }
         .title p { color: var(--muted); font-size: 13px; }
@@ -113,8 +111,6 @@
             background: rgba(255,255,255,.025); border: 1px solid var(--border); border-radius: 13px; 
             padding: 11px 5px; 
         }
-
-        /* APENAS OS 3 BLOCOS: mais brancos e destacados */
         .marker:nth-child(1),
         .marker:nth-child(2),
         .marker:nth-child(3) {
@@ -122,11 +118,9 @@
             border-color: rgba(255,255,255,.22);
             box-shadow: 0 0 0 1px rgba(255,255,255,.12), inset 0 0 0 1px rgba(255,255,255,.06);
         }
-
         .marker span { display: block; color: var(--muted); font-size: 9px; margin-bottom: 5px; }
         .marker strong { display: block; font-size: 11px; }
 
-        /* BOTÕES */
         .btn-principal { 
             width: 100%; border: none; border-radius: 15px; padding: 15px; color: white; 
             background: var(--red); font-weight: 800; font-size: 13px; cursor: pointer; 
@@ -238,11 +232,6 @@
 </nav>
 
 <script>
-let intervaloCronometro = null;
-let tempoDecorrido = 0;
-let estaPausado = false;
-let numeroPausas = 0;
-
 const el = {
     statusTexto: document.getElementById('statusTexto'),
     timer: document.getElementById('timer'),
@@ -255,6 +244,13 @@ const el = {
     grupoBotoes: document.getElementById('grupoBotoes'),
     btnPausar: document.getElementById('btnPausar')
 };
+
+let intervaloCronometro = null;
+let tempoDecorrido = 0;
+let estaPausado = false;
+let numeroPausas = 0;
+let inicioTimestamp = null;
+let pausaAcumulada = 0;
 
 function formatarTempo(segundos) {
     const h = Math.floor(segundos / 3600);
@@ -273,32 +269,68 @@ function mostrarAba(nome) {
     document.getElementById('historico').style.display = nome === 'historico' ? 'block' : 'none';
 }
 
-function iniciarJornada() {
-    el.btnIniciar.style.display = 'none';
-    el.grupoBotoes.style.display = 'flex';
+function salvarEstado() {
+    const estado = {
+        tempoDecorrido,
+        estaPausado,
+        numeroPausas,
+        inicioTimestamp,
+        pausaAcumulada,
+        statusTexto: el.statusTexto.textContent,
+        statusCor: el.statusTexto.style.color,
+        entrada: el.entradaTexto.textContent,
+        marcadorEntrada: el.marcadorEntrada.textContent,
+        marcadorPausa: el.marcadorPausa.textContent,
+        marcadorSaida: el.marcadorSaida.textContent,
+        btnIniciarVisivel: el.btnIniciar.style.display !== 'none',
+        grupoBotoesVisivel: el.grupoBotoes.style.display === 'flex',
+        btnPausarHTML: el.btnPausar.innerHTML
+    };
+    localStorage.setItem('estadoPonto', JSON.stringify(estado));
+}
 
-    el.statusTexto.textContent = 'Ativo';
-    el.statusTexto.style.color = 'var(--green)';
-    const hora = horaAtual();
-    el.entradaTexto.textContent = hora;
-    el.marcadorEntrada.textContent = hora;
-    el.marcadorSaida.textContent = '--:--';
+function calcularTempoAtual() {
+    if (!inicioTimestamp) return 0;
+    if (estaPausado) return tempoDecorrido;
+    const decorrido = Math.floor((Date.now() - inicioTimestamp) / 1000) - pausaAcumulada;
+    return Math.max(0, decorrido);
+}
 
-    tempoDecorrido = 0;
-    estaPausado = false;
-
+function iniciarCronometro() {
     clearInterval(intervaloCronometro);
     intervaloCronometro = setInterval(() => {
         if (!estaPausado) {
-            tempoDecorrido++;
+            tempoDecorrido = calcularTempoAtual();
             el.timer.textContent = formatarTempo(tempoDecorrido);
+            salvarEstado();
         }
     }, 1000);
 }
 
+function iniciarJornada() {
+    el.btnIniciar.style.display = 'none';
+    el.grupoBotoes.style.display = 'flex';
+    el.statusTexto.textContent = 'Ativo';
+    el.statusTexto.style.color = 'var(--green)';
+    
+    const hora = horaAtual();
+    el.entradaTexto.textContent = hora;
+    el.marcadorEntrada.textContent = hora;
+    el.marcadorSaida.textContent = '--:--';
+    
+    tempoDecorrido = 0;
+    estaPausado = false;
+    numeroPausas = 0;
+    pausaAcumulada = 0;
+    inicioTimestamp = Date.now();
+    el.pausasTexto.textContent = '0';
+    
+    iniciarCronometro();
+    salvarEstado();
+}
+
 function pausarContinuar() {
     estaPausado = !estaPausado;
-
     if (estaPausado) {
         el.btnPausar.innerHTML = '<i class="fa-solid fa-play"></i> Continuar';
         el.statusTexto.textContent = 'Pausado';
@@ -311,6 +343,7 @@ function pausarContinuar() {
         el.statusTexto.textContent = 'Ativo';
         el.statusTexto.style.color = 'var(--green)';
     }
+    salvarEstado();
 }
 
 function encerrarJornada() {
@@ -321,9 +354,50 @@ function encerrarJornada() {
     el.grupoBotoes.style.display = 'none';
     el.statusTexto.textContent = 'Offline';
     el.statusTexto.style.color = '';
+    
+    localStorage.removeItem('estadoPonto');
+    tempoDecorrido = 0;
+    estaPausado = false;
+    numeroPausas = 0;
+    inicioTimestamp = null;
+    pausaAcumulada = 0;
     el.timer.textContent = '00:00:00';
+    el.entradaTexto.textContent = '--:--';
+    el.marcadorEntrada.textContent = '--:--';
+    el.marcadorPausa.textContent = '--:--';
+    el.pausasTexto.textContent = '0';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const dados = localStorage.getItem('estadoPonto');
+    if (!dados) return;
+    
+    try {
+        const estado = JSON.parse(dados);
+        tempoDecorrido = estado.tempoDecorrido || 0;
+        estaPausado = estado.estaPausado || false;
+        numeroPausas = estado.numeroPausas || 0;
+        inicioTimestamp = estado.inicioTimestamp || null;
+        pausaAcumulada = estado.pausaAcumulada || 0;
+        
+        el.statusTexto.textContent = estado.statusTexto || 'Offline';
+        el.statusTexto.style.color = estado.statusCor || '';
+        el.entradaTexto.textContent = estado.entrada || '--:--';
+        el.marcadorEntrada.textContent = estado.marcadorEntrada || '--:--';
+        el.marcadorPausa.textContent = estado.marcadorPausa || '--:--';
+        el.marcadorSaida.textContent = estado.marcadorSaida || '--:--';
+        el.pausasTexto.textContent = numeroPausas;
+        
+        el.btnIniciar.style.display = estado.btnIniciarVisivel ? 'block' : 'none';
+        el.grupoBotoes.style.display = estado.grupoBotoesVisivel ? 'flex' : 'none';
+        if (estado.btnPausarHTML) el.btnPausar.innerHTML = estado.btnPausarHTML;
+        
+        el.timer.textContent = formatarTempo(calcularTempoAtual());
+        iniciarCronometro();
+    } catch (e) {
+        localStorage.removeItem('estadoPonto');
+    }
+});
 </script>
 </body>
-                </html>
-                
+</html>
