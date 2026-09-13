@@ -1,694 +1,1697 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORGANIZAÇÃO ITÁLIA · MINHA EQUIPE</title>
-    <meta name="theme-color" content="#08090d">
-    <meta name="color-scheme" content="dark">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#08090d">
 
-    <!-- CONEXÃO SUPABASE -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ2Y2x3bWlrZk1udWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    </script>
+<title>Minha Equipe · Organização Itália</title>
 
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-        html {
-            scroll-behavior: smooth;
-        }
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-        body {
-            min-height: 100vh;
-            background: #08090d;
-            color: #f5f5f5;
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            padding-bottom: 92px;
-        }
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-        button {
-            font-family: inherit;
-        }
+<style>
 
-        /* =========================
-           CARREGAMENTO
-        ========================= */
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
 
-        #carregando {
-            position: fixed;
-            inset: 0;
-            z-index: 2000;
-            background: #08090d;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            gap: 14px;
-            transition: opacity 0.4s ease;
-        }
+:root{
+    --bg:#08090d;
+    --card:#101218;
+    --card2:#0d0f14;
+    --border:rgba(255,255,255,.07);
+    --text:#f4f4f5;
+    --muted:#8b909b;
+    --muted2:#646a75;
+    --red:#e11d2e;
+    --red2:#b91423;
+    --green:#22c55e;
+}
 
-        #carregando i {
-            color: #e11d48;
-            font-size: 28px;
-        }
+html{
+    scroll-behavior:smooth;
+}
 
-        #carregando span {
-            color: #8b929f;
-            font-size: 13px;
-        }
+body{
+    background:
+        radial-gradient(circle at 50% -10%,rgba(225,29,46,.09),transparent 35%),
+        var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:90px;
+}
 
-        /* =========================
-           CABEÇALHO
-        ========================= */
+button,
+a{
+    font-family:inherit;
+}
 
-        .topo {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(8, 9, 13, 0.88);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding: 14px 18px;
-        }
+button{
+    border:0;
+}
 
-        .topo-conteudo {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            max-width: 700px;
-            margin: 0 auto;
-        }
+.container{
+    width:100%;
+    max-width:600px;
+    margin:0 auto;
+    padding:0 16px;
+}
 
-        .voltar-btn {
-            width: 42px;
-            height: 42px;
-            border: none;
-            border-radius: 13px;
-            background: rgba(255,255,255,0.04);
-            color: #8b929f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 15px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+/* HEADER */
 
-        .voltar-btn:hover {
-            background: rgba(255,255,255,0.08);
-        }
+.header{
+    padding:18px 0 8px;
+}
 
-        .titulo-pagina {
-            font-size: 17px;
-            font-weight: 700;
-        }
+.header-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
 
-        .espaco-vazio {
-            width: 42px;
-        }
+.perfil{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    min-width:0;
+}
 
-        /* =========================
-           CONTEÚDO
-        ========================= */
+.avatar{
+    width:43px;
+    height:43px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(225,29,46,.10);
+    border:1px solid rgba(225,29,46,.22);
+    color:#ef3340;
+    font-size:18px;
+    flex-shrink:0;
+}
 
-        main {
-            width: 100%;
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 24px 16px 25px;
-        }
+.perfil-nome{
+    font-size:14px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
 
-        .cabecalho-secao {
-            margin-bottom: 24px;
-        }
+.perfil-dados{
+    margin-top:3px;
+    font-size:11px;
+    color:var(--muted);
+}
 
-        /* Indicador verde */
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 10px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.4px;
-            color: #63e6a4;
-            background: rgba(34,197,94,0.07);
-            border: 1px solid rgba(34,197,94,0.14);
-            padding: 7px 10px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
+.btn-sair{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    padding:9px 12px;
+    border-radius:10px;
+    color:#aeb3bd;
+    background:#111319;
+    border:1px solid var(--border);
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+}
 
-        .status-indicador {
-            width: 7px;
-            height: 7px;
-            border-radius: 50%;
-            background: #45d889;
-            box-shadow: 0 0 0 rgba(69,216,137,0.35);
-            animation: pulsarVerde 2.4s ease-in-out infinite;
-        }
+/* TITULO */
 
-        @keyframes pulsarVerde {
-            0%, 100% {
-                opacity: 0.72;
-                box-shadow: 0 0 0 0 rgba(69,216,137,0.10);
-            }
+.page-title{
+    padding:19px 0 20px;
+}
 
-            50% {
-                opacity: 1;
-                box-shadow: 0 0 0 5px rgba(69,216,137,0.035);
-            }
-        }
+.eyebrow{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#a6abb5;
+    font-size:10px;
+    font-weight:700;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+}
 
-        .cabecalho-secao h1 {
-            font-size: 22px;
-            margin-bottom: 6px;
-        }
+.status-indicador{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:
+        0 0 0 3px rgba(34,197,94,.08),
+        0 0 9px rgba(34,197,94,.35);
+    animation:pulsarVerde 2s infinite;
+}
 
-        .subtitulo {
-            color: #8b929f;
-            font-size: 14px;
-            line-height: 1.55;
-        }
+@keyframes pulsarVerde{
+    0%,100%{
+        opacity:1;
+        transform:scale(1);
+        box-shadow:
+            0 0 0 3px rgba(34,197,94,.08),
+            0 0 9px rgba(34,197,94,.35);
+    }
+    50%{
+        opacity:.55;
+        transform:scale(.86);
+        box-shadow:
+            0 0 0 5px rgba(34,197,94,.03),
+            0 0 4px rgba(34,197,94,.18);
+    }
+}
 
-        /* =========================
-           CARD INICIAL
-        ========================= */
+.page-title h1{
+    margin-top:8px;
+    font-size:28px;
+    line-height:1.1;
+    letter-spacing:-.03em;
+}
 
-        .card-vazio {
-            background: #12151b;
-            border: 1px solid rgba(255,255,255,0.065);
-            border-radius: 20px;
-            padding: 26px 20px 22px;
-        }
+.page-title p{
+    margin-top:8px;
+    color:var(--muted);
+    font-size:12px;
+    line-height:1.55;
+}
 
-        .card-status {
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            margin-bottom: 22px;
-        }
+/* CARDS */
 
-        .icone-status {
-            width: 48px;
-            height: 48px;
-            flex-shrink: 0;
-            border-radius: 14px;
-            background: rgba(255,255,255,0.045);
-            border: 1px solid rgba(255,255,255,0.055);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #8b929f;
-            font-size: 19px;
-        }
+.card{
+    background:
+        linear-gradient(145deg,rgba(255,255,255,.025),transparent 45%),
+        var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+}
 
-        .status-texto {
-            flex: 1;
-            padding-top: 1px;
-        }
+/* ESCALA */
 
-        .status-texto h2 {
-            font-size: 16px;
-            margin-bottom: 5px;
-            font-weight: 700;
-        }
+.escala-card{
+    margin-bottom:15px;
+}
 
-        .status-texto p {
-            color: #8b929f;
-            font-size: 13px;
-            line-height: 1.55;
-        }
+.escala-header{
+    padding:16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--border);
+}
 
-        .linha-divisoria {
-            width: 100%;
-            height: 1px;
-            background: rgba(255,255,255,0.055);
-            margin: 4px 0 18px;
-        }
+.escala-titulo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 
-        .card-vazio .descricao {
-            color: #8b929f;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
+.escala-icone{
+    width:36px;
+    height:36px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(225,29,46,.09);
+    border:1px solid rgba(225,29,46,.16);
+    color:#ed2939;
+}
 
-        /* Botão */
-        .btn-ponto {
-            width: 100%;
-            min-height: 50px;
-            border: none;
-            border-radius: 13px;
-            background: #e11d48;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 9px;
-            cursor: pointer;
-            transition:
-                transform 0.15s ease,
-                background 0.2s ease,
-                box-shadow 0.2s ease;
-            box-shadow: 0 8px 24px rgba(225,29,72,0.14);
-        }
+.escala-nome{
+    font-size:13px;
+    font-weight:700;
+}
 
-        .btn-ponto:hover {
-            background: #f0204e;
-            box-shadow: 0 10px 28px rgba(225,29,72,0.19);
-        }
+.escala-sub{
+    margin-top:3px;
+    color:var(--muted2);
+    font-size:10px;
+}
 
-        .btn-ponto:active {
-            transform: scale(0.98);
-        }
+.status-servico{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    color:#4ade80;
+    font-size:10px;
+    font-weight:700;
+    text-transform:uppercase;
+}
 
-        .btn-ponto i {
-            font-size: 14px;
-        }
+.status-servico .dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--green);
+    animation:pulsarVerde 2s infinite;
+}
 
-        /* =========================
-           CARD EQUIPE
-        ========================= */
+.equipe-destaque{
+    padding:19px 16px 17px;
+    background:
+        linear-gradient(135deg,rgba(225,29,46,.10),transparent 55%);
+}
 
-        .card-equipe {
-            background: #12151b;
-            border: 1px solid rgba(255,255,255,0.065);
-            border-radius: 20px;
-            padding: 22px;
-            margin-bottom: 16px;
-            display: none;
-        }
+.equipe-label{
+    color:var(--muted2);
+    font-size:9px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
 
-        .nome-equipe {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 16px;
-            color: #fff;
-        }
+.equipe-nome{
+    margin-top:6px;
+    font-size:23px;
+    font-weight:800;
+    letter-spacing:-.03em;
+}
 
-        .info-linha {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
+.equipe-meta{
+    display:flex;
+    align-items:center;
+    gap:7px;
+    margin-top:7px;
+    color:#969ba5;
+    font-size:11px;
+}
 
-        .info-label {
-            color: #aaa;
-        }
+.equipe-meta i{
+    color:#c5c8ce;
+}
 
-        .info-valor {
-            color: #fff;
-            font-weight: 500;
-        }
+/* INFORMAÇÕES */
 
-        /* =========================
-           MENU INFERIOR
-        ========================= */
+.info-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-top:1px solid var(--border);
+}
 
-        .menu-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 500;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            height: 78px;
-            padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
-            background: rgba(13,15,20,0.94);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.07);
-        }
+.info-item{
+    padding:14px 15px;
+    border-bottom:1px solid var(--border);
+}
 
-        .menu-item {
-            width: 20%;
-            max-width: 80px;
-            height: 58px;
-            border: none;
-            background: transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            color: #5d6470;
-            font-size: 9px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
+.info-item:nth-child(odd){
+    border-right:1px solid var(--border);
+}
 
-        .menu-item i {
-            font-size: 17px;
-        }
+.info-item:nth-last-child(-n+2){
+    border-bottom:0;
+}
 
-        .menu-item.active {
-            color: #f5f5f5;
-        }
+.info-label{
+    color:var(--muted2);
+    font-size:8px;
+    font-weight:700;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
 
-        .menu-item.active i {
-            color: #fb365d;
-        }
-    </style>
+.info-value{
+    margin-top:5px;
+    font-size:12px;
+    font-weight:600;
+    color:#e5e7eb;
+}
+
+.info-value i{
+    margin-right:5px;
+    color:#999fa9;
+    font-size:10px;
+}
+
+/* POSIÇÃO */
+
+.posicao-box{
+    margin:0 16px 16px;
+    padding:13px 14px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#0b0d12;
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:12px;
+}
+
+.posicao-info{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.posicao-icone{
+    width:32px;
+    height:32px;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(225,29,46,.09);
+    color:#e11d2e;
+    font-size:12px;
+}
+
+.posicao-label{
+    color:var(--muted2);
+    font-size:8px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.posicao-texto{
+    margin-top:3px;
+    font-size:11px;
+    font-weight:600;
+}
+
+.posicao-numero{
+    font-size:20px;
+    font-weight:800;
+}
+
+/* RESPONSÁVEL */
+
+.responsavel{
+    padding:14px 16px;
+    border-top:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.responsavel-icone{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#171920;
+    color:#aeb4bf;
+    font-size:12px;
+}
+
+.responsavel-label{
+    color:var(--muted2);
+    font-size:8px;
+    font-weight:700;
+    text-transform:uppercase;
+}
+
+.responsavel-nome{
+    margin-top:3px;
+    font-size:11px;
+    font-weight:600;
+}
+
+.sincronizacao{
+    padding:11px 16px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:#0b0d11;
+    border-top:1px solid var(--border);
+    color:#666c77;
+    font-size:9px;
+}
+
+.sincronizacao i{
+    color:#777d87;
+}
+    /* MEMBROS */
+
+.membros-card{
+    margin-bottom:15px;
+}
+
+.section-header{
+    padding:16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:1px solid var(--border);
+}
+
+.section-left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.section-icon{
+    width:34px;
+    height:34px;
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#171920;
+    color:#b4bac4;
+    font-size:12px;
+}
+
+.section-title{
+    font-size:13px;
+    font-weight:700;
+}
+
+.section-sub{
+    margin-top:3px;
+    color:var(--muted2);
+    font-size:9px;
+}
+
+.contador{
+    padding:6px 9px;
+    border-radius:8px;
+    background:#171920;
+    color:#aeb4be;
+    font-size:9px;
+    font-weight:700;
+}
+
+.lista-membros{
+    padding:4px 0;
+}
+
+.membro{
+    display:flex;
+    align-items:center;
+    gap:11px;
+    padding:13px 15px;
+    border-bottom:1px solid rgba(255,255,255,.045);
+}
+
+.membro:last-child{
+    border-bottom:0;
+}
+
+.posicao-membro{
+    width:31px;
+    height:31px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    background:#171920;
+    color:#aeb4bd;
+    font-size:9px;
+    font-weight:800;
+}
+
+.membro.eu .posicao-membro{
+    background:rgba(225,29,46,.10);
+    color:#ef3340;
+}
+
+.membro-info{
+    min-width:0;
+    flex:1;
+}
+
+.membro-nome{
+    font-size:11px;
+    font-weight:700;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.membro-passaporte{
+    margin-top:3px;
+    color:var(--muted);
+    font-size:9px;
+}
+
+.membro-passaporte strong{
+    color:#aeb3bd;
+}
+
+.membro-hora{
+    margin-top:2px;
+    color:#656b75;
+    font-size:8px;
+}
+
+.membro-cargo{
+    padding:5px 7px;
+    border-radius:7px;
+    background:#171920;
+    color:#aeb4be;
+    font-size:8px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+/* AVISO */
+
+.aviso{
+    margin-bottom:18px;
+    padding:14px 15px;
+
+    display:flex;
+    align-items:flex-start;
+    gap:11px;
+
+    background:#0c0e13;
+    border:1px solid rgba(255,255,255,.055);
+    border-radius:14px;
+}
+
+.aviso-icone{
+    width:30px;
+    height:30px;
+
+    flex-shrink:0;
+
+    border-radius:9px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    background:rgba(255,255,255,.035);
+    color:#858b95;
+
+    font-size:11px;
+}
+
+.aviso-titulo{
+    font-size:10px;
+    font-weight:700;
+    color:#d6d8dc;
+}
+
+.aviso-texto{
+    margin-top:4px;
+
+    color:#707680;
+    font-size:9px;
+    line-height:1.55;
+}
+
+/* ESTADO SEM EQUIPE */
+
+.estado-vazio{
+    display:none;
+    padding:28px 20px;
+
+    text-align:center;
+
+    background:
+        linear-gradient(145deg,rgba(255,255,255,.02),transparent),
+        var(--card);
+
+    border:1px solid var(--border);
+    border-radius:18px;
+}
+
+.vazio-icone{
+    width:50px;
+    height:50px;
+
+    margin:0 auto 13px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius:15px;
+
+    background:rgba(225,29,46,.08);
+    border:1px solid rgba(225,29,46,.13);
+
+    color:#d72a38;
+
+    font-size:17px;
+}
+
+.estado-vazio h2{
+    font-size:15px;
+    font-weight:700;
+}
+
+.estado-vazio p{
+    max-width:340px;
+    margin:8px auto 0;
+
+    color:var(--muted);
+    font-size:10px;
+    line-height:1.6;
+}
+
+.btn-ponto{
+    display:inline-flex;
+    align-items:center;
+    gap:7px;
+
+    margin-top:17px;
+    padding:10px 14px;
+
+    border-radius:10px;
+
+    color:#fff;
+    background:var(--red);
+
+    font-size:10px;
+    font-weight:700;
+
+    text-decoration:none;
+}
+
+/* CONTEÚDO ATIVO */
+
+#conteudoEquipe{
+    display:none;
+}
+
+/* NAVEGAÇÃO */
+
+.bottom-nav{
+    position:fixed;
+    left:50%;
+    bottom:12px;
+
+    transform:translateX(-50%);
+
+    width:calc(100% - 24px);
+    max-width:568px;
+
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+
+    padding:7px;
+
+    background:rgba(15,17,22,.94);
+    backdrop-filter:blur(16px);
+
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:17px;
+
+    box-shadow:0 12px 35px rgba(0,0,0,.35);
+
+    z-index:50;
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    gap:4px;
+
+    min-height:47px;
+
+    color:#676d78;
+
+    text-decoration:none;
+
+    border-radius:12px;
+
+    font-size:9px;
+    font-weight:600;
+}
+
+.nav-item i{
+    font-size:14px;
+}
+
+.nav-item.ativo{
+    color:#f0f1f3;
+    background:rgba(225,29,46,.10);
+}
+
+.nav-item.ativo i{
+    color:#e11d2e;
+}
+
+/* LOADING */
+
+.loading{
+    padding:35px 15px;
+    text-align:center;
+    color:#676d78;
+    font-size:10px;
+}
+
+.loading i{
+    margin-right:7px;
+}
+
+/* MOBILE */
+
+@media(max-width:380px){
+
+    .page-title h1{
+        font-size:25px;
+    }
+
+    .equipe-nome{
+        font-size:21px;
+    }
+
+    .membro-cargo{
+        display:none;
+    }
+
+    .perfil-dados{
+        font-size:10px;
+    }
+}
+
+</style>
 </head>
 
 <body>
 
-<!-- =========================
-     CARREGAMENTO
-========================= -->
+<header class="header">
+    <div class="header-inner container">
 
-<div id="carregando">
-    <i class="fas fa-spinner fa-spin"></i>
-    <span>Carregando equipe...</span>
-</div>
+        <div class="perfil">
 
-<!-- =========================
-     CABEÇALHO
-========================= -->
+            <div class="avatar">
+                <i class="fas fa-user-shield"></i>
+            </div>
 
-<header class="topo">
-    <div class="topo-conteudo">
+            <div>
+                <div class="perfil-nome" id="perfilNome">
+                    Usuário
+                </div>
 
-        <button class="voltar-btn" onclick="window.location.href='painel.html'">
-            <i class="fas fa-arrow-left"></i>
+                <div class="perfil-dados">
+                    Passaporte <span id="perfilPassaporte">---</span>
+                </div>
+            </div>
+
+        </div>
+
+        <button class="btn-sair" onclick="sair()">
+            <i class="fas fa-arrow-right-from-bracket"></i>
+            Sair
         </button>
-
-        <h1 class="titulo-pagina">Minha Equipe</h1>
-
-        <div class="espaco-vazio"></div>
 
     </div>
 </header>
 
-<!-- =========================
-     CONTEÚDO
-========================= -->
 
-<main>
+<main class="container">
 
-    <div class="cabecalho-secao">
+    <section class="page-title">
 
-        <div class="tag">
+        <div class="eyebrow">
             <span class="status-indicador"></span>
             INTEGRAÇÃO COM A ESCALA
         </div>
 
         <h1>Minha Equipe</h1>
 
-        <p class="subtitulo">
-            Veja sua alocação depois de iniciar o ponto.
-            A definição da equipe acontece durante sua jornada.
+        <p>
+            Acompanhe sua equipe, posição e informações da sua jornada.
         </p>
 
-    </div>
+    </section>
+
 
     <!-- =========================
-         ESTADO INICIAL
-    ========================= -->
+         ESTADO SEM PONTO
+    ========================== -->
 
-    <div class="card-vazio" id="semEquipe">
+    <section class="estado-vazio" id="estadoVazio">
 
-        <div class="card-status">
-
-            <div class="icone-status">
-                <i class="fas fa-clock"></i>
-            </div>
-
-            <div class="status-texto">
-                <h2>Ponto fechado</h2>
-
-                <p>
-                    Inicie o seu ponto para entrar no turno
-                    e permitir que o sistema defina sua equipe.
-                </p>
-            </div>
-
+        <div class="vazio-icone">
+            <i class="fas fa-clock"></i>
         </div>
 
-        <div class="linha-divisoria"></div>
+        <h2>Ponto fechado</h2>
 
-        <p class="descricao">
-            Sua alocação será exibida aqui assim que sua jornada
-            estiver ativa.
+        <p>
+            Inicie o seu ponto para entrar no turno e permitir que
+            o sistema defina sua equipe.
         </p>
 
-        <button class="btn-ponto" onclick="window.location.href='bate-ponto.html'">
+        <p>
+            Sua alocação será exibida aqui assim que sua jornada estiver ativa.
+        </p>
+
+        <a href="bate-ponto.html" class="btn-ponto">
             <i class="fas fa-clock"></i>
             Ir para o ponto
-        </button>
+        </a>
 
-    </div>
+    </section>
+
 
     <!-- =========================
-         DADOS DA EQUIPE
-         MANTIDO PARA A PRÓXIMA ETAPA
-    ========================= -->
+         CONTEÚDO DA EQUIPE
+    ========================== -->
 
-    <div class="card-equipe" id="dadosEquipe">
+    <div id="conteudoEquipe">
 
-        <h2 class="nome-equipe" id="nomeEquipe">—</h2>
+        <section class="card escala-card">
 
-        <div class="info-linha">
-            <span class="info-label">
-                <i class="fas fa-bullseye"></i>
-                Meta Lockpick
-            </span>
+            <div class="escala-header">
 
-            <span class="info-valor" id="metaLockpick">—</span>
-        </div>
+                <div class="escala-titulo">
 
-        <div class="info-linha">
-            <span class="info-label">
-                <i class="fas fa-bullseye"></i>
-                Meta Flipper
-            </span>
+                    <div class="escala-icone">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
 
-            <span class="info-valor" id="metaFlipper">—</span>
-        </div>
+                    <div>
+                        <div class="escala-nome">
+                            Escala atual
+                        </div>
 
-        <div class="info-linha">
-            <span class="info-label">
-                <i class="fas fa-coins"></i>
-                Venda Lockpick
-            </span>
+                        <div class="escala-sub">
+                            Organização Itália
+                        </div>
+                    </div>
 
-            <span class="info-valor" id="vendaLockpick">—</span>
-        </div>
+                </div>
 
-        <div class="info-linha">
-            <span class="info-label">
-                <i class="fas fa-coins"></i>
-                Venda Flipper
-            </span>
+                <div class="status-servico">
+                    <span class="dot"></span>
+                    Em serviço
+                </div>
 
-            <span class="info-valor" id="vendaFlipper">—</span>
-        </div>
+            </div>
+
+
+            <div class="equipe-destaque">
+
+                <div class="equipe-label">
+                    Equipe
+                </div>
+
+                <div class="equipe-nome" id="equipeNome">
+                    ---
+                </div>
+
+                <div class="equipe-meta">
+                    <i class="fas fa-users"></i>
+                    <span id="equipeDescricao">
+                        Equipe em serviço
+                    </span>
+                </div>
+
+            </div>
+
+
+            <div class="info-grid">
+
+                <div class="info-item">
+
+                    <div class="info-label">
+                        Missão / Área
+                    </div>
+
+                    <div class="info-value" id="missao">
+                        Ponto 0
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <div class="info-label">
+                        Viatura
+                    </div>
+
+                    <div class="info-value" id="viatura">
+                        <i class="fas fa-car"></i>
+                        Não definida
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <div class="info-label">
+                        Turno
+                    </div>
+
+                    <div class="info-value" id="turno">
+                        Em serviço
+                    </div>
+
+                </div>
+
+
+                <div class="info-item">
+
+                    <div class="info-label">
+                        Posto
+                    </div>
+
+                    <div class="info-value" id="posto">
+                        Patrulhamento
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="posicao-box">
+
+                <div class="posicao-info">
+
+                    <div class="posicao-icone">
+                        <i class="fas fa-location-crosshairs"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="posicao-label">
+                            Minha posição
+                        </div>
+
+                        <div class="posicao-texto">
+                            Dentro da equipe
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="posicao-numero" id="minhaPosicao">
+                    P1
+                </div>
+
+            </div>
+
+
+            <div class="responsavel">
+
+                <div class="responsavel-icone">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+
+                <div>
+
+                    <div class="responsavel-label">
+                        Responsável
+                    </div>
+
+                    <div class="responsavel-nome" id="responsavel">
+                        Não definido
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="sincronizacao">
+
+                <i class="fas fa-rotate"></i>
+
+                <span>
+                    Jornada iniciada às
+                    <strong id="horaEntrada">--:--</strong>
+                    · dados sincronizados automaticamente
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <section class="card membros-card">
+
+            <div class="section-header">
+
+                <div class="section-left">
+
+                    <div class="section-icon">
+                        <i class="fas fa-user-group"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="section-title">
+                            Quem está comigo
+                        </div>
+
+                        <div class="section-sub">
+                            Integrantes da sua equipe
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="contador" id="contadorMembros">
+                    0 pessoas
+                </div>
+
+            </div>
+
+
+            <div class="lista-membros" id="listaMembros">
+
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Carregando equipe...
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <section class="aviso">
+
+            <div class="aviso-icone">
+                <i class="fas fa-eye"></i>
+            </div>
+
+            <div>
+
+                <div class="aviso-titulo">
+                    Somente visualização
+                </div>
+
+                <div class="aviso-texto">
+                    As informações desta área são exibidas conforme
+                    a alocação definida pelo sistema. A organização
+                    das equipes não pode ser alterada por este painel.
+                </div>
+
+            </div>
+
+        </section>
 
     </div>
 
 </main>
 
-<!-- =========================
-     MENU INFERIOR
-========================= -->
 
-<nav class="menu-container">
+<nav class="bottom-nav">
 
-    <button class="menu-item" onclick="window.location.href='painel.html'">
-        <i class="fas fa-home"></i>
+    <a href="painel.html" class="nav-item">
+        <i class="fas fa-house"></i>
         <span>Início</span>
-    </button>
+    </a>
 
-    <button class="menu-item" onclick="window.location.href='bate-ponto.html'">
+    <a href="bate-ponto.html" class="nav-item">
         <i class="fas fa-clock"></i>
         <span>Ponto</span>
-    </button>
+    </a>
 
-    <button class="menu-item active">
+    <a href="equipe.html" class="nav-item ativo">
         <i class="fas fa-users"></i>
         <span>Equipe</span>
-    </button>
+    </a>
 
-    <button class="menu-item" onclick="window.location.href='registros.html'">
-        <i class="fas fa-folder-open"></i>
+    <a href="registros.html" class="nav-item">
+        <i class="fas fa-file-lines"></i>
         <span>Registros</span>
-    </button>
+    </a>
 
 </nav>
-
 <script>
-/* =========================
-   CARREGAMENTO
-========================= */
 
-window.addEventListener('load', () => {
+/* =========================================================
+   SUPABASE
+========================================================= */
 
-    setTimeout(() => {
-
-        const el = document.getElementById('carregando');
-
-        if (el) {
-            el.style.opacity = '0';
-
-            setTimeout(() => {
-                el.style.display = 'none';
-            }, 400);
-        }
-
-    }, 500);
-
-    carregarDadosEquipe();
-});
+const supabaseClient = window.supabase.createClient(
+    "https://vclwmikzmnuqfdxobtik.supabase.co",
+    "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
+);
 
 
-/* =========================
-   CARREGAR EQUIPE
-========================= */
+/* =========================================================
+   USUÁRIO DA SESSÃO
+========================================================= */
 
-async function carregarDadosEquipe() {
+const sessao = sessionStorage.getItem("italia_usuario");
 
-    try {
+if(!sessao){
 
-        // Recupera o usuário salvo pelo sistema de login
-        const sessao = sessionStorage.getItem('italia_usuario');
+    window.location.href = "login.html";
 
-        if (!sessao) {
-            mostrarSemEquipe();
-            return;
-        }
+    throw new Error("Usuário não autenticado.");
+}
 
-        const usuario = JSON.parse(sessao);
+let usuario;
 
-        /*
-         * Enquanto o usuário não tiver uma jornada ativa,
-         * a tela inicial permanece como "Ponto fechado".
-         *
-         * O bate-ponto salva este estado localmente quando
-         * uma jornada está ativa.
-         */
+try{
 
-        const chaveEstado = `italia_ponto_${usuario.passaporte}`;
-        const estadoSalvo = localStorage.getItem(chaveEstado);
+    usuario = JSON.parse(sessao);
 
-        if (!estadoSalvo) {
-            mostrarSemEquipe();
-            return;
-        }
+}catch(erro){
 
-        const estado = JSON.parse(estadoSalvo);
+    sessionStorage.removeItem("italia_usuario");
 
-        if (!estado || !estado.pontoId) {
-            mostrarSemEquipe();
-            return;
-        }
+    window.location.href = "login.html";
+
+    throw new Error("Sessão inválida.");
+}
 
 
-        /* =========================
-           BUSCAR MEMBRO
-        ========================= */
+/* =========================================================
+   ELEMENTOS
+========================================================= */
 
-        const { data: membro, error: erroMembro } = await supabase
-            .from('membros')
-            .select('equipe_id')
-            .eq('id', usuario.id || usuario.user_id)
-            .single();
+const estadoVazio =
+    document.getElementById("estadoVazio");
 
-        if (erroMembro || !membro || !membro.equipe_id) {
-            mostrarSemEquipe();
-            return;
-        }
+const conteudoEquipe =
+    document.getElementById("conteudoEquipe");
 
+const perfilNome =
+    document.getElementById("perfilNome");
 
-        /* =========================
-           BUSCAR EQUIPE
-        ========================= */
+const perfilPassaporte =
+    document.getElementById("perfilPassaporte");
 
-        const { data: equipe, error: erroEquipe } = await supabase
-            .from('equipes')
-            .select(`
-                nome,
-                farm_de_lockpick,
-                farm_de_flipper,
-                venda_de_lockpick,
-                venda_de_flipper
-            `)
-            .eq('id', membro.equipe_id)
-            .single();
+const equipeNome =
+    document.getElementById("equipeNome");
 
-        if (erroEquipe || !equipe) {
-            mostrarSemEquipe();
-            return;
-        }
+const equipeDescricao =
+    document.getElementById("equipeDescricao");
+
+const minhaPosicao =
+    document.getElementById("minhaPosicao");
+
+const horaEntrada =
+    document.getElementById("horaEntrada");
+
+const listaMembros =
+    document.getElementById("listaMembros");
+
+const contadorMembros =
+    document.getElementById("contadorMembros");
 
 
-        /* =========================
-           PREENCHER DADOS
-        ========================= */
+/* =========================================================
+   PERFIL
+========================================================= */
 
-        document.getElementById('nomeEquipe').textContent =
-            equipe.nome || 'Equipe não definida';
+function carregarPerfil(){
 
-        document.getElementById('metaLockpick').textContent =
-            equipe.farm_de_lockpick || 'Não definida';
+    const nome =
+        usuario.nome ||
+        usuario.nick ||
+        usuario.nome_completo ||
+        "Usuário";
 
-        document.getElementById('metaFlipper').textContent =
-            equipe.farm_de_flipper || 'Não definida';
+    const passaporte =
+        usuario.passaporte ||
+        usuario.passport ||
+        "---";
 
-        document.getElementById('vendaLockpick').textContent =
-            equipe.venda_de_lockpick || 'Não definida';
-
-        document.getElementById('vendaFlipper').textContent =
-            equipe.venda_de_flipper || 'Não definida';
+    perfilNome.textContent = nome;
+    perfilPassaporte.textContent = passaporte;
+}
 
 
-        /* =========================
-           MOSTRAR EQUIPE
-        ========================= */
+/* =========================================================
+   VERIFICAÇÃO DO PONTO
+========================================================= */
 
-        document.getElementById('semEquipe').style.display = 'none';
-        document.getElementById('dadosEquipe').style.display = 'block';
+function obterEstadoLocal(){
 
-    } catch (err) {
+    const passaporte =
+        usuario.passaporte ||
+        usuario.passport;
 
-        console.error('Erro:', err);
+    if(!passaporte) return null;
 
-        mostrarSemEquipe();
+    const chave =
+        `italia_ponto_${passaporte}`;
+
+    const estado =
+        localStorage.getItem(chave);
+
+    if(!estado) return null;
+
+    try{
+
+        return JSON.parse(estado);
+
+    }catch(erro){
+
+        return null;
     }
 }
 
 
-/* =========================
-   ESTADO SEM EQUIPE
-========================= */
+/* =========================================================
+   MOSTRAR ESTADO SEM PONTO
+========================================================= */
 
-function mostrarSemEquipe() {
+function mostrarSemPonto(){
 
-    document.getElementById('semEquipe').style.display = 'block';
-    document.getElementById('dadosEquipe').style.display = 'none';
+    estadoVazio.style.display = "block";
+    conteudoEquipe.style.display = "none";
 }
+
+
+/* =========================================================
+   MOSTRAR EQUIPE
+========================================================= */
+
+function mostrarEquipe(){
+
+    estadoVazio.style.display = "none";
+    conteudoEquipe.style.display = "block";
+}
+
+
+/* =========================================================
+   FORMATA HORA
+========================================================= */
+
+function formatarHora(valor){
+
+    if(!valor) return "--:--";
+
+    const data = new Date(valor);
+
+    if(Number.isNaN(data.getTime())){
+
+        return "--:--";
+    }
+
+    return data.toLocaleTimeString(
+        "pt-BR",
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+}
+
+
+/* =========================================================
+   CARGOS ATUAIS DA ORGANIZAÇÃO ITÁLIA
+=========================================================
+
+   Hierarquia atual:
+
+   Mentor
+   Controle
+   O Vigia
+   Raíz
+   Executor
+   Novato
+
+========================================================= */
+
+function normalizarCargo(cargo){
+
+    if(!cargo) return "Novato";
+
+    const valor =
+        String(cargo)
+        .trim()
+        .toLowerCase();
+
+
+    if(valor === "mentor")
+        return "Mentor";
+
+
+    if(valor === "controle")
+        return "Controle";
+
+
+    if(
+        valor === "o vigia" ||
+        valor === "vigia"
+    )
+        return "O Vigia";
+
+
+    if(
+        valor === "raiz" ||
+        valor === "raíz"
+    )
+        return "Raíz";
+
+
+    if(valor === "executor")
+        return "Executor";
+
+
+    if(valor === "novato")
+        return "Novato";
+
+
+    return cargo;
+}
+
+
+/* =========================================================
+   RENDERIZA MEMBROS
+========================================================= */
+
+function renderizarMembros(membros){
+
+    listaMembros.innerHTML = "";
+
+
+    if(!membros || !membros.length){
+
+        listaMembros.innerHTML = `
+            <div class="loading">
+                <i class="fas fa-user-slash"></i>
+                Nenhum integrante encontrado.
+            </div>
+        `;
+
+        contadorMembros.textContent =
+            "0 pessoas";
+
+        return;
+    }
+
+
+    contadorMembros.textContent =
+        `${membros.length} ${
+            membros.length === 1
+                ? "pessoa"
+                : "pessoas"
+        }`;
+
+
+    membros.forEach((membro,index)=>{
+
+        const ehUsuario =
+            String(
+                membro.passaporte ??
+                membro.passport ??
+                ""
+            ) === String(
+                usuario.passaporte ??
+                usuario.passport ??
+                ""
+            );
+
+
+        const nome =
+            membro.nome ||
+            membro.nome_completo ||
+            membro.nick ||
+            "Membro";
+
+
+        const passaporte =
+            membro.passaporte ??
+            membro.passport ??
+            "---";
+
+
+        const cargo =
+            normalizarCargo(
+                membro.cargo ||
+                membro.funcao ||
+                membro.função
+            );
+
+
+        const entrada =
+            membro.entrada ||
+            membro.entrada_em ||
+            membro.criado_em ||
+            membro.inicio;
+
+
+        const div =
+            document.createElement("div");
+
+
+        div.className =
+            "membro" +
+            (ehUsuario ? " eu" : "");
+
+
+        div.innerHTML = `
+
+            <div class="posicao-membro">
+                P${index + 1}
+            </div>
+
+            <div class="membro-info">
+
+                <div class="membro-nome">
+                    ${escaparHTML(nome)}
+                    ${ehUsuario ? " — VOCÊ" : ""}
+                </div>
+
+                <div class="membro-passaporte">
+                    Passaporte:
+                    <strong>
+                        ${escaparHTML(String(passaporte))}
+                    </strong>
+                </div>
+
+                <div class="membro-hora">
+                    desde ${formatarHora(entrada)}
+                </div>
+
+            </div>
+
+            <div class="membro-cargo">
+                ${escaparHTML(cargo)}
+            </div>
+
+        `;
+
+
+        listaMembros.appendChild(div);
+
+    });
+
+}
+
+
+/* =========================================================
+   PROTEÇÃO CONTRA HTML
+========================================================= */
+
+function escaparHTML(valor){
+
+    return String(valor)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+/* =========================================================
+   CARREGAR INTERFACE DA EQUIPE
+========================================================= */
+
+function carregarInterfaceEquipe(estado){
+
+    mostrarEquipe();
+
+
+    /*
+       Nome da equipe
+    */
+
+    equipeNome.textContent =
+        estado?.equipeNome ||
+        "Equipe Itália";
+
+
+    equipeDescricao.textContent =
+        "Equipe em serviço";
+
+
+    /*
+       Posição do usuário
+    */
+
+    minhaPosicao.textContent =
+        estado?.posicao ||
+        "P1";
+
+
+    /*
+       Entrada
+    */
+
+    horaEntrada.textContent =
+        formatarHora(
+            estado?.entrada
+        );
+
+
+    /*
+       Dados da equipe
+    */
+
+    document.getElementById("missao")
+        .textContent =
+        estado?.missao ||
+        "Ponto 0";
+
+
+    document.getElementById("viatura")
+        .innerHTML =
+        '<i class="fas fa-car"></i> ' +
+        (
+            estado?.viatura ||
+            "Não definida"
+        );
+
+
+    document.getElementById("turno")
+        .textContent =
+        estado?.turno ||
+        "Em serviço";
+
+
+    document.getElementById("posto")
+        .textContent =
+        estado?.posto ||
+        "Patrulhamento";
+
+
+    document.getElementById("responsavel")
+        .textContent =
+        estado?.responsavel ||
+        "Não definido";
+
+
+    /*
+       Membros da equipe
+    */
+
+    renderizarMembros(
+        estado?.membros || []
+    );
+}
+
+
+/* =========================================================
+   CARREGAR PÁGINA
+========================================================= */
+
+async function carregarPagina(){
+
+    carregarPerfil();
+
+
+    const estado =
+        obterEstadoLocal();
+
+
+    /*
+       Se não existe jornada,
+       mostra a tela inicial.
+    */
+
+    if(!estado){
+
+        mostrarSemPonto();
+
+        return;
+    }
+
+
+    /*
+       Verifica se a jornada está ativa.
+    */
+
+    const ativo =
+        estado.ativo === true ||
+        estado.status === "ativo" ||
+        estado.status === "pausado";
+
+
+    if(!ativo){
+
+        mostrarSemPonto();
+
+        return;
+    }
+
+
+    /*
+       Mostra a equipe.
+    */
+
+    carregarInterfaceEquipe(
+        estado
+    );
+}
+
+
+/* =========================================================
+   SAIR
+========================================================= */
+
+function sair(){
+
+    sessionStorage.removeItem(
+        "italia_usuario"
+    );
+
+    window.location.href =
+        "login.html";
+}
+
+
+/* =========================================================
+   ATUALIZAÇÃO AUTOMÁTICA
+========================================================= */
+
+window.addEventListener(
+    "storage",
+    function(event){
+
+        const passaporte =
+            usuario.passaporte ||
+            usuario.passport;
+
+
+        if(
+            event.key ===
+            `italia_ponto_${passaporte}`
+        ){
+
+            carregarPagina();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+carregarPagina();
+
 </script>
 
 </body>
-        </html>
+</html>
