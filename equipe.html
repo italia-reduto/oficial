@@ -12,220 +12,607 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjbHdtaWk6bW51cWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ2Y2x3bWlrZk1udWZkeG9idGlrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4MjcwMjYsImV4cCI6MjEwNDQwMzAyNn0.1AhMT7XTzSM4aECbDoSsiGZhP3KtgqvaSF1V3Cy2f_g";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            min-height: 100vh; background: #08090d; color: #f5f5f5;
+            min-height: 100vh;
+            background: #08090d;
+            color: #f5f5f5;
             font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
             padding-bottom: 92px;
         }
-        button { font-family: inherit; }
 
-        /* Carregamento */
-        #carregando {
-            position: fixed; inset: 0; z-index: 2000; background: #08090d;
-            display: flex; align-items: center; justify-content: center;
-            flex-direction: column; gap: 14px;
+        button {
+            font-family: inherit;
         }
-        #carregando i { color: #e11d48; font-size: 28px; }
-        #carregando span { color: #8b929f; font-size: 13px; }
 
-        /* Cabeçalho */
+        /* =========================
+           CARREGAMENTO
+        ========================= */
+
+        #carregando {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: #08090d;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 14px;
+            transition: opacity 0.4s ease;
+        }
+
+        #carregando i {
+            color: #e11d48;
+            font-size: 28px;
+        }
+
+        #carregando span {
+            color: #8b929f;
+            font-size: 13px;
+        }
+
+        /* =========================
+           CABEÇALHO
+        ========================= */
+
         .topo {
-            position: sticky; top: 0; z-index: 100;
+            position: sticky;
+            top: 0;
+            z-index: 100;
             background: rgba(8, 9, 13, 0.88);
-            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
             border-bottom: 1px solid rgba(255,255,255,0.06);
             padding: 14px 18px;
         }
-        .topo-conteudo {
-            display: flex; align-items: center; justify-content: space-between;
-            max-width: 700px; margin: 0 auto;
-        }
-        .voltar-btn {
-            width: 42px; height: 42px; border: none; border-radius: 13px;
-            background: rgba(255,255,255,0.04); color: #8b929f;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 15px; cursor: pointer; transition: 0.2s;
-        }
-        .voltar-btn:hover { background: rgba(255,255,255,0.08); }
-        .titulo-pagina { font-size: 17px; font-weight: 700; }
-        .espaco-vazio { width: 42px; }
 
-        /* Conteúdo */
-        main {
-            width: 100%; max-width: 700px; margin: 0 auto;
-            padding: 20px 16px 25px;
+        .topo-conteudo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 700px;
+            margin: 0 auto;
         }
+
+        .voltar-btn {
+            width: 42px;
+            height: 42px;
+            border: none;
+            border-radius: 13px;
+            background: rgba(255,255,255,0.04);
+            color: #8b929f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .voltar-btn:hover {
+            background: rgba(255,255,255,0.08);
+        }
+
+        .titulo-pagina {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .espaco-vazio {
+            width: 42px;
+        }
+
+        /* =========================
+           CONTEÚDO
+        ========================= */
+
+        main {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 24px 16px 25px;
+        }
+
         .cabecalho-secao {
             margin-bottom: 24px;
         }
+
+        /* Indicador verde */
         .tag {
-            display: inline-flex; align-items: center; gap: 6px;
-            font-size: 10px; font-weight: 700; text-transform: uppercase;
-            color: #fb365d; background: rgba(225,29,72,0.09);
-            border: 1px solid rgba(225,29,72,0.16);
-            padding: 6px 9px; border-radius: 8px; margin-bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #63e6a4;
+            background: rgba(34,197,94,0.07);
+            border: 1px solid rgba(34,197,94,0.14);
+            padding: 7px 10px;
+            border-radius: 8px;
+            margin-bottom: 12px;
         }
-        .cabecalho-secao h1 { font-size: 22px; margin-bottom: 6px; }
-        .subtitulo { color: #8b929f; font-size: 14px; }
 
-        /* Estado Vazio */
+        .status-indicador {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #45d889;
+            box-shadow: 0 0 0 rgba(69,216,137,0.35);
+            animation: pulsarVerde 2.4s ease-in-out infinite;
+        }
+
+        @keyframes pulsarVerde {
+            0%, 100% {
+                opacity: 0.72;
+                box-shadow: 0 0 0 0 rgba(69,216,137,0.10);
+            }
+
+            50% {
+                opacity: 1;
+                box-shadow: 0 0 0 5px rgba(69,216,137,0.035);
+            }
+        }
+
+        .cabecalho-secao h1 {
+            font-size: 22px;
+            margin-bottom: 6px;
+        }
+
+        .subtitulo {
+            color: #8b929f;
+            font-size: 14px;
+            line-height: 1.55;
+        }
+
+        /* =========================
+           CARD INICIAL
+        ========================= */
+
         .card-vazio {
-            background: #12151b; border: 1px solid rgba(255,255,255,0.065);
-            border-radius: 20px; padding: 50px 20px; text-align: center;
+            background: #12151b;
+            border: 1px solid rgba(255,255,255,0.065);
+            border-radius: 20px;
+            padding: 26px 20px 22px;
         }
-        .icone-vazio {
-            width: 70px; height: 70px; border-radius: 18px;
-            background: rgba(139, 146, 159, 0.08);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px; font-size: 26px; color: #6b7280;
-        }
-        .card-vazio h2 { font-size: 19px; margin-bottom: 12px; }
-        .card-vazio p { color: #8b929f; font-size: 14px; line-height: 1.6; max-width: 380px; margin: 0 auto; }
 
-        /* Card Equipe */
+        .card-status {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .icone-status {
+            width: 48px;
+            height: 48px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.045);
+            border: 1px solid rgba(255,255,255,0.055);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8b929f;
+            font-size: 19px;
+        }
+
+        .status-texto {
+            flex: 1;
+            padding-top: 1px;
+        }
+
+        .status-texto h2 {
+            font-size: 16px;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .status-texto p {
+            color: #8b929f;
+            font-size: 13px;
+            line-height: 1.55;
+        }
+
+        .linha-divisoria {
+            width: 100%;
+            height: 1px;
+            background: rgba(255,255,255,0.055);
+            margin: 4px 0 18px;
+        }
+
+        .card-vazio .descricao {
+            color: #8b929f;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        /* Botão */
+        .btn-ponto {
+            width: 100%;
+            min-height: 50px;
+            border: none;
+            border-radius: 13px;
+            background: #e11d48;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 9px;
+            cursor: pointer;
+            transition:
+                transform 0.15s ease,
+                background 0.2s ease,
+                box-shadow 0.2s ease;
+            box-shadow: 0 8px 24px rgba(225,29,72,0.14);
+        }
+
+        .btn-ponto:hover {
+            background: #f0204e;
+            box-shadow: 0 10px 28px rgba(225,29,72,0.19);
+        }
+
+        .btn-ponto:active {
+            transform: scale(0.98);
+        }
+
+        .btn-ponto i {
+            font-size: 14px;
+        }
+
+        /* =========================
+           CARD EQUIPE
+        ========================= */
+
         .card-equipe {
-            background: #12151b; border: 1px solid rgba(255,255,255,0.065);
-            border-radius: 20px; padding: 22px; margin-bottom: 16px; display: none;
+            background: #12151b;
+            border: 1px solid rgba(255,255,255,0.065);
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 16px;
+            display: none;
         }
-        .nome-equipe { font-size: 20px; font-weight: 700; margin-bottom: 16px; color: #fff; }
-        .info-linha {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px; background: rgba(255,255,255,0.03);
-            border-radius: 12px; font-size: 14px; margin-bottom: 10px;
-        }
-        .info-label { color: #aaa; }
-        .info-valor { color: #fff; font-weight: 500; }
 
-        /* Menu Inferior — ORDEM: Início | Ponto | Equipe | Registros */
+        .nome-equipe {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .info-linha {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .info-label {
+            color: #aaa;
+        }
+
+        .info-valor {
+            color: #fff;
+            font-weight: 500;
+        }
+
+        /* =========================
+           MENU INFERIOR
+        ========================= */
+
         .menu-container {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
-            display: flex; align-items: center; justify-content: space-around;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
             height: 78px;
             padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
             background: rgba(13,15,20,0.94);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid rgba(255,255,255,0.07);
         }
+
         .menu-item {
-            width: 20%; max-width: 80px; height: 58px; border: none;
-            background: transparent; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 5px;
-            color: #5d6470; font-size: 9px; font-weight: 600;
-            cursor: pointer; transition: color 0.2s;
+            width: 20%;
+            max-width: 80px;
+            height: 58px;
+            border: none;
+            background: transparent;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            color: #5d6470;
+            font-size: 9px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
         }
-        .menu-item i { font-size: 17px; }
-        .menu-item.active { color: #f5f5f5; }
-        .menu-item.active i { color: #fb365d; }
+
+        .menu-item i {
+            font-size: 17px;
+        }
+
+        .menu-item.active {
+            color: #f5f5f5;
+        }
+
+        .menu-item.active i {
+            color: #fb365d;
+        }
     </style>
 </head>
+
 <body>
-<!-- Carregamento -->
+
+<!-- =========================
+     CARREGAMENTO
+========================= -->
+
 <div id="carregando">
     <i class="fas fa-spinner fa-spin"></i>
     <span>Carregando equipe...</span>
 </div>
 
-<!-- Cabeçalho -->
+<!-- =========================
+     CABEÇALHO
+========================= -->
+
 <header class="topo">
     <div class="topo-conteudo">
+
         <button class="voltar-btn" onclick="window.location.href='painel.html'">
             <i class="fas fa-arrow-left"></i>
         </button>
+
         <h1 class="titulo-pagina">Minha Equipe</h1>
+
         <div class="espaco-vazio"></div>
+
     </div>
 </header>
 
+<!-- =========================
+     CONTEÚDO
+========================= -->
+
 <main>
+
     <div class="cabecalho-secao">
-        <div class="tag"><i class="fas fa-users"></i> INTEGRAÇÃO</div>
-        <h1>Dados da Equipe</h1>
-        <p class="subtitulo">Informações e metas da sua equipe</p>
-    </div>
 
-    <!-- Estado sem equipe -->
-    <div class="card-vazio" id="semEquipe">
-        <div class="icone-vazio">
-            <i class="fas fa-user-slash"></i>
+        <div class="tag">
+            <span class="status-indicador"></span>
+            INTEGRAÇÃO COM A ESCALA
         </div>
-        <h2>Você ainda não está vinculado a uma equipe</h2>
-        <p>Inicie seu ponto ou contate um administrador para ser alocado.</p>
+
+        <h1>Minha Equipe</h1>
+
+        <p class="subtitulo">
+            Veja sua alocação depois de iniciar o ponto.
+            A definição da equipe acontece durante sua jornada.
+        </p>
+
     </div>
 
-    <!-- Dados da equipe -->
+    <!-- =========================
+         ESTADO INICIAL
+    ========================= -->
+
+    <div class="card-vazio" id="semEquipe">
+
+        <div class="card-status">
+
+            <div class="icone-status">
+                <i class="fas fa-clock"></i>
+            </div>
+
+            <div class="status-texto">
+                <h2>Ponto fechado</h2>
+
+                <p>
+                    Inicie o seu ponto para entrar no turno
+                    e permitir que o sistema defina sua equipe.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="linha-divisoria"></div>
+
+        <p class="descricao">
+            Sua alocação será exibida aqui assim que sua jornada
+            estiver ativa.
+        </p>
+
+        <button class="btn-ponto" onclick="window.location.href='bate-ponto.html'">
+            <i class="fas fa-clock"></i>
+            Ir para o ponto
+        </button>
+
+    </div>
+
+    <!-- =========================
+         DADOS DA EQUIPE
+         MANTIDO PARA A PRÓXIMA ETAPA
+    ========================= -->
+
     <div class="card-equipe" id="dadosEquipe">
+
         <h2 class="nome-equipe" id="nomeEquipe">—</h2>
-        
+
         <div class="info-linha">
-            <span class="info-label">🎯 Meta Lockpick</span>
+            <span class="info-label">
+                <i class="fas fa-bullseye"></i>
+                Meta Lockpick
+            </span>
+
             <span class="info-valor" id="metaLockpick">—</span>
         </div>
 
         <div class="info-linha">
-            <span class="info-label">🎯 Meta Flipper</span>
+            <span class="info-label">
+                <i class="fas fa-bullseye"></i>
+                Meta Flipper
+            </span>
+
             <span class="info-valor" id="metaFlipper">—</span>
         </div>
 
         <div class="info-linha">
-            <span class="info-label">💰 Venda Lockpick</span>
+            <span class="info-label">
+                <i class="fas fa-coins"></i>
+                Venda Lockpick
+            </span>
+
             <span class="info-valor" id="vendaLockpick">—</span>
         </div>
 
         <div class="info-linha">
-            <span class="info-label">💰 Venda Flipper</span>
+            <span class="info-label">
+                <i class="fas fa-coins"></i>
+                Venda Flipper
+            </span>
+
             <span class="info-valor" id="vendaFlipper">—</span>
         </div>
+
     </div>
+
 </main>
 
-<!-- Menu Inferior -->
+<!-- =========================
+     MENU INFERIOR
+========================= -->
+
 <nav class="menu-container">
+
     <button class="menu-item" onclick="window.location.href='painel.html'">
-        <i class="fas fa-home"></i><span>Início</span>
+        <i class="fas fa-home"></i>
+        <span>Início</span>
     </button>
+
     <button class="menu-item" onclick="window.location.href='bate-ponto.html'">
-        <i class="fas fa-clock"></i><span>Ponto</span>
+        <i class="fas fa-clock"></i>
+        <span>Ponto</span>
     </button>
+
     <button class="menu-item active">
-        <i class="fas fa-users"></i><span>Equipe</span>
+        <i class="fas fa-users"></i>
+        <span>Equipe</span>
     </button>
+
     <button class="menu-item" onclick="window.location.href='registros.html'">
-        <i class="fas fa-folder-open"></i><span>Registros</span>
+        <i class="fas fa-folder-open"></i>
+        <span>Registros</span>
     </button>
+
 </nav>
 
 <script>
+/* =========================
+   CARREGAMENTO
+========================= */
+
 window.addEventListener('load', () => {
+
     setTimeout(() => {
+
         const el = document.getElementById('carregando');
-        if (el) { el.style.opacity = '0'; setTimeout(() => el.style.display = 'none', 400); }
+
+        if (el) {
+            el.style.opacity = '0';
+
+            setTimeout(() => {
+                el.style.display = 'none';
+            }, 400);
+        }
+
     }, 500);
 
     carregarDadosEquipe();
 });
 
+
+/* =========================
+   CARREGAR EQUIPE
+========================= */
+
 async function carregarDadosEquipe() {
+
     try {
-        // Pega usuário logado
-        const { data: { user } } = await supabase.auth.getUser();
-        
-        if (!user) {
+
+        // Recupera o usuário salvo pelo sistema de login
+        const sessao = sessionStorage.getItem('italia_usuario');
+
+        if (!sessao) {
             mostrarSemEquipe();
             return;
         }
 
-        // Primeiro busca o membro para pegar o id da equipe
+        const usuario = JSON.parse(sessao);
+
+        /*
+         * Enquanto o usuário não tiver uma jornada ativa,
+         * a tela inicial permanece como "Ponto fechado".
+         *
+         * O bate-ponto salva este estado localmente quando
+         * uma jornada está ativa.
+         */
+
+        const chaveEstado = `italia_ponto_${usuario.passaporte}`;
+        const estadoSalvo = localStorage.getItem(chaveEstado);
+
+        if (!estadoSalvo) {
+            mostrarSemEquipe();
+            return;
+        }
+
+        const estado = JSON.parse(estadoSalvo);
+
+        if (!estado || !estado.pontoId) {
+            mostrarSemEquipe();
+            return;
+        }
+
+
+        /* =========================
+           BUSCAR MEMBRO
+        ========================= */
+
         const { data: membro, error: erroMembro } = await supabase
             .from('membros')
             .select('equipe_id')
-            .eq('id', user.id)
+            .eq('id', usuario.id || usuario.user_id)
             .single();
 
         if (erroMembro || !membro || !membro.equipe_id) {
@@ -233,7 +620,11 @@ async function carregarDadosEquipe() {
             return;
         }
 
-        // Agora busca os dados da equipe com as colunas que você tem
+
+        /* =========================
+           BUSCAR EQUIPE
+        ========================= */
+
         const { data: equipe, error: erroEquipe } = await supabase
             .from('equipes')
             .select(`
@@ -251,27 +642,53 @@ async function carregarDadosEquipe() {
             return;
         }
 
-        // Preenche na tela
-        document.getElementById('nomeEquipe').textContent = `📌 ${equipe.nome}`;
-        document.getElementById('metaLockpick').textContent = equipe.farm_de_lockpick || 'Não definida';
-        document.getElementById('metaFlipper').textContent = equipe.farm_de_flipper || 'Não definida';
-        document.getElementById('vendaLockpick').textContent = equipe.venda_de_lockpick || 'Não definida';
-        document.getElementById('vendaFlipper').textContent = equipe.venda_de_flipper || 'Não definida';
 
-        // Mostra o card
+        /* =========================
+           PREENCHER DADOS
+        ========================= */
+
+        document.getElementById('nomeEquipe').textContent =
+            equipe.nome || 'Equipe não definida';
+
+        document.getElementById('metaLockpick').textContent =
+            equipe.farm_de_lockpick || 'Não definida';
+
+        document.getElementById('metaFlipper').textContent =
+            equipe.farm_de_flipper || 'Não definida';
+
+        document.getElementById('vendaLockpick').textContent =
+            equipe.venda_de_lockpick || 'Não definida';
+
+        document.getElementById('vendaFlipper').textContent =
+            equipe.venda_de_flipper || 'Não definida';
+
+
+        /* =========================
+           MOSTRAR EQUIPE
+        ========================= */
+
         document.getElementById('semEquipe').style.display = 'none';
         document.getElementById('dadosEquipe').style.display = 'block';
 
     } catch (err) {
+
         console.error('Erro:', err);
+
         mostrarSemEquipe();
     }
 }
 
+
+/* =========================
+   ESTADO SEM EQUIPE
+========================= */
+
 function mostrarSemEquipe() {
+
     document.getElementById('semEquipe').style.display = 'block';
     document.getElementById('dadosEquipe').style.display = 'none';
 }
 </script>
+
 </body>
-</html>
+        </html>
