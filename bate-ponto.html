@@ -7,655 +7,731 @@
 <title>Meu Ponto</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 *{
 box-sizing:border-box;
 margin:0;
-padding:0
+padding:0;
 }
 
-:root{
---bg:#08090d;
---bg2:#0d0f14;
---card:#12151b;
---card2:#171a21;
---border:rgba(255,255,255,.07);
---text:#f5f5f5;
---muted:#8b929f;
---red:#e11d48;
---red2:#fb365d;
---green:#22c55e;
---yellow:#f59e0b;
---blue:#3b82f6;
+html,body{
+min-height:100%;
 }
 
 body{
-min-height:100vh;
-background:
-radial-gradient(circle at top right,rgba(225,29,72,.07),transparent 35%),
-var(--bg);
-color:var(--text);
-font-family:Inter,sans-serif;
-padding-bottom:90px
+background:#08090d;
+color:#f5f5f5;
+font-family:Inter,Arial,sans-serif;
+padding-bottom:90px;
+}
+
+button,a{
+-webkit-tap-highlight-color:transparent;
 }
 
 button{
-font-family:inherit
+font-family:inherit;
 }
 
-.topbar{
-height:72px;
-position:sticky;
-top:0;
-z-index:20;
-background:rgba(8,9,13,.88);
-backdrop-filter:blur(16px);
-border-bottom:1px solid var(--border);
+a{
+color:inherit;
+text-decoration:none;
+}
+
+.header{
+padding:21px 17px 18px;
+border-bottom:1px solid rgba(255,255,255,.06);
+background:#0a0b10;
+}
+
+.header-top{
+max-width:620px;
+margin:auto;
 display:flex;
 align-items:center;
-padding:0 18px;
-gap:12px
+justify-content:space-between;
 }
 
-.avatar{
-width:40px;
-height:40px;
-border-radius:12px;
-background:#181b22;
-border:1px solid var(--border);
+.brand{
+display:flex;
+align-items:center;
+gap:11px;
+min-width:0;
+}
+
+.brand-icon{
+width:43px;
+height:43px;
+border-radius:13px;
+background:#b31324;
 display:flex;
 align-items:center;
 justify-content:center;
-font-weight:800
+flex:none;
+box-shadow:0 8px 20px rgba(179,19,36,.18);
 }
 
-.topbar-info{
-display:flex;
-flex-direction:column;
-gap:2px
+.brand-icon i{
+font-size:18px;
 }
 
-.topbar-nome{
-font-size:15px;
-font-weight:700
+.brand-info{
+min-width:0;
 }
 
-.topbar-detalhe{
-font-size:13px;
-color:var(--muted)
+.brand-title{
+font-size:14px;
+font-weight:800;
+white-space:nowrap;
+overflow:hidden;
+text-overflow:ellipsis;
+}
+
+.brand-subtitle{
+margin-top:4px;
+color:#81848e;
+font-size:10px;
 }
 
 .container{
-width:min(900px,calc(100% - 28px));
+width:100%;
+max-width:620px;
 margin:auto;
-padding:22px 18px 0
+padding:21px 15px 25px;
 }
 
-.title{
-margin-bottom:25px
+.page-title{
+font-size:22px;
+font-weight:800;
 }
 
-.title h1{
-font-size:27px;
-letter-spacing:-.8px;
-margin-bottom:6px
-}
-
-.title p{
-color:var(--muted);
-font-size:13px
-}
-
-.stats{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-margin-bottom:14px
-}
-
-.stat{
-background:var(--card);
-border:1px solid var(--border);
-border-radius:18px;
-padding:15px
-}
-
-.stat-label{
-color:var(--muted);
+.page-description{
+margin-top:6px;
+color:#858892;
 font-size:11px;
-margin-bottom:9px
+line-height:1.5;
 }
 
-.stat-value{
-font-size:17px;
-font-weight:800
+.timer-card{
+margin-top:18px;
+border:1px solid rgba(255,255,255,.07);
+border-radius:20px;
+background:linear-gradient(145deg,#15161d,#101116 60%,#0d0e13);
+overflow:hidden;
 }
 
-.tabs{
-display:flex;
-gap:6px;
-background:var(--bg2);
-border:1px solid var(--border);
-padding:5px;
-border-radius:14px;
-margin:16px 0
+.timer-top{
+padding:25px 18px 23px;
+text-align:center;
 }
 
-.tab{
-flex:1;
-border:0;
-background:transparent;
-color:var(--muted);
-padding:11px 8px;
-border-radius:10px;
-font-size:12px;
-font-weight:700;
-cursor:pointer
-}
-
-.tab.active{
-background:var(--card2);
-color:#fff
-}
-
-.clock-card{
-background:
-radial-gradient(circle at top right,rgba(225,29,72,.13),transparent 38%),
-var(--card);
-border:1px solid var(--border);
-border-radius:22px;
-padding:24px;
-text-align:center
-}
-
-.clock-label{
-color:var(--muted);
-font-size:11px;
+.timer-label{
+color:#7e818b;
+font-size:9px;
 text-transform:uppercase;
-letter-spacing:1.2px;
-font-weight:700
+letter-spacing:1.1px;
+font-weight:800;
 }
 
 .timer{
-font-size:clamp(42px,12vw,70px);
+margin-top:9px;
+font-size:43px;
+line-height:1;
 font-weight:800;
-letter-spacing:-2px;
-margin:10px 0 18px;
-font-variant-numeric:tabular-nums
+letter-spacing:1px;
+font-variant-numeric:tabular-nums;
 }
 
-.markers{
+.timer-status{
+margin-top:11px;
+color:#8c8f98;
+font-size:10px;
+font-weight:600;
+}
+
+.timer-status.ativo{
+color:#e3263d;
+}
+
+.timer-status.pausado{
+color:#d1a43b;
+}
+
+.actions{
 display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:8px;
-margin-bottom:18px
-}
-
-.marker{
-background:rgba(255,255,255,.08);
-border:1px solid rgba(255,255,255,.22);
-border-radius:13px;
-padding:11px 5px
-}
-
-.marker span{
-display:block;
-color:var(--muted);
-font-size:9px;
-margin-bottom:5px
-}
-
-.marker strong{
-display:block;
-font-size:11px
-}
-
-.btn-principal{
-width:100%;
-border:0;
-border-radius:15px;
+grid-template-columns:1fr 1fr;
+gap:9px;
 padding:15px;
-color:#fff;
-background:var(--red);
-font-weight:800;
-font-size:13px;
-cursor:pointer
+border-top:1px solid rgba(255,255,255,.06);
 }
 
-.btn-principal:disabled{
-opacity:.7;
-cursor:not-allowed
-}
-
-.grupo-botoes{
-display:none;
-gap:10px;
-margin-top:10px
-}
-
-.btn-acao{
-flex:1;
+.action-btn{
+min-height:47px;
 border:0;
-border-radius:15px;
-padding:14px;
-color:#fff;
-font-weight:800;
-font-size:13px;
-cursor:pointer
-}
-
-.btn-acao:disabled{
-opacity:.6;
-cursor:not-allowed
-}
-
-.btn-pausar{
-background:var(--yellow);
-color:#000
-}
-
-.btn-encerrar{
-background:var(--red)
-}
-
-.cooldown{
-display:none;
-margin-top:12px;
-padding:13px 15px;
-border-radius:14px;
-background:rgba(225,29,72,.08);
-border:1px solid rgba(225,29,72,.22);
-color:#fff;
-text-align:center
-}
-
-.cooldown-titulo{
-font-size:11px;
-font-weight:700;
-color:var(--muted);
-margin-bottom:5px
-}
-
-.cooldown-tempo{
-font-size:22px;
-font-weight:800;
-font-variant-numeric:tabular-nums
-}
-
-.cooldown-texto{
-font-size:10px;
-color:var(--muted);
-margin-top:4px
-}
-
-.equipe-card{
-display:none;
-background:var(--card);
-border:1px solid var(--border);
-border-radius:18px;
-padding:17px;
-margin-top:12px
-}
-
-.equipe-topo{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-margin-bottom:13px
-}
-
-.equipe-nome{
-font-size:15px;
-font-weight:800
-}
-
-.equipe-funcao,
-.equipe-area{
-font-size:11px;
-color:var(--muted);
-margin-top:4px
-}
-
-.equipe-membros{
-border-top:1px solid var(--border);
-padding-top:12px
-}
-
-.membro{
-display:flex;
-align-items:center;
-justify-content:space-between;
-gap:10px;
-padding:10px 0;
-border-bottom:1px solid rgba(255,255,255,.04)
-}
-
-.membro:last-child{
-border:0
-}
-
-.membro-nome{
-font-size:12px;
-font-weight:700
-}
-
-.membro-pass{
-font-size:10px;
-color:var(--muted);
-margin-top:3px
-}
-
-.membro-status{
-font-size:10px;
-font-weight:700;
-white-space:nowrap
-}
-
-.btn-trocar{
-margin-top:12px;
-width:100%;
-border:1px solid var(--border);
-background:var(--card2);
-color:#fff;
 border-radius:12px;
-padding:11px;
 font-size:11px;
 font-weight:800;
-cursor:pointer
+cursor:pointer;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:7px;
+transition:.15s ease;
 }
 
-.btn-trocar:disabled{
-opacity:.5;
-cursor:not-allowed
+.action-btn:active{
+transform:scale(.98);
 }
 
-#historico{
-display:none
+.btn-primary{
+background:#b31324;
+color:#fff;
+}
+
+.btn-secondary{
+background:#1a1b22;
+color:#e2e3e7;
+border:1px solid rgba(255,255,255,.06);
+}
+
+.btn-danger{
+background:#2a1115;
+color:#ff6878;
+border:1px solid rgba(255,60,80,.12);
+}
+
+.btn-disabled{
+opacity:.45;
+pointer-events:none;
+}
+
+.state-card{
+margin-top:13px;
+border:1px solid rgba(255,255,255,.07);
+background:#101116;
+border-radius:17px;
+padding:15px;
+}
+
+.state-row{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:15px;
+}
+
+.state-label{
+color:#777a84;
+font-size:9px;
+text-transform:uppercase;
+letter-spacing:.7px;
+font-weight:800;
+}
+
+.state-value{
+margin-top:4px;
+font-size:12px;
+font-weight:700;
+}
+
+.state-right{
+text-align:right;
+}
+
+.team-card{
+margin-top:13px;
+border:1px solid rgba(255,255,255,.07);
+background:#101116;
+border-radius:18px;
+overflow:hidden;
+}
+
+.team-header{
+padding:16px;
+border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+.team-label{
+color:#777a84;
+font-size:9px;
+text-transform:uppercase;
+letter-spacing:.8px;
+font-weight:800;
+}
+
+.team-name{
+margin-top:5px;
+font-size:17px;
+font-weight:800;
+}
+
+.team-type{
+display:inline-flex;
+align-items:center;
+gap:6px;
+margin-top:8px;
+padding:5px 8px;
+border-radius:7px;
+background:rgba(179,19,36,.11);
+color:#e3263d;
+font-size:9px;
+font-weight:800;
+text-transform:uppercase;
+}
+
+.team-info{
+display:grid;
+grid-template-columns:1fr 1fr;
+}
+
+.team-info-item{
+padding:12px 15px;
+border-bottom:1px solid rgba(255,255,255,.05);
+}
+
+.team-info-item:nth-child(odd){
+border-right:1px solid rgba(255,255,255,.05);
+}
+
+.team-info-label{
+color:#737680;
+font-size:8px;
+text-transform:uppercase;
+letter-spacing:.7px;
+font-weight:800;
+}
+
+.team-info-value{
+margin-top:4px;
+font-size:11px;
+font-weight:700;
+}
+
+.section{
+margin-top:18px;
+}
+
+.section-title{
+margin-bottom:9px;
+font-size:13px;
+font-weight:800;
 }
 
 .history-card{
-background:var(--card);
-border:1px solid var(--border);
-border-radius:16px;
-padding:15px;
-margin-bottom:10px
+border:1px solid rgba(255,255,255,.07);
+background:#101116;
+border-radius:17px;
+overflow:hidden;
 }
 
-.history-card div{
-font-size:12px;
-color:var(--muted);
-margin-top:5px
+.history-item{
+padding:13px 15px;
+border-bottom:1px solid rgba(255,255,255,.05);
 }
 
-.loading{
-color:var(--muted);
+.history-item:last-child{
+border-bottom:0;
+}
+
+.history-top{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:10px;
+}
+
+.history-date{
+font-size:11px;
+font-weight:700;
+}
+
+.history-status{
+color:#858892;
+font-size:9px;
+}
+
+.history-bottom{
+margin-top:6px;
+color:#777a84;
+font-size:9px;
+}
+
+.empty-history,.loading{
+padding:22px 15px;
+color:#777a84;
 text-align:center;
-padding:40px 20px
+font-size:10px;
 }
 
-.bottom-nav{
+.loading i{
+margin-right:6px;
+}
+
+.modal{
 position:fixed;
-z-index:30;
-left:12px;
-right:12px;
-bottom:12px;
-height:66px;
-border-radius:21px;
-background:rgba(18,21,27,.94);
-backdrop-filter:blur(16px);
-border:1px solid var(--border);
+z-index:100;
+inset:0;
+display:none;
+align-items:center;
+justify-content:center;
+padding:20px;
+background:rgba(0,0,0,.72);
+}
+
+.modal.show{
+display:flex;
+}
+
+.modal-box{
+width:100%;
+max-width:390px;
+border:1px solid rgba(255,255,255,.08);
+border-radius:18px;
+background:#111218;
+padding:20px;
+}
+
+.modal-icon{
+width:45px;
+height:45px;
+border-radius:13px;
+background:rgba(179,19,36,.12);
+color:#e3263d;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:13px;
+}
+
+.modal-title{
+font-size:16px;
+font-weight:800;
+}
+
+.modal-text{
+margin-top:7px;
+color:#858892;
+font-size:11px;
+line-height:1.55;
+}
+
+.modal-actions{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:8px;
+margin-top:17px;
+}
+  .bottom-nav{
+position:fixed;
+z-index:80;
+left:0;
+right:0;
+bottom:0;
+height:75px;
+background:rgba(10,11,15,.97);
+border-top:1px solid rgba(255,255,255,.07);
+backdrop-filter:blur(12px);
+}
+
+.nav-inner{
+width:100%;
+max-width:620px;
+height:100%;
+margin:auto;
 display:grid;
 grid-template-columns:repeat(4,1fr);
-padding:5px
 }
 
 .nav-item{
-border:0;
-background:transparent;
-color:var(--muted);
-border-radius:16px;
-font-size:10px;
-font-weight:700;
 display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
-text-decoration:none;
-gap:4px
+gap:5px;
+color:#62656f;
+font-size:9px;
+font-weight:700;
 }
 
 .nav-item i{
-font-size:16px
+font-size:17px;
 }
 
 .nav-item.active{
-background:rgba(225,29,72,.1);
-color:var(--red2)
+color:#e3263d;
 }
+
+@media(max-width:380px){
+
+.container{
+padding-left:12px;
+padding-right:12px;
+}
+
+.timer{
+font-size:38px;
+}
+
+}
+
 </style>
 </head>
 
 <body>
 
-<header class="topbar">
-<div class="avatar" id="avatar">?</div>
+<header class="header">
 
-<div class="topbar-info">
-<div class="topbar-nome" id="nomeUsuario">Carregando...</div>
-<div class="topbar-detalhe" id="passaporteUsuario">
-Passaporte: -- • Ponto
+<div class="header-top">
+
+<div class="brand">
+
+<div class="brand-icon">
+<i class="fa-solid fa-clock"></i>
 </div>
+
+<div class="brand-info">
+
+<div class="brand-title" id="usuarioNome">
+Organização Itália
 </div>
+
+<div class="brand-subtitle" id="usuarioPassaporte">
+Passaporte —
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 </header>
+
 
 <main class="container">
 
-<section class="title">
-<h1>Meu Ponto</h1>
-<p>Controle sua jornada de trabalho.</p>
-</section>
+<h1 class="page-title">
+Meu Ponto
+</h1>
 
-<section class="stats">
+<p class="page-description">
+Controle sua jornada e acompanhe sua equipe atual.
+</p>
 
-<div class="stat">
-<div class="stat-label">Meu Status</div>
-<div class="stat-value" id="statusTexto">Offline</div>
+
+<section class="timer-card">
+
+<div class="timer-top">
+
+<div class="timer-label">
+Tempo de jornada
 </div>
 
-<div class="stat">
-<div class="stat-label">Pausas</div>
-<div class="stat-value" id="pausasTexto">0</div>
-</div>
-
-<div class="stat">
-<div class="stat-label">Entrada</div>
-<div class="stat-value" id="entradaTexto">--:--</div>
-</div>
-
-<div class="stat">
-<div class="stat-label">Equipe</div>
-<div class="stat-value" id="equipeTexto">--</div>
-</div>
-
-</section>
-
-<div class="tabs">
-
-<button class="tab active" onclick="mostrarAba('jornada',this)">
-Minha Jornada
-</button>
-
-<button class="tab" onclick="mostrarAba('historico',this)">
-Meu Histórico
-</button>
-
-</div>
-
-<section id="jornada">
-
-<div class="clock-card">
-
-<div class="clock-label">
-Tempo em Serviço
-</div>
-
-<div class="timer" id="timer">
+<div class="timer" id="cronometro">
 00:00:00
 </div>
 
-<div class="markers">
-
-<div class="marker">
-<span>ENTRADA</span>
-<strong id="marcadorEntrada">--:--</strong>
-</div>
-
-<div class="marker">
-<span>ÚLTIMA PAUSA</span>
-<strong id="marcadorPausa">--:--</strong>
-</div>
-
-<div class="marker">
-<span>SAÍDA</span>
-<strong id="marcadorSaida">--:--</strong>
+<div class="timer-status" id="statusCronometro">
+Ponto fechado
 </div>
 
 </div>
+
+
+<div class="actions">
 
 <button
-class="btn-principal"
-id="btnIniciar"
-onclick="iniciarJornada()"
->
+class="action-btn btn-primary"
+id="btnPrincipal"
+type="button">
+
 <i class="fa-solid fa-play"></i>
-Iniciar Jornada
+Iniciar
+
 </button>
 
-<div class="cooldown" id="cooldown">
-
-<div class="cooldown-titulo">
-AGUARDE PARA INICIAR NOVAMENTE
-</div>
-
-<div class="cooldown-tempo" id="cooldownTempo">
-01:00
-</div>
-
-<div class="cooldown-texto">
-Você poderá iniciar uma nova jornada quando o contador chegar a zero.
-</div>
-
-</div>
-
-<div class="grupo-botoes" id="grupoBotoes">
 
 <button
-class="btn-acao btn-pausar"
-id="btnPausar"
-onclick="pausarContinuar()"
->
+class="action-btn btn-secondary btn-disabled"
+id="btnPausa"
+type="button">
+
 <i class="fa-solid fa-pause"></i>
 Pausar
+
 </button>
 
+
 <button
-class="btn-acao btn-encerrar"
+class="action-btn btn-danger btn-disabled"
 id="btnEncerrar"
-onclick="encerrarJornada()"
->
+type="button">
+
 <i class="fa-solid fa-stop"></i>
 Encerrar
+
 </button>
 
-</div>
-
-</div>
-
-<div class="equipe-card" id="equipeCard">
-
-<div class="equipe-topo">
-
-<div>
-
-<div class="equipe-nome" id="equipeNome">
---
-</div>
-
-<div class="equipe-funcao" id="equipeFuncao">
---
-</div>
-
-<div class="equipe-area" id="equipeArea">
---
-</div>
-
-</div>
-
-<i class="fa-solid fa-users" style="color:var(--blue)"></i>
-
-</div>
-
-<div class="equipe-membros" id="equipeMembros">
-
-<div class="loading" style="padding:15px">
-Carregando membros...
-</div>
-
-</div>
 
 <button
-class="btn-trocar"
+class="action-btn btn-secondary btn-disabled"
 id="btnTrocar"
-onclick="trocarEquipe()"
->
-<i class="fa-solid fa-shuffle"></i>
-Trocar de equipe
+type="button">
+
+<i class="fa-solid fa-arrows-rotate"></i>
+Trocar equipe
+
 </button>
 
 </div>
 
 </section>
 
-<section id="historico">
+
+<section class="state-card">
+
+<div class="state-row">
+
+<div>
+
+<div class="state-label">
+Entrada
+</div>
+
+<div class="state-value" id="entradaTexto">
+—
+</div>
+
+</div>
+
+
+<div class="state-right">
+
+<div class="state-label">
+Estado
+</div>
+
+<div class="state-value" id="estadoTexto">
+Fechado
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section id="equipeContainer">
+
+<div class="team-card">
 
 <div class="loading">
+<i class="fa-solid fa-spinner fa-spin"></i>
+Nenhuma equipe ativa.
+</div>
+
+</div>
+
+</section>
+
+
+<section class="section">
+
+<div class="section-title">
+Histórico
+</div>
+
+<div class="history-card" id="historico">
+
+<div class="empty-history">
 Carregando histórico...
+</div>
+
 </div>
 
 </section>
 
 </main>
 
+
 <nav class="bottom-nav">
+
+<div class="nav-inner">
 
 <a class="nav-item" href="painel.html">
 <i class="fa-solid fa-house"></i>
-Início
+<span>Início</span>
 </a>
 
-<a class="nav-item active">
+<a class="nav-item active" href="bate-ponto.html">
 <i class="fa-solid fa-clock"></i>
-Ponto
+<span>Ponto</span>
 </a>
 
 <a class="nav-item" href="equipe.html">
 <i class="fa-solid fa-users"></i>
-Equipe
+<span>Equipe</span>
 </a>
 
 <a class="nav-item" href="registros.html">
-<i class="fa-solid fa-folder-open"></i>
-Registros
+<i class="fa-solid fa-clipboard-list"></i>
+<span>Registros</span>
 </a>
 
+</div>
+
 </nav>
+
+
+<div class="modal" id="modalEncerrar">
+
+<div class="modal-box">
+
+<div class="modal-icon">
+<i class="fa-solid fa-stop"></i>
+</div>
+
+<div class="modal-title">
+Encerrar ponto?
+</div>
+
+<div class="modal-text">
+Ao encerrar, sua jornada será finalizada e o cronômetro será zerado.
+</div>
+
+<div class="modal-actions">
+
+<button
+class="action-btn btn-secondary"
+id="btnCancelarEncerrar"
+type="button">
+
+Cancelar
+
+</button>
+
+<button
+class="action-btn btn-danger"
+id="btnConfirmarEncerrar"
+type="button">
+
+Encerrar
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
@@ -664,1445 +740,1710 @@ const supabaseClient=window.supabase.createClient(
 "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
 );
 
-const sessao=sessionStorage.getItem("italia_usuario");
 
-if(!sessao){
-location.href="login.html";
-throw Error("Usuário não autenticado.");
-}
+const usuarioNome=document.getElementById("usuarioNome");
+const usuarioPassaporte=document.getElementById("usuarioPassaporte");
+const cronometro=document.getElementById("cronometro");
+const statusCronometro=document.getElementById("statusCronometro");
+const entradaTexto=document.getElementById("entradaTexto");
+const estadoTexto=document.getElementById("estadoTexto");
+const equipeContainer=document.getElementById("equipeContainer");
+const historico=document.getElementById("historico");
 
-const usuario=JSON.parse(sessao);
+const btnPrincipal=document.getElementById("btnPrincipal");
+const btnPausa=document.getElementById("btnPausa");
+const btnEncerrar=document.getElementById("btnEncerrar");
+const btnTrocar=document.getElementById("btnTrocar");
 
-const el={
-nome:document.getElementById("nomeUsuario"),
-pass:document.getElementById("passaporteUsuario"),
-avatar:document.getElementById("avatar"),
-status:document.getElementById("statusTexto"),
-pausas:document.getElementById("pausasTexto"),
-entrada:document.getElementById("entradaTexto"),
-equipe:document.getElementById("equipeTexto"),
-timer:document.getElementById("timer"),
-marcEntrada:document.getElementById("marcadorEntrada"),
-marcPausa:document.getElementById("marcadorPausa"),
-marcSaida:document.getElementById("marcadorSaida"),
-btnIniciar:document.getElementById("btnIniciar"),
-grupo:document.getElementById("grupoBotoes"),
-btnPausar:document.getElementById("btnPausar"),
-btnEncerrar:document.getElementById("btnEncerrar"),
-cooldown:document.getElementById("cooldown"),
-cooldownTempo:document.getElementById("cooldownTempo"),
-historico:document.getElementById("historico"),
-equipeCard:document.getElementById("equipeCard"),
-equipeNome:document.getElementById("equipeNome"),
-equipeFuncao:document.getElementById("equipeFuncao"),
-equipeArea:document.getElementById("equipeArea"),
-equipeMembros:document.getElementById("equipeMembros"),
-btnTrocar:document.getElementById("btnTrocar")
-};
+const modalEncerrar=document.getElementById("modalEncerrar");
+const btnCancelarEncerrar=document.getElementById("btnCancelarEncerrar");
+const btnConfirmarEncerrar=document.getElementById("btnConfirmarEncerrar");
 
+
+let usuario=null;
 let ponto=null;
-let intervalo=null;
-let intervaloCooldown=null;
-
-let pausado=false;
-let inicio=null;
-let pausaInicio=null;
-let tempoPausa=0;
-let pausas=0;
-
 let equipeAtual=null;
 
-const chaveEstado=`italia_ponto_${usuario.passaporte}`;
-const chaveCooldown=`italia_cooldown_${usuario.passaporte}`;
+let intervaloCronometro=null;
 
-el.nome.textContent=usuario.nome||"Usuário";
+let inicioTimestamp=null;
+let tempoPausadoTotal=0;
+let pausaInicioTimestamp=null;
+let pausado=false;
 
-el.pass.textContent=
-`Passaporte: ${usuario.passaporte} • Ponto`;
 
-el.avatar.textContent=
-(usuario.nome||"?")[0].toUpperCase();
+function chaveEstado(){
+return `italia_ponto_${usuario.passaporte}`;
+}
 
-function hora(d=new Date()){
+function chaveCooldown(){
+return `italia_cooldown_${usuario.passaporte}`;
+}
+
+
+function escaparHTML(valor){
+
+if(valor===null||valor===undefined)return "";
+
+return String(valor)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
+
+}
+
+
+function formatarData(data){
+
+if(!data)return "—";
+
+const d=new Date(data);
+
+if(Number.isNaN(d.getTime()))return "—";
+
+return d.toLocaleString("pt-BR",{
+day:"2-digit",
+month:"2-digit",
+year:"numeric",
+hour:"2-digit",
+minute:"2-digit"
+});
+
+}
+
+
+function formatarHora(data){
+
+if(!data)return "—";
+
+const d=new Date(data);
+
+if(Number.isNaN(d.getTime()))return "—";
+
 return d.toLocaleTimeString("pt-BR",{
 hour:"2-digit",
 minute:"2-digit"
 });
-}
-
-function tempo(s){
-
-let h=Math.floor(s/3600);
-let m=Math.floor((s%3600)/60);
-let x=Math.floor(s%60);
-
-return[h,m,x]
-.map(v=>String(v).padStart(2,"0"))
-.join(":");
 
 }
 
-function esc(v){
 
-return String(v)
-.replaceAll("&","&amp;")
-.replaceAll("<","&lt;")
-.replaceAll(">","&gt;")
-.replaceAll('"',"&quot;")
-.replaceAll("'","&#039;");
+function formatarTempo(ms){
 
-}
+ms=Math.max(0,Number(ms)||0);
 
-function salvarEstadoLocal(){
+const total=Math.floor(ms/1000);
 
-if(!ponto){
+const h=Math.floor(total/3600);
+const m=Math.floor((total%3600)/60);
+const s=total%60;
 
-localStorage.removeItem(chaveEstado);
-return;
-
-}
-
-localStorage.setItem(
-chaveEstado,
-JSON.stringify({
-pontoId:ponto.id,
-equipeId:ponto.equipe_id,
-entrada:ponto.entrada,
-pausas:pausas,
-tempoPausa:tempoPausa,
-pausado:pausado,
-pausaInicio:pausaInicio
-})
-);
+return[
+String(h).padStart(2,"0"),
+String(m).padStart(2,"0"),
+String(s).padStart(2,"0")
+].join(":");
 
 }
 
-function limparEstadoLocal(){
 
-localStorage.removeItem(chaveEstado);
+function carregarUsuario(){
 
-}
-
-function atualizarTimer(){
-
-if(!inicio)return;
-
-let segundosAtivos=
-Math.max(
-0,
-Math.floor((Date.now()-inicio)/1000)-tempoPausa
-);
-
-if(pausado&&pausaInicio){
-
-segundosAtivos=
-Math.max(
-0,
-segundosAtivos-
-Math.floor((Date.now()-pausaInicio)/1000)
-);
-
-}
-
-el.timer.textContent=tempo(segundosAtivos);
-
-}
-
-function iniciarRelogio(){
-
-clearInterval(intervalo);
-
-atualizarTimer();
-
-if(!pausado){
-
-intervalo=setInterval(
-atualizarTimer,
-1000
-);
-
-}
-
-}
-
-function mostrarAba(n,b){
-
-document.getElementById("jornada").style.display=
-n==="jornada"?"block":"none";
-
-el.historico.style.display=
-n==="historico"?"block":"none";
-
-document.querySelectorAll(".tab")
-.forEach(x=>x.classList.remove("active"));
-
-b.classList.add("active");
-
-if(n==="historico"){
-carregarHistorico();
-}
-
-}
-
-function salvarCooldown(){
-
-const fim=Date.now()+60000;
-
-localStorage.setItem(
-chaveCooldown,
-String(fim)
-);
-
-return fim;
-
-}
-
-function limparCooldown(){
-
-localStorage.removeItem(chaveCooldown);
-
-clearInterval(intervaloCooldown);
-intervaloCooldown=null;
-
-el.cooldown.style.display="none";
-
-}
-
-function atualizarCooldown(){
-
-const salvo=
-localStorage.getItem(chaveCooldown);
+const salvo=sessionStorage.getItem("italia_usuario");
 
 if(!salvo){
 
-el.cooldown.style.display="none";
-
+window.location.href="login.html";
 return false;
 
 }
 
-const fim=Number(salvo);
+try{
 
-if(!Number.isFinite(fim)){
+usuario=JSON.parse(salvo);
 
-limparCooldown();
+}catch(e){
 
+sessionStorage.removeItem("italia_usuario");
+window.location.href="login.html";
 return false;
 
 }
 
-const restante=
-Math.max(0,fim-Date.now());
+if(!usuario||usuario.passaporte===undefined||usuario.passaporte===null){
 
-if(restante<=0){
-
-limparCooldown();
-
-if(!ponto){
-
-el.btnIniciar.disabled=false;
-el.btnIniciar.style.display="block";
-el.btnIniciar.innerHTML=
-'<i class="fa-solid fa-play"></i> Iniciar Jornada';
-
-}
-
+sessionStorage.removeItem("italia_usuario");
+window.location.href="login.html";
 return false;
 
 }
 
-const segundos=
-Math.ceil(restante/1000);
-
-const minutos=
-Math.floor(segundos/60);
-
-const seg=
-segundos%60;
-
-el.cooldownTempo.textContent=
-`${String(minutos).padStart(2,"0")}:${String(seg).padStart(2,"0")}`;
-
-el.cooldown.style.display="block";
-
-if(!ponto){
-
-el.btnIniciar.disabled=true;
-el.btnIniciar.style.display="block";
-
-el.btnIniciar.innerHTML=
-'<i class="fa-solid fa-lock"></i> Aguarde o reset';
-
-}
+usuarioNome.textContent=usuario.nome||"Usuário";
+usuarioPassaporte.textContent="Passaporte "+usuario.passaporte;
 
 return true;
 
 }
 
-function iniciarCooldown(){
 
-salvarCooldown();
+function salvarEstadoLocal(){
 
-clearInterval(intervaloCooldown);
+if(!ponto)return;
 
-atualizarCooldown();
+localStorage.setItem(
+chaveEstado(),
+JSON.stringify({
+pontoId:ponto.id,
+status:ponto.status,
+entrada:ponto.entrada,
+equipeId:ponto.equipe_id||null,
+inicioTimestamp,
+tempoPausadoTotal,
+pausaInicioTimestamp,
+pausado
+})
+);
 
-intervaloCooldown=
-setInterval(
-atualizarCooldown,
+}
+
+
+function limparEstadoLocal(){
+localStorage.removeItem(chaveEstado());
+}
+
+
+function pararCronometro(){
+
+if(intervaloCronometro!==null){
+
+clearInterval(intervaloCronometro);
+intervaloCronometro=null;
+
+}
+
+}
+
+
+function calcularTempoDecorrido(){
+
+if(!inicioTimestamp)return 0;
+
+const agora=Date.now();
+
+if(pausado){
+
+const fimPausa=pausaInicioTimestamp||agora;
+
+return Math.max(
+0,
+fimPausa-inicioTimestamp-tempoPausadoTotal
+);
+
+}
+
+return Math.max(
+0,
+agora-inicioTimestamp-tempoPausadoTotal
+);
+
+}
+
+
+function atualizarCronometro(){
+
+if(
+!ponto||
+(
+ponto.status!=="ativo"&&
+ponto.status!=="pausado"
+)
+){
+
+cronometro.textContent="00:00:00";
+return;
+
+}
+
+cronometro.textContent=
+formatarTempo(
+calcularTempoDecorrido()
+);
+
+}
+
+
+function iniciarIntervaloCronometro(){
+
+pararCronometro();
+
+atualizarCronometro();
+
+if(
+ponto&&
+ponto.status==="ativo"&&
+!pausado
+){
+
+intervaloCronometro=setInterval(
+atualizarCronometro,
 1000
 );
 
 }
 
-function restaurarCooldown(){
+}
 
-const existe=
-atualizarCooldown();
 
-if(existe){
+function salvarEstadoEAtualizar(){
 
-clearInterval(intervaloCooldown);
+salvarEstadoLocal();
+atualizarInterface();
+atualizarCronometro();
 
-intervaloCooldown=
-setInterval(
-atualizarCooldown,
-1000
+}
+
+
+function atualizarInterface(){
+
+if(!ponto){
+
+statusCronometro.textContent="Ponto fechado";
+statusCronometro.className="timer-status";
+
+estadoTexto.textContent="Fechado";
+entradaTexto.textContent="—";
+
+btnPrincipal.className="action-btn btn-primary";
+btnPrincipal.innerHTML='<i class="fa-solid fa-play"></i> Iniciar';
+
+btnPausa.className="action-btn btn-secondary btn-disabled";
+btnPausa.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+
+btnEncerrar.className="action-btn btn-danger btn-disabled";
+btnTrocar.className="action-btn btn-secondary btn-disabled";
+
+cronometro.textContent="00:00:00";
+
+return;
+
+}
+
+
+entradaTexto.textContent=formatarData(ponto.entrada);
+
+
+if(ponto.status==="ativo"){
+
+statusCronometro.textContent="Ponto ativo";
+statusCronometro.className="timer-status ativo";
+estadoTexto.textContent="Ativo";
+
+btnPrincipal.className="action-btn btn-primary btn-disabled";
+btnPrincipal.innerHTML='<i class="fa-solid fa-circle-check"></i> Em andamento';
+
+btnPausa.className="action-btn btn-secondary";
+btnPausa.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+
+btnEncerrar.className="action-btn btn-danger";
+btnTrocar.className="action-btn btn-secondary";
+
+return;
+
+}
+
+
+if(ponto.status==="pausado"){
+
+statusCronometro.textContent="Ponto pausado";
+statusCronometro.className="timer-status pausado";
+estadoTexto.textContent="Pausado";
+
+btnPrincipal.className="action-btn btn-primary btn-disabled";
+btnPrincipal.innerHTML='<i class="fa-solid fa-circle-pause"></i> Pausado';
+
+btnPausa.className="action-btn btn-primary";
+btnPausa.innerHTML='<i class="fa-solid fa-play"></i> Retomar';
+
+btnEncerrar.className="action-btn btn-danger";
+btnTrocar.className="action-btn btn-secondary";
+
+}
+
+  }
+  async function buscarPontoAtual(){
+
+const {data,error}=await supabaseClient
+.from("pontos")
+.select("*")
+.eq("passaporte",String(usuario.passaporte))
+.in("status",["ativo","pausado"])
+.order("entrada",{ascending:false})
+.limit(1);
+
+if(error)throw error;
+
+return data&&data.length?data[0]:null;
+
+}
+
+
+async function buscarEquipe(id){
+
+if(!id){
+
+equipeAtual=null;
+return null;
+
+}
+
+const {data,error}=await supabaseClient
+.from("equipes")
+.select("*")
+.eq("id",id)
+.limit(1);
+
+if(error)throw error;
+
+equipeAtual=data&&data.length?data[0]:null;
+
+return equipeAtual;
+
+}
+
+
+async function buscarMembrosEquipe(equipeId){
+
+if(!equipeId)return [];
+
+const {data,error}=await supabaseClient
+.from("equipe_membros")
+.select("*")
+.eq("equipe_id",equipeId)
+.neq("status","fora")
+.order("entrou_em",{ascending:true});
+
+if(error)throw error;
+
+
+/*
+Elimina duplicados pelo passaporte.
+Isso impede vários Falcão na tela.
+*/
+
+const mapa=new Map();
+
+(data||[]).forEach(membro=>{
+
+const passaporte=String(membro.passaporte||"");
+
+if(!passaporte)return;
+
+const anterior=mapa.get(passaporte);
+
+if(!anterior){
+
+mapa.set(passaporte,membro);
+return;
+
+}
+
+const statusNovo=String(membro.status||"").toLowerCase();
+const statusAnterior=String(anterior.status||"").toLowerCase();
+
+if(
+statusNovo==="ativo"&&
+statusAnterior!=="ativo"
+){
+
+mapa.set(passaporte,membro);
+
+}
+
+});
+
+return Array.from(mapa.values());
+
+}
+
+
+async function buscarCadastroMembro(passaporte){
+
+/*
+A tabela Membros possui o cargo administrativo,
+como Coordenador Geral.
+
+Esse cargo NÃO é o cargo da equipe.
+*/
+
+const {data,error}=await supabaseClient
+.from("Membros")
+.select("Id,Passaporte,Senha credencial,Nome,Cargo,Ativo,Criado em")
+.eq("Passaporte",String(passaporte))
+.limit(1);
+
+if(error){
+
+console.warn(
+"Não foi possível carregar o cadastro:",
+error
 );
 
-}
+return null;
 
 }
-  /* =========================
-   EQUIPE
-========================= */
+
+return data&&data.length?data[0]:null;
+
+}
+
 
 async function buscarEquipeDisponivel(){
 
-const {data:e,error:a}=
-await supabaseClient
+const {data,error}=await supabaseClient
 .from("equipes")
 .select("*")
 .eq("ativa",true);
 
-if(a)throw a;
+if(error)throw error;
 
-if(!e?.length){
-throw Error("Nenhuma equipe ativa foi encontrada.");
+if(!data||!data.length)return null;
+
+const disponiveis=[];
+
+for(const equipe of data){
+
+const membros=await buscarMembrosEquipe(equipe.id);
+
+const tipo=String(equipe.tipo||"")
+.trim()
+.toLowerCase();
+
+const limite=Number(equipe.limite||0);
+
+
+/*
+FAVELA:
+sem limite geral.
+*/
+
+if(tipo==="favela"){
+
+disponiveis.push({
+equipe,
+membros
+});
+
+continue;
+
 }
 
-const {data:m,error:b}=
-await supabaseClient
+
+/*
+SEGURANÇA:
+sem limite geral.
+*/
+
+if(
+tipo==="segurança"||
+tipo==="seguranca"
+){
+
+disponiveis.push({
+equipe,
+membros
+});
+
+continue;
+
+}
+
+
+/*
+VENDA:
+máximo 4 no total.
+*/
+
+if(tipo==="venda"){
+
+if(membros.length<4){
+
+disponiveis.push({
+equipe,
+membros
+});
+
+}
+
+continue;
+
+}
+
+
+/*
+FARM:
+máximo 8 no total,
+considerando 4 por atividade.
+*/
+
+if(tipo==="farm"){
+
+if(membros.length<8){
+
+disponiveis.push({
+equipe,
+membros
+});
+
+}
+
+continue;
+
+}
+
+
+/*
+Caso alguma equipe ainda use
+o limite antigo.
+*/
+
+if(!limite||membros.length<limite){
+
+disponiveis.push({
+equipe,
+membros
+});
+
+}
+
+}
+
+
+if(!disponiveis.length)return null;
+
+disponiveis.sort(
+(a,b)=>a.membros.length-b.membros.length
+);
+
+return disponiveis[0].equipe;
+
+}
+
+
+async function inserirMembroEquipe(equipeId){
+
+/*
+Antes de inserir, procura se o jogador
+já está nessa equipe.
+
+Isso evita duplicação.
+*/
+
+const {data:existente,error:erroBusca}=await supabaseClient
 .from("equipe_membros")
-.select("id,equipe_id,passaporte,status")
-.neq("status","fora");
+.select("*")
+.eq("equipe_id",equipeId)
+.eq("passaporte",String(usuario.passaporte))
+.neq("status","fora")
+.limit(1);
 
-if(b)throw b;
+if(erroBusca)throw erroBusca;
 
-const c=e.map(x=>{
+if(existente&&existente.length){
 
-const q=(m||[]).filter(
-y=>y.equipe_id===x.id
-).length;
+return existente[0];
 
-const lim=
-x.limite!==null &&
-x.limite!==undefined;
+}
 
-return{
-...x,
-quantidade:q,
-disponivel:
-!lim ||
-q<Number(x.limite)
+
+const novo={
+equipe_id:equipeId,
+passaporte:String(usuario.passaporte),
+nome:usuario.nome||"",
+status:"ativo",
+entrou_em:new Date().toISOString()
 };
 
-}).filter(x=>x.disponivel);
 
-if(!c.length){
-throw Error(
-"Todas as equipes disponíveis atingiram o limite."
-);
-}
-
-c.sort(
-(a,b)=>a.quantidade-b.quantidade
-);
-
-return c[0];
-
-}
-
-
-async function carregarEquipe(id){
-
-const {data:e,error:a}=
-await supabaseClient
-.from("equipes")
-.select("*")
-.eq("id",id)
-.single();
-
-if(a){
-
-console.error(a);
-
-return;
-
-}
-
-equipeAtual=e;
-
-el.equipe.textContent=e.nome||"--";
-
-el.equipeNome.textContent=
-e.nome||"--";
-
-el.equipeFuncao.textContent=
-e.funcao||"Função não definida";
-
-el.equipeArea.textContent=
-e.area?
-`Área: ${e.area}`:
-"Área não definida";
-
-el.equipeCard.style.display="block";
-
-await carregarMembrosEquipe(id);
-
-}
-
-
-async function carregarMembrosEquipe(id){
-
-const {data,error}=
-await supabaseClient
+const {data,error}=await supabaseClient
 .from("equipe_membros")
-.select(
-"nome,passaporte,status,entrou_em"
-)
-.eq("equipe_id",id)
-.neq("status","fora")
-.order("entrou_em",{ascending:true});
+.insert(novo)
+.select()
+.limit(1);
 
-if(error){
+if(error)throw error;
 
-el.equipeMembros.innerHTML=
-'<div class="loading" style="padding:15px">Não foi possível carregar os membros.</div>';
-
-return;
-
-}
-
-if(!data?.length){
-
-el.equipeMembros.innerHTML=
-'<div class="loading" style="padding:15px">Você é o primeiro membro desta equipe.</div>';
-
-return;
-
-}
-
-el.equipeMembros.innerHTML=
-data.map(m=>{
-
-let s="⚪ Fora";
-let c="var(--muted)";
-
-if(m.status==="ativo"){
-
-s="🟢 Em serviço";
-c="var(--green)";
-
-}
-
-if(m.status==="pausado"){
-
-s="🟡 Em pausa";
-c="var(--yellow)";
-
-}
-
-return`
-<div class="membro">
-
-<div>
-
-<div class="membro-nome">
-${esc(m.nome||"Sem nome")}
-</div>
-
-<div class="membro-pass">
-Passaporte: ${esc(m.passaporte||"--")}
-</div>
-
-</div>
-
-<div
-class="membro-status"
-style="color:${c}"
->
-${s}
-</div>
-
-</div>
-`;
-
-}).join("");
+return data&&data.length?data[0]:null;
 
 }
 
 
-/* =========================
-   INTERFACE
-========================= */
+async function criarPonto(){
 
-function colocarInterfaceAtiva(){
+const equipe=await buscarEquipeDisponivel();
 
-el.status.textContent=
-pausado?
-"Pausado":
-"Ativo";
+if(!equipe){
 
-el.status.style.color=
-pausado?
-"var(--yellow)":
-"var(--green)";
-
-el.pausas.textContent=
-String(pausas);
-
-el.entrada.textContent=
-inicio?
-hora(new Date(inicio)):
-"--:--";
-
-el.marcEntrada.textContent=
-inicio?
-hora(new Date(inicio)):
-"--:--";
-
-el.marcPausa.textContent=
-pausaInicio?
-hora(new Date(pausaInicio)):
-"--:--";
-
-el.marcSaida.textContent="--:--";
-
-el.btnIniciar.style.display="none";
-
-el.grupo.style.display="flex";
-
-el.btnPausar.disabled=false;
-
-el.btnPausar.innerHTML=
-pausado?
-'<i class="fa-solid fa-play"></i> Continuar':
-'<i class="fa-solid fa-pause"></i> Pausar';
-
-iniciarRelogio();
+throw new Error(
+"Não há equipe disponível no momento."
+);
 
 }
 
+const agora=new Date().toISOString();
 
-function colocarInterfaceOffline(){
+const {data,error}=await supabaseClient
+.from("pontos")
+.insert({
 
-clearInterval(intervalo);
+passaporte:String(usuario.passaporte),
+nome:usuario.nome||"",
+equipe_id:equipe.id,
+entrada:agora,
+status:"ativo"
 
-intervalo=null;
+})
+.select()
+.limit(1);
 
-ponto=null;
-inicio=null;
-pausaInicio=null;
+if(error)throw error;
+
+if(!data||!data.length){
+
+throw new Error(
+"Não foi possível criar o ponto."
+);
+
+}
+
+ponto=data[0];
+
+equipeAtual=equipe;
+
+await inserirMembroEquipe(equipe.id);
+
+inicioTimestamp=new Date(
+ponto.entrada
+).getTime();
+
+tempoPausadoTotal=0;
+pausaInicioTimestamp=null;
 pausado=false;
-tempoPausa=0;
-pausas=0;
-equipeAtual=null;
 
-el.status.textContent="Offline";
-el.status.style.color="";
+salvarEstadoLocal();
 
-el.pausas.textContent="0";
-el.entrada.textContent="--:--";
+atualizarInterface();
+atualizarCronometro();
+iniciarIntervaloCronometro();
 
-el.timer.textContent="00:00:00";
-
-el.marcEntrada.textContent="--:--";
-el.marcPausa.textContent="--:--";
-
-el.grupo.style.display="none";
-
-el.equipe.textContent="--";
-el.equipeCard.style.display="none";
-
-el.btnPausar.innerHTML=
-'<i class="fa-solid fa-pause"></i> Pausar';
-
-el.btnIniciar.style.display="block";
-
-if(!localStorage.getItem(chaveCooldown)){
-
-el.btnIniciar.disabled=false;
-
-el.btnIniciar.innerHTML=
-'<i class="fa-solid fa-play"></i> Iniciar Jornada';
+await renderizarEquipe();
+await carregarHistorico();
 
 }
 
-}
-
-
-/* =========================
-   RESTAURAR PONTO
-========================= */
 
 async function restaurarPonto(){
 
-const {data,error}=
-await supabaseClient
-.from("pontos")
-.select("*")
-.eq("passaporte",usuario.passaporte)
-.in("status",["ativo","pausado"])
-.order("criado_em",{ascending:false})
-.limit(1)
-.maybeSingle();
+const pontoBanco=await buscarPontoAtual();
 
-if(error){
-
-console.error(
-"ERRO AO RESTAURAR PONTO:",
-error
-);
-
-return;
-
-}
-
-if(!data){
+if(!pontoBanco){
 
 limparEstadoLocal();
 
-colocarInterfaceOffline();
+ponto=null;
+equipeAtual=null;
 
-restaurarCooldown();
+inicioTimestamp=null;
+tempoPausadoTotal=0;
+pausaInicioTimestamp=null;
+pausado=false;
+
+pararCronometro();
+
+atualizarInterface();
+await renderizarEquipe();
 
 return;
 
 }
 
-ponto=data;
+ponto=pontoBanco;
 
-inicio=
-data.entrada?
-new Date(data.entrada).getTime():
-null;
-
-pausado=
-data.status==="pausado";
-
-pausas=0;
-tempoPausa=0;
-pausaInicio=null;
-
-const salvo=
-localStorage.getItem(chaveEstado);
+const salvo=localStorage.getItem(
+chaveEstado()
+);
 
 if(salvo){
 
 try{
 
-const estado=
-JSON.parse(salvo);
+const estado=JSON.parse(salvo);
 
 if(
-String(estado.pontoId)===
-String(data.id)
+estado.pontoId&&
+String(estado.pontoId)===String(ponto.id)
 ){
 
-pausas=
-Number(estado.pausas)||0;
+inicioTimestamp=
+Number(estado.inicioTimestamp)||
+new Date(ponto.entrada).getTime();
 
-tempoPausa=
-Number(estado.tempoPausa)||0;
+tempoPausadoTotal=
+Number(estado.tempoPausadoTotal)||0;
 
-if(data.status==="pausado"){
+pausaInicioTimestamp=
+estado.pausaInicioTimestamp?
+Number(estado.pausaInicioTimestamp):
+null;
 
-pausado=true;
+}else{
 
-if(estado.pausaInicio){
+inicioTimestamp=
+new Date(ponto.entrada).getTime();
 
-pausaInicio=
-Number(estado.pausaInicio);
-
-}
-
-}
+tempoPausadoTotal=0;
+pausaInicioTimestamp=null;
 
 }
 
 }catch(e){
 
-console.warn(
-"Não foi possível restaurar o estado local:",
-e
-);
+inicioTimestamp=
+new Date(ponto.entrada).getTime();
+
+tempoPausadoTotal=0;
+pausaInicioTimestamp=null;
 
 }
 
-}
+}else{
 
-if(
-pausado &&
-!pausaInicio &&
-data.pausa_inicio
-){
+inicioTimestamp=
+new Date(ponto.entrada).getTime();
 
-pausaInicio=
-new Date(data.pausa_inicio).getTime();
+tempoPausadoTotal=0;
+pausaInicioTimestamp=null;
 
 }
 
-if(
-!pausado &&
-data.pausa_inicio &&
-data.pausa_fim
-){
+pausado=ponto.status==="pausado";
 
-const pi=
-new Date(data.pausa_inicio).getTime();
+if(ponto.equipe_id){
 
-const pf=
-new Date(data.pausa_fim).getTime();
-
-if(
-Number.isFinite(pi) &&
-Number.isFinite(pf) &&
-pf>pi
-){
-
-tempoPausa=
-Math.floor((pf-pi)/1000);
-
-}
-
-}
-
-if(data.pausa_inicio){
-
-el.marcPausa.textContent=
-hora(new Date(data.pausa_inicio));
-
-}
-
-if(data.entrada){
-
-el.marcEntrada.textContent=
-hora(new Date(data.entrada));
-
-el.entrada.textContent=
-hora(new Date(data.entrada));
-
-}
-
-if(data.equipe_id){
-
-await carregarEquipe(
-data.equipe_id
-);
+await buscarEquipe(ponto.equipe_id);
 
 }
 
 salvarEstadoLocal();
 
-colocarInterfaceAtiva();
+atualizarInterface();
+atualizarCronometro();
+iniciarIntervaloCronometro();
+
+await renderizarEquipe();
 
 }
 
-
-/* =========================
-   INICIAR JORNADA
-========================= */
 
 async function iniciarJornada(){
 
-if(localStorage.getItem(chaveCooldown)){
+if(
+ponto&&
+(
+ponto.status==="ativo"||
+ponto.status==="pausado"
+)
+){
 
-const ativo=
-atualizarCooldown();
+return;
 
-if(ativo){
+}
+
+if(verificarCooldown()){
 
 alert(
-"Você precisa aguardar o término do intervalo de 1 minuto antes de iniciar uma nova jornada."
+"Aguarde um momento antes de iniciar um novo ponto."
 );
 
 return;
 
 }
 
-}
-
-if(ponto){
-
-await restaurarPonto();
-
-return;
-
-}
-
-el.btnIniciar.disabled=true;
-
-el.btnIniciar.innerHTML=
-'<i class="fa-solid fa-spinner fa-spin"></i> Analisando equipe...';
+btnPrincipal.classList.add(
+"btn-disabled"
+);
 
 try{
 
-const equipe=
-await buscarEquipeDisponivel();
+await criarPonto();
 
-const agora=
-new Date().toISOString();
+}catch(error){
 
-const {data,error}=
-await supabaseClient
-.from("pontos")
-.insert([{
+console.error(error);
 
-passaporte:usuario.passaporte,
-nome:usuario.nome,
-entrada:agora,
-status:"ativo",
-equipe_id:equipe.id,
-criado_em:agora
+btnPrincipal.classList.remove(
+"btn-disabled"
+);
 
-}])
-.select()
-.single();
-
-if(error)throw error;
-
-ponto=data;
-equipeAtual=equipe;
-
-const {error:em}=
-await supabaseClient
-.from("equipe_membros")
-.insert([{
-
-equipe_id:equipe.id,
-passaporte:usuario.passaporte,
-nome:usuario.nome,
-status:"ativo",
-entrou_em:agora
-
-}]);
-
-if(em){
-
-await supabaseClient
-.from("pontos")
-.update({
-status:"cancelado"
-})
-.eq("id",data.id);
-
-throw em;
+alert(
+error?.message||
+"Não foi possível iniciar o ponto."
+);
 
 }
 
-inicio=
-new Date(ponto.entrada).getTime();
+}
+
+
+async function pausarPonto(){
+
+if(
+!ponto||
+ponto.status!=="ativo"
+){
+
+return;
+
+}
+
+pararCronometro();
+
+const agora=Date.now();
+
+pausaInicioTimestamp=agora;
+pausado=true;
+
+const {data,error}=await supabaseClient
+.from("pontos")
+.update({
+
+status:"pausado",
+pausa_inicio:new Date(agora).toISOString()
+
+})
+.eq("id",ponto.id)
+.select()
+.limit(1);
+
+if(error){
 
 pausado=false;
-pausaInicio=null;
-tempoPausa=0;
-pausas=0;
+pausaInicioTimestamp=null;
 
-limparCooldown();
+iniciarIntervaloCronometro();
+
+throw error;
+
+}
+
+if(data&&data.length){
+
+ponto=data[0];
+
+}else{
+
+ponto.status="pausado";
+
+}
 
 salvarEstadoLocal();
 
-colocarInterfaceAtiva();
+atualizarInterface();
+atualizarCronometro();
 
-await carregarEquipe(
-equipe.id
-);
-
-}catch(e){
-
-console.error(
-"ERRO AO INICIAR:",
-e
-);
-
-ponto=null;
-inicio=null;
-
-alert(
-"Não foi possível iniciar o ponto.\n\n"+
-(e.message||"Erro desconhecido.")
-);
-
-el.btnIniciar.disabled=false;
-
-el.btnIniciar.innerHTML=
-'<i class="fa-solid fa-play"></i> Iniciar Jornada';
-
-}
+await atualizarMembroStatus("pausado");
 
 }
 
 
-/* =========================
-   PAUSAR / CONTINUAR
-========================= */
+async function retomarPonto(){
+
+if(
+!ponto||
+ponto.status!=="pausado"
+){
+
+return;
+
+}
+
+const agora=Date.now();
+
+if(pausaInicioTimestamp){
+
+tempoPausadoTotal+=Math.max(
+0,
+agora-pausaInicioTimestamp
+);
+
+}
+
+pausaInicioTimestamp=null;
+pausado=false;
+
+const {data,error}=await supabaseClient
+.from("pontos")
+.update({
+
+status:"ativo",
+pausa_fim:new Date(agora).toISOString()
+
+})
+.eq("id",ponto.id)
+.select()
+.limit(1);
+
+if(error){
+
+pausado=true;
+pausaInicioTimestamp=agora;
+
+throw error;
+
+}
+
+if(data&&data.length){
+
+ponto=data[0];
+
+}else{
+
+ponto.status="ativo";
+
+}
+
+salvarEstadoLocal();
+
+atualizarInterface();
+atualizarCronometro();
+iniciarIntervaloCronometro();
+
+await atualizarMembroStatus("ativo");
+
+}
+
 
 async function pausarContinuar(){
 
 if(!ponto)return;
 
-el.btnPausar.disabled=true;
-
-const agora=
-new Date().toISOString();
+btnPausa.classList.add(
+"btn-disabled"
+);
 
 try{
 
-if(!pausado){
+if(ponto.status==="ativo"){
 
-const {error}=
-await supabaseClient
-.from("pontos")
-.update({
+await pausarPonto();
 
-pausa_inicio:agora,
-status:"pausado"
+}else if(ponto.status==="pausado"){
 
-})
-.eq("id",ponto.id);
-
-if(error)throw error;
-
-const {error:em}=
-await supabaseClient
-.from("equipe_membros")
-.update({
-status:"pausado"
-})
-.eq("equipe_id",ponto.equipe_id)
-.eq("passaporte",usuario.passaporte)
-.neq("status","fora");
-
-if(em)throw em;
-
-pausaInicio=Date.now();
-
-pausado=true;
-
-pausas++;
-
-el.status.textContent="Pausado";
-el.status.style.color="var(--yellow)";
-
-el.pausas.textContent=
-String(pausas);
-
-el.marcPausa.textContent=
-hora(new Date(agora));
-
-el.btnPausar.innerHTML=
-'<i class="fa-solid fa-play"></i> Continuar';
-
-salvarEstadoLocal();
-
-clearInterval(intervalo);
-intervalo=null;
-
-await carregarMembrosEquipe(
-ponto.equipe_id
-);
-
-}else{
-
-if(!pausaInicio){
-
-if(ponto.pausa_inicio){
-
-pausaInicio=
-new Date(
-ponto.pausa_inicio
-).getTime();
-
-}else{
-
-pausaInicio=Date.now();
+await retomarPonto();
 
 }
 
-}
+}catch(error){
 
-const fimPausa=
-Date.now();
-
-const {error}=
-await supabaseClient
-.from("pontos")
-.update({
-
-pausa_fim:agora,
-status:"ativo"
-
-})
-.eq("id",ponto.id);
-
-if(error)throw error;
-
-const {error:em}=
-await supabaseClient
-.from("equipe_membros")
-.update({
-status:"ativo"
-})
-.eq("equipe_id",ponto.equipe_id)
-.eq("passaporte",usuario.passaporte)
-.neq("status","fora");
-
-if(em)throw em;
-
-const duracao=
-Math.max(
-0,
-Math.floor(
-(fimPausa-pausaInicio)/1000
-)
-);
-
-tempoPausa+=duracao;
-
-pausado=false;
-
-pausaInicio=null;
-
-el.status.textContent="Ativo";
-el.status.style.color="var(--green)";
-
-el.btnPausar.innerHTML=
-'<i class="fa-solid fa-pause"></i> Pausar';
-
-salvarEstadoLocal();
-
-iniciarRelogio();
-
-await carregarMembrosEquipe(
-ponto.equipe_id
-);
-
-}
-
-}catch(e){
-
-console.error(
-"ERRO AO PAUSAR/CONTINUAR:",
-e
-);
+console.error(error);
 
 alert(
-"Não foi possível alterar a pausa.\n\n"+
-(e.message||"Erro desconhecido.")
+error?.message||
+"Não foi possível alterar o ponto."
 );
+
+atualizarInterface();
+atualizarCronometro();
+
+if(
+ponto&&
+ponto.status==="ativo"
+){
+
+iniciarIntervaloCronometro();
+
+}
 
 }finally{
 
-if(ponto){
+btnPausa.classList.remove(
+"btn-disabled"
+);
 
-el.btnPausar.disabled=false;
+}
+  function abrirModalEncerrar(){
+
+if(
+!ponto||
+(
+ponto.status!=="ativo"&&
+ponto.status!=="pausado"
+)
+){
+
+return;
 
 }
 
-}
+modalEncerrar.classList.add("show");
 
 }
 
 
-/* =========================
-   ENCERRAR JORNADA
-========================= */
+function fecharModalEncerrar(){
+
+modalEncerrar.classList.remove("show");
+
+}
+
 
 async function encerrarJornada(){
 
-if(!ponto)return;
+if(
+!ponto||
+(
+ponto.status!=="ativo"&&
+ponto.status!=="pausado"
+)
+){
 
-const confirmar=
-confirm(
-"Tem certeza que deseja encerrar sua jornada?\n\n"+
-"Depois de encerrada, será necessário aguardar 1 minuto para iniciar uma nova jornada."
+return;
+
+}
+
+
+/*
+PARA O INTERVALO ANTES DE QUALQUER COISA.
+*/
+
+pararCronometro();
+
+const pontoId=ponto.id;
+const equipeId=ponto.equipe_id;
+const agora=Date.now();
+
+if(
+ponto.status==="pausado"&&
+pausaInicioTimestamp
+){
+
+tempoPausadoTotal+=Math.max(
+0,
+agora-pausaInicioTimestamp
+);
+
+}
+
+const saida=new Date(
+agora
+).toISOString();
+
+
+const {data,error}=await supabaseClient
+.from("pontos")
+.update({
+
+saida,
+status:"encerrado"
+
+})
+.eq("id",pontoId)
+.select()
+.limit(1);
+
+if(error){
+
+/*
+Se falhar, mantém o ponto funcionando.
+*/
+
+atualizarInterface();
+atualizarCronometro();
+
+if(
+ponto.status==="ativo"
+){
+
+iniciarIntervaloCronometro();
+
+}
+
+throw error;
+
+}
+
+
+if(data&&data.length){
+
+ponto=data[0];
+
+}else{
+
+ponto.status="encerrado";
+ponto.saida=saida;
+
+}
+
+
+/*
+Tira o usuário da equipe.
+*/
+
+if(equipeId){
+
+await finalizarMembroEquipe(
+equipeId
+);
+
+}
+
+
+/*
+Cooldown de 1 minuto.
+*/
+
+localStorage.setItem(
+chaveCooldown(),
+String(Date.now()+60000)
+);
+
+
+/*
+AGORA APAGA COMPLETAMENTE O ESTADO.
+*/
+
+ponto=null;
+equipeAtual=null;
+
+inicioTimestamp=null;
+tempoPausadoTotal=0;
+pausaInicioTimestamp=null;
+pausado=false;
+
+pararCronometro();
+
+limparEstadoLocal();
+
+cronometro.textContent="00:00:00";
+
+atualizarInterface();
+
+await renderizarEquipe();
+await carregarHistorico();
+
+fecharModalEncerrar();
+
+alert(
+"Ponto encerrado com sucesso."
+);
+
+}
+
+
+async function finalizarMembroEquipe(equipeId){
+
+if(!equipeId)return;
+
+const {error}=await supabaseClient
+.from("equipe_membros")
+.update({
+
+status:"fora",
+saiu_em:new Date().toISOString()
+
+})
+.eq(
+"equipe_id",
+equipeId
+)
+.eq(
+"passaporte",
+String(usuario.passaporte)
+)
+.neq(
+"status",
+"fora"
+);
+
+if(error)throw error;
+
+}
+
+
+async function atualizarMembroStatus(status){
+
+if(
+!ponto||
+!ponto.equipe_id
+){
+
+return;
+
+}
+
+const {error}=await supabaseClient
+.from("equipe_membros")
+.update({
+
+status
+
+})
+.eq(
+"equipe_id",
+ponto.equipe_id
+)
+.eq(
+"passaporte",
+String(usuario.passaporte)
+)
+.neq(
+"status",
+"fora"
+);
+
+if(error){
+
+console.warn(
+"Erro ao atualizar membro:",
+error
+);
+
+}
+
+}
+
+
+async function trocarEquipe(){
+
+if(
+!ponto||
+!ponto.equipe_id
+){
+
+return;
+
+}
+
+if(ponto.status==="pausado"){
+
+alert(
+"Retome o ponto antes de trocar de equipe."
+);
+
+return;
+
+}
+
+const confirmar=confirm(
+"Deseja trocar de equipe?"
 );
 
 if(!confirmar)return;
 
-el.btnEncerrar.disabled=true;
-
-el.btnEncerrar.innerHTML=
-'<i class="fa-solid fa-spinner fa-spin"></i> Encerrando...';
-
 try{
 
-const agora=
-new Date().toISOString();
+const novaEquipe=
+await buscarEquipeDisponivel();
 
-const {error}=
+if(!novaEquipe){
+
+alert(
+"Não há outra equipe disponível."
+);
+
+return;
+
+}
+
+if(
+String(novaEquipe.id)===
+String(ponto.equipe_id)
+){
+
+alert(
+"Você já está na equipe disponível."
+);
+
+return;
+
+}
+
+const equipeAnterior=
+ponto.equipe_id;
+
+
 await supabaseClient
+.from("equipe_membros")
+.update({
+
+status:"fora",
+saiu_em:new Date().toISOString()
+
+})
+.eq(
+"equipe_id",
+equipeAnterior
+)
+.eq(
+"passaporte",
+String(usuario.passaporte)
+)
+.neq(
+"status",
+"fora"
+);
+
+
+const {data,error}=await supabaseClient
 .from("pontos")
 .update({
 
-saida:agora,
-status:"encerrado"
+equipe_id:novaEquipe.id
 
 })
-.eq("id",ponto.id);
+.eq("id",ponto.id)
+.select()
+.limit(1);
 
 if(error)throw error;
 
-const {error:em}=
-await supabaseClient
-.from("equipe_membros")
-.update({
+if(data&&data.length){
 
-status:"fora",
-saiu_em:agora
+ponto=data[0];
 
-})
-.eq("equipe_id",ponto.equipe_id)
-.eq("passaporte",usuario.passaporte)
-.neq("status","fora");
+}else{
 
-if(em)throw em;
-
-clearInterval(intervalo);
-intervalo=null;
-
-limparEstadoLocal();
-
-el.marcSaida.textContent=
-hora(new Date(agora));
-
-el.status.textContent="Offline";
-el.status.style.color="";
-
-el.btnIniciar.style.display="block";
-
-el.grupo.style.display="none";
-
-el.timer.textContent="00:00:00";
-
-el.entrada.textContent="--:--";
-
-el.marcEntrada.textContent="--:--";
-el.marcPausa.textContent="--:--";
-
-el.pausas.textContent="0";
-
-el.equipe.textContent="--";
-
-el.equipeCard.style.display="none";
-
-ponto=null;
-inicio=null;
-pausado=false;
-pausaInicio=null;
-pausas=0;
-tempoPausa=0;
-equipeAtual=null;
-
-el.btnEncerrar.disabled=false;
-
-el.btnEncerrar.innerHTML=
-'<i class="fa-solid fa-stop"></i> Encerrar';
-
-iniciarCooldown();
-
-alert(
-"Jornada encerrada com sucesso.\n\n"+
-"Você poderá iniciar novamente após 1 minuto."
-);
-
-}catch(e){
-
-console.error(
-"ERRO AO ENCERRAR:",
-e
-);
-
-alert(
-"Não foi possível encerrar.\n\n"+
-(e.message||"Erro desconhecido.")
-);
-
-el.btnEncerrar.disabled=false;
-
-el.btnEncerrar.innerHTML=
-'<i class="fa-solid fa-stop"></i> Encerrar';
+ponto.equipe_id=novaEquipe.id;
 
 }
 
-}
+equipeAtual=novaEquipe;
 
-
-/* =========================
-   TROCAR DE EQUIPE
-========================= */
-
-async function trocarEquipe(){
-
-if(!ponto||!equipeAtual)return;
-
-el.btnTrocar.disabled=true;
-
-el.btnTrocar.innerHTML=
-'<i class="fa-solid fa-spinner fa-spin"></i> Analisando equipes...';
-
-try{
-
-const {data:e,error:a}=
-await supabaseClient
-.from("equipes")
-.select("*")
-.eq("ativa",true);
-
-if(a)throw a;
-
-const {data:m,error:b}=
-await supabaseClient
-.from("equipe_membros")
-.select("equipe_id,status")
-.neq("status","fora");
-
-if(b)throw b;
-
-const c=e.map(x=>{
-
-const q=
-(m||[]).filter(
-y=>y.equipe_id===x.id
-).length;
-
-const lim=
-x.limite!==null &&
-x.limite!==undefined;
-
-return{
-...x,
-q:q,
-ok:
-(!lim||q<Number(x.limite)) &&
-x.id!==equipeAtual.id
-};
-
-}).filter(x=>x.ok);
-
-if(!c.length){
-
-throw Error(
-"Não existe outra equipe disponível no momento."
+await inserirMembroEquipe(
+novaEquipe.id
 );
-
-}
-
-c.sort(
-(a,b)=>a.q-b.q
-);
-
-const nova=c[0];
-
-const agora=
-new Date().toISOString();
-
-const {error:ep}=
-await supabaseClient
-.from("pontos")
-.update({
-equipe_id:nova.id
-})
-.eq("id",ponto.id);
-
-if(ep)throw ep;
-
-const {error:ea}=
-await supabaseClient
-.from("equipe_membros")
-.update({
-
-status:"fora",
-saiu_em:agora
-
-})
-.eq("equipe_id",equipeAtual.id)
-.eq("passaporte",usuario.passaporte)
-.neq("status","fora");
-
-if(ea)throw ea;
-
-const {error:en}=
-await supabaseClient
-.from("equipe_membros")
-.insert([{
-
-equipe_id:nova.id,
-passaporte:usuario.passaporte,
-nome:usuario.nome,
-status:pausado?"pausado":"ativo",
-entrou_em:agora
-
-}]);
-
-if(en)throw en;
-
-ponto.equipe_id=
-nova.id;
-
-equipeAtual=
-nova;
 
 salvarEstadoLocal();
 
-await carregarEquipe(
-nova.id
-);
+await renderizarEquipe();
 
 alert(
-`Equipe alterada para:\n${nova.nome}`
+"Equipe alterada com sucesso."
 );
 
-}catch(e){
+}catch(error){
 
-console.error(
-"ERRO AO TROCAR:",
-e
-);
+console.error(error);
 
 alert(
-"Não foi possível trocar de equipe.\n\n"+
-(e.message||"Erro desconhecido.")
+error?.message||
+"Não foi possível trocar de equipe."
 );
-
-}finally{
-
-el.btnTrocar.disabled=false;
-
-el.btnTrocar.innerHTML=
-'<i class="fa-solid fa-shuffle"></i> Trocar de equipe';
 
 }
 
-  }
-  /* =========================
-   HISTÓRICO
-========================= */
+}
+
+
+function regraEquipeTexto(equipe){
+
+if(!equipe)return "—";
+
+const tipo=String(
+equipe.tipo||""
+).trim().toLowerCase();
+
+if(tipo==="favela"){
+return "Sem limite geral";
+}
+
+if(tipo==="farm"){
+return "Até 4 por atividade";
+}
+
+if(tipo==="venda"){
+return "Máximo 4 membros";
+}
+
+if(
+tipo==="segurança"||
+tipo==="seguranca"
+){
+
+return "Sem limite";
+
+}
+
+if(equipe.limite){
+
+return "Máximo "+equipe.limite;
+
+}
+
+return "Não definido";
+
+}
+
+
+async function renderizarEquipe(){
+
+if(
+!ponto||
+!ponto.equipe_id
+){
+
+equipeContainer.innerHTML=`
+
+<div class="team-card">
+
+<div class="loading">
+
+<i class="fa-solid fa-users-slash"></i>
+
+Nenhuma equipe ativa.
+
+</div>
+
+</div>
+
+`;
+
+return;
+
+}
+
+try{
+
+if(!equipeAtual){
+
+await buscarEquipe(
+ponto.equipe_id
+);
+
+}
+
+const membros=
+await buscarMembrosEquipe(
+ponto.equipe_id
+);
+
+const cadastro=
+await buscarCadastroMembro(
+usuario.passaporte
+);
+
+const quantidade=
+membros.length;
+
+const limite=
+regraEquipeTexto(
+equipeAtual
+);
+
+const meuCargo=
+cadastro?.Cargo||
+"Não informado";
+
+
+equipeContainer.innerHTML=`
+
+<div class="team-card">
+
+<div class="team-header">
+
+<div class="team-label">
+Equipe atual
+</div>
+
+<div class="team-name">
+${escaparHTML(
+equipeAtual?.nome||"Equipe"
+)}
+</div>
+
+<div class="team-type">
+
+<i class="fa-solid fa-layer-group"></i>
+
+${escaparHTML(
+equipeAtual?.tipo||"Não informado"
+)}
+
+</div>
+
+</div>
+
+
+<div class="team-info">
+
+<div class="team-info-item">
+
+<div class="team-info-label">
+Membros
+</div>
+
+<div class="team-info-value">
+${quantidade}
+</div>
+
+</div>
+
+
+<div class="team-info-item">
+
+<div class="team-info-label">
+Regra
+</div>
+
+<div class="team-info-value">
+${escaparHTML(limite)}
+</div>
+
+</div>
+
+
+<div class="team-info-item">
+
+<div class="team-info-label">
+Seu cargo
+</div>
+
+<div class="team-info-value">
+${escaparHTML(meuCargo)}
+</div>
+
+</div>
+
+
+<div class="team-info-item">
+
+<div class="team-info-label">
+Função
+</div>
+
+<div class="team-info-value">
+${escaparHTML(
+equipeAtual?.funcao||
+"Não definida"
+)}
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}catch(error){
+
+console.error(
+"Erro ao renderizar equipe:",
+error
+);
+
+equipeContainer.innerHTML=`
+
+<div class="team-card">
+
+<div class="loading">
+
+<i class="fa-solid fa-triangle-exclamation"></i>
+
+Não foi possível carregar a equipe.
+
+</div>
+
+</div>
+
+`;
+
+}
+
+}
+
 
 async function carregarHistorico(){
 
-el.historico.innerHTML=
-'<div class="loading">Carregando histórico...</div>';
+try{
 
-const {data,error}=
-await supabaseClient
+const {data,error}=await supabaseClient
 .from("pontos")
 .select("*")
-.eq("passaporte",usuario.passaporte)
-.order("criado_em",{ascending:false});
+.eq(
+"passaporte",
+String(usuario.passaporte)
+)
+.order(
+"entrada",
+{ascending:false}
+)
+.limit(10);
 
-if(error){
+if(error)throw error;
 
-el.historico.innerHTML=
-'<div class="loading">Erro ao carregar histórico.<br><br>'+
-esc(error.message)+
-'</div>';
+if(!data||!data.length){
+
+historico.innerHTML=`
+
+<div class="empty-history">
+Nenhum registro encontrado.
+</div>
+
+`;
 
 return;
 
 }
 
-if(!data?.length){
+historico.innerHTML=data.map(item=>{
 
-el.historico.innerHTML=
-'<div class="loading">Nenhum registro encontrado.</div>';
+let status="Encerrado";
 
-return;
-
+if(item.status==="ativo"){
+status="Ativo";
 }
 
-el.historico.innerHTML=
-data.map(p=>{
-
-let statusTexto=
-p.status||"Registro";
-
-let statusCor="";
-
-if(p.status==="ativo"){
-statusTexto="Ativo";
-statusCor="var(--green)";
-}
-
-if(p.status==="pausado"){
-statusTexto="Pausado";
-statusCor="var(--yellow)";
-}
-
-if(p.status==="encerrado"){
-statusTexto="Encerrado";
+if(item.status==="pausado"){
+status="Pausado";
 }
 
 return`
 
-<div class="history-card">
+<div class="history-item">
 
-<strong
-style="${statusCor?`color:${statusCor}`:""}"
->
-${esc(statusTexto)}
-</strong>
+<div class="history-top">
 
-<div>
+<div class="history-date">
+${escaparHTML(
+formatarData(item.entrada)
+)}
+</div>
+
+<div class="history-status">
+${escaparHTML(status)}
+</div>
+
+</div>
+
+<div class="history-bottom">
+
 Entrada:
-${
-p.entrada
-?
-new Date(p.entrada).toLocaleString("pt-BR")
-:
-"--"
-}
-</div>
+${escaparHTML(
+formatarHora(item.entrada)
+)}
 
-<div>
-Pausa:
-${
-p.pausa_inicio
-?
-new Date(p.pausa_inicio)
-.toLocaleTimeString(
-"pt-BR",
-{
-hour:"2-digit",
-minute:"2-digit"
-}
-)
-:
-"--"
-}
-</div>
+&nbsp; • &nbsp;
 
-<div>
 Saída:
-${
-p.saida
-?
-new Date(p.saida)
-.toLocaleString("pt-BR")
-:
-"--"
-}
+${escaparHTML(
+item.saida?
+formatarHora(item.saida):
+"Em andamento"
+)}
+
 </div>
 
 </div>
@@ -2111,38 +2452,184 @@ new Date(p.saida)
 
 }).join("");
 
+}catch(error){
+
+console.error(
+"Erro no histórico:",
+error
+);
+
+historico.innerHTML=`
+
+<div class="empty-history">
+Não foi possível carregar o histórico.
+</div>
+
+`;
+
+}
+
 }
 
 
-/* =========================
-   INICIALIZAÇÃO
-========================= */
+function verificarCooldown(){
 
-async function iniciarSistema(){
+const valor=localStorage.getItem(
+chaveCooldown()
+);
+
+if(!valor)return false;
+
+const fim=Number(valor);
+
+if(
+!fim||
+Date.now()>=fim
+){
+
+localStorage.removeItem(
+chaveCooldown()
+);
+
+return false;
+
+}
+
+return true;
+
+  }
+  btnPrincipal.addEventListener(
+"click",
+iniciarJornada
+);
+
+
+btnPausa.addEventListener(
+"click",
+pausarContinuar
+);
+
+
+btnEncerrar.addEventListener(
+"click",
+abrirModalEncerrar
+);
+
+
+btnCancelarEncerrar.addEventListener(
+"click",
+fecharModalEncerrar
+);
+
+
+btnConfirmarEncerrar.addEventListener(
+"click",
+async function(){
+
+btnConfirmarEncerrar.classList.add(
+"btn-disabled"
+);
 
 try{
 
-restaurarCooldown();
+await encerrarJornada();
 
-await restaurarPonto();
+}catch(error){
 
-const existeCooldown=
-localStorage.getItem(chaveCooldown);
+console.error(error);
 
-if(
-existeCooldown &&
-!intervaloCooldown
-){
+alert(
+error?.message||
+"Não foi possível encerrar o ponto."
+);
 
-restaurarCooldown();
+}finally{
+
+btnConfirmarEncerrar.classList.remove(
+"btn-disabled"
+);
 
 }
 
-}catch(e){
+});
+
+
+btnTrocar.addEventListener(
+"click",
+trocarEquipe
+);
+
+
+modalEncerrar.addEventListener(
+"click",
+function(event){
+
+if(
+event.target===modalEncerrar
+){
+
+fecharModalEncerrar();
+
+}
+
+});
+
+
+document.addEventListener(
+"visibilitychange",
+function(){
+
+if(
+document.visibilityState==="visible"&&
+ponto
+){
+
+atualizarCronometro();
+
+}
+
+});
+
+
+async function iniciarSistema(){
+
+if(!carregarUsuario()){
+return;
+}
+
+try{
+
+await restaurarPonto();
+
+await carregarHistorico();
+
+if(
+!ponto&&
+verificarCooldown()
+){
+
+btnPrincipal.classList.add(
+"btn-disabled"
+);
+
+btnPrincipal.innerHTML=
+'<i class="fa-solid fa-hourglass-half"></i> Aguarde';
+
+}
+
+}catch(error){
 
 console.error(
-"ERRO NA INICIALIZAÇÃO:",
-e
+"Erro ao iniciar sistema:",
+error
+);
+
+pararCronometro();
+
+cronometro.textContent="00:00:00";
+
+alert(
+"Não foi possível carregar o sistema de ponto."
 );
 
 }
@@ -2150,9 +2637,20 @@ e
 }
 
 
-/* =========================
-   INICIAR SISTEMA
-========================= */
+window.addEventListener(
+"beforeunload",
+function(){
+
+/*
+Não criamos nem alteramos ponto aqui.
+Apenas garantimos que o intervalo não
+continue preso na página.
+*/
+
+pararCronometro();
+
+});
+
 
 iniciarSistema();
 
