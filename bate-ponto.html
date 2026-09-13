@@ -4,21 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#08090d">
+
 <title>Meu Ponto</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
+
 *{
 box-sizing:border-box;
 margin:0;
 padding:0;
 }
 
-html,body{
+html,
+body{
 min-height:100%;
 }
 
@@ -29,7 +33,8 @@ font-family:Inter,Arial,sans-serif;
 padding-bottom:90px;
 }
 
-button,a{
+button,
+a{
 -webkit-tap-highlight-color:transparent;
 }
 
@@ -162,11 +167,18 @@ color:#d1a43b;
 }
 
 .actions{
+padding:15px;
+border-top:1px solid rgba(255,255,255,.06);
+}
+
+.action-row{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:9px;
-padding:15px;
-border-top:1px solid rgba(255,255,255,.06);
+}
+
+.action-row.single{
+grid-template-columns:1fr;
 }
 
 .action-btn{
@@ -283,35 +295,17 @@ font-weight:800;
 text-transform:uppercase;
 }
 
-.team-info{
-display:grid;
-grid-template-columns:1fr 1fr;
+.loading{
+padding:22px 15px;
+color:#777a84;
+text-align:center;
+font-size:10px;
 }
 
-.team-info-item{
-padding:12px 15px;
-border-bottom:1px solid rgba(255,255,255,.05);
+.loading i{
+margin-right:6px;
 }
-
-.team-info-item:nth-child(odd){
-border-right:1px solid rgba(255,255,255,.05);
-}
-
-.team-info-label{
-color:#737680;
-font-size:8px;
-text-transform:uppercase;
-letter-spacing:.7px;
-font-weight:800;
-}
-
-.team-info-value{
-margin-top:4px;
-font-size:11px;
-font-weight:700;
-}
-
-.section{
+  .section{
 margin-top:18px;
 }
 
@@ -360,15 +354,11 @@ color:#777a84;
 font-size:9px;
 }
 
-.empty-history,.loading{
+.empty-history{
 padding:22px 15px;
 color:#777a84;
 text-align:center;
 font-size:10px;
-}
-
-.loading i{
-margin-right:6px;
 }
 
 .modal{
@@ -425,7 +415,8 @@ grid-template-columns:1fr 1fr;
 gap:8px;
 margin-top:17px;
 }
-  .bottom-nav{
+
+.bottom-nav{
 position:fixed;
 z-index:80;
 left:0;
@@ -542,7 +533,9 @@ Ponto fechado
 </div>
 
 
-<div class="actions">
+<div class="actions" id="areaBotoes">
+
+<div class="action-row single">
 
 <button
 class="action-btn btn-primary"
@@ -554,38 +547,7 @@ Iniciar
 
 </button>
 
-
-<button
-class="action-btn btn-secondary btn-disabled"
-id="btnPausa"
-type="button">
-
-<i class="fa-solid fa-pause"></i>
-Pausar
-
-</button>
-
-
-<button
-class="action-btn btn-danger btn-disabled"
-id="btnEncerrar"
-type="button">
-
-<i class="fa-solid fa-stop"></i>
-Encerrar
-
-</button>
-
-
-<button
-class="action-btn btn-secondary btn-disabled"
-id="btnTrocar"
-type="button">
-
-<i class="fa-solid fa-arrows-rotate"></i>
-Trocar equipe
-
-</button>
+</div>
 
 </div>
 
@@ -631,8 +593,11 @@ Fechado
 <div class="team-card">
 
 <div class="loading">
-<i class="fa-solid fa-spinner fa-spin"></i>
+
+<i class="fa-solid fa-users-slash"></i>
+
 Nenhuma equipe ativa.
+
 </div>
 
 </div>
@@ -743,17 +708,18 @@ const supabaseClient=window.supabase.createClient(
 
 const usuarioNome=document.getElementById("usuarioNome");
 const usuarioPassaporte=document.getElementById("usuarioPassaporte");
+
 const cronometro=document.getElementById("cronometro");
 const statusCronometro=document.getElementById("statusCronometro");
+
 const entradaTexto=document.getElementById("entradaTexto");
 const estadoTexto=document.getElementById("estadoTexto");
+
 const equipeContainer=document.getElementById("equipeContainer");
 const historico=document.getElementById("historico");
 
+const areaBotoes=document.getElementById("areaBotoes");
 const btnPrincipal=document.getElementById("btnPrincipal");
-const btnPausa=document.getElementById("btnPausa");
-const btnEncerrar=document.getElementById("btnEncerrar");
-const btnTrocar=document.getElementById("btnTrocar");
 
 const modalEncerrar=document.getElementById("modalEncerrar");
 const btnCancelarEncerrar=document.getElementById("btnCancelarEncerrar");
@@ -773,17 +739,24 @@ let pausado=false;
 
 
 function chaveEstado(){
+
 return `italia_ponto_${usuario.passaporte}`;
+
 }
 
+
 function chaveCooldown(){
+
 return `italia_cooldown_${usuario.passaporte}`;
+
 }
 
 
 function escaparHTML(valor){
 
-if(valor===null||valor===undefined)return "";
+if(valor===null||valor===undefined){
+return "";
+}
 
 return String(valor)
 .replace(/&/g,"&amp;")
@@ -797,11 +770,15 @@ return String(valor)
 
 function formatarData(data){
 
-if(!data)return "—";
+if(!data){
+return "—";
+}
 
 const d=new Date(data);
 
-if(Number.isNaN(d.getTime()))return "—";
+if(Number.isNaN(d.getTime())){
+return "—";
+}
 
 return d.toLocaleString("pt-BR",{
 day:"2-digit",
@@ -816,11 +793,15 @@ minute:"2-digit"
 
 function formatarHora(data){
 
-if(!data)return "—";
+if(!data){
+return "—";
+}
 
 const d=new Date(data);
 
-if(Number.isNaN(d.getTime()))return "—";
+if(Number.isNaN(d.getTime())){
+return "—";
+}
 
 return d.toLocaleTimeString("pt-BR",{
 hour:"2-digit",
@@ -832,15 +813,22 @@ minute:"2-digit"
 
 function formatarTempo(ms){
 
-ms=Math.max(0,Number(ms)||0);
+ms=Math.max(
+0,
+Number(ms)||0
+);
 
 const total=Math.floor(ms/1000);
 
 const h=Math.floor(total/3600);
-const m=Math.floor((total%3600)/60);
+
+const m=Math.floor(
+(total%3600)/60
+);
+
 const s=total%60;
 
-return[
+return [
 String(h).padStart(2,"0"),
 String(m).padStart(2,"0"),
 String(s).padStart(2,"0")
@@ -851,11 +839,15 @@ String(s).padStart(2,"0")
 
 function carregarUsuario(){
 
-const salvo=sessionStorage.getItem("italia_usuario");
+const salvo=
+sessionStorage.getItem(
+"italia_usuario"
+);
 
 if(!salvo){
 
 window.location.href="login.html";
+
 return false;
 
 }
@@ -864,24 +856,39 @@ try{
 
 usuario=JSON.parse(salvo);
 
-}catch(e){
+}catch(error){
 
-sessionStorage.removeItem("italia_usuario");
+sessionStorage.removeItem(
+"italia_usuario"
+);
+
 window.location.href="login.html";
+
 return false;
 
 }
 
-if(!usuario||usuario.passaporte===undefined||usuario.passaporte===null){
+if(
+!usuario||
+usuario.passaporte===undefined||
+usuario.passaporte===null
+){
 
-sessionStorage.removeItem("italia_usuario");
+sessionStorage.removeItem(
+"italia_usuario"
+);
+
 window.location.href="login.html";
+
 return false;
 
 }
 
-usuarioNome.textContent=usuario.nome||"Usuário";
-usuarioPassaporte.textContent="Passaporte "+usuario.passaporte;
+usuarioNome.textContent=
+usuario.nome||"Usuário";
+
+usuarioPassaporte.textContent=
+"Passaporte "+usuario.passaporte;
 
 return true;
 
@@ -890,19 +897,30 @@ return true;
 
 function salvarEstadoLocal(){
 
-if(!ponto)return;
+if(!ponto){
+return;
+}
 
 localStorage.setItem(
 chaveEstado(),
 JSON.stringify({
+
 pontoId:ponto.id,
+
 status:ponto.status,
+
 entrada:ponto.entrada,
+
 equipeId:ponto.equipe_id||null,
+
 inicioTimestamp,
+
 tempoPausadoTotal,
+
 pausaInicioTimestamp,
+
 pausado
+
 })
 );
 
@@ -910,7 +928,11 @@ pausado
 
 
 function limparEstadoLocal(){
-localStorage.removeItem(chaveEstado());
+
+localStorage.removeItem(
+chaveEstado()
+);
+
 }
 
 
@@ -918,7 +940,10 @@ function pararCronometro(){
 
 if(intervaloCronometro!==null){
 
-clearInterval(intervaloCronometro);
+clearInterval(
+intervaloCronometro
+);
+
 intervaloCronometro=null;
 
 }
@@ -928,24 +953,32 @@ intervaloCronometro=null;
 
 function calcularTempoDecorrido(){
 
-if(!inicioTimestamp)return 0;
+if(!inicioTimestamp){
+return 0;
+}
 
 const agora=Date.now();
 
 if(pausado){
 
-const fimPausa=pausaInicioTimestamp||agora;
+const fimPausa=
+pausaInicioTimestamp||
+agora;
 
 return Math.max(
 0,
-fimPausa-inicioTimestamp-tempoPausadoTotal
+fimPausa-
+inicioTimestamp-
+tempoPausadoTotal
 );
 
 }
 
 return Math.max(
 0,
-agora-inicioTimestamp-tempoPausadoTotal
+agora-
+inicioTimestamp-
+tempoPausadoTotal
 );
 
 }
@@ -961,7 +994,9 @@ ponto.status!=="pausado"
 )
 ){
 
-cronometro.textContent="00:00:00";
+cronometro.textContent=
+"00:00:00";
+
 return;
 
 }
@@ -986,7 +1021,8 @@ ponto.status==="ativo"&&
 !pausado
 ){
 
-intervaloCronometro=setInterval(
+intervaloCronometro=
+setInterval(
 atualizarCronometro,
 1000
 );
@@ -996,58 +1032,83 @@ atualizarCronometro,
 }
 
 
-function salvarEstadoEAtualizar(){
-
-salvarEstadoLocal();
-atualizarInterface();
-atualizarCronometro();
-
-}
-
-
-function atualizarInterface(){
+function renderizarBotoes(){
 
 if(!ponto){
 
-statusCronometro.textContent="Ponto fechado";
-statusCronometro.className="timer-status";
+areaBotoes.innerHTML=`
 
-estadoTexto.textContent="Fechado";
-entradaTexto.textContent="—";
+<div class="action-row single">
 
-btnPrincipal.className="action-btn btn-primary";
-btnPrincipal.innerHTML='<i class="fa-solid fa-play"></i> Iniciar';
+<button
+class="action-btn btn-primary"
+id="btnPrincipal"
+type="button">
 
-btnPausa.className="action-btn btn-secondary btn-disabled";
-btnPausa.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+<i class="fa-solid fa-play"></i>
+Iniciar
 
-btnEncerrar.className="action-btn btn-danger btn-disabled";
-btnTrocar.className="action-btn btn-secondary btn-disabled";
+</button>
 
-cronometro.textContent="00:00:00";
+</div>
+
+`;
+
+document.getElementById(
+"btnPrincipal"
+).addEventListener(
+"click",
+iniciarJornada
+);
 
 return;
 
 }
 
 
-entradaTexto.textContent=formatarData(ponto.entrada);
-
-
 if(ponto.status==="ativo"){
 
-statusCronometro.textContent="Ponto ativo";
-statusCronometro.className="timer-status ativo";
-estadoTexto.textContent="Ativo";
+areaBotoes.innerHTML=`
 
-btnPrincipal.className="action-btn btn-primary btn-disabled";
-btnPrincipal.innerHTML='<i class="fa-solid fa-circle-check"></i> Em andamento';
+<div class="action-row">
 
-btnPausa.className="action-btn btn-secondary";
-btnPausa.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+<button
+class="action-btn btn-secondary"
+id="btnPausa"
+type="button">
 
-btnEncerrar.className="action-btn btn-danger";
-btnTrocar.className="action-btn btn-secondary";
+<i class="fa-solid fa-pause"></i>
+Pausar
+
+</button>
+
+<button
+class="action-btn btn-danger"
+id="btnEncerrar"
+type="button">
+
+<i class="fa-solid fa-stop"></i>
+Encerrar
+
+</button>
+
+</div>
+
+`;
+
+document.getElementById(
+"btnPausa"
+).addEventListener(
+"click",
+pausarContinuar
+);
+
+document.getElementById(
+"btnEncerrar"
+).addEventListener(
+"click",
+abrirModalEncerrar
+);
 
 return;
 
@@ -1056,35 +1117,140 @@ return;
 
 if(ponto.status==="pausado"){
 
-statusCronometro.textContent="Ponto pausado";
-statusCronometro.className="timer-status pausado";
-estadoTexto.textContent="Pausado";
+areaBotoes.innerHTML=`
 
-btnPrincipal.className="action-btn btn-primary btn-disabled";
-btnPrincipal.innerHTML='<i class="fa-solid fa-circle-pause"></i> Pausado';
+<div class="action-row">
 
-btnPausa.className="action-btn btn-primary";
-btnPausa.innerHTML='<i class="fa-solid fa-play"></i> Retomar';
+<button
+class="action-btn btn-primary"
+id="btnPausa"
+type="button">
 
-btnEncerrar.className="action-btn btn-danger";
-btnTrocar.className="action-btn btn-secondary";
+<i class="fa-solid fa-play"></i>
+Retomar
+
+</button>
+
+<button
+class="action-btn btn-danger"
+id="btnEncerrar"
+type="button">
+
+<i class="fa-solid fa-stop"></i>
+Encerrar
+
+</button>
+
+</div>
+
+`;
+
+document.getElementById(
+"btnPausa"
+).addEventListener(
+"click",
+pausarContinuar
+);
+
+document.getElementById(
+"btnEncerrar"
+).addEventListener(
+"click",
+abrirModalEncerrar
+);
+
+  }
+  function atualizarInterface(){
+
+renderizarBotoes();
+
+if(!ponto){
+
+statusCronometro.textContent=
+"Ponto fechado";
+
+statusCronometro.className=
+"timer-status";
+
+estadoTexto.textContent=
+"Fechado";
+
+entradaTexto.textContent=
+"—";
+
+cronometro.textContent=
+"00:00:00";
+
+return;
 
 }
 
-  }
-  async function buscarPontoAtual(){
 
-const {data,error}=await supabaseClient
+entradaTexto.textContent=
+formatarData(
+ponto.entrada
+);
+
+
+if(ponto.status==="ativo"){
+
+statusCronometro.textContent=
+"Ponto ativo";
+
+statusCronometro.className=
+"timer-status ativo";
+
+estadoTexto.textContent=
+"Ativo";
+
+return;
+
+}
+
+
+if(ponto.status==="pausado"){
+
+statusCronometro.textContent=
+"Ponto pausado";
+
+statusCronometro.className=
+"timer-status pausado";
+
+estadoTexto.textContent=
+"Pausado";
+
+}
+
+}
+
+
+async function buscarPontoAtual(){
+
+const {data,error}=
+await supabaseClient
 .from("pontos")
 .select("*")
-.eq("passaporte",String(usuario.passaporte))
-.in("status",["ativo","pausado"])
-.order("entrada",{ascending:false})
+.eq(
+"passaporte",
+String(usuario.passaporte)
+)
+.in(
+"status",
+["ativo","pausado"]
+)
+.order(
+"entrada",
+{ascending:false}
+)
 .limit(1);
 
-if(error)throw error;
+if(error){
+throw error;
+}
 
-return data&&data.length?data[0]:null;
+return data&&data.length?
+data[0]:
+null;
 
 }
 
@@ -1094,19 +1260,26 @@ async function buscarEquipe(id){
 if(!id){
 
 equipeAtual=null;
+
 return null;
 
 }
 
-const {data,error}=await supabaseClient
+const {data,error}=
+await supabaseClient
 .from("equipes")
 .select("*")
 .eq("id",id)
 .limit(1);
 
-if(error)throw error;
+if(error){
+throw error;
+}
 
-equipeAtual=data&&data.length?data[0]:null;
+equipeAtual=
+data&&data.length?
+data[0]:
+null;
 
 return equipeAtual;
 
@@ -1115,117 +1288,126 @@ return equipeAtual;
 
 async function buscarMembrosEquipe(equipeId){
 
-if(!equipeId)return [];
+if(!equipeId){
+return [];
+}
 
-const {data,error}=await supabaseClient
+const {data,error}=
+await supabaseClient
 .from("equipe_membros")
 .select("*")
 .eq("equipe_id",equipeId)
 .neq("status","fora")
-.order("entrou_em",{ascending:true});
+.order(
+"entrou_em",
+{ascending:true}
+);
 
-if(error)throw error;
+if(error){
+throw error;
+}
 
 
 /*
-Elimina duplicados pelo passaporte.
-Isso impede vários Falcão na tela.
+Remove duplicados pelo passaporte
+antes de mostrar qualquer equipe.
 */
 
 const mapa=new Map();
 
-(data||[]).forEach(membro=>{
+(data||[]).forEach(
+membro=>{
 
-const passaporte=String(membro.passaporte||"");
+const passaporte=
+String(membro.passaporte||"");
 
-if(!passaporte)return;
+if(!passaporte){
+return;
+}
 
-const anterior=mapa.get(passaporte);
+const anterior=
+mapa.get(passaporte);
 
 if(!anterior){
 
-mapa.set(passaporte,membro);
+mapa.set(
+passaporte,
+membro
+);
+
 return;
 
 }
 
-const statusNovo=String(membro.status||"").toLowerCase();
-const statusAnterior=String(anterior.status||"").toLowerCase();
+const novoStatus=
+String(
+membro.status||""
+).toLowerCase();
+
+const statusAnterior=
+String(
+anterior.status||""
+).toLowerCase();
 
 if(
-statusNovo==="ativo"&&
+novoStatus==="ativo"&&
 statusAnterior!=="ativo"
 ){
 
-mapa.set(passaporte,membro);
+mapa.set(
+passaporte,
+membro
+);
 
 }
 
 });
 
-return Array.from(mapa.values());
-
-}
-
-
-async function buscarCadastroMembro(passaporte){
-
-/*
-A tabela Membros possui o cargo administrativo,
-como Coordenador Geral.
-
-Esse cargo NÃO é o cargo da equipe.
-*/
-
-const {data,error}=await supabaseClient
-.from("Membros")
-.select("Id,Passaporte,Senha credencial,Nome,Cargo,Ativo,Criado em")
-.eq("Passaporte",String(passaporte))
-.limit(1);
-
-if(error){
-
-console.warn(
-"Não foi possível carregar o cadastro:",
-error
+return Array.from(
+mapa.values()
 );
-
-return null;
-
-}
-
-return data&&data.length?data[0]:null;
 
 }
 
 
 async function buscarEquipeDisponivel(){
 
-const {data,error}=await supabaseClient
+const {data,error}=
+await supabaseClient
 .from("equipes")
 .select("*")
 .eq("ativa",true);
 
-if(error)throw error;
+if(error){
+throw error;
+}
 
-if(!data||!data.length)return null;
+if(!data||!data.length){
+return null;
+}
 
 const disponiveis=[];
 
-for(const equipe of data){
+for(
+const equipe of data
+){
 
-const membros=await buscarMembrosEquipe(equipe.id);
+const membros=
+await buscarMembrosEquipe(
+equipe.id
+);
 
-const tipo=String(equipe.tipo||"")
+const tipo=
+String(
+equipe.tipo||""
+)
 .trim()
 .toLowerCase();
 
-const limite=Number(equipe.limite||0);
-
 
 /*
-FAVELA:
-sem limite geral.
+FAVELA
+Não possui limite geral.
 */
 
 if(tipo==="favela"){
@@ -1241,8 +1423,8 @@ continue;
 
 
 /*
-SEGURANÇA:
-sem limite geral.
+SEGURANÇA
+P1 e P2 sem limite.
 */
 
 if(
@@ -1261,8 +1443,8 @@ continue;
 
 
 /*
-VENDA:
-máximo 4 no total.
+VENDA
+Máximo de 4 no total.
 */
 
 if(tipo==="venda"){
@@ -1282,14 +1464,49 @@ continue;
 
 
 /*
-FARM:
-máximo 8 no total,
-considerando 4 por atividade.
+FARM
+Máximo de 4 por atividade.
+
+Se a equipe possuir uma função
+definida, usamos essa função como
+atividade.
+
+Caso contrário, mantemos limite
+seguro de 4.
 */
 
 if(tipo==="farm"){
 
-if(membros.length<8){
+const atividade=
+String(
+equipe.funcao||""
+)
+.trim()
+.toLowerCase();
+
+if(atividade){
+
+const quantidade=
+membros.filter(
+m=>
+String(
+m.atividade||""
+)
+.trim()
+.toLowerCase()===
+atividade
+).length;
+
+if(quantidade<4){
+
+disponiveis.push({
+equipe,
+membros
+});
+
+}
+
+}else if(membros.length<4){
 
 disponiveis.push({
 equipe,
@@ -1304,11 +1521,17 @@ continue;
 
 
 /*
-Caso alguma equipe ainda use
-o limite antigo.
+Equipes antigas que ainda utilizam
+o campo limite.
 */
 
-if(!limite||membros.length<limite){
+const limite=
+Number(equipe.limite||0);
+
+if(
+!limite||
+membros.length<limite
+){
 
 disponiveis.push({
 equipe,
@@ -1320,10 +1543,14 @@ membros
 }
 
 
-if(!disponiveis.length)return null;
+if(!disponiveis.length){
+return null;
+}
 
 disponiveis.sort(
-(a,b)=>a.membros.length-b.membros.length
+(a,b)=>
+a.membros.length-
+b.membros.length
 );
 
 return disponiveis[0].equipe;
@@ -1331,34 +1558,163 @@ return disponiveis[0].equipe;
 }
 
 
-async function inserirMembroEquipe(equipeId){
+async function inserirMembroEquipe(equipe){
+
+if(!equipe){
+return null;
+}
+
 
 /*
-Antes de inserir, procura se o jogador
-já está nessa equipe.
-
-Isso evita duplicação.
+Primeiro verifica se já existe
+um registro ativo/pausado.
 */
 
-const {data:existente,error:erroBusca}=await supabaseClient
+const {data:existente,error}=
+await supabaseClient
 .from("equipe_membros")
 .select("*")
-.eq("equipe_id",equipeId)
-.eq("passaporte",String(usuario.passaporte))
-.neq("status","fora")
+.eq(
+"equipe_id",
+equipe.id
+)
+.eq(
+"passaporte",
+String(usuario.passaporte)
+)
+.neq(
+"status",
+"fora"
+)
 .limit(1);
 
-if(erroBusca)throw erroBusca;
+if(error){
+throw error;
+}
 
-if(existente&&existente.length){
+if(
+existente&&
+existente.length
+){
 
 return existente[0];
 
 }
 
 
+const tipo=
+String(
+equipe.tipo||""
+)
+.trim()
+.toLowerCase();
+
+let posicao=null;
+let atividade=null;
+
+
+/*
+FAVELA
+P1 primeiro.
+Depois P2.
+*/
+
+if(tipo==="favela"){
+
+const membros=
+await buscarMembrosEquipe(
+equipe.id
+);
+
+const possuiP1=
+membros.some(
+m=>
+String(
+m.posicao||""
+)
+.toUpperCase()==="P1"
+);
+
+const possuiP2=
+membros.some(
+m=>
+String(
+m.posicao||""
+)
+.toUpperCase()==="P2"
+);
+
+if(!possuiP1){
+
+posicao="P1";
+
+}else if(!possuiP2){
+
+posicao="P2";
+
+}
+
+atividade=
+equipe.funcao||
+null;
+
+}
+
+
+/*
+FARM
+A função da equipe vira
+a atividade do membro.
+*/
+
+if(tipo==="farm"){
+
+atividade=
+equipe.funcao||
+null;
+
+}
+
+
+/*
+VENDA
+Pode começar em P1.
+A troca/organização de posição
+fica no menu da equipe.
+*/
+
+if(tipo==="venda"){
+
+posicao="P1";
+
+atividade=
+equipe.funcao||
+null;
+
+}
+
+
+/*
+SEGURANÇA
+Começa em P1.
+*/
+
+if(
+tipo==="segurança"||
+tipo==="seguranca"
+){
+
+posicao="P1";
+
+atividade=
+equipe.funcao||
+null;
+
+}
+
+
 const novo={
-equipe_id:equipeId,
+equipe_id:equipe.id,
 passaporte:String(usuario.passaporte),
 nome:usuario.nome||"",
 status:"ativo",
@@ -1366,22 +1722,42 @@ entrou_em:new Date().toISOString()
 };
 
 
-const {data,error}=await supabaseClient
+/*
+Só envia os campos adicionais quando
+realmente temos informação para eles.
+*/
+
+if(posicao){
+novo.posicao=posicao;
+}
+
+if(atividade){
+novo.atividade=atividade;
+}
+
+
+const {data,error:erroInsercao}=
+await supabaseClient
 .from("equipe_membros")
 .insert(novo)
 .select()
 .limit(1);
 
-if(error)throw error;
+if(erroInsercao){
+throw erroInsercao;
+}
 
-return data&&data.length?data[0]:null;
+return data&&data.length?
+data[0]:
+null;
 
 }
 
 
 async function criarPonto(){
 
-const equipe=await buscarEquipeDisponivel();
+const equipe=
+await buscarEquipeDisponivel();
 
 if(!equipe){
 
@@ -1391,25 +1767,43 @@ throw new Error(
 
 }
 
-const agora=new Date().toISOString();
 
-const {data,error}=await supabaseClient
+const agora=
+new Date().toISOString();
+
+
+const {data,error}=
+await supabaseClient
 .from("pontos")
 .insert({
 
-passaporte:String(usuario.passaporte),
-nome:usuario.nome||"",
-equipe_id:equipe.id,
-entrada:agora,
-status:"ativo"
+passaporte:
+String(usuario.passaporte),
+
+nome:
+usuario.nome||"",
+
+equipe_id:
+equipe.id,
+
+entrada:
+agora,
+
+status:
+"ativo"
 
 })
 .select()
 .limit(1);
 
-if(error)throw error;
+if(error){
+throw error;
+}
 
-if(!data||!data.length){
+if(
+!data||
+!data.length
+){
 
 throw new Error(
 "Não foi possível criar o ponto."
@@ -1417,13 +1811,41 @@ throw new Error(
 
 }
 
+
 ponto=data[0];
 
 equipeAtual=equipe;
 
-await inserirMembroEquipe(equipe.id);
 
-inicioTimestamp=new Date(
+try{
+
+await inserirMembroEquipe(
+equipe
+);
+
+}catch(error){
+
+/*
+Se a entrada na equipe falhar,
+tentamos desfazer o ponto para
+não deixar ponto órfão.
+*/
+
+await supabaseClient
+.from("pontos")
+.delete()
+.eq("id",ponto.id);
+
+ponto=null;
+equipeAtual=null;
+
+throw error;
+
+}
+
+
+inicioTimestamp=
+new Date(
 ponto.entrada
 ).getTime();
 
@@ -1434,18 +1856,110 @@ pausado=false;
 salvarEstadoLocal();
 
 atualizarInterface();
-atualizarCronometro();
-iniciarIntervaloCronometro();
 
-await renderizarEquipe();
-await carregarHistorico();
+atualizarCronometro();
+
+iniciarIntervaloCronometro();
 
 }
 
 
-async function restaurarPonto(){
+/*
+Depois de iniciar, o usuário vai
+automaticamente para equipe.html.
+*/
 
-const pontoBanco=await buscarPontoAtual();
+async function iniciarJornada(){
+
+if(
+ponto&&
+(
+ponto.status==="ativo"||
+ponto.status==="pausado"
+)
+){
+
+window.location.href=
+"equipe.html";
+
+return;
+
+}
+
+
+if(verificarCooldown()){
+
+alert(
+"Aguarde um momento antes de iniciar um novo ponto."
+);
+
+return;
+
+}
+
+
+const botao=
+document.getElementById(
+"btnPrincipal"
+);
+
+if(botao){
+
+botao.classList.add(
+"btn-disabled"
+);
+
+botao.innerHTML=
+'<i class="fa-solid fa-spinner fa-spin"></i> Iniciando...';
+
+}
+
+
+try{
+
+await criarPonto();
+
+await carregarHistorico();
+
+
+/*
+Aqui acontece o redirecionamento.
+*/
+
+window.location.href=
+"equipe.html";
+
+
+}catch(error){
+
+console.error(
+"Erro ao iniciar ponto:",
+error
+);
+
+if(botao){
+
+botao.classList.remove(
+"btn-disabled"
+);
+
+botao.innerHTML=
+'<i class="fa-solid fa-play"></i> Iniciar';
+
+}
+
+alert(
+error?.message||
+"Não foi possível iniciar o ponto."
+);
+
+}
+
+  }
+  async function restaurarPonto(){
+
+const pontoBanco=
+await buscarPontoAtual();
 
 if(!pontoBanco){
 
@@ -1468,49 +1982,67 @@ return;
 
 }
 
+
 ponto=pontoBanco;
 
-const salvo=localStorage.getItem(
+
+const salvo=
+localStorage.getItem(
 chaveEstado()
 );
+
 
 if(salvo){
 
 try{
 
-const estado=JSON.parse(salvo);
+const estado=
+JSON.parse(salvo);
 
 if(
 estado.pontoId&&
-String(estado.pontoId)===String(ponto.id)
+String(estado.pontoId)===
+String(ponto.id)
 ){
 
 inicioTimestamp=
-Number(estado.inicioTimestamp)||
-new Date(ponto.entrada).getTime();
+Number(
+estado.inicioTimestamp
+)||
+new Date(
+ponto.entrada
+).getTime();
 
 tempoPausadoTotal=
-Number(estado.tempoPausadoTotal)||0;
+Number(
+estado.tempoPausadoTotal
+)||0;
 
 pausaInicioTimestamp=
 estado.pausaInicioTimestamp?
-Number(estado.pausaInicioTimestamp):
+Number(
+estado.pausaInicioTimestamp
+):
 null;
 
 }else{
 
 inicioTimestamp=
-new Date(ponto.entrada).getTime();
+new Date(
+ponto.entrada
+).getTime();
 
 tempoPausadoTotal=0;
 pausaInicioTimestamp=null;
 
 }
 
-}catch(e){
+}catch(error){
 
 inicioTimestamp=
-new Date(ponto.entrada).getTime();
+new Date(
+ponto.entrada
+).getTime();
 
 tempoPausadoTotal=0;
 pausaInicioTimestamp=null;
@@ -1520,78 +2052,38 @@ pausaInicioTimestamp=null;
 }else{
 
 inicioTimestamp=
-new Date(ponto.entrada).getTime();
+new Date(
+ponto.entrada
+).getTime();
 
 tempoPausadoTotal=0;
 pausaInicioTimestamp=null;
 
 }
 
-pausado=ponto.status==="pausado";
+
+pausado=
+ponto.status==="pausado";
+
 
 if(ponto.equipe_id){
 
-await buscarEquipe(ponto.equipe_id);
+await buscarEquipe(
+ponto.equipe_id
+);
 
 }
+
 
 salvarEstadoLocal();
 
 atualizarInterface();
+
 atualizarCronometro();
+
 iniciarIntervaloCronometro();
 
 await renderizarEquipe();
-
-}
-
-
-async function iniciarJornada(){
-
-if(
-ponto&&
-(
-ponto.status==="ativo"||
-ponto.status==="pausado"
-)
-){
-
-return;
-
-}
-
-if(verificarCooldown()){
-
-alert(
-"Aguarde um momento antes de iniciar um novo ponto."
-);
-
-return;
-
-}
-
-btnPrincipal.classList.add(
-"btn-disabled"
-);
-
-try{
-
-await criarPonto();
-
-}catch(error){
-
-console.error(error);
-
-btnPrincipal.classList.remove(
-"btn-disabled"
-);
-
-alert(
-error?.message||
-"Não foi possível iniciar o ponto."
-);
-
-}
 
 }
 
@@ -1607,29 +2099,36 @@ return;
 
 }
 
+
 pararCronometro();
 
-const agora=Date.now();
 
-pausaInicioTimestamp=agora;
-pausado=true;
+const agora=
+Date.now();
 
-const {data,error}=await supabaseClient
+
+const {data,error}=
+await supabaseClient
 .from("pontos")
 .update({
 
 status:"pausado",
-pausa_inicio:new Date(agora).toISOString()
+
+pausa_inicio:
+new Date(
+agora
+).toISOString()
 
 })
-.eq("id",ponto.id)
+.eq(
+"id",
+ponto.id
+)
 .select()
 .limit(1);
 
-if(error){
 
-pausado=false;
-pausaInicioTimestamp=null;
+if(error){
 
 iniciarIntervaloCronometro();
 
@@ -1637,7 +2136,11 @@ throw error;
 
 }
 
-if(data&&data.length){
+
+if(
+data&&
+data.length
+){
 
 ponto=data[0];
 
@@ -1647,12 +2150,23 @@ ponto.status="pausado";
 
 }
 
+
+pausaInicioTimestamp=
+agora;
+
+pausado=true;
+
+
 salvarEstadoLocal();
 
 atualizarInterface();
+
 atualizarCronometro();
 
-await atualizarMembroStatus("pausado");
+
+await atualizarMembroStatus(
+"pausado"
+);
 
 }
 
@@ -1668,42 +2182,64 @@ return;
 
 }
 
-const agora=Date.now();
+
+const agora=
+Date.now();
+
+
+let tempoPausaAgora=0;
 
 if(pausaInicioTimestamp){
 
-tempoPausadoTotal+=Math.max(
+tempoPausaAgora=
+Math.max(
 0,
-agora-pausaInicioTimestamp
+agora-
+pausaInicioTimestamp
 );
 
 }
 
-pausaInicioTimestamp=null;
-pausado=false;
 
-const {data,error}=await supabaseClient
+const {data,error}=
+await supabaseClient
 .from("pontos")
 .update({
 
 status:"ativo",
-pausa_fim:new Date(agora).toISOString()
+
+pausa_fim:
+new Date(
+agora
+).toISOString()
 
 })
-.eq("id",ponto.id)
+.eq(
+"id",
+ponto.id
+)
 .select()
 .limit(1);
 
-if(error){
 
-pausado=true;
-pausaInicioTimestamp=agora;
+if(error){
 
 throw error;
 
 }
 
-if(data&&data.length){
+
+tempoPausadoTotal+=
+tempoPausaAgora;
+
+pausaInicioTimestamp=null;
+pausado=false;
+
+
+if(
+data&&
+data.length
+){
 
 ponto=data[0];
 
@@ -1713,32 +2249,55 @@ ponto.status="ativo";
 
 }
 
+
 salvarEstadoLocal();
 
 atualizarInterface();
+
 atualizarCronometro();
+
 iniciarIntervaloCronometro();
 
-await atualizarMembroStatus("ativo");
+
+await atualizarMembroStatus(
+"ativo"
+);
 
 }
 
 
 async function pausarContinuar(){
 
-if(!ponto)return;
+if(!ponto){
+return;
+}
 
-btnPausa.classList.add(
+
+const botao=
+document.getElementById(
+"btnPausa"
+);
+
+if(botao){
+
+botao.classList.add(
 "btn-disabled"
 );
 
+}
+
+
 try{
 
-if(ponto.status==="ativo"){
+if(
+ponto.status==="ativo"
+){
 
 await pausarPonto();
 
-}else if(ponto.status==="pausado"){
+}else if(
+ponto.status==="pausado"
+){
 
 await retomarPonto();
 
@@ -1746,18 +2305,17 @@ await retomarPonto();
 
 }catch(error){
 
-console.error(error);
+console.error(
+"Erro ao alterar ponto:",
+error
+);
 
 alert(
 error?.message||
 "Não foi possível alterar o ponto."
 );
 
-atualizarInterface();
-atualizarCronometro();
-
 if(
-ponto&&
 ponto.status==="ativo"
 ){
 
@@ -1765,14 +2323,30 @@ iniciarIntervaloCronometro();
 
 }
 
+atualizarInterface();
+atualizarCronometro();
+
 }finally{
 
-btnPausa.classList.remove(
+const novoBotao=
+document.getElementById(
+"btnPausa"
+);
+
+if(novoBotao){
+
+novoBotao.classList.remove(
 "btn-disabled"
 );
 
 }
-  function abrirModalEncerrar(){
+
+}
+
+}
+
+
+function abrirModalEncerrar(){
 
 if(
 !ponto||
@@ -1786,14 +2360,18 @@ return;
 
 }
 
-modalEncerrar.classList.add("show");
+modalEncerrar.classList.add(
+"show"
+);
 
 }
 
 
 function fecharModalEncerrar(){
 
-modalEncerrar.classList.remove("show");
+modalEncerrar.classList.remove(
+"show"
+);
 
 }
 
@@ -1814,33 +2392,45 @@ return;
 
 
 /*
-PARA O INTERVALO ANTES DE QUALQUER COISA.
+Para o cronômetro imediatamente.
 */
 
 pararCronometro();
 
-const pontoId=ponto.id;
-const equipeId=ponto.equipe_id;
-const agora=Date.now();
+
+const pontoId=
+ponto.id;
+
+const equipeId=
+ponto.equipe_id;
+
+const agora=
+Date.now();
+
 
 if(
 ponto.status==="pausado"&&
 pausaInicioTimestamp
 ){
 
-tempoPausadoTotal+=Math.max(
+tempoPausadoTotal+=
+Math.max(
 0,
-agora-pausaInicioTimestamp
+agora-
+pausaInicioTimestamp
 );
 
 }
 
-const saida=new Date(
+
+const saida=
+new Date(
 agora
 ).toISOString();
 
 
-const {data,error}=await supabaseClient
+const {data,error}=
+await supabaseClient
 .from("pontos")
 .update({
 
@@ -1848,18 +2438,15 @@ saida,
 status:"encerrado"
 
 })
-.eq("id",pontoId)
+.eq(
+"id",
+pontoId
+)
 .select()
 .limit(1);
 
+
 if(error){
-
-/*
-Se falhar, mantém o ponto funcionando.
-*/
-
-atualizarInterface();
-atualizarCronometro();
 
 if(
 ponto.status==="ativo"
@@ -1874,7 +2461,10 @@ throw error;
 }
 
 
-if(data&&data.length){
+if(
+data&&
+data.length
+){
 
 ponto=data[0];
 
@@ -1885,10 +2475,6 @@ ponto.saida=saida;
 
 }
 
-
-/*
-Tira o usuário da equipe.
-*/
 
 if(equipeId){
 
@@ -1905,12 +2491,14 @@ Cooldown de 1 minuto.
 
 localStorage.setItem(
 chaveCooldown(),
-String(Date.now()+60000)
+String(
+Date.now()+60000
+)
 );
 
 
 /*
-AGORA APAGA COMPLETAMENTE O ESTADO.
+Limpa absolutamente tudo.
 */
 
 ponto=null;
@@ -1925,32 +2513,41 @@ pararCronometro();
 
 limparEstadoLocal();
 
-cronometro.textContent="00:00:00";
+
+cronometro.textContent=
+"00:00:00";
+
 
 atualizarInterface();
 
 await renderizarEquipe();
+
 await carregarHistorico();
 
 fecharModalEncerrar();
 
-alert(
-"Ponto encerrado com sucesso."
-);
 
 }
 
 
-async function finalizarMembroEquipe(equipeId){
+async function finalizarMembroEquipe(
+equipeId
+){
 
-if(!equipeId)return;
+if(!equipeId){
+return;
+}
 
-const {error}=await supabaseClient
+
+const {error}=
+await supabaseClient
 .from("equipe_membros")
 .update({
 
 status:"fora",
-saiu_em:new Date().toISOString()
+
+saiu_em:
+new Date().toISOString()
 
 })
 .eq(
@@ -1959,19 +2556,26 @@ equipeId
 )
 .eq(
 "passaporte",
-String(usuario.passaporte)
+String(
+usuario.passaporte
+)
 )
 .neq(
 "status",
 "fora"
 );
 
-if(error)throw error;
+
+if(error){
+throw error;
+}
 
 }
 
 
-async function atualizarMembroStatus(status){
+async function atualizarMembroStatus(
+status
+){
 
 if(
 !ponto||
@@ -1982,7 +2586,9 @@ return;
 
 }
 
-const {error}=await supabaseClient
+
+const {error}=
+await supabaseClient
 .from("equipe_membros")
 .update({
 
@@ -1995,12 +2601,15 @@ ponto.equipe_id
 )
 .eq(
 "passaporte",
-String(usuario.passaporte)
+String(
+usuario.passaporte
+)
 )
 .neq(
 "status",
 "fora"
 );
+
 
 if(error){
 
@@ -2011,160 +2620,41 @@ error
 
 }
 
+  }
+  function regraEquipeTexto(equipe){
+
+if(!equipe){
+return "—";
 }
 
-
-async function trocarEquipe(){
-
-if(
-!ponto||
-!ponto.equipe_id
-){
-
-return;
-
-}
-
-if(ponto.status==="pausado"){
-
-alert(
-"Retome o ponto antes de trocar de equipe."
-);
-
-return;
-
-}
-
-const confirmar=confirm(
-"Deseja trocar de equipe?"
-);
-
-if(!confirmar)return;
-
-try{
-
-const novaEquipe=
-await buscarEquipeDisponivel();
-
-if(!novaEquipe){
-
-alert(
-"Não há outra equipe disponível."
-);
-
-return;
-
-}
-
-if(
-String(novaEquipe.id)===
-String(ponto.equipe_id)
-){
-
-alert(
-"Você já está na equipe disponível."
-);
-
-return;
-
-}
-
-const equipeAnterior=
-ponto.equipe_id;
-
-
-await supabaseClient
-.from("equipe_membros")
-.update({
-
-status:"fora",
-saiu_em:new Date().toISOString()
-
-})
-.eq(
-"equipe_id",
-equipeAnterior
-)
-.eq(
-"passaporte",
-String(usuario.passaporte)
-)
-.neq(
-"status",
-"fora"
-);
-
-
-const {data,error}=await supabaseClient
-.from("pontos")
-.update({
-
-equipe_id:novaEquipe.id
-
-})
-.eq("id",ponto.id)
-.select()
-.limit(1);
-
-if(error)throw error;
-
-if(data&&data.length){
-
-ponto=data[0];
-
-}else{
-
-ponto.equipe_id=novaEquipe.id;
-
-}
-
-equipeAtual=novaEquipe;
-
-await inserirMembroEquipe(
-novaEquipe.id
-);
-
-salvarEstadoLocal();
-
-await renderizarEquipe();
-
-alert(
-"Equipe alterada com sucesso."
-);
-
-}catch(error){
-
-console.error(error);
-
-alert(
-error?.message||
-"Não foi possível trocar de equipe."
-);
-
-}
-
-}
-
-
-function regraEquipeTexto(equipe){
-
-if(!equipe)return "—";
-
-const tipo=String(
+const tipo=
+String(
 equipe.tipo||""
-).trim().toLowerCase();
+)
+.trim()
+.toLowerCase();
+
 
 if(tipo==="favela"){
+
 return "Sem limite geral";
+
 }
+
 
 if(tipo==="farm"){
+
 return "Até 4 por atividade";
+
 }
 
+
 if(tipo==="venda"){
+
 return "Máximo 4 membros";
+
 }
+
 
 if(
 tipo==="segurança"||
@@ -2175,11 +2665,14 @@ return "Sem limite";
 
 }
 
+
 if(equipe.limite){
 
-return "Máximo "+equipe.limite;
+return "Máximo "+
+equipe.limite;
 
 }
+
 
 return "Não definido";
 
@@ -2213,6 +2706,7 @@ return;
 
 }
 
+
 try{
 
 if(!equipeAtual){
@@ -2223,27 +2717,15 @@ ponto.equipe_id
 
 }
 
+
 const membros=
 await buscarMembrosEquipe(
 ponto.equipe_id
 );
 
-const cadastro=
-await buscarCadastroMembro(
-usuario.passaporte
-);
 
 const quantidade=
 membros.length;
-
-const limite=
-regraEquipeTexto(
-equipeAtual
-);
-
-const meuCargo=
-cadastro?.Cargo||
-"Não informado";
 
 
 equipeContainer.innerHTML=`
@@ -2258,7 +2740,8 @@ Equipe atual
 
 <div class="team-name">
 ${escaparHTML(
-equipeAtual?.nome||"Equipe"
+equipeAtual?.nome||
+"Equipe"
 )}
 </div>
 
@@ -2267,7 +2750,8 @@ equipeAtual?.nome||"Equipe"
 <i class="fa-solid fa-layer-group"></i>
 
 ${escaparHTML(
-equipeAtual?.tipo||"Não informado"
+equipeAtual?.tipo||
+"Não informado"
 )}
 
 </div>
@@ -2297,20 +2781,11 @@ Regra
 </div>
 
 <div class="team-info-value">
-${escaparHTML(limite)}
-</div>
-
-</div>
-
-
-<div class="team-info-item">
-
-<div class="team-info-label">
-Seu cargo
-</div>
-
-<div class="team-info-value">
-${escaparHTML(meuCargo)}
+${escaparHTML(
+regraEquipeTexto(
+equipeAtual
+)
+)}
 </div>
 
 </div>
@@ -2331,6 +2806,22 @@ equipeAtual?.funcao||
 
 </div>
 
+
+<div class="team-info-item">
+
+<div class="team-info-label">
+Área
+</div>
+
+<div class="team-info-value">
+${escaparHTML(
+equipeAtual?.area||
+"Não definida"
+)}
+</div>
+
+</div>
+
 </div>
 
 </div>
@@ -2340,7 +2831,7 @@ equipeAtual?.funcao||
 }catch(error){
 
 console.error(
-"Erro ao renderizar equipe:",
+"Erro ao carregar equipe:",
 error
 );
 
@@ -2369,12 +2860,15 @@ async function carregarHistorico(){
 
 try{
 
-const {data,error}=await supabaseClient
+const {data,error}=
+await supabaseClient
 .from("pontos")
 .select("*")
 .eq(
 "passaporte",
-String(usuario.passaporte)
+String(
+usuario.passaporte
+)
 )
 .order(
 "entrada",
@@ -2382,9 +2876,16 @@ String(usuario.passaporte)
 )
 .limit(10);
 
-if(error)throw error;
 
-if(!data||!data.length){
+if(error){
+throw error;
+}
+
+
+if(
+!data||
+!data.length
+){
 
 historico.innerHTML=`
 
@@ -2398,9 +2899,13 @@ return;
 
 }
 
-historico.innerHTML=data.map(item=>{
 
-let status="Encerrado";
+historico.innerHTML=
+data.map(
+item=>{
+
+let status=
+"Encerrado";
 
 if(item.status==="ativo"){
 status="Ativo";
@@ -2417,13 +2922,21 @@ return`
 <div class="history-top">
 
 <div class="history-date">
+
 ${escaparHTML(
-formatarData(item.entrada)
+formatarData(
+item.entrada
+)
 )}
+
 </div>
 
 <div class="history-status">
-${escaparHTML(status)}
+
+${escaparHTML(
+status
+)}
+
 </div>
 
 </div>
@@ -2432,7 +2945,9 @@ ${escaparHTML(status)}
 
 Entrada:
 ${escaparHTML(
-formatarHora(item.entrada)
+formatarHora(
+item.entrada
+)
 )}
 
 &nbsp; • &nbsp;
@@ -2440,7 +2955,9 @@ formatarHora(item.entrada)
 Saída:
 ${escaparHTML(
 item.saida?
-formatarHora(item.saida):
+formatarHora(
+item.saida
+):
 "Em andamento"
 )}
 
@@ -2450,7 +2967,9 @@ formatarHora(item.saida):
 
 `;
 
-}).join("");
+}
+).join("");
+
 
 }catch(error){
 
@@ -2474,13 +2993,19 @@ Não foi possível carregar o histórico.
 
 function verificarCooldown(){
 
-const valor=localStorage.getItem(
+const valor=
+localStorage.getItem(
 chaveCooldown()
 );
 
-if(!valor)return false;
+if(!valor){
+return false;
+}
 
-const fim=Number(valor);
+
+const fim=
+Number(valor);
+
 
 if(
 !fim||
@@ -2495,25 +3020,10 @@ return false;
 
 }
 
+
 return true;
 
-  }
-  btnPrincipal.addEventListener(
-"click",
-iniciarJornada
-);
-
-
-btnPausa.addEventListener(
-"click",
-pausarContinuar
-);
-
-
-btnEncerrar.addEventListener(
-"click",
-abrirModalEncerrar
-);
+}
 
 
 btnCancelarEncerrar.addEventListener(
@@ -2536,7 +3046,9 @@ await encerrarJornada();
 
 }catch(error){
 
-console.error(error);
+console.error(
+error
+);
 
 alert(
 error?.message||
@@ -2554,18 +3066,13 @@ btnConfirmarEncerrar.classList.remove(
 });
 
 
-btnTrocar.addEventListener(
-"click",
-trocarEquipe
-);
-
-
 modalEncerrar.addEventListener(
 "click",
 function(event){
 
 if(
-event.target===modalEncerrar
+event.target===
+modalEncerrar
 ){
 
 fecharModalEncerrar();
@@ -2591,11 +3098,25 @@ atualizarCronometro();
 });
 
 
+window.addEventListener(
+"beforeunload",
+function(){
+
+pararCronometro();
+
+});
+
+
 async function iniciarSistema(){
 
-if(!carregarUsuario()){
+if(
+!carregarUsuario()
+){
+
 return;
+
 }
+
 
 try{
 
@@ -2603,30 +3124,41 @@ await restaurarPonto();
 
 await carregarHistorico();
 
+
 if(
 !ponto&&
 verificarCooldown()
 ){
 
-btnPrincipal.classList.add(
+const botao=
+document.getElementById(
+"btnPrincipal"
+);
+
+if(botao){
+
+botao.classList.add(
 "btn-disabled"
 );
 
-btnPrincipal.innerHTML=
+botao.innerHTML=
 '<i class="fa-solid fa-hourglass-half"></i> Aguarde';
+
+}
 
 }
 
 }catch(error){
 
 console.error(
-"Erro ao iniciar sistema:",
+"Erro ao carregar sistema:",
 error
 );
 
 pararCronometro();
 
-cronometro.textContent="00:00:00";
+cronometro.textContent=
+"00:00:00";
 
 alert(
 "Não foi possível carregar o sistema de ponto."
@@ -2635,21 +3167,6 @@ alert(
 }
 
 }
-
-
-window.addEventListener(
-"beforeunload",
-function(){
-
-/*
-Não criamos nem alteramos ponto aqui.
-Apenas garantimos que o intervalo não
-continue preso na página.
-*/
-
-pararCronometro();
-
-});
 
 
 iniciarSistema();
