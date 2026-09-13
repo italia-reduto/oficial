@@ -9,6 +9,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{--bg:#08090d;--bg2:#0d0f14;--card:#12151b;--card2:#171a21;--border:rgba(255,255,255,.07);--text:#f5f5f5;--muted:#8b929f;--red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b;--blue:#3b82f6}
@@ -40,6 +41,7 @@ button{font-family:inherit}
 .nav-item{border:0;background:transparent;color:var(--muted);border-radius:16px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;gap:4px}.nav-item i{font-size:16px}.nav-item.active{background:rgba(225,29,72,.1);color:var(--red2)}
 </style>
 </head>
+
 <body>
 
 <header class="topbar">
@@ -51,6 +53,7 @@ button{font-family:inherit}
 </header>
 
 <main class="container">
+
 <section class="title">
 <h1>Meu Ponto</h1>
 <p>Controle sua jornada de trabalho.</p>
@@ -69,6 +72,7 @@ button{font-family:inherit}
 </div>
 
 <section id="jornada">
+
 <div class="clock-card">
 <div class="clock-label">Tempo em Serviço</div>
 <div class="timer" id="timer">00:00:00</div>
@@ -79,11 +83,17 @@ button{font-family:inherit}
 <div class="marker"><span>SAÍDA</span><strong id="marcadorSaida">--:--</strong></div>
 </div>
 
-<button class="btn-principal" id="btnIniciar" onclick="iniciarJornada()"><i class="fa-solid fa-play"></i> Iniciar Jornada</button>
+<button class="btn-principal" id="btnIniciar" onclick="iniciarJornada()">
+<i class="fa-solid fa-play"></i> Iniciar Jornada
+</button>
 
 <div class="grupo-botoes" id="grupoBotoes">
-<button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()"><i class="fa-solid fa-pause"></i> Pausar</button>
-<button class="btn-acao btn-encerrar" onclick="encerrarJornada()"><i class="fa-solid fa-stop"></i> Encerrar</button>
+<button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()">
+<i class="fa-solid fa-pause"></i> Pausar
+</button>
+<button class="btn-acao btn-encerrar" onclick="encerrarJornada()">
+<i class="fa-solid fa-stop"></i> Encerrar
+</button>
 </div>
 </div>
 
@@ -96,12 +106,22 @@ button{font-family:inherit}
 </div>
 <i class="fa-solid fa-users" style="color:var(--blue)"></i>
 </div>
-<div class="equipe-membros" id="equipeMembros"><div class="loading" style="padding:15px">Carregando membros...</div></div>
-<button class="btn-trocar" id="btnTrocar" onclick="trocarEquipe()"><i class="fa-solid fa-shuffle"></i> Trocar de equipe</button>
+
+<div class="equipe-membros" id="equipeMembros">
+<div class="loading" style="padding:15px">Carregando membros...</div>
 </div>
+
+<button class="btn-trocar" id="btnTrocar" onclick="trocarEquipe()">
+<i class="fa-solid fa-shuffle"></i> Trocar de equipe
+</button>
+</div>
+
 </section>
 
-<section id="historico"><div class="loading">Carregando histórico...</div></section>
+<section id="historico">
+<div class="loading">Carregando histórico...</div>
+</section>
+
 </main>
 
 <nav class="bottom-nav">
@@ -110,226 +130,857 @@ button{font-family:inherit}
 <a class="nav-item" href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
 <a class="nav-item" href="registros.html"><i class="fa-solid fa-folder-open"></i>Registros</a>
 </nav>
+
 <script>
-const supabaseClient=window.supabase.createClient("https://vclwmikzmnuqfdxobtik.supabase.co","sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF");
+
+const supabaseClient=window.supabase.createClient(
+"https://vclwmikzmnuqfdxobtik.supabase.co",
+"sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
+);
+
 const sessao=sessionStorage.getItem("italia_usuario");
-if(!sessao){location.href="login.html";throw Error("Usuário não autenticado.");}
+
+if(!sessao){
+location.href="login.html";
+throw Error("Usuário não autenticado.");
+}
+
 const usuario=JSON.parse(sessao);
 
 const el={
-nome:document.getElementById("nomeUsuario"),pass:document.getElementById("passaporteUsuario"),
-avatar:document.getElementById("avatar"),status:document.getElementById("statusTexto"),
-pausas:document.getElementById("pausasTexto"),entrada:document.getElementById("entradaTexto"),
-equipe:document.getElementById("equipeTexto"),timer:document.getElementById("timer"),
-marcEntrada:document.getElementById("marcadorEntrada"),marcPausa:document.getElementById("marcadorPausa"),
-marcSaida:document.getElementById("marcadorSaida"),btnIniciar:document.getElementById("btnIniciar"),
-grupo:document.getElementById("grupoBotoes"),btnPausar:document.getElementById("btnPausar"),
-historico:document.getElementById("historico"),equipeCard:document.getElementById("equipeCard"),
-equipeNome:document.getElementById("equipeNome"),equipeFuncao:document.getElementById("equipeFuncao"),
-equipeArea:document.getElementById("equipeArea"),equipeMembros:document.getElementById("equipeMembros"),
+nome:document.getElementById("nomeUsuario"),
+pass:document.getElementById("passaporteUsuario"),
+avatar:document.getElementById("avatar"),
+status:document.getElementById("statusTexto"),
+pausas:document.getElementById("pausasTexto"),
+entrada:document.getElementById("entradaTexto"),
+equipe:document.getElementById("equipeTexto"),
+timer:document.getElementById("timer"),
+marcEntrada:document.getElementById("marcadorEntrada"),
+marcPausa:document.getElementById("marcadorPausa"),
+marcSaida:document.getElementById("marcadorSaida"),
+btnIniciar:document.getElementById("btnIniciar"),
+grupo:document.getElementById("grupoBotoes"),
+btnPausar:document.getElementById("btnPausar"),
+historico:document.getElementById("historico"),
+equipeCard:document.getElementById("equipeCard"),
+equipeNome:document.getElementById("equipeNome"),
+equipeFuncao:document.getElementById("equipeFuncao"),
+equipeArea:document.getElementById("equipeArea"),
+equipeMembros:document.getElementById("equipeMembros"),
 btnTrocar:document.getElementById("btnTrocar")
 };
 
-let ponto=null,intervalo=null,pausado=false,inicio=null,pausaInicio=null,tempoPausa=0,pausas=0,equipeAtual=null;
+let ponto=null;
+let intervalo=null;
+let pausado=false;
+let inicio=null;
+let pausaInicio=null;
+let tempoPausa=0;
+let pausas=0;
+let equipeAtual=null;
+
+const chaveEstado=`italia_ponto_${usuario.passaporte}`;
 
 el.nome.textContent=usuario.nome||"Usuário";
 el.pass.textContent=`Passaporte: ${usuario.passaporte} • Ponto`;
 el.avatar.textContent=(usuario.nome||"?")[0].toUpperCase();
 
-function hora(d=new Date()){return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
-function tempo(s){let h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=Math.floor(s%60);return[h,m,x].map(v=>String(v).padStart(2,"0")).join(":")}
-function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function atualizarTimer(){if(!inicio||pausado)return;el.timer.textContent=tempo(Math.max(0,Math.floor((Date.now()-inicio)/1000)-tempoPausa))}
-function mostrarAba(n,b){document.getElementById("jornada").style.display=n==="jornada"?"block":"none";el.historico.style.display=n==="historico"?"block":"none";document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(n==="historico")carregarHistorico()}
+function hora(d=new Date()){
+return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+}
+
+function tempo(s){
+let h=Math.floor(s/3600);
+let m=Math.floor(s%3600/60);
+let x=Math.floor(s%60);
+return[h,m,x].map(v=>String(v).padStart(2,"0")).join(":");
+}
+
+function esc(v){
+return String(v)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+function salvarEstadoLocal(){
+if(!ponto)return;
+
+localStorage.setItem(chaveEstado,JSON.stringify({
+pontoId:ponto.id,
+pausas:pausas,
+tempoPausa:tempoPausa
+}));
+}
+
+function lerEstadoLocal(){
+try{
+const salvo=localStorage.getItem(chaveEstado);
+if(!salvo)return null;
+return JSON.parse(salvo);
+}catch(e){
+return null;
+}
+}
+
+function limparEstadoLocal(){
+localStorage.removeItem(chaveEstado);
+}
+
+function atualizarTimer(){
+
+if(!inicio)return;
+
+if(pausado){
+
+let segundosAtivos=Math.max(
+0,
+Math.floor((Date.now()-inicio)/1000)-tempoPausa
+);
+
+if(pausaInicio){
+segundosAtivos=Math.max(
+0,
+segundosAtivos-Math.floor((Date.now()-pausaInicio)/1000)
+);
+}
+
+el.timer.textContent=tempo(segundosAtivos);
+return;
+}
+
+el.timer.textContent=tempo(
+Math.max(
+0,
+Math.floor((Date.now()-inicio)/1000)-tempoPausa
+)
+);
+}
+
+function iniciarRelogio(){
+
+clearInterval(intervalo);
+
+if(!pausado){
+intervalo=setInterval(atualizarTimer,1000);
+}
+
+atualizarTimer();
+}
+
+function mostrarAba(n,b){
+
+document.getElementById("jornada").style.display=n==="jornada"?"block":"none";
+el.historico.style.display=n==="historico"?"block":"none";
+
+document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+
+b.classList.add("active");
+
+if(n==="historico")carregarHistorico();
+}
 
 async function buscarEquipeDisponivel(){
-const {data:e,error:a}=await supabaseClient.from("equipes").select("*").eq("ativa",true);
-if(a)throw a;
-if(!e?.length)throw Error("Nenhuma equipe ativa foi encontrada.");
 
-const {data:m,error:b}=await supabaseClient.from("equipe_membros").select("id,equipe_id,passaporte,status").neq("status","fora");
+const {data:e,error:a}=await supabaseClient
+.from("equipes")
+.select("*")
+.eq("ativa",true);
+
+if(a)throw a;
+
+if(!e?.length)
+throw Error("Nenhuma equipe ativa foi encontrada.");
+
+const {data:m,error:b}=await supabaseClient
+.from("equipe_membros")
+.select("id,equipe_id,passaporte,status")
+.neq("status","fora");
+
 if(b)throw b;
 
 const c=e.map(x=>{
+
 const q=(m||[]).filter(y=>y.equipe_id===x.id).length;
 const lim=x.limite!==null&&x.limite!==undefined;
-return{...x,quantidade:q,disponivel:!lim||q<Number(x.limite)}
+
+return{
+...x,
+quantidade:q,
+disponivel:!lim||q<Number(x.limite)
+};
+
 }).filter(x=>x.disponivel);
 
-if(!c.length)throw Error("Todas as equipes disponíveis atingiram o limite.");
+if(!c.length)
+throw Error("Todas as equipes disponíveis atingiram o limite.");
+
 c.sort((a,b)=>a.quantidade-b.quantidade);
+
 return c[0];
 }
 
 async function carregarEquipe(id){
-const {data:e,error:a}=await supabaseClient.from("equipes").select("*").eq("id",id).single();
-if(a){console.error(a);return}
+
+const {data:e,error:a}=await supabaseClient
+.from("equipes")
+.select("*")
+.eq("id",id)
+.single();
+
+if(a){
+console.error(a);
+return;
+}
+
 equipeAtual=e;
+
 el.equipe.textContent=e.nome||"--";
 el.equipeNome.textContent=e.nome||"--";
 el.equipeFuncao.textContent=e.funcao||"Função não definida";
 el.equipeArea.textContent=e.area?`Área: ${e.area}`:"Área não definida";
 el.equipeCard.style.display="block";
+
 carregarMembrosEquipe(id);
 }
 
 async function carregarMembrosEquipe(id){
-const {data,error}=await supabaseClient.from("equipe_membros").select("nome,passaporte,status,entrou_em").eq("equipe_id",id).neq("status","fora").order("entrou_em",{ascending:true});
-if(error){el.equipeMembros.innerHTML='<div class="loading" style="padding:15px">Não foi possível carregar os membros.</div>';return}
-if(!data?.length){el.equipeMembros.innerHTML='<div class="loading" style="padding:15px">Você é o primeiro membro desta equipe.</div>';return}
+
+const {data,error}=await supabaseClient
+.from("equipe_membros")
+.select("nome,passaporte,status,entrou_em")
+.eq("equipe_id",id)
+.neq("status","fora")
+.order("entrou_em",{ascending:true});
+
+if(error){
+el.equipeMembros.innerHTML='<div class="loading" style="padding:15px">Não foi possível carregar os membros.</div>';
+return;
+}
+
+if(!data?.length){
+el.equipeMembros.innerHTML='<div class="loading" style="padding:15px">Você é o primeiro membro desta equipe.</div>';
+return;
+}
 
 el.equipeMembros.innerHTML=data.map(m=>{
-let s="⚪ Fora",c="var(--muted)";
-if(m.status==="ativo"){s="🟢 Em serviço";c="var(--green)"}
-if(m.status==="pausado"){s="🟡 Em pausa";c="var(--yellow)"}
-return`<div class="membro"><div><div class="membro-nome">${esc(m.nome||"Sem nome")}</div><div class="membro-pass">Passaporte: ${esc(m.passaporte||"--")}</div></div><div class="membro-status" style="color:${c}">${s}</div></div>`
+
+let s="⚪ Fora";
+let c="var(--muted)";
+
+if(m.status==="ativo"){
+s="🟢 Em serviço";
+c="var(--green)";
+}
+
+if(m.status==="pausado"){
+s="🟡 Em pausa";
+c="var(--yellow)";
+}
+
+return`
+<div class="membro">
+<div>
+<div class="membro-nome">${esc(m.nome||"Sem nome")}</div>
+<div class="membro-pass">Passaporte: ${esc(m.passaporte||"--")}</div>
+</div>
+<div class="membro-status" style="color:${c}">${s}</div>
+</div>
+`;
+
 }).join("");
 }
 
-async function iniciarJornada(){
-el.btnIniciar.disabled=true;
-el.btnIniciar.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Analisando equipe...';
+/* =========================
+   RECUPERAR PONTO ATIVO
+========================= */
+
+async function restaurarPonto(){
 
 try{
-const equipe=await buscarEquipeDisponivel(),agora=new Date().toISOString();
 
-const {data,error}=await supabaseClient.from("pontos").insert([{
-passaporte:usuario.passaporte,nome:usuario.nome,entrada:agora,status:"ativo",
-equipe_id:equipe.id,criado_em:agora
-}]).select().single();
+const {data,error}=await supabaseClient
+.from("pontos")
+.select("*")
+.eq("passaporte",usuario.passaporte)
+.in("status",["ativo","pausado"])
+.order("criado_em",{ascending:false})
+.limit(1)
+.maybeSingle();
 
 if(error)throw error;
-ponto=data;equipeAtual=equipe;
 
-const {error:em}=await supabaseClient.from("equipe_membros").insert([{
-equipe_id:equipe.id,passaporte:usuario.passaporte,nome:usuario.nome,status:"ativo",entrou_em:agora
+if(!data){
+
+limparEstadoLocal();
+
+return;
+}
+
+ponto=data;
+
+inicio=new Date(ponto.entrada).getTime();
+
+pausado=ponto.status==="pausado";
+
+const estadoLocal=lerEstadoLocal();
+
+if(estadoLocal&&estadoLocal.pontoId===ponto.id){
+
+pausas=Number(estadoLocal.pausas)||0;
+tempoPausa=Number(estadoLocal.tempoPausa)||0;
+
+}else{
+
+pausas=ponto.pausa_inicio?1:0;
+
+if(ponto.pausa_inicio&&ponto.pausa_fim){
+
+tempoPausa=Math.max(
+0,
+Math.floor(
+(new Date(ponto.pausa_fim).getTime()-
+new Date(ponto.pausa_inicio).getTime())/1000
+)
+);
+
+}else{
+
+tempoPausa=0;
+
+}
+
+salvarEstadoLocal();
+
+}
+
+el.status.textContent=pausado?"Pausado":"Ativo";
+el.status.style.color=pausado?"var(--yellow)":"var(--green)";
+
+el.pausas.textContent=String(pausas);
+
+el.entrada.textContent=hora(new Date(ponto.entrada));
+el.marcEntrada.textContent=hora(new Date(ponto.entrada));
+
+if(ponto.pausa_inicio){
+el.marcPausa.textContent=hora(new Date(ponto.pausa_inicio));
+}else{
+el.marcPausa.textContent="--:--";
+}
+
+el.marcSaida.textContent="--:--";
+
+el.btnIniciar.style.display="none";
+el.grupo.style.display="flex";
+
+if(pausado){
+el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
+}else{
+el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+}
+
+if(ponto.equipe_id){
+await carregarEquipe(ponto.equipe_id);
+}
+
+atualizarTimer();
+
+if(!pausado){
+iniciarRelogio();
+}else{
+clearInterval(intervalo);
+atualizarTimer();
+}
+
+}catch(e){
+
+console.error("ERRO AO RESTAURAR PONTO:",e);
+
+}
+
+}
+
+/* =========================
+   INICIAR JORNADA
+========================= */
+
+async function iniciarJornada(){
+
+el.btnIniciar.disabled=true;
+
+el.btnIniciar.innerHTML=
+'<i class="fa-solid fa-spinner fa-spin"></i> Analisando equipe...';
+
+try{
+
+const {data:pontoExistente,error:erroExistente}=await supabaseClient
+.from("pontos")
+.select("*")
+.eq("passaporte",usuario.passaporte)
+.in("status",["ativo","pausado"])
+.order("criado_em",{ascending:false})
+.limit(1)
+.maybeSingle();
+
+if(erroExistente)throw erroExistente;
+
+if(pontoExistente){
+
+alert("Você já possui uma jornada em andamento.");
+
+await restaurarPonto();
+
+return;
+}
+
+const equipe=await buscarEquipeDisponivel();
+const agora=new Date().toISOString();
+
+const {data,error}=await supabaseClient
+.from("pontos")
+.insert([{
+passaporte:usuario.passaporte,
+nome:usuario.nome,
+entrada:agora,
+status:"ativo",
+equipe_id:equipe.id,
+criado_em:agora
+}])
+.select()
+.single();
+
+if(error)throw error;
+
+ponto=data;
+equipeAtual=equipe;
+
+const {error:em}=await supabaseClient
+.from("equipe_membros")
+.insert([{
+equipe_id:equipe.id,
+passaporte:usuario.passaporte,
+nome:usuario.nome,
+status:"ativo",
+entrou_em:agora
 }]);
 
 if(em)throw em;
 
-inicio=new Date(ponto.entrada).getTime();pausado=false;pausas=0;tempoPausa=0;
-el.status.textContent="Ativo";el.status.style.color="var(--green)";
-el.pausas.textContent="0";el.entrada.textContent=hora(new Date(ponto.entrada));
-el.marcEntrada.textContent=hora(new Date(ponto.entrada));el.marcPausa.textContent="--:--";
-el.marcSaida.textContent="--:--";el.btnIniciar.style.display="none";el.grupo.style.display="flex";
+inicio=new Date(ponto.entrada).getTime();
+pausado=false;
+pausas=0;
+tempoPausa=0;
+
+salvarEstadoLocal();
+
+el.status.textContent="Ativo";
+el.status.style.color="var(--green)";
+
+el.pausas.textContent="0";
+el.entrada.textContent=hora(new Date(ponto.entrada));
+
+el.marcEntrada.textContent=hora(new Date(ponto.entrada));
+el.marcPausa.textContent="--:--";
+el.marcSaida.textContent="--:--";
+
+el.btnIniciar.style.display="none";
+el.grupo.style.display="flex";
+
 await carregarEquipe(equipe.id);
-intervalo=setInterval(atualizarTimer,1000);atualizarTimer();
+
+iniciarRelogio();
 
 }catch(e){
+
 console.error("ERRO AO INICIAR:",e);
-alert("Não foi possível iniciar o ponto.\n\n"+(e.message||"Erro desconhecido."));
+
+alert(
+"Não foi possível iniciar o ponto.\n\n"+
+(e.message||"Erro desconhecido.")
+);
+
 el.btnIniciar.disabled=false;
-el.btnIniciar.innerHTML='<i class="fa-solid fa-play"></i> Iniciar Jornada';
-}
+
+el.btnIniciar.innerHTML=
+'<i class="fa-solid fa-play"></i> Iniciar Jornada';
+
 }
 
-async function pausarContinuar(){
+}
+  async function pausarContinuar(){
+
 if(!ponto)return;
+
 const agora=new Date().toISOString();
 
 if(!pausado){
-const {error}=await supabaseClient.from("pontos").update({pausa_inicio:agora,status:"pausado"}).eq("id",ponto.id);
-if(error){alert("Não foi possível pausar.\n\n"+error.message);return}
 
-await supabaseClient.from("equipe_membros").update({status:"pausado"}).eq("equipe_id",ponto.equipe_id).eq("passaporte",usuario.passaporte).neq("status","fora");
+const {error}=await supabaseClient
+.from("pontos")
+.update({
+pausa_inicio:agora,
+status:"pausado"
+})
+.eq("id",ponto.id);
 
-pausaInicio=Date.now();pausado=true;pausas++;
-el.status.textContent="Pausado";el.status.style.color="var(--yellow)";el.pausas.textContent=pausas;
-el.marcPausa.textContent=hora();el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
-}else{
-const {error}=await supabaseClient.from("pontos").update({pausa_fim:agora,status:"ativo"}).eq("id",ponto.id);
-if(error){alert("Não foi possível retomar.\n\n"+error.message);return}
-
-await supabaseClient.from("equipe_membros").update({status:"ativo"}).eq("equipe_id",ponto.equipe_id).eq("passaporte",usuario.passaporte).neq("status","fora");
-
-tempoPausa+=Math.floor((Date.now()-pausaInicio)/1000);pausado=false;
-el.status.textContent="Ativo";el.status.style.color="var(--green)";
-el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
-await carregarMembrosEquipe(ponto.equipe_id);
-}
+if(error){
+alert("Não foi possível pausar.\n\n"+error.message);
+return;
 }
 
-async function encerrarJornada(){
-if(!ponto)return;
-const agora=new Date().toISOString();
+const {error:erroMembro}=await supabaseClient
+.from("equipe_membros")
+.update({status:"pausado"})
+.eq("equipe_id",ponto.equipe_id)
+.eq("passaporte",usuario.passaporte)
+.neq("status","fora");
 
-const {error}=await supabaseClient.from("pontos").update({saida:agora,status:"encerrado"}).eq("id",ponto.id);
-if(error){alert("Não foi possível encerrar.\n\n"+error.message);return}
+if(erroMembro){
+console.error("ERRO AO ATUALIZAR MEMBRO:",erroMembro);
+}
 
-await supabaseClient.from("equipe_membros").update({status:"fora",saiu_em:agora}).eq("equipe_id",ponto.equipe_id).eq("passaporte",usuario.passaporte).neq("status","fora");
+ponto.status="pausado";
+ponto.pausa_inicio=agora;
+ponto.pausa_fim=null;
+
+pausaInicio=Date.now();
+pausado=true;
+pausas++;
+
+salvarEstadoLocal();
+
+el.status.textContent="Pausado";
+el.status.style.color="var(--yellow)";
+el.pausas.textContent=String(pausas);
+el.marcPausa.textContent=hora();
+
+el.btnPausar.innerHTML=
+'<i class="fa-solid fa-play"></i> Continuar';
 
 clearInterval(intervalo);
-el.marcSaida.textContent=hora(new Date(agora));el.status.textContent="Offline";el.status.style.color="";
-el.btnIniciar.style.display="block";el.btnIniciar.disabled=false;el.btnIniciar.innerHTML='<i class="fa-solid fa-play"></i> Iniciar Jornada';
-el.grupo.style.display="none";el.timer.textContent="00:00:00";el.entrada.textContent="--:--";
-el.marcEntrada.textContent="--:--";el.marcPausa.textContent="--:--";el.pausas.textContent="0";
-el.equipe.textContent="--";el.equipeCard.style.display="none";
-ponto=null;inicio=null;pausado=false;pausas=0;tempoPausa=0;equipeAtual=null;
+atualizarTimer();
+
+}else{
+
+const {error}=await supabaseClient
+.from("pontos")
+.update({
+pausa_fim:agora,
+status:"ativo"
+})
+.eq("id",ponto.id);
+
+if(error){
+alert("Não foi possível retomar.\n\n"+error.message);
+return;
 }
 
+const {error:erroMembro}=await supabaseClient
+.from("equipe_membros")
+.update({status:"ativo"})
+.eq("equipe_id",ponto.equipe_id)
+.eq("passaporte",usuario.passaporte)
+.neq("status","fora");
+
+if(erroMembro){
+console.error("ERRO AO ATUALIZAR MEMBRO:",erroMembro);
+}
+
+const fimPausa=Date.now();
+
+if(pausaInicio){
+
+tempoPausa+=Math.max(
+0,
+Math.floor((fimPausa-pausaInicio)/1000)
+);
+
+}
+
+ponto.status="ativo";
+ponto.pausa_fim=agora;
+
+pausado=false;
+pausaInicio=null;
+
+salvarEstadoLocal();
+
+el.status.textContent="Ativo";
+el.status.style.color="var(--green)";
+
+el.btnPausar.innerHTML=
+'<i class="fa-solid fa-pause"></i> Pausar';
+
+iniciarRelogio();
+
+await carregarMembrosEquipe(ponto.equipe_id);
+
+}
+
+}
+
+/* =========================
+   ENCERRAR JORNADA
+========================= */
+
+async function encerrarJornada(){
+
+if(!ponto)return;
+
+const agora=new Date().toISOString();
+
+const {error}=await supabaseClient
+.from("pontos")
+.update({
+saida:agora,
+status:"encerrado"
+})
+.eq("id",ponto.id);
+
+if(error){
+alert("Não foi possível encerrar.\n\n"+error.message);
+return;
+}
+
+const {error:erroMembro}=await supabaseClient
+.from("equipe_membros")
+.update({
+status:"fora",
+saiu_em:agora
+})
+.eq("equipe_id",ponto.equipe_id)
+.eq("passaporte",usuario.passaporte)
+.neq("status","fora");
+
+if(erroMembro){
+console.error("ERRO AO ENCERRAR MEMBRO:",erroMembro);
+}
+
+clearInterval(intervalo);
+
+limparEstadoLocal();
+
+el.marcSaida.textContent=hora(new Date(agora));
+el.status.textContent="Offline";
+el.status.style.color="";
+
+el.btnIniciar.style.display="block";
+el.btnIniciar.disabled=false;
+
+el.btnIniciar.innerHTML=
+'<i class="fa-solid fa-play"></i> Iniciar Jornada';
+
+el.grupo.style.display="none";
+
+el.timer.textContent="00:00:00";
+el.entrada.textContent="--:--";
+el.marcEntrada.textContent="--:--";
+el.marcPausa.textContent="--:--";
+el.pausas.textContent="0";
+el.equipe.textContent="--";
+
+el.equipeCard.style.display="none";
+
+ponto=null;
+inicio=null;
+pausado=false;
+pausaInicio=null;
+pausas=0;
+tempoPausa=0;
+equipeAtual=null;
+
+}
+
+/* =========================
+   TROCAR EQUIPE
+========================= */
+
 async function trocarEquipe(){
+
 if(!ponto||!equipeAtual)return;
 
 el.btnTrocar.disabled=true;
-el.btnTrocar.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Analisando equipes...';
+
+el.btnTrocar.innerHTML=
+'<i class="fa-solid fa-spinner fa-spin"></i> Analisando equipes...';
 
 try{
-const {data:e,error:a}=await supabaseClient.from("equipes").select("*").eq("ativa",true);
+
+const {data:e,error:a}=await supabaseClient
+.from("equipes")
+.select("*")
+.eq("ativa",true);
+
 if(a)throw a;
 
-const {data:m,error:b}=await supabaseClient.from("equipe_membros").select("equipe_id,status").neq("status","fora");
+const {data:m,error:b}=await supabaseClient
+.from("equipe_membros")
+.select("equipe_id,status")
+.neq("status","fora");
+
 if(b)throw b;
 
 const c=e.map(x=>{
+
 const q=(m||[]).filter(y=>y.equipe_id===x.id).length;
+
 const lim=x.limite!==null&&x.limite!==undefined;
-return{...x,q,ok:!lim||q<Number(x.limite)}
+
+return{
+...x,
+q,
+ok:!lim||q<Number(x.limite)
+};
+
 }).filter(x=>x.ok&&x.id!==equipeAtual.id);
 
-if(!c.length)throw Error("Não existe outra equipe disponível no momento.");
-c.sort((a,b)=>a.q-b.q);
-const nova=c[0],agora=new Date().toISOString();
+if(!c.length)
+throw Error("Não existe outra equipe disponível no momento.");
 
-const {error:ep}=await supabaseClient.from("pontos").update({equipe_id:nova.id}).eq("id",ponto.id);
+c.sort((a,b)=>a.q-b.q);
+
+const nova=c[0];
+const agora=new Date().toISOString();
+
+const {error:ep}=await supabaseClient
+.from("pontos")
+.update({
+equipe_id:nova.id
+})
+.eq("id",ponto.id);
+
 if(ep)throw ep;
 
-const {error:ea}=await supabaseClient.from("equipe_membros").update({status:"fora",saiu_em:agora}).eq("equipe_id",equipeAtual.id).eq("passaporte",usuario.passaporte).neq("status","fora");
+const {error:ea}=await supabaseClient
+.from("equipe_membros")
+.update({
+status:"fora",
+saiu_em:agora
+})
+.eq("equipe_id",equipeAtual.id)
+.eq("passaporte",usuario.passaporte)
+.neq("status","fora");
+
 if(ea)throw ea;
 
-const {error:en}=await supabaseClient.from("equipe_membros").insert([{
-equipe_id:nova.id,passaporte:usuario.passaporte,nome:usuario.nome,status:pausado?"pausado":"ativo",entrou_em:agora
+const {error:en}=await supabaseClient
+.from("equipe_membros")
+.insert([{
+equipe_id:nova.id,
+passaporte:usuario.passaporte,
+nome:usuario.nome,
+status:pausado?"pausado":"ativo",
+entrou_em:agora
 }]);
+
 if(en)throw en;
 
-ponto.equipe_id=nova.id;equipeAtual=nova;
+ponto.equipe_id=nova.id;
+equipeAtual=nova;
+
+salvarEstadoLocal();
+
 await carregarEquipe(nova.id);
+
 alert(`Equipe alterada para:\n${nova.nome}`);
 
 }catch(e){
+
 console.error("ERRO AO TROCAR:",e);
-alert("Não foi possível trocar de equipe.\n\n"+(e.message||"Erro desconhecido."));
+
+alert(
+"Não foi possível trocar de equipe.\n\n"+
+(e.message||"Erro desconhecido.")
+);
+
 }finally{
+
 el.btnTrocar.disabled=false;
-el.btnTrocar.innerHTML='<i class="fa-solid fa-shuffle"></i> Trocar de equipe';
+
+el.btnTrocar.innerHTML=
+'<i class="fa-solid fa-shuffle"></i> Trocar de equipe';
+
 }
+
 }
+
+/* =========================
+   HISTÓRICO
+========================= */
 
 async function carregarHistorico(){
-el.historico.innerHTML='<div class="loading">Carregando histórico...</div>';
 
-const {data,error}=await supabaseClient.from("pontos").select("*").eq("passaporte",usuario.passaporte).order("criado_em",{ascending:false});
+el.historico.innerHTML=
+'<div class="loading">Carregando histórico...</div>';
 
-if(error){el.historico.innerHTML='<div class="loading">Erro ao carregar histórico.<br><br>'+esc(error.message)+'</div>';return}
-if(!data?.length){el.historico.innerHTML='<div class="loading">Nenhum registro encontrado.</div>';return}
+const {data,error}=await supabaseClient
+.from("pontos")
+.select("*")
+.eq("passaporte",usuario.passaporte)
+.order("criado_em",{ascending:false});
+
+if(error){
+
+el.historico.innerHTML=
+'<div class="loading">Erro ao carregar histórico.<br><br>'+
+esc(error.message)+
+'</div>';
+
+return;
+}
+
+if(!data?.length){
+
+el.historico.innerHTML=
+'<div class="loading">Nenhum registro encontrado.</div>';
+
+return;
+}
 
 el.historico.innerHTML=data.map(p=>`
+
 <div class="history-card">
+
 <strong>${esc(p.status||"Registro")}</strong>
-<div>Entrada: ${p.entrada?new Date(p.entrada).toLocaleString("pt-BR"):"--"}</div>
-<div>Pausa: ${p.pausa_inicio?new Date(p.pausa_inicio).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"--"}</div>
-<div>Saída: ${p.saida?new Date(p.saida).toLocaleString("pt-BR"):"--"}</div>
-</div>`).join("");
+
+<div>
+Entrada:
+${p.entrada?new Date(p.entrada).toLocaleString("pt-BR"):"--"}
+</div>
+
+<div>
+Pausa:
+${p.pausa_inicio?
+new Date(p.pausa_inicio).toLocaleTimeString(
+"pt-BR",
+{hour:"2-digit",minute:"2-digit"}
+)
+:"--"}
+</div>
+
+<div>
+Saída:
+${p.saida?
+new Date(p.saida).toLocaleString("pt-BR")
+:"--"}
+</div>
+
+</div>
+
+`).join("");
+
 }
+
+/* =========================
+   INICIALIZAÇÃO
+========================= */
+
+restaurarPonto();
+
 </script>
+
 </body>
 </html>
