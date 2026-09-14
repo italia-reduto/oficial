@@ -4,15 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#08090d">
-
 <title>Meu Ponto</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
@@ -27,11 +23,16 @@ body{
     color:#fff;
     font-family:Inter,Arial,sans-serif;
     min-height:100vh;
-    padding-bottom:90px;
+    padding-bottom:85px;
 }
 
 button{
     font-family:inherit;
+}
+
+a{
+    text-decoration:none;
+    color:inherit;
 }
 
 .container{
@@ -41,64 +42,147 @@ button{
     padding:18px;
 }
 
-.topo{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:20px;
-}
-
-.topo h1{
-    font-size:22px;
-    font-weight:800;
-}
-
-.topo p{
-    color:#888;
-    font-size:12px;
-    margin-top:4px;
-}
+/* USUÁRIO */
 
 .usuario{
+    background:#101116;
+    border:1px solid #22252d;
+    border-radius:16px;
+    padding:13px;
+    display:flex;
+    align-items:center;
+    gap:11px;
+    margin-bottom:24px;
+}
+
+.avatar{
     width:42px;
     height:42px;
     border-radius:50%;
-    background:#171920;
-    border:1px solid #292c35;
+    background:#1a1c23;
+    border:1px solid #30333c;
     display:flex;
     align-items:center;
     justify-content:center;
-    color:#e50914;
+    font-size:17px;
+    font-weight:800;
+    color:#fff;
+    flex-shrink:0;
 }
 
-.card{
-    background:#101116;
-    border:1px solid #20232b;
-    border-radius:18px;
-    padding:20px;
-    margin-bottom:14px;
+.usuario-info{
+    flex:1;
+    min-width:0;
 }
 
-.timer-card{
-    text-align:center;
-    padding:26px 18px;
+.usuario-nome{
+    font-size:14px;
+    font-weight:800;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
-.status-label{
-    color:#858892;
-    text-transform:uppercase;
-    letter-spacing:1px;
-    font-size:11px;
+.usuario-dados{
+    color:#777b84;
+    font-size:10px;
+    margin-top:4px;
+}
+
+.btn-sair{
+    background:#181a20;
+    border:1px solid #2a2d35;
+    color:#aeb1b9;
+    border-radius:9px;
+    padding:9px 11px;
+    font-size:10px;
     font-weight:700;
+}
+
+/* CABEÇALHO */
+
+.titulo{
+    margin-bottom:18px;
+}
+
+.titulo h1{
+    font-size:25px;
+    font-weight:800;
+}
+
+.titulo p{
+    color:#777b84;
+    font-size:12px;
+    margin-top:6px;
+}
+
+/* CARDS */
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
     margin-bottom:10px;
 }
 
-.timer{
-    font-size:43px;
-    line-height:1;
+.card-menu{
+    background:#101116;
+    border:1px solid #20232b;
+    border-radius:14px;
+    min-height:78px;
+    padding:14px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    cursor:pointer;
+    transition:.15s;
+}
+
+.card-menu:active{
+    transform:scale(.98);
+}
+
+.card-menu i{
+    color:#e50914;
+    font-size:15px;
+    margin-bottom:9px;
+}
+
+.card-menu strong{
+    font-size:12px;
+    font-weight:800;
+}
+
+.card-menu span{
+    color:#777b84;
+    font-size:10px;
+    margin-top:4px;
+}
+
+/* CRONÔMETRO */
+
+.cronometro-card{
+    background:#101116;
+    border:1px solid #20232b;
+    border-radius:18px;
+    padding:25px 18px;
+    margin-top:18px;
+    text-align:center;
+}
+
+.cronometro-label{
+    color:#777b84;
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-size:10px;
+    font-weight:800;
+}
+
+.cronometro{
+    font-size:44px;
     font-weight:800;
     letter-spacing:1px;
-    margin:10px 0 24px;
+    margin:12px 0 14px;
     font-variant-numeric:tabular-nums;
 }
 
@@ -109,9 +193,10 @@ button{
     padding:7px 12px;
     border-radius:20px;
     background:#181a21;
-    color:#999;
-    font-size:12px;
-    margin-bottom:22px;
+    color:#858892;
+    font-size:10px;
+    font-weight:700;
+    margin-bottom:20px;
 }
 
 .status.ativo{
@@ -129,40 +214,34 @@ button{
     background:currentColor;
 }
 
+/* BOTÕES */
+
 .acoes{
     display:grid;
-    gap:10px;
-}
-
-.acoes.duas{
     grid-template-columns:1fr 1fr;
+    gap:9px;
 }
 
 .btn{
-    width:100%;
-    min-height:52px;
+    min-height:50px;
     border:0;
-    border-radius:13px;
-    cursor:pointer;
-    font-size:14px;
+    border-radius:12px;
+    font-size:12px;
     font-weight:800;
-    transition:.15s;
-}
-
-.btn:active{
-    transform:scale(.98);
+    cursor:pointer;
 }
 
 .btn-iniciar,
 .btn-retomar{
     background:#e50914;
     color:#fff;
+    grid-column:1 / -1;
 }
 
 .btn-pausar{
-    background:#252830;
+    background:#24272e;
     color:#fff;
-    border:1px solid #343741;
+    border:1px solid #343740;
 }
 
 .btn-encerrar{
@@ -172,165 +251,127 @@ button{
 }
 
 .btn:disabled{
-    opacity:.55;
-    cursor:not-allowed;
-}
-
-.info{
-    display:flex;
-    align-items:center;
-    gap:13px;
-}
-
-.info-icon{
-    width:40px;
-    height:40px;
-    border-radius:11px;
-    background:#191b22;
-    color:#e50914;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    flex-shrink:0;
-}
-
-.info strong{
-    display:block;
-    font-size:14px;
-    margin-bottom:4px;
-}
-
-.info span{
-    color:#858892;
-    font-size:12px;
-}
-
-.equipe-atual{
-    display:none;
-}
-
-.equipe-atual.mostrar{
-    display:block;
-}
-
-.equipe-nome{
-    font-size:18px;
-    font-weight:800;
-    margin-bottom:6px;
-}
-
-.equipe-detalhe{
-    color:#858892;
-    font-size:12px;
-    line-height:1.6;
-}
-
-.historico-titulo{
-    font-size:15px;
-    font-weight:800;
-    margin-bottom:12px;
-}
-
-.historico-vazio{
-    color:#777b84;
-    font-size:13px;
-    text-align:center;
-    padding:12px 0;
-}
-
-.registro{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    padding:13px 0;
-    border-bottom:1px solid #1c1e25;
-}
-
-.registro:last-child{
-    border-bottom:0;
-}
-
-.registro-esq strong{
-    display:block;
-    font-size:13px;
-    margin-bottom:5px;
-}
-
-.registro-esq span{
-    color:#777b84;
-    font-size:11px;
-}
-
-.registro-dir{
-    text-align:right;
-}
-
-.registro-dir strong{
-    display:block;
-    font-size:13px;
-}
-
-.registro-dir span{
-    color:#777b84;
-    font-size:10px;
+    opacity:.5;
 }
 
 .loading{
     display:none;
-    text-align:center;
-    color:#888;
-    font-size:12px;
-    margin-top:12px;
+    color:#777b84;
+    font-size:10px;
+    margin-top:11px;
 }
 
 .loading.mostrar{
     display:block;
 }
 
+/* MODAIS */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.72);
+    z-index:100;
+    padding:18px;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modal.mostrar{
+    display:flex;
+}
+
+.modal-caixa{
+    width:100%;
+    max-width:520px;
+    max-height:80vh;
+    overflow:auto;
+    background:#111218;
+    border:1px solid #292c35;
+    border-radius:20px;
+    padding:20px;
+}
+
+.modal-topo{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:18px;
+}
+
+.modal-topo h2{
+    font-size:17px;
+    font-weight:800;
+}
+
+.fechar{
+    width:34px;
+    height:34px;
+    border-radius:9px;
+    border:1px solid #292c35;
+    background:#191b21;
+    color:#aaa;
+}
+
+.linha{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:12px 0;
+    border-bottom:1px solid #20222a;
+    font-size:11px;
+}
+
+.linha span{
+    color:#777b84;
+}
+
+.vazio{
+    text-align:center;
+    color:#777b84;
+    font-size:12px;
+    padding:20px 0;
+}
+
+/* NAVEGAÇÃO */
+
 .nav{
     position:fixed;
     bottom:0;
     left:0;
     right:0;
-    height:72px;
+    height:70px;
     background:#0d0e13;
     border-top:1px solid #20232b;
-    display:flex;
-    justify-content:center;
-    z-index:50;
+    z-index:90;
 }
 
 .nav-inner{
-    width:100%;
     max-width:520px;
+    height:100%;
+    margin:auto;
     display:grid;
     grid-template-columns:repeat(4,1fr);
 }
 
 .nav a{
-    color:#686b74;
-    text-decoration:none;
     display:flex;
     flex-direction:column;
     align-items:center;
     justify-content:center;
     gap:5px;
-    font-size:10px;
-    font-weight:600;
+    color:#686b74;
+    font-size:9px;
+    font-weight:700;
 }
 
 .nav a i{
-    font-size:17px;
+    font-size:16px;
 }
 
 .nav a.ativo{
     color:#e50914;
-}
-
-@media(max-width:360px){
-    .timer{
-        font-size:37px;
-    }
 }
 </style>
 </head>
@@ -338,135 +379,355 @@ button{
 <body>
 
 <div class="container">
-
-    <div class="topo">
-        <div>
-            <h1>Meu Ponto</h1>
-            <p id="nomeUsuario">Carregando...</p>
-        </div>
-
         <div class="usuario">
-            <i class="fa-solid fa-user"></i>
+
+        <div class="avatar" id="avatar">
+            F
         </div>
+
+        <div class="usuario-info">
+
+            <div class="usuario-nome" id="usuarioNome">
+                Carregando...
+            </div>
+
+            <div class="usuario-dados" id="usuarioDados">
+                Passaporte: —
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="btn-sair"
+            id="btnSair">
+            SAIR
+        </button>
+
     </div>
 
-    <div class="card timer-card">
 
-        <div class="status-label">Tempo de jornada</div>
+    <div class="titulo">
 
-        <div class="timer" id="timer">
+        <h1>Meu Ponto</h1>
+
+        <p>
+            Controle sua jornada e acompanhe sua equipe
+        </p>
+
+    </div>
+
+
+    <div class="grid">
+
+        <button
+            type="button"
+            class="card-menu"
+            id="cardStatus">
+
+            <i class="fa-solid fa-circle-check"></i>
+
+            <strong>Meu Status</strong>
+
+            <span id="statusResumo">
+                Ponto fechado
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="card-menu"
+            id="cardPausas">
+
+            <i class="fa-solid fa-pause"></i>
+
+            <strong>Pausas</strong>
+
+            <span id="pausasResumo">
+                Nenhuma pausa
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="card-menu"
+            id="cardEntrada">
+
+            <i class="fa-solid fa-right-to-bracket"></i>
+
+            <strong>Entrada</strong>
+
+            <span id="entradaResumo">
+                —
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="card-menu"
+            id="cardEquipe">
+
+            <i class="fa-solid fa-users"></i>
+
+            <strong>Equipe</strong>
+
+            <span id="equipeResumo">
+                Nenhuma equipe
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="card-menu"
+            id="cardJornada">
+
+            <i class="fa-solid fa-clock"></i>
+
+            <strong>Minha Jornada</strong>
+
+            <span id="jornadaResumo">
+                Ponto fechado
+            </span>
+
+        </button>
+
+
+        <button
+            type="button"
+            class="card-menu"
+            id="cardHistorico">
+
+            <i class="fa-solid fa-clock-rotate-left"></i>
+
+            <strong>Meu Histórico</strong>
+
+            <span>
+                Ver registros
+            </span>
+
+        </button>
+
+    </div>
+
+
+    <div class="cronometro-card">
+
+        <div class="cronometro-label">
+            Cronômetro
+        </div>
+
+        <div
+            class="cronometro"
+            id="cronometro">
             00:00:00
         </div>
 
-        <div class="status" id="status">
+        <div
+            class="status"
+            id="statusBox">
+
             <span class="dot"></span>
-            <span id="statusTexto">Ponto fechado</span>
+
+            <span id="statusTexto">
+                Ponto fechado
+            </span>
+
         </div>
 
-        <div class="acoes" id="acoes">
+
+        <div class="acoes">
 
             <button
                 type="button"
                 id="btnIniciar"
                 class="btn btn-iniciar">
+
                 <i class="fa-solid fa-play"></i>
                 &nbsp; INICIAR
+
             </button>
 
-            <div
-                class="acoes duas"
-                id="acoesAtivo"
+
+            <button
+                type="button"
+                id="btnPausar"
+                class="btn btn-pausar"
                 style="display:none;">
 
-                <button
-                    type="button"
-                    id="btnPausar"
-                    class="btn btn-pausar">
-                    <i class="fa-solid fa-pause"></i>
-                    &nbsp; PAUSAR
-                </button>
+                <i class="fa-solid fa-pause"></i>
+                &nbsp; PAUSAR
 
-                <button
-                    type="button"
-                    id="btnEncerrarAtivo"
-                    class="btn btn-encerrar">
-                    <i class="fa-solid fa-stop"></i>
-                    &nbsp; ENCERRAR
-                </button>
+            </button>
 
-            </div>
 
-            <div
-                class="acoes duas"
-                id="acoesPausado"
+            <button
+                type="button"
+                id="btnRetomar"
+                class="btn btn-retomar"
                 style="display:none;">
 
-                <button
-                    type="button"
-                    id="btnRetomar"
-                    class="btn btn-retomar">
-                    <i class="fa-solid fa-play"></i>
-                    &nbsp; RETOMAR
-                </button>
+                <i class="fa-solid fa-play"></i>
+                &nbsp; RETOMAR
 
-                <button
-                    type="button"
-                    id="btnEncerrarPausado"
-                    class="btn btn-encerrar">
-                    <i class="fa-solid fa-stop"></i>
-                    &nbsp; ENCERRAR
-                </button>
+            </button>
 
-            </div>
+
+            <button
+                type="button"
+                id="btnEncerrar"
+                class="btn btn-encerrar"
+                style="display:none;">
+
+                <i class="fa-solid fa-stop"></i>
+                &nbsp; ENCERRAR
+
+            </button>
 
         </div>
 
-        <div class="loading" id="loading">
+
+        <div
+            class="loading"
+            id="loading">
             Processando...
         </div>
 
     </div>
 
-    <div class="card equipe-atual" id="cardEquipe">
+</div>
 
-        <div class="status-label">Equipe atual</div>
 
-        <div class="equipe-nome" id="equipeNome">
-            —
+<!-- MODAL STATUS -->
+
+<div class="modal" id="modalStatus">
+
+    <div class="modal-caixa">
+
+        <div class="modal-topo">
+
+            <h2>Meu Status</h2>
+
+            <button
+                class="fechar"
+                type="button"
+                data-fechar="modalStatus">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
         </div>
 
-        <div class="equipe-detalhe" id="equipeDetalhe">
-            —
-        </div>
+        <div id="conteudoStatus"></div>
 
     </div>
 
-    <div class="card">
+</div>
+<!-- MODAL PAUSAS -->
 
-        <div class="info">
-            <div class="info-icon">
-                <i class="fa-solid fa-circle-info"></i>
-            </div>
+<div class="modal" id="modalPausas">
 
-            <div>
-                <strong>Como funciona?</strong>
-                <span>
-                    Inicie sua jornada para entrar automaticamente
-                    em uma equipe disponível.
-                </span>
-            </div>
+    <div class="modal-caixa">
+
+        <div class="modal-topo">
+
+            <h2>Pausas</h2>
+
+            <button
+                class="fechar"
+                type="button"
+                data-fechar="modalPausas">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
         </div>
+
+        <div id="conteudoPausas"></div>
 
     </div>
 
-    <div class="card">
+</div>
 
-        <div class="historico-titulo">
-            Histórico recente
+
+<!-- MODAL ENTRADA -->
+
+<div class="modal" id="modalEntrada">
+
+    <div class="modal-caixa">
+
+        <div class="modal-topo">
+
+            <h2>Entrada</h2>
+
+            <button
+                class="fechar"
+                type="button"
+                data-fechar="modalEntrada">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
         </div>
 
-        <div id="historico">
-            <div class="historico-vazio">
+        <div id="conteudoEntrada"></div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL JORNADA -->
+
+<div class="modal" id="modalJornada">
+
+    <div class="modal-caixa">
+
+        <div class="modal-topo">
+
+            <h2>Minha Jornada</h2>
+
+            <button
+                class="fechar"
+                type="button"
+                data-fechar="modalJornada">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div id="conteudoJornada"></div>
+
+    </div>
+
+</div>
+
+
+<!-- MODAL HISTÓRICO -->
+
+<div class="modal" id="modalHistorico">
+
+    <div class="modal-caixa">
+
+        <div class="modal-topo">
+
+            <h2>Meu Histórico</h2>
+
+            <button
+                class="fechar"
+                type="button"
+                data-fechar="modalHistorico">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div id="conteudoHistorico">
+            <div class="vazio">
                 Carregando histórico...
             </div>
         </div>
@@ -475,7 +736,35 @@ button{
 
 </div>
 
+
+<!-- MODAL EQUIPE -->
+
+<div class="modal" id="modalEquipe">
+
+    <div class="modal-caixa">
+
+        <div class="modal-topo">
+
+            <h2>Equipe</h2>
+
+            <button
+                class="fechar"
+                type="button"
+                data-fechar="modalEquipe">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div id="conteudoEquipe"></div>
+
+    </div>
+
+</div>
+
+
 <nav class="nav">
+
     <div class="nav-inner">
 
         <a href="painel.html">
@@ -499,615 +788,609 @@ button{
         </a>
 
     </div>
+
 </nav>
+
+
 <script>
 
-const supabaseClient = window.supabase.createClient(
+const supabaseClient =
+window.supabase.createClient(
     "https://vclwmikzmnuqfdxobtik.supabase.co",
     "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
 );
 
-const usuarioRaw = sessionStorage.getItem("italia_usuario");
+
+const usuarioRaw =
+sessionStorage.getItem("italia_usuario");
+
 
 if(!usuarioRaw){
-    window.location.href = "login.html";
+
+    window.location.href =
+    "login.html";
+
+    throw new Error("Usuário não autenticado.");
+
 }
 
-let usuario = null;
+
+let usuario;
 
 try{
-    usuario = JSON.parse(usuarioRaw);
-}catch(e){
-    console.error("Erro ao ler usuário:",e);
-    sessionStorage.removeItem("italia_usuario");
-    window.location.href = "login.html";
-}
 
-if(!usuario || !usuario.passaporte){
-    sessionStorage.removeItem("italia_usuario");
-    window.location.href = "login.html";
-}
+    usuario =
+    JSON.parse(usuarioRaw);
 
-const passaporte = String(usuario.passaporte);
-const nome = usuario.nome || "Usuário";
+}catch(erro){
 
-const STORAGE_PONTO = `italia_ponto_${passaporte}`;
-const STORAGE_COOLDOWN = `italia_cooldown_${passaporte}`;
+    sessionStorage.removeItem(
+        "italia_usuario"
+    );
 
-let ponto = null;
-let intervalo = null;
+    window.location.href =
+    "login.html";
 
-const nomeUsuario = document.getElementById("nomeUsuario");
-const timer = document.getElementById("timer");
-const statusTexto = document.getElementById("statusTexto");
-const statusBox = document.getElementById("status");
-
-const btnIniciar = document.getElementById("btnIniciar");
-const btnPausar = document.getElementById("btnPausar");
-const btnRetomar = document.getElementById("btnRetomar");
-
-const btnEncerrarAtivo =
-    document.getElementById("btnEncerrarAtivo");
-
-const btnEncerrarPausado =
-    document.getElementById("btnEncerrarPausado");
-
-const acoesAtivo =
-    document.getElementById("acoesAtivo");
-
-const acoesPausado =
-    document.getElementById("acoesPausado");
-
-const loading =
-    document.getElementById("loading");
-
-const cardEquipe =
-    document.getElementById("cardEquipe");
-
-const equipeNome =
-    document.getElementById("equipeNome");
-
-const equipeDetalhe =
-    document.getElementById("equipeDetalhe");
-
-nomeUsuario.textContent =
-    `${nome} • Passaporte ${passaporte}`;
-
-
-/* =========================================================
-   UTILITÁRIOS
-========================================================= */
-
-function mostrarErro(titulo, erro){
-
-    console.error(titulo, erro);
-
-    const mensagem =
-        erro?.message ||
-        erro?.details ||
-        erro?.hint ||
-        String(erro);
-
-    alert(`${titulo}\n\n${mensagem}`);
+    throw erro;
 }
 
 
-function setLoading(valor){
+if(
+    !usuario ||
+    !usuario.passaporte
+){
 
-    loading.classList.toggle("mostrar", valor);
+    sessionStorage.removeItem(
+        "italia_usuario"
+    );
 
-    btnIniciar.disabled = valor;
-    btnPausar.disabled = valor;
-    btnRetomar.disabled = valor;
-    btnEncerrarAtivo.disabled = valor;
-    btnEncerrarPausado.disabled = valor;
-}
+    window.location.href =
+    "login.html";
 
-
-function salvarPontoLocal(){
-
-    if(!ponto){
-        localStorage.removeItem(STORAGE_PONTO);
-        return;
-    }
-
-    localStorage.setItem(
-        STORAGE_PONTO,
-        JSON.stringify(ponto)
+    throw new Error(
+        "Sessão inválida."
     );
 }
 
 
-function carregarPontoLocal(){
+const passaporte =
+String(usuario.passaporte);
+
+const nome =
+usuario.nome || "Usuário";
+
+
+const STORAGE =
+`italia_ponto_${passaporte}`;
+
+const COOLDOWN =
+`italia_cooldown_${passaporte}`;
+
+
+let ponto = null;
+let intervalo = null;
+let pausas = [];
+
+
+/* ELEMENTOS */
+
+const avatar =
+document.getElementById("avatar");
+
+const usuarioNome =
+document.getElementById("usuarioNome");
+
+const usuarioDados =
+document.getElementById("usuarioDados");
+
+const cronometro =
+document.getElementById("cronometro");
+
+const statusBox =
+document.getElementById("statusBox");
+
+const statusTexto =
+document.getElementById("statusTexto");
+
+const btnIniciar =
+document.getElementById("btnIniciar");
+
+const btnPausar =
+document.getElementById("btnPausar");
+
+const btnRetomar =
+document.getElementById("btnRetomar");
+
+const btnEncerrar =
+document.getElementById("btnEncerrar");
+
+const loading =
+document.getElementById("loading");
+
+
+avatar.textContent =
+nome.charAt(0).toUpperCase();
+
+usuarioNome.textContent =
+nome;
+
+usuarioDados.textContent =
+`Passaporte: ${passaporte} • Ponto`;
+    function erroTexto(erro){
+
+    return (
+        erro?.message ||
+        erro?.details ||
+        erro?.hint ||
+        String(erro)
+    );
+}
+
+
+function mostrarErro(titulo,erro){
+
+    console.error(
+        titulo,
+        erro
+    );
+
+    alert(
+        `${titulo}\n\n${erroTexto(erro)}`
+    );
+}
+
+
+function carregarLocal(){
 
     const salvo =
-        localStorage.getItem(STORAGE_PONTO);
+    localStorage.getItem(STORAGE);
 
     if(!salvo){
         return null;
     }
 
     try{
-        return JSON.parse(salvo);
-    }catch(e){
-        console.error("Ponto local inválido:",e);
 
-        localStorage.removeItem(STORAGE_PONTO);
+        return JSON.parse(salvo);
+
+    }catch(erro){
+
+        localStorage.removeItem(STORAGE);
 
         return null;
     }
 }
 
 
-function formatarTempo(segundos){
+function salvarLocal(){
 
-    segundos = Math.max(
-        0,
-        Math.floor(segundos || 0)
+    if(!ponto){
+
+        localStorage.removeItem(
+            STORAGE
+        );
+
+        return;
+    }
+
+    localStorage.setItem(
+        STORAGE,
+        JSON.stringify(ponto)
     );
-
-    const horas =
-        Math.floor(segundos / 3600);
-
-    const minutos =
-        Math.floor((segundos % 3600) / 60);
-
-    const seg =
-        segundos % 60;
-
-    return [
-        String(horas).padStart(2,"0"),
-        String(minutos).padStart(2,"0"),
-        String(seg).padStart(2,"0")
-    ].join(":");
 }
 
 
-function diferencaSegundos(data){
+function tempoEntre(data){
 
-    const inicio =
-        new Date(data).getTime();
+    if(!data){
+        return 0;
+    }
 
-    if(!inicio){
+    const valor =
+    new Date(data).getTime();
+
+    if(!valor){
         return 0;
     }
 
     return Math.max(
         0,
         Math.floor(
-            (Date.now() - inicio) / 1000
+            (Date.now() - valor) / 1000
         )
     );
 }
-  /* =========================================================
-   INTERFACE
-========================================================= */
 
-function atualizarInterface(){
+
+function formatar(segundos){
+
+    segundos =
+    Math.max(
+        0,
+        Math.floor(segundos || 0)
+    );
+
+    const h =
+    Math.floor(segundos / 3600);
+
+    const m =
+    Math.floor(
+        (segundos % 3600) / 60
+    );
+
+    const s =
+    segundos % 60;
+
+    return (
+        String(h).padStart(2,"0") +
+        ":" +
+        String(m).padStart(2,"0") +
+        ":" +
+        String(s).padStart(2,"0")
+    );
+}
+
+
+function tempoAtual(){
 
     if(!ponto){
-
-        clearInterval(intervalo);
-
-        timer.textContent = "00:00:00";
-
-        statusBox.className = "status";
-        statusTexto.textContent = "Ponto fechado";
-
-        btnIniciar.style.display = "block";
-
-        acoesAtivo.style.display = "none";
-        acoesPausado.style.display = "none";
-
-        cardEquipe.classList.remove("mostrar");
-
-        return;
+        return 0;
     }
 
+    let total =
+    Number(
+        ponto.tempo_acumulado || 0
+    );
 
-    btnIniciar.style.display = "none";
 
+    if(
+        ponto.status === "ativo" &&
+        ponto.ultimo_inicio_ativo
+    ){
 
-    if(ponto.status === "pausado"){
-
-        statusBox.className =
-            "status pausado";
-
-        statusTexto.textContent =
-            "Jornada pausada";
-
-        acoesAtivo.style.display =
-            "none";
-
-        acoesPausado.style.display =
-            "grid";
-
-    }else{
-
-        statusBox.className =
-            "status ativo";
-
-        statusTexto.textContent =
-            "Jornada ativa";
-
-        acoesAtivo.style.display =
-            "grid";
-
-        acoesPausado.style.display =
-            "none";
+        total +=
+        tempoEntre(
+            ponto.ultimo_inicio_ativo
+        );
     }
 
+    return total;
+}
 
-    atualizarTimer();
+
+function atualizarTela(){
 
     clearInterval(intervalo);
 
-    intervalo = setInterval(
-        atualizarTimer,
-        1000
-    );
-
-
-    if(ponto.equipe_nome){
-
-        cardEquipe.classList.add("mostrar");
-
-        equipeNome.textContent =
-            ponto.equipe_nome;
-
-        equipeDetalhe.textContent =
-            ponto.equipe_funcao ||
-            ponto.equipe_area ||
-            "Equipe ativa";
-
-    }
-}
-
-
-function atualizarTimer(){
 
     if(!ponto){
-        timer.textContent = "00:00:00";
+
+        cronometro.textContent =
+        "00:00:00";
+
+        statusBox.className =
+        "status";
+
+        statusTexto.textContent =
+        "Ponto fechado";
+
+        btnIniciar.style.display =
+        "block";
+
+        btnPausar.style.display =
+        "none";
+
+        btnRetomar.style.display =
+        "none";
+
+        btnEncerrar.style.display =
+        "none";
+
+        document.getElementById(
+            "statusResumo"
+        ).textContent =
+        "Ponto fechado";
+
+        document.getElementById(
+            "jornadaResumo"
+        ).textContent =
+        "Ponto fechado";
+
+        document.getElementById(
+            "entradaResumo"
+        ).textContent =
+        "—";
+
+        document.getElementById(
+            "equipeResumo"
+        ).textContent =
+        "Nenhuma equipe";
+
+        document.getElementById(
+            "pausasResumo"
+        ).textContent =
+        "Nenhuma pausa";
+
         return;
     }
 
 
-    let segundos = 0;
-
-
     if(ponto.status === "pausado"){
 
-        segundos =
-            Number(ponto.tempo_antes_pausa || 0);
+        statusBox.className =
+        "status pausado";
+
+        statusTexto.textContent =
+        "Jornada pausada";
+
+        btnIniciar.style.display =
+        "none";
+
+        btnPausar.style.display =
+        "none";
+
+        btnRetomar.style.display =
+        "block";
+
+        btnEncerrar.style.display =
+        "block";
 
     }else{
 
-        segundos =
-            Number(
-                ponto.tempo_antes_pausa || 0
-            );
+        statusBox.className =
+        "status ativo";
 
-        segundos +=
-            diferencaSegundos(
-                ponto.ultimo_inicio_ativo
-            );
+        statusTexto.textContent =
+        "Jornada ativa";
+
+        btnIniciar.style.display =
+        "none";
+
+        btnPausar.style.display =
+        "block";
+
+        btnRetomar.style.display =
+        "none";
+
+        btnEncerrar.style.display =
+        "block";
     }
 
 
-    timer.textContent =
-        formatarTempo(segundos);
-}
-
-
-/* =========================================================
-   COOLDOWN
-========================================================= */
-
-function verificarCooldown(){
-
-    const cooldown =
-        Number(
-            localStorage.getItem(
-                STORAGE_COOLDOWN
-            )
-        );
-
-    if(!cooldown){
-        return false;
-    }
-
-    if(Date.now() >= cooldown){
-
-        localStorage.removeItem(
-            STORAGE_COOLDOWN
-        );
-
-        return false;
-    }
-
-    const restante =
-        Math.ceil(
-            (cooldown - Date.now()) / 1000
-        );
-
-    const minutos =
-        Math.floor(restante / 60);
-
-    const segundos =
-        restante % 60;
-
-    alert(
-        `Você precisa aguardar ${minutos}:${String(segundos).padStart(2,"0")} antes de iniciar outro ponto.`
+    cronometro.textContent =
+    formatar(
+        tempoAtual()
     );
 
-    return true;
+
+    document.getElementById(
+        "statusResumo"
+    ).textContent =
+    ponto.status === "pausado"
+    ? "Jornada pausada"
+    : "Jornada ativa";
+
+
+    document.getElementById(
+        "jornadaResumo"
+    ).textContent =
+    formatar(
+        tempoAtual()
+    );
+
+
+    document.getElementById(
+        "entradaResumo"
+    ).textContent =
+    ponto.entrada
+    ? new Date(
+        ponto.entrada
+      ).toLocaleTimeString(
+        "pt-BR",
+        {
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+      )
+    : "—";
+
+
+    document.getElementById(
+        "equipeResumo"
+    ).textContent =
+    ponto.equipe_nome ||
+    "Equipe";
+
+
+    document.getElementById(
+        "pausasResumo"
+    ).textContent =
+    pausas.length
+    ? `${pausas.length} pausa(s)`
+    : "Nenhuma pausa";
+
+
+    intervalo =
+    setInterval(
+        atualizarCronometro,
+        1000
+    );
 }
 
 
-/* =========================================================
-   BUSCAR EQUIPES
-========================================================= */
+function atualizarCronometro(){
 
-async function buscarEquipeDisponivel(){
+    if(!ponto){
+        return;
+    }
 
-    const {
-        data: equipes,
-        error: erroEquipes
-    } = await supabaseClient
-        .from("equipes")
-        .select(`
-            id,
-            nome,
-            funcao,
-            area,
-            limite,
-            ativa,
-            tipo
-        `)
-        .eq("ativa",true);
+    cronometro.textContent =
+    formatar(
+        tempoAtual()
+    );
+
+    document.getElementById(
+        "jornadaResumo"
+    ).textContent =
+    formatar(
+        tempoAtual()
+    );
+}
 
 
-    if(erroEquipes){
+/* EQUIPE DISPONÍVEL */
+
+async function buscarEquipe(){
+
+    const resposta =
+    await supabaseClient
+    .from("equipes")
+    .select(
+        "id,nome,funcao,area,limite,ativa,tipo"
+    )
+    .eq("ativa",true);
+
+
+    if(resposta.error){
 
         throw new Error(
-            `Erro ao buscar equipes: ${erroEquipes.message}`
+            `Erro ao buscar equipes: ${resposta.error.message}`
         );
     }
 
 
-    if(!equipes || equipes.length === 0){
+    const equipes =
+    resposta.data || [];
+
+
+    if(!equipes.length){
 
         throw new Error(
-            "Não existe nenhuma equipe ativa disponível."
+            "Nenhuma equipe ativa foi encontrada."
         );
     }
 
 
-    const resultado = [];
+    const disponiveis = [];
 
 
-    for(const equipe of equipes){
+    for(
+        const equipe of equipes
+    ){
 
-        const {
-            data: membros,
-            error: erroMembros
-        } = await supabaseClient
-            .from("equipe_membros")
-            .select(`
-                id,
-                passaporte,
-                nome,
-                status,
-                cargo,
-                posicao,
-                atividade,
-                veiculo
-            `)
-            .eq("equipe_id",equipe.id)
-            .neq("status","fora");
+        const membrosResposta =
+        await supabaseClient
+        .from("equipe_membros")
+        .select(
+            "id,passaporte,status"
+        )
+        .eq(
+            "equipe_id",
+            equipe.id
+        )
+        .neq(
+            "status",
+            "fora"
+        );
 
 
-        if(erroMembros){
+        if(membrosResposta.error){
 
             throw new Error(
-                `Erro ao verificar membros da equipe "${equipe.nome}": ${erroMembros.message}`
+                `Erro ao verificar a equipe ${equipe.nome}: ${membrosResposta.error.message}`
             );
         }
 
 
-        const ativos =
-            membros || [];
+        const membros =
+        membrosResposta.data || [];
 
-
-        const quantidade =
-            ativos.length;
-
-
-        /*
-          Se a equipe tiver limite definido,
-          usamos esse limite.
-
-          Para equipes sem limite:
-          - Favela: sem limite geral
-          - Segurança: sem limite geral
-          - Farm: controlada pela atividade
-          - Venda: máximo 4
-        */
 
         let limite =
-            Number(equipe.limite || 0);
+        Number(
+            equipe.limite || 0
+        );
 
 
         const tipo =
-            String(
-                equipe.tipo ||
-                ""
-            ).toLowerCase();
-
-
-        const funcao =
-            String(
-                equipe.funcao ||
-                ""
-            ).toLowerCase();
-
+        String(
+            equipe.tipo || ""
+        ).toLowerCase();
 
         const nomeEquipe =
-            String(
-                equipe.nome ||
-                ""
-            ).toLowerCase();
+        String(
+            equipe.nome || ""
+        ).toLowerCase();
+
+        const funcao =
+        String(
+            equipe.funcao || ""
+        ).toLowerCase();
 
 
-        const ehFavela =
-            tipo.includes("favela") ||
-            nomeEquipe.includes("favela") ||
-            funcao.includes("favela");
+        const venda =
+        tipo.includes("venda") ||
+        nomeEquipe.includes("venda") ||
+        funcao.includes("venda");
 
 
-        const ehSeguranca =
-            tipo.includes("segurança") ||
-            tipo.includes("seguranca") ||
-            nomeEquipe.includes("segurança") ||
-            nomeEquipe.includes("seguranca");
+        const favela =
+        tipo.includes("favela") ||
+        nomeEquipe.includes("favela") ||
+        funcao.includes("favela");
 
 
-        const ehVenda =
-            tipo.includes("venda") ||
-            nomeEquipe.includes("venda") ||
-            funcao.includes("venda");
+        const seguranca =
+        tipo.includes("segurança") ||
+        tipo.includes("seguranca") ||
+        nomeEquipe.includes("segurança") ||
+        nomeEquipe.includes("seguranca");
 
 
-        if(ehVenda){
-
+        if(venda){
             limite = 4;
-
-        }else if(ehFavela){
-
-            limite = 0;
-
-        }else if(ehSeguranca){
-
-            limite = 0;
-
         }
 
 
-        /*
-          limite 0 = sem limite geral.
-        */
-
-        if(limite > 0 && quantidade >= limite){
+        if(
+            limite > 0 &&
+            membros.length >= limite
+        ){
             continue;
         }
 
 
-        resultado.push({
-            equipe,
-            membros: ativos,
-            quantidade
+        disponiveis.push({
+            equipe:equipe,
+            quantidade:membros.length
         });
     }
 
 
-    if(resultado.length === 0){
+    if(!disponiveis.length){
 
         throw new Error(
-            "Todas as equipes disponíveis estão lotadas no momento."
+            "Todas as equipes disponíveis estão lotadas."
         );
     }
 
 
-    /*
-      Escolhe primeiro a equipe
-      com menos integrantes.
-    */
-
-    resultado.sort(
+    disponiveis.sort(
         (a,b) =>
-            a.quantidade -
-            b.quantidade
+        a.quantidade -
+        b.quantidade
     );
 
 
-    return resultado[0];
-      }
-  /* =========================================================
-   INSERIR MEMBRO NA EQUIPE
-========================================================= */
-
-async function inserirMembroEquipe(equipe){
-
-    /*
-      Verifica se o usuário já está
-      nessa equipe com status ativo/pausado.
-    */
-
-    const {
-        data: existente,
-        error: erroBusca
-    } = await supabaseClient
-        .from("equipe_membros")
-        .select("id,status")
-        .eq("equipe_id",equipe.id)
-        .eq("passaporte",passaporte)
-        .neq("status","fora")
-        .maybeSingle();
-
-
-    if(erroBusca){
-
-        throw new Error(
-            `Erro ao verificar sua equipe: ${erroBusca.message}`
-        );
+    return disponiveis[0].equipe;
     }
-
-
-    if(existente){
-
-        return existente;
-    }
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("equipe_membros")
-        .insert({
-            equipe_id:equipe.id,
-            passaporte:passaporte,
-            nome:nome,
-            status:"ativo",
-            entrou_em:new Date().toISOString()
-        })
-        .select()
-        .single();
-
-
-    if(error){
-
-        throw new Error(
-            `Não foi possível entrar na equipe: ${error.message}`
-        );
-    }
-
-
-    return data;
-}
-
-
-/* =========================================================
-   INICIAR JORNADA
-========================================================= */
+    /* INICIAR */
 
 async function iniciarJornada(){
 
-    console.log("INICIAR CLICADO");
-
-    if(verificarCooldown()){
-        return;
-    }
+    console.log(
+        "Botão INICIAR pressionado."
+    );
 
 
     if(ponto){
@@ -1120,92 +1403,115 @@ async function iniciarJornada(){
     }
 
 
-    setLoading(true);
+    const cooldown =
+    Number(
+        localStorage.getItem(
+            COOLDOWN
+        )
+    );
+
+
+    if(
+        cooldown &&
+        Date.now() < cooldown
+    ){
+
+        const segundos =
+        Math.ceil(
+            (cooldown - Date.now()) /
+            1000
+        );
+
+        alert(
+            `Aguarde ${segundos} segundos para iniciar novamente.`
+        );
+
+        return;
+    }
+
+
+    loading.classList.add(
+        "mostrar"
+    );
+
+    btnIniciar.disabled =
+    true;
 
 
     try{
 
-        console.log("Buscando equipe disponível...");
-
-
-        const escolha =
-            await buscarEquipeDisponivel();
-
-
         const equipe =
-            escolha.equipe;
+        await buscarEquipe();
 
 
-        console.log(
-            "Equipe escolhida:",
-            equipe
-        );
+        const entrada =
+        new Date().toISOString();
 
 
-        /*
-          Primeiro cria o registro do ponto.
-        */
-
-        const {
-            data: novoPonto,
-            error: erroPonto
-        } = await supabaseClient
-            .from("pontos")
-            .insert({
-                passaporte:passaporte,
-                nome:nome,
-                equipe_id:equipe.id,
-                entrada:new Date().toISOString(),
-                status:"ativo"
-            })
-            .select()
-            .single();
+        const pontoResposta =
+        await supabaseClient
+        .from("pontos")
+        .insert({
+            passaporte:passaporte,
+            nome:nome,
+            equipe_id:equipe.id,
+            entrada:entrada,
+            status:"ativo"
+        })
+        .select()
+        .limit(1);
 
 
-        if(erroPonto){
+        if(pontoResposta.error){
 
             throw new Error(
-                `Não foi possível criar o ponto: ${erroPonto.message}`
+                `Erro ao criar ponto: ${pontoResposta.error.message}`
             );
         }
 
 
-        console.log(
-            "Ponto criado:",
-            novoPonto
-        );
+        const novoPonto =
+        pontoResposta.data?.[0];
 
 
-        /*
-          Depois coloca o usuário
-          dentro da equipe.
-        */
+        if(!novoPonto){
 
-        try{
-
-            await inserirMembroEquipe(
-                equipe
+            throw new Error(
+                "O ponto foi enviado, mas o Supabase não retornou o registro criado."
             );
+        }
 
-        }catch(erroEquipe){
 
-            /*
-              Se falhar ao entrar na equipe,
-              tenta apagar o ponto recém-criado.
-            */
+        const membroResposta =
+        await supabaseClient
+        .from("equipe_membros")
+        .insert({
+            equipe_id:equipe.id,
+            passaporte:passaporte,
+            nome:nome,
+            status:"ativo",
+            entrou_em:entrada
+        })
+        .select()
+        .limit(1);
+
+
+        if(membroResposta.error){
 
             await supabaseClient
-                .from("pontos")
-                .delete()
-                .eq("id",novoPonto.id);
+            .from("pontos")
+            .delete()
+            .eq(
+                "id",
+                novoPonto.id
+            );
 
-            throw erroEquipe;
+
+            throw new Error(
+                `Erro ao entrar na equipe: ${membroResposta.error.message}`
+            );
         }
 
-
-        /*
-          Salva o estado local.
-        */
 
         ponto = {
 
@@ -1223,52 +1529,51 @@ async function iniciarJornada(){
 
             equipe_area:equipe.area,
 
-            entrada:
-                novoPonto.entrada ||
-                new Date().toISOString(),
+            entrada:entrada,
 
             status:"ativo",
 
-            tempo_antes_pausa:0,
+            tempo_acumulado:0,
 
-            ultimo_inicio_ativo:
-                novoPonto.entrada ||
-                new Date().toISOString()
+            ultimo_inicio_ativo:entrada
         };
 
 
-        salvarPontoLocal();
+        pausas = [];
 
 
-        console.log(
-            "Jornada iniciada com sucesso."
-        );
+        salvarLocal();
+
+        atualizarTela();
 
 
         /*
-          Vai direto para a página
-          da equipe.
+          Depois que o banco confirma tudo,
+          abre a página completa da equipe.
         */
 
         window.location.href =
-            "equipe.html";
+        "equipe.html";
 
 
     }catch(erro){
 
         mostrarErro(
-            "Não foi possível iniciar o ponto.",
+            "Erro ao iniciar o ponto.",
             erro
         );
 
-        setLoading(false);
+        loading.classList.remove(
+            "mostrar"
+        );
+
+        btnIniciar.disabled =
+        false;
     }
 }
 
 
-/* =========================================================
-   PAUSAR
-========================================================= */
+/* PAUSAR */
 
 async function pausarJornada(){
 
@@ -1277,72 +1582,82 @@ async function pausarJornada(){
     }
 
 
-    setLoading(true);
+    loading.classList.add(
+        "mostrar"
+    );
 
 
     try{
 
         const agora =
-            new Date().toISOString();
+        new Date().toISOString();
 
 
-        const segundosAtivos =
-            diferencaSegundos(
-                ponto.ultimo_inicio_ativo
-            );
+        const acumulado =
+        tempoAtual();
 
 
-        ponto.tempo_antes_pausa =
-            Number(
-                ponto.tempo_antes_pausa || 0
-            ) +
-            segundosAtivos;
+        const resposta =
+        await supabaseClient
+        .from("pontos")
+        .update({
+            status:"pausado",
+            pausa_inicio:agora
+        })
+        .eq(
+            "id",
+            ponto.id
+        );
 
 
-        ponto.status =
-            "pausado";
-
-
-        ponto.pausa_inicio =
-            agora;
-
-
-        ponto.ultimo_inicio_ativo =
-            null;
-
-
-        const {
-            error
-        } = await supabaseClient
-            .from("pontos")
-            .update({
-                status:"pausado",
-                pausa_inicio:agora
-            })
-            .eq("id",ponto.id);
-
-
-        if(error){
+        if(resposta.error){
 
             throw new Error(
-                `Não foi possível pausar: ${error.message}`
+                `Erro ao pausar: ${resposta.error.message}`
             );
         }
 
 
+        pausas.push({
+            inicio:agora,
+            fim:null
+        });
+
+
+        ponto.status =
+        "pausado";
+
+        ponto.tempo_acumulado =
+        acumulado;
+
+        ponto.ultimo_inicio_ativo =
+        null;
+
+
         await supabaseClient
-            .from("equipe_membros")
-            .update({
-                status:"pausado"
-            })
-            .eq("equipe_id",ponto.equipe_id)
-            .eq("passaporte",passaporte)
-            .neq("status","fora");
+        .from("equipe_membros")
+        .update({
+            status:"pausado"
+        })
+        .eq(
+            "equipe_id",
+            ponto.equipe_id
+        )
+        .eq(
+            "passaporte",
+            passaporte
+        )
+        .neq(
+            "status",
+            "fora"
+        );
 
 
-        salvarPontoLocal();
+        salvarLocal();
 
-        atualizarInterface();
+        atualizarTela();
+
+        carregarModais();
 
 
     }catch(erro){
@@ -1354,14 +1669,14 @@ async function pausarJornada(){
 
     }finally{
 
-        setLoading(false);
+        loading.classList.remove(
+            "mostrar"
+        );
     }
 }
 
 
-/* =========================================================
-   RETOMAR
-========================================================= */
+/* RETOMAR */
 
 async function retomarJornada(){
 
@@ -1370,59 +1685,80 @@ async function retomarJornada(){
     }
 
 
-    setLoading(true);
+    loading.classList.add(
+        "mostrar"
+    );
 
 
     try{
 
         const agora =
-            new Date().toISOString();
+        new Date().toISOString();
 
 
-        ponto.status =
-            "ativo";
+        const resposta =
+        await supabaseClient
+        .from("pontos")
+        .update({
+            status:"ativo",
+            pausa_fim:agora
+        })
+        .eq(
+            "id",
+            ponto.id
+        );
 
 
-        ponto.ultimo_inicio_ativo =
-            agora;
-
-
-        ponto.pausa_inicio =
-            null;
-
-
-        const {
-            error
-        } = await supabaseClient
-            .from("pontos")
-            .update({
-                status:"ativo",
-                pausa_fim:agora
-            })
-            .eq("id",ponto.id);
-
-
-        if(error){
+        if(resposta.error){
 
             throw new Error(
-                `Não foi possível retomar: ${error.message}`
+                `Erro ao retomar: ${resposta.error.message}`
             );
         }
 
 
+        if(
+            pausas.length &&
+            !pausas[pausas.length-1].fim
+        ){
+
+            pausas[
+                pausas.length-1
+            ].fim = agora;
+        }
+
+
+        ponto.status =
+        "ativo";
+
+        ponto.ultimo_inicio_ativo =
+        agora;
+
+
         await supabaseClient
-            .from("equipe_membros")
-            .update({
-                status:"ativo"
-            })
-            .eq("equipe_id",ponto.equipe_id)
-            .eq("passaporte",passaporte)
-            .neq("status","fora");
+        .from("equipe_membros")
+        .update({
+            status:"ativo"
+        })
+        .eq(
+            "equipe_id",
+            ponto.equipe_id
+        )
+        .eq(
+            "passaporte",
+            passaporte
+        )
+        .neq(
+            "status",
+            "fora"
+        );
 
 
-        salvarPontoLocal();
+        salvarLocal();
 
-        atualizarInterface();
+        atualizarTela();
+
+        carregarModais();
 
 
     }catch(erro){
@@ -1434,12 +1770,12 @@ async function retomarJornada(){
 
     }finally{
 
-        setLoading(false);
+        loading.classList.remove(
+            "mostrar"
+        );
     }
     }
-  /* =========================================================
-   ENCERRAR
-========================================================= */
+    /* ENCERRAR */
 
 async function encerrarJornada(){
 
@@ -1448,409 +1784,486 @@ async function encerrarJornada(){
     }
 
 
-    const confirmar =
-        confirm(
+    if(
+        !confirm(
             "Deseja realmente encerrar sua jornada?"
-        );
-
-
-    if(!confirmar){
+        )
+    ){
         return;
     }
 
 
-    setLoading(true);
+    loading.classList.add(
+        "mostrar"
+    );
 
 
     try{
 
         const agora =
-            new Date().toISOString();
+        new Date().toISOString();
 
 
-        let tempoFinal =
-            Number(
-                ponto.tempo_antes_pausa || 0
-            );
+        const tempoFinal =
+        tempoAtual();
 
 
-        if(ponto.status === "ativo"){
-
-            tempoFinal +=
-                diferencaSegundos(
-                    ponto.ultimo_inicio_ativo
-                );
-        }
-
-
-        const {
-            error:erroPonto
-        } = await supabaseClient
-            .from("pontos")
-            .update({
-                saida:agora,
-                status:"encerrado"
-            })
-            .eq("id",ponto.id);
+        const resposta =
+        await supabaseClient
+        .from("pontos")
+        .update({
+            saida:agora,
+            status:"encerrado"
+        })
+        .eq(
+            "id",
+            ponto.id
+        );
 
 
-        if(erroPonto){
+        if(resposta.error){
 
             throw new Error(
-                `Não foi possível encerrar o ponto: ${erroPonto.message}`
+                `Erro ao encerrar o ponto: ${resposta.error.message}`
             );
         }
 
 
-        const {
-            error:erroMembro
-        } = await supabaseClient
-            .from("equipe_membros")
-            .update({
-                status:"fora",
-                saiu_em:agora
-            })
-            .eq("equipe_id",ponto.equipe_id)
-            .eq("passaporte",passaporte)
-            .neq("status","fora");
+        const membroResposta =
+        await supabaseClient
+        .from("equipe_membros")
+        .update({
+            status:"fora",
+            saiu_em:agora
+        })
+        .eq(
+            "equipe_id",
+            ponto.equipe_id
+        )
+        .eq(
+            "passaporte",
+            passaporte
+        )
+        .neq(
+            "status",
+            "fora"
+        );
 
 
-        if(erroMembro){
+        if(membroResposta.error){
 
             console.warn(
-                "Ponto encerrado, mas houve erro ao sair da equipe:",
-                erroMembro
+                "Ponto encerrado, mas não foi possível atualizar a saída da equipe:",
+                membroResposta.error
             );
         }
 
 
-        /*
-          Cooldown de 1 minuto.
-        */
-
         localStorage.setItem(
-            STORAGE_COOLDOWN,
+            COOLDOWN,
             String(
-                Date.now() +
-                60000
+                Date.now() + 60000
             )
         );
 
 
-        clearInterval(intervalo);
-
         ponto = null;
 
-        localStorage.removeItem(
-            STORAGE_PONTO
-        );
+        pausas = [];
 
 
-        atualizarInterface();
+        salvarLocal();
 
-        await carregarHistorico();
+        atualizarTela();
+
+        carregarModais();
 
 
         alert(
-            `Jornada encerrada com sucesso.\nTempo registrado: ${formatarTempo(tempoFinal)}`
+            `Jornada encerrada.\nTempo registrado: ${formatar(tempoFinal)}`
         );
 
 
     }catch(erro){
 
         mostrarErro(
-            "Erro ao encerrar a jornada.",
+            "Erro ao encerrar.",
             erro
         );
 
     }finally{
 
-        setLoading(false);
+        loading.classList.remove(
+            "mostrar"
+        );
     }
 }
 
 
-/* =========================================================
-   HISTÓRICO
-========================================================= */
+/* MODAIS */
 
-async function carregarHistorico(){
+function abrirModal(id){
 
-    const historico =
-        document.getElementById("historico");
-
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("pontos")
-        .select(`
-            id,
-            equipe_id,
-            entrada,
-            saida,
-            status,
-            criado_em,
-            equipes (
-                nome
-            )
-        `)
-        .eq("passaporte",passaporte)
-        .order("entrada",{ascending:false})
-        .limit(5);
+    document
+    .getElementById(id)
+    .classList.add("mostrar");
+}
 
 
-    if(error){
+function fecharModal(id){
+
+    document
+    .getElementById(id)
+    .classList.remove("mostrar");
+}
+
+
+document
+.querySelectorAll("[data-fechar]")
+.forEach(botao => {
+
+    botao.addEventListener(
+        "click",
+        () => {
+            fecharModal(
+                botao.dataset.fechar
+            );
+        }
+    );
+
+});
+
+
+document
+.querySelectorAll(".modal")
+.forEach(modal => {
+
+    modal.addEventListener(
+        "click",
+        evento => {
+
+            if(
+                evento.target === modal
+            ){
+                modal.classList.remove(
+                    "mostrar"
+                );
+            }
+
+        }
+    );
+
+});
+
+
+function carregarModais(){
+
+    const status =
+    document.getElementById(
+        "conteudoStatus"
+    );
+
+    const entrada =
+    document.getElementById(
+        "conteudoEntrada"
+    );
+
+    const jornada =
+    document.getElementById(
+        "conteudoJornada"
+    );
+
+    const equipe =
+    document.getElementById(
+        "conteudoEquipe"
+    );
+
+    const pausasBox =
+    document.getElementById(
+        "conteudoPausas"
+    );
+
+
+    if(!ponto){
+
+        status.innerHTML =
+        `<div class="vazio">
+            Nenhuma jornada aberta.
+        </div>`;
+
+        entrada.innerHTML =
+        `<div class="vazio">
+            Nenhum horário de entrada.
+        </div>`;
+
+        jornada.innerHTML =
+        `<div class="vazio">
+            Sua jornada está fechada.
+        </div>`;
+
+        equipe.innerHTML =
+        `<div class="vazio">
+            Você não está em uma equipe.
+        </div>`;
+
+        pausasBox.innerHTML =
+        `<div class="vazio">
+            Nenhuma pausa registrada.
+        </div>`;
+
+        return;
+    }
+
+
+    status.innerHTML = `
+        <div class="linha">
+            <span>Status</span>
+            <strong>
+                ${
+                    ponto.status === "pausado"
+                    ? "Pausado"
+                    : "Ativo"
+                }
+            </strong>
+        </div>
+    `;
+
+
+    entrada.innerHTML = `
+        <div class="linha">
+            <span>Entrada</span>
+            <strong>
+                ${
+                    new Date(
+                        ponto.entrada
+                    ).toLocaleString(
+                        "pt-BR"
+                    )
+                }
+            </strong>
+        </div>
+    `;
+
+
+    jornada.innerHTML = `
+        <div class="linha">
+            <span>Tempo</span>
+            <strong>
+                ${formatar(tempoAtual())}
+            </strong>
+        </div>
+
+        <div class="linha">
+            <span>Status</span>
+            <strong>
+                ${
+                    ponto.status === "pausado"
+                    ? "Pausada"
+                    : "Em andamento"
+                }
+            </strong>
+        </div>
+    `;
+
+
+    equipe.innerHTML = `
+        <div class="linha">
+            <span>Equipe</span>
+            <strong>
+                ${ponto.equipe_nome || "—"}
+            </strong>
+        </div>
+
+        <div class="linha">
+            <span>Função</span>
+            <strong>
+                ${ponto.equipe_funcao || "—"}
+            </strong>
+        </div>
+
+        <div class="linha">
+            <span>Área</span>
+            <strong>
+                ${ponto.equipe_area || "—"}
+            </strong>
+        </div>
+    `;
+
+
+    if(!pausas.length){
+
+        pausasBox.innerHTML =
+        `<div class="vazio">
+            Nenhuma pausa registrada.
+        </div>`;
+
+    }else{
+
+        pausasBox.innerHTML =
+        pausas.map(
+            (pausa,index) => {
+
+                return `
+                    <div class="linha">
+                        <span>
+                            Pausa ${index + 1}
+                        </span>
+
+                        <strong>
+                            ${new Date(
+                                pausa.inicio
+                            ).toLocaleTimeString(
+                                "pt-BR",
+                                {
+                                    hour:"2-digit",
+                                    minute:"2-digit"
+                                }
+                            )}
+
+                            ${
+                                pausa.fim
+                                ? " → " +
+                                  new Date(
+                                      pausa.fim
+                                  ).toLocaleTimeString(
+                                      "pt-BR",
+                                      {
+                                          hour:"2-digit",
+                                          minute:"2-digit"
+                                      }
+                                  )
+                                : " → em andamento"
+                            }
+                        </strong>
+                    </div>
+                `;
+            }
+        ).join("");
+    }
+}
+
+
+/* HISTÓRICO */
+
+async function abrirHistorico(){
+
+    const conteudo =
+    document.getElementById(
+        "conteudoHistorico"
+    );
+
+
+    abrirModal(
+        "modalHistorico"
+    );
+
+
+    conteudo.innerHTML =
+    `<div class="vazio">
+        Carregando histórico...
+    </div>`;
+
+
+    const resposta =
+    await supabaseClient
+    .from("pontos")
+    .select(`
+        id,
+        entrada,
+        saida,
+        status,
+        equipes (
+            nome
+        )
+    `)
+    .eq(
+        "passaporte",
+        passaporte
+    )
+    .order(
+        "entrada",
+        {
+            ascending:false
+        }
+    )
+    .limit(20);
+
+
+    if(resposta.error){
+
+        conteudo.innerHTML =
+        `<div class="vazio">
+            Não foi possível carregar o histórico.
+        </div>`;
 
         console.error(
-            "Erro histórico:",
-            error
+            resposta.error
         );
 
-        historico.innerHTML = `
-            <div class="historico-vazio">
-                Não foi possível carregar o histórico.
-            </div>
-        `;
+        return;
+    }
+
+
+    const registros =
+    resposta.data || [];
+
+
+    if(!registros.length){
+
+        conteudo.innerHTML =
+        `<div class="vazio">
+            Nenhum registro encontrado.
+        </div>`;
 
         return;
     }
 
 
-    if(!data || data.length === 0){
-
-        historico.innerHTML = `
-            <div class="historico-vazio">
-                Nenhum registro encontrado.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    historico.innerHTML =
-        data.map(item => {
+    conteudo.innerHTML =
+    registros.map(
+        registro => {
 
             const entrada =
-                item.entrada
-                ? new Date(item.entrada)
-                : null;
+            registro.entrada
+            ? new Date(
+                registro.entrada
+              ).toLocaleString(
+                "pt-BR"
+              )
+            : "—";
+
 
             const saida =
-                item.saida
-                ? new Date(item.saida)
-                : null;
-
-
-            const dataTexto =
-                entrada
-                ? entrada.toLocaleDateString(
-                    "pt-BR"
-                )
-                : "—";
-
-
-            const entradaTexto =
-                entrada
-                ? entrada.toLocaleTimeString(
-                    "pt-BR",
-                    {
-                        hour:"2-digit",
-                        minute:"2-digit"
-                    }
-                )
-                : "—";
-
-
-            const saidaTexto =
-                saida
-                ? saida.toLocaleTimeString(
-                    "pt-BR",
-                    {
-                        hour:"2-digit",
-                        minute:"2-digit"
-                    }
-                )
-                : "Aberto";
-
-
-            const equipe =
-                item.equipes?.nome ||
-                "Equipe";
+            registro.saida
+            ? new Date(
+                registro.saida
+              ).toLocaleString(
+                "pt-BR"
+              )
+            : "Em aberto";
 
 
             return `
-                <div class="registro">
+                <div class="linha">
 
-                    <div class="registro-esq">
+                    <span>
+                        ${registro.equipes?.nome || "Equipe"}
+                        <br>
+                        ${entrada}
+                    </span>
 
-                        <strong>
-                            ${equipe}
-                        </strong>
-
-                        <span>
-                            ${dataTexto}
-                        </span>
-
-                    </div>
-
-                    <div class="registro-dir">
-
-                        <strong>
-                            ${entradaTexto}
-                            →
-                            ${saidaTexto}
-                        </strong>
-
-                        <span>
-                            ${item.status || "—"}
-                        </span>
-
-                    </div>
+                    <strong>
+                        ${saida}
+                    </strong>
 
                 </div>
             `;
-
-        }).join("");
+        }
+    ).join("");
 }
 
 
-/* =========================================================
-   RESTAURAR PONTO
-========================================================= */
-
-async function restaurarPonto(){
-
-    const local =
-        carregarPontoLocal();
-
-
-    if(local){
-
-        ponto = local;
-
-        atualizarInterface();
-
-        return;
-    }
-
-
-    /*
-      Caso o navegador tenha perdido
-      o localStorage, procuramos uma
-      jornada ainda aberta no banco.
-    */
-
-    const {
-        data,
-        error
-    } = await supabaseClient
-        .from("pontos")
-        .select(`
-            id,
-            passaporte,
-            nome,
-            equipe_id,
-            entrada,
-            saida,
-            status,
-            pausa_inicio,
-            pausa_fim,
-            criado_em,
-            equipes (
-                nome,
-                funcao,
-                area
-            )
-        `)
-        .eq("passaporte",passaporte)
-        .in("status",["ativo","pausado"])
-        .order("entrada",{ascending:false})
-        .limit(1);
-
-
-    if(error){
-
-        console.error(
-            "Erro ao restaurar ponto:",
-            error
-        );
-
-        return;
-    }
-
-
-    if(!data || data.length === 0){
-        return;
-    }
-
-
-    const registro =
-        data[0];
-
-
-    ponto = {
-
-        id:registro.id,
-
-        passaporte:registro.passaporte,
-
-        nome:registro.nome,
-
-        equipe_id:registro.equipe_id,
-
-        equipe_nome:
-            registro.equipes?.nome ||
-            "",
-
-        equipe_funcao:
-            registro.equipes?.funcao ||
-            "",
-
-        equipe_area:
-            registro.equipes?.area ||
-            "",
-
-        entrada:registro.entrada,
-
-        status:registro.status,
-
-        pausa_inicio:
-            registro.pausa_inicio,
-
-        tempo_antes_pausa:0,
-
-        ultimo_inicio_ativo:
-            registro.status === "ativo"
-            ? registro.entrada
-            : null
-    };
-
-
-    /*
-      Para ponto pausado, não sabemos
-      exatamente o acumulado só com os
-      campos atuais. Mantemos a jornada
-      restaurada sem inventar tempo.
-    */
-
-    if(registro.status === "pausado"){
-
-        ponto.tempo_antes_pausa = 0;
-    }
-
-
-    salvarPontoLocal();
-
-    atualizarInterface();
-}
-
-
-/* =========================================================
-   EVENTOS
-========================================================= */
+/* CLIQUES */
 
 btnIniciar.addEventListener(
     "click",
@@ -1867,37 +2280,213 @@ btnRetomar.addEventListener(
     retomarJornada
 );
 
-btnEncerrarAtivo.addEventListener(
-    "click",
-    encerrarJornada
-);
-
-btnEncerrarPausado.addEventListener(
+btnEncerrar.addEventListener(
     "click",
     encerrarJornada
 );
 
 
-/* =========================================================
-   INICIALIZAÇÃO
-========================================================= */
+document
+.getElementById("cardStatus")
+.addEventListener(
+    "click",
+    () => {
+        carregarModais();
+        abrirModal("modalStatus");
+    }
+);
+
+
+document
+.getElementById("cardPausas")
+.addEventListener(
+    "click",
+    () => {
+        carregarModais();
+        abrirModal("modalPausas");
+    }
+);
+
+
+document
+.getElementById("cardEntrada")
+.addEventListener(
+    "click",
+    () => {
+        carregarModais();
+        abrirModal("modalEntrada");
+    }
+);
+
+
+document
+.getElementById("cardJornada")
+.addEventListener(
+    "click",
+    () => {
+        carregarModais();
+        abrirModal("modalJornada");
+    }
+);
+
+
+document
+.getElementById("cardEquipe")
+.addEventListener(
+    "click",
+    () => {
+        carregarModais();
+        abrirModal("modalEquipe");
+    }
+);
+
+
+document
+.getElementById("cardHistorico")
+.addEventListener(
+    "click",
+    abrirHistorico
+);
+
+
+/* SAIR */
+
+document
+.getElementById("btnSair")
+.addEventListener(
+    "click",
+    () => {
+
+        if(
+            confirm(
+                "Deseja sair da sua conta?"
+            )
+        ){
+
+            sessionStorage.removeItem(
+                "italia_usuario"
+            );
+
+            window.location.href =
+            "login.html";
+        }
+
+    }
+);
+
+
+/* INICIALIZAÇÃO */
 
 async function iniciarPagina(){
 
-    console.log(
-        "Bate-ponto carregado."
-    );
+    ponto =
+    carregarLocal();
 
-    console.log(
-        "Usuário:",
-        usuario
-    );
 
-    atualizarInterface();
+    atualizarTela();
 
-    await restaurarPonto();
+    carregarModais();
 
-    await carregarHistorico();
+
+    /*
+      Se não houver ponto salvo localmente,
+      procura no banco uma jornada aberta.
+    */
+
+    if(!ponto){
+
+        const resposta =
+        await supabaseClient
+        .from("pontos")
+        .select(`
+            id,
+            passaporte,
+            nome,
+            equipe_id,
+            entrada,
+            saida,
+            status,
+            pausa_inicio,
+            pausa_fim,
+            equipes (
+                nome,
+                funcao,
+                area
+            )
+        `)
+        .eq(
+            "passaporte",
+            passaporte
+        )
+        .in(
+            "status",
+            [
+                "ativo",
+                "pausado"
+            ]
+        )
+        .order(
+            "entrada",
+            {
+                ascending:false
+            }
+        )
+        .limit(1);
+
+
+        if(
+            !resposta.error &&
+            resposta.data?.length
+        ){
+
+            const registro =
+            resposta.data[0];
+
+
+            ponto = {
+
+                id:registro.id,
+
+                passaporte:
+                registro.passaporte,
+
+                nome:
+                registro.nome,
+
+                equipe_id:
+                registro.equipe_id,
+
+                equipe_nome:
+                registro.equipes?.nome || "",
+
+                equipe_funcao:
+                registro.equipes?.funcao || "",
+
+                equipe_area:
+                registro.equipes?.area || "",
+
+                entrada:
+                registro.entrada,
+
+                status:
+                registro.status,
+
+                tempo_acumulado:0,
+
+                ultimo_inicio_ativo:
+                registro.status === "ativo"
+                ? registro.entrada
+                : null
+            };
+
+
+            salvarLocal();
+
+            atualizarTela();
+
+            carregarModais();
+        }
+    }
 }
 
 
