@@ -44,7 +44,7 @@ button{font-family:inherit}
 </style>
 </head>
 <body>
-  <header class="topbar">
+<header class="topbar">
 <div class="avatar" id="avatar">?</div>
 <div class="topbar-info">
 <div class="topbar-nome" id="nomeUsuario">Carregando...</div>
@@ -66,7 +66,7 @@ button{font-family:inherit}
 <div class="stat"><div class="stat-label">Entrada</div><div class="stat-value" id="entradaTexto">--:--</div></div>
 <div class="stat"><div class="stat-label">Equipe</div><div class="stat-value" id="equipeTexto">--</div></div>
 </section>
-      <div class="tabs">
+  <div class="tabs">
 <button class="tab active" onclick="mostrarAba('jornada',this)">Minha Jornada</button>
 <button class="tab" onclick="mostrarAba('historico',this)">Meu Histórico</button>
 </div>
@@ -171,7 +171,7 @@ function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").
 function atualizarTimer(){if(!inicio||pausado)return;el.timer.textContent=tempo(Math.max(0,Math.floor((Date.now()-inicio)/1000)-tempoPausa))}
 function mostrarAba(n,b){document.getElementById("jornada").style.display=n==="jornada"?"block":"none";el.historico.style.display=n==="historico"?"block":"none";document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(n==="historico")carregarHistorico()}
 
-async function verificarJornadaAtiva(){
+async function carregarJornadaAtiva(){
     try{
         const {data,error}=await supabaseClient.from("pontos")
             .select("*")
@@ -182,173 +182,113 @@ async function verificarJornadaAtiva(){
         if(error) throw error;
         return data?.length?data[0]:null;
     }catch(e){
-        console.warn("Não foi possível verificar jornada ativa:",e);
+        console.warn("Não foi possível verificar jornada:",e);
         return null;
     }
+}
+
+async function aplicarEstadoJornada(registro){
+    if(!registro) return;
+    ponto=registro;
+    inicio=new Date(registro.entrada).getTime();
+    pausado=(registro.status==="pausado");
+    pausas=registro.pausas||0;
+    if(registro.pausa_inicio){
+        const pi=new Date(registro.pausa_inicio);
+        tempoPausa=registro.pausa_fim?Math.floor((new Date(registro.pausa_fim)-pi)/1000):0;
+    }
+    el.entrada.textContent=hora(new Date(registro.entrada));
+    el.marcEntrada.textContent=hora(new Date(registro.entrada));
+    el.pausas.textContent=pausas;
+    if(registro.status==="ativo"){
+        el.status.textContent="Ativo";el.status.style.color="var(--green)";
+        el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+    }else{
+        el.status.textContent="Pausado";el.status.style.color="var(--yellow)";
+        el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
+    }
+    el.btnIniciar.style.display="none";el.grupo.style.display="flex";
+    if(registro.equipe_id) await carregarEquipe(registro.equipe_id);
+    intervalo=setInterval(atualizarTimer,1000);atualizarTimer();
 }
 
 async function buscarEquipeDisponivel(){
     try{
         const {data:e,error:a}=await supabaseClient.from("equipes").select("*").eq("ativa",true);
         if(a) throw a;
-        if(!e?.length) throw new Error("Nenhuma equipe ativa foi encontrada no sistema.");
-
-        const {data:m,error:b}=await supabaseClient.from("equipe_membros").select("id,equipe_id,passaporte,status").neq("status","fora");
+        const {data:m,error:b}=await supabaseClient.from("equipe_membros").select("id,equipe_id").neq("status","fora");
         if(b) throw b;
-
-        const c=e.map(x=>{
-            const q=(m||[]).filter(y=>y.equipe_id===x.id).length;
-            const lim=x.limite!==null&&x.limite!==undefined;
-            return{...x,quantidade:q,disponivel:!lim||q<Number(x.limite)}
-        }).filter(x=>x.disponivel);
-
-        if(!c.length) throw new Error("Todas as equipes disponíveis atingiram o limite de membros.");
-        c.sort((a,b)=>a.quantidade-b.quantidade);
+        const c=e.map(x=>({...x,quantidade:(m||[]).filter(y=>y.equipe_id===x.id).length}))
+        .sort((a,b)=>a.quantidade-b.quantidade).filter(x=>!x.limite||x.quantidade<x.limite);
+        if(!c.length) throw new Error("Sem vagas em equipes.");
         return c[0];
-    }catch(e){
-        console.error("Falha ao buscar equipe:",e);
-        throw e;
-    }
+    }catch(e){throw e}
 }
 
 async function carregarEquipe(id){
     try{
         const {data:e,error:a}=await supabaseClient.from("equipes").select("*").eq("id",id).single();
         if(a) throw a;
-        equipeAtual=e;
-        el.equipe.textContent=e.nome||"--";
-        el.equipeNome.textContent=e.nome||"--";
-        el.equipeFuncao.textContent=e.funcao||"Função não definida";
-        el.equipeArea.textContent=e.area?`Área: ${e.area}`:"Área não definida";
+        el.equipe.textContent=e.nome;el.equipeNome.textContent=e.nome;
+        el.equipeFuncao.textContent=e.funcao||"--";el.equipeArea.textContent=e.area||"--";
         el.equipeCard.style.display="block";
-        await carregarMembrosEquipe(id);
-    }catch(e){
-        console.error("Falha ao carregar equipe:",e);
-    }
-}
-
-async function carregarMembrosEquipe(id){
-    try{
-        const {data,error}=await supabaseClient.from("equipe_membros").select("nome,passaporte,status,entrou_em").eq("equipe_id",id).neq("status","fora").order("entrou_em",{ascending:true});
-        if(error) throw error;
-        if(!data?.length){
-            el.equipeMembros.innerHTML='<div class="loading" style="padding:15px">Você é o primeiro membro desta equipe.</div>';
-            return;
-        }
-        el.equipeMembros.innerHTML=data.map(m=>{
-            let s="⚪ Fora",c="var(--muted)";
-            if(m.status==="ativo"){s="🟢 Em serviço";c="var(--green)"}
-            if(m.status==="pausado"){s="🟡 Em pausa";c="var(--yellow)"}
-            return`<div class="membro"><div><div class="membro-nome">${esc(m.nome||"Sem nome")}</div><div class="membro-pass">Passaporte: ${esc(m.passaporte||"--")}</div></div><div class="membro-status" style="color:${c}">${s}</div></div>`
-        }).join("");
-    }catch(e){
-        el.equipeMembros.innerHTML='<div class="loading" style="padding:15px">Não foi possível carregar os membros.</div>';
-        throw e;
-    }
+        const {data:m}=await supabaseClient.from("equipe_membros").select("nome,passaporte,status").eq("equipe_id",id).neq("status","fora");
+        el.equipeMembros.innerHTML=m?.map(x=>`<div class="membro"><div><div class="membro-nome">${esc(x.nome)}</div><div class="membro-pass">${esc(x.passaporte)}</div></div></div>`).join("")||"<div class='loading'>Sem membros</div>";
+    }catch(e){console.error(e)}
 }
 
 async function iniciarJornada(){
-    limparMensagem();
-    el.btnIniciar.disabled=true;
-    el.btnIniciar.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Analisando...';
+    limparMensagem();el.btnIniciar.disabled=true;el.btnIniciar.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Analisando...';
     try{
-        const jornadaExiste=await verificarJornadaAtiva();
-        if(jornadaExiste){
-            throw new Error(`Você já possui uma jornada em andamento.\nStatus: ${jornadaExiste.status}\nEntrada: ${new Date(jornadaExiste.entrada).toLocaleString("pt-BR")}`);
-        }
-        const equipe=await buscarEquipeDisponivel(),agora=new Date().toISOString();
-        const {data,error}=await supabaseClient.from("pontos").insert([{
-            passaporte:usuario.passaporte,nome:usuario.nome,entrada:agora,status:"ativo",
-            equipe_id:equipe.id,criado_em:agora
-        }]).select().single();
-        if(error) throw error;
-        ponto=data;equipeAtual=equipe;
-        const {error:em}=await supabaseClient.from("equipe_membros").insert([{
-            equipe_id:equipe.id,passaporte:usuario.passaporte,nome:usuario.nome,status:"ativo",entrou_em:agora
-        }]);
-        if(em) throw em;
-        inicio=new Date(ponto.entrada).getTime();pausado=false;pausas=0;tempoPausa=0;
+        const jaExiste=await carregarJornadaAtiva();
+        if(jaExiste) throw new Error(`Jornada já ativa!\nEntrada: ${new Date(jaExiste.entrada).toLocaleString("pt-BR")}`);
+        const eq=await buscarEquipeDisponivel(),agora=new Date().toISOString();
+        const {data:pt}=await supabaseClient.from("pontos").insert({passaporte:usuario.passaporte,nome:usuario.nome,entrada:agora,status:"ativo",equipe_id:eq.id}).select().single();
+        await supabaseClient.from("equipe_membros").insert({equipe_id:eq.id,passaporte:usuario.passaporte,nome:usuario.nome,status:"ativo"});
+        ponto=pt;inicio=Date.now();el.btnIniciar.style.display="none";el.grupo.style.display="flex";
+        el.entrada.textContent=hora();el.marcEntrada.textContent=hora();
         el.status.textContent="Ativo";el.status.style.color="var(--green)";
-        el.pausas.textContent="0";el.entrada.textContent=hora(new Date(ponto.entrada));
-        el.marcEntrada.textContent=hora(new Date(ponto.entrada));el.marcPausa.textContent="--:--";
-        el.marcSaida.textContent="--:--";el.btnIniciar.style.display="none";el.grupo.style.display="flex";
-        await carregarEquipe(equipe.id);
-        intervalo=setInterval(atualizarTimer,1000);atualizarTimer();
-        mostrarSucesso("Jornada Iniciada",`Bem-vindo ao serviço!\nEquipe: ${equipe.nome}`);
-    }catch(e){
-        mostrarErro("ERRO AO INICIAR JORNADA",e.message||"Falha desconhecida",e?.code||"");
-        el.btnIniciar.disabled=false;
-        el.btnIniciar.innerHTML='<i class="fa-solid fa-play"></i> Iniciar Jornada';
-    }
+        await carregarEquipe(eq.id);intervalo=setInterval(atualizarTimer,1000);
+        mostrarSucesso("Jornada Iniciada",`Equipe: ${eq.nome}`);
+    }catch(e){mostrarErro("Erro",e.message);}
+    el.btnIniciar.disabled=false;el.btnIniciar.innerHTML='<i class="fa-solid fa-play"></i> Iniciar Jornada';
 }
 
 async function pausarContinuar(){
     if(!ponto) return;
-    limparMensagem();
     const agora=new Date().toISOString();
-    try{
-        if(!pausado){
-            const {error}=await supabaseClient.from("pontos").update({pausa_inicio:agora,status:"pausado"}).eq("id",ponto.id);
-            if(error) throw error;
-            await supabaseClient.from("equipe_membros").update({status:"pausado"}).eq("equipe_id",ponto.equipe_id).eq("passaporte",usuario.passaporte).neq("status","fora");
-            pausaInicio=Date.now();pausado=true;pausas++;
-            el.status.textContent="Pausado";el.status.style.color="var(--yellow)";el.pausas.textContent=pausas;
-            el.marcPausa.textContent=hora();el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
-            mostrarSucesso("Jornada Pausada","Você pode retomar quando quiser.");
-        }else{
-            const {error}=await supabaseClient.from("pontos").update({pausa_fim:agora,status:"ativo"}).eq("id",ponto.id);
-            if(error) throw error;
-            await supabaseClient.from("equipe_membros").update({status:"ativo"}).eq("equipe_id",ponto.equipe_id).eq("passaporte",usuario.passaporte).neq("status","fora");
-            tempoPausa+=Math.floor((Date.now()-pausaInicio)/1000);pausado=false;
-            el.status.textContent="Ativo";el.status.style.color="var(--green)";
-            el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
-            await carregarMembrosEquipe(ponto.equipe_id);
-            mostrarSucesso("Jornada Retomada","Bom trabalho!");
-        }
-    }catch(e){
-        mostrarErro("ERRO NA PAUSAÇÃO",e.message||"Falha desconhecida",e?.code||"");
+    if(!pausado){
+        await supabaseClient.from("pontos").update({pausa_inicio:agora,status:"pausado"}).eq("id",ponto.id);
+        pausado=true;pausas++;el.status.textContent="Pausado";el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
+        el.marcPausa.textContent=hora();mostrarSucesso("Pausado","");
+    }else{
+        await supabaseClient.from("pontos").update({pausa_fim:agora,status:"ativo"}).eq("id",ponto.id);
+        pausado=false;el.status.textContent="Ativo";el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
+        mostrarSucesso("Retomado","");
     }
 }
 
 async function encerrarJornada(){
-    if(!ponto) return;
-    limparMensagem();
-    if(!confirm("Deseja realmente encerrar sua jornada?")) return;
+    if(!ponto||!confirm("Encerrar?")) return;
     const agora=new Date().toISOString();
-    try{
-        const {error}=await supabaseClient.from("pontos").update({saida:agora,status:"encerrado"}).eq("id",ponto.id);
-        if(error) throw error;
-        await supabaseClient.from("equipe_membros").update({status:"fora",saiu_em:agora}).eq("equipe_id",ponto.equipe_id).eq("passaporte",usuario.passaporte).neq("status","fora");
-        clearInterval(intervalo);
-        el.marcSaida.textContent=hora(new Date(agora));el.status.textContent="Offline";el.status.style.color="";
-        el.btnIniciar.style.display="block";el.btnIniciar.disabled=false;el.btnIniciar.innerHTML='<i class="fa-solid fa-play"></i> Iniciar Jornada';
-        el.grupo.style.display="none";el.timer.textContent="00:00:00";el.entrada.textContent="--:--";
-        el.marcEntrada.textContent="--:--";el.marcPausa.textContent="--:--";el.pausas.textContent="0";
-        el.equipe.textContent="--";el.equipeCard.style.display="none";
-        ponto=null;inicio=null;pausado=false;pausas=0;tempoPausa=0;equipeAtual=null;
-        mostrarSucesso("Jornada Encerrada",`Registrado às ${hora(new Date(agora))}`);
-    }catch(e){
-        mostrarErro("ERRO AO ENCERRAR",e.message||"Falha desconhecida",e?.code||"");
-    }
+    await supabaseClient.from("pontos").update({saida:agora,status:"encerrado"}).eq("id",ponto.id);
+    el.marcSaida.textContent=hora();el.status.textContent="Offline";
+    el.btnIniciar.style.display="block";el.grupo.style.display="none";
+    clearInterval(intervalo);el.timer.textContent="00:00:00";
+    el.equipeCard.style.display="none";ponto=null;
+    mostrarSucesso("Encerrado",`${hora()}`);
 }
 
 async function carregarHistorico(){
-    el.historico.innerHTML='<div class="loading">Carregando histórico...</div>';
     try{
-        const {data,error}=await supabaseClient.from("pontos").select("*").eq("passaporte",usuario.passaporte).order("criado_em",{ascending:false});
-        if(error) throw error;
-        if(!data?.length){el.historico.innerHTML='<div class="loading">Nenhum registro encontrado.</div>';return}
-        el.historico.innerHTML=data.map(p=>`
-        <div class="history-card">
-            <strong>${esc(p.status||"Registro")}</strong>
-            <div>Entrada: ${p.entrada?new Date(p.entrada).toLocaleString("pt-BR"):"--"}</div>
-            <div>Pausa: ${p.pausa_inicio?new Date(p.pausa_inicio).toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}):"--"}</div>
-            <div>Saída: ${p.saida?new Date(p.saida).toLocaleString("pt-BR"):"--"}</div>
-        </div>`).join("");
-    }catch(e){
-        el.historico.innerHTML='<div class="loading">Erro ao carregar histórico.<br><br>'+esc(e.message||"")+'</div>';
-    }
+        const {data}=await supabaseClient.from("pontos").select("entrada,saida,status").eq("passaporte",usuario.passaporte).order("entrada",{ascending:false});
+        el.historico.innerHTML=data?.map(x=>`<div class="history-card"><strong>${x.status}</strong><div>${x.entrada?new Date(x.entrada).toLocaleString():""}</div></div>`).join("")||"<div class='loading'>Vazio</div>";
+    }catch(e){el.historico.innerHTML="<div class='loading'>Erro</div>"}
 }
+
+document.addEventListener("DOMContentLoaded",async ()=>{
+    const j=await carregarJornadaAtiva();if(j) aplicarEstadoJornada(j);
+});
 </script>
 </body>
 </html>
