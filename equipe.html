@@ -11,8 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 *{
@@ -21,8 +20,7 @@
     padding:0;
 }
 
-html,
-body{
+html, body{
     min-height:100%;
 }
 
@@ -33,8 +31,7 @@ body{
     padding-bottom:92px;
 }
 
-button,
-a{
+button, a{
     -webkit-tap-highlight-color:transparent;
 }
 
@@ -47,20 +44,12 @@ a{
     text-decoration:none;
 }
 
-/* =========================
-   HEADER
-========================= */
-
+/* HEADER */
 .header{
     width:100%;
     padding:22px 18px 18px;
     border-bottom:1px solid rgba(255,255,255,.06);
-    background:
-        linear-gradient(
-            180deg,
-            rgba(18,18,24,.98),
-            rgba(8,9,13,.98)
-        );
+    background: linear-gradient(180deg, rgba(18,18,24,.98), rgba(8,9,13,.98));
 }
 
 .header-top{
@@ -129,10 +118,7 @@ a{
     font-size:12px;
 }
 
-/* =========================
-   CONTAINER
-========================= */
-
+/* CONTAINER */
 .container{
     width:100%;
     max-width:620px;
@@ -157,10 +143,7 @@ a{
     line-height:1.5;
 }
 
-/* =========================
-   STATUS
-========================= */
-
+/* STATUS */
 .status-card{
     width:100%;
     border:1px solid rgba(255,255,255,.07);
@@ -204,10 +187,7 @@ a{
     font-weight:700;
 }
 
-/* =========================
-   EMPTY STATE
-========================= */
-
+/* ESTADO VAZIO */
 .empty{
     border:1px solid rgba(255,255,255,.07);
     background:#101116;
@@ -258,20 +238,10 @@ a{
 .primary-btn:active{
     transform:scale(.98);
 }
-
-/* =========================
-   TEAM HERO
-========================= */
-
+      /* CARD DA EQUIPE */
 .team-card{
     border:1px solid rgba(255,255,255,.07);
-    background:
-        linear-gradient(
-            145deg,
-            #15161d 0%,
-            #101116 55%,
-            #0e0f14 100%
-        );
+    background: linear-gradient(145deg, #15161d 0%, #101116 55%, #0e0f14 100%);
     border-radius:19px;
     overflow:hidden;
     margin-bottom:14px;
@@ -351,10 +321,7 @@ a{
     word-break:break-word;
 }
 
-/* =========================
-   SECTIONS
-========================= */
-
+/* SEÇÕES */
 .section{
     margin-top:14px;
 }
@@ -377,10 +344,7 @@ a{
     font-size:10px;
 }
 
-/* =========================
-   INFO CARD
-========================= */
-
+/* CARD DE INFORMAÇÕES */
 .info-card{
     border:1px solid rgba(255,255,255,.07);
     background:#101116;
@@ -422,18 +386,10 @@ a{
     text-align:right;
 }
 
-/* =========================
-   RESPONSIBLE
-========================= */
-
+/* RESPONSÁVEL */
 .responsible-card{
     border:1px solid rgba(179,19,36,.20);
-    background:
-        linear-gradient(
-            135deg,
-            rgba(179,19,36,.10),
-            rgba(16,17,22,.98)
-        );
+    background: linear-gradient(135deg, rgba(179,19,36,.10), rgba(16,17,22,.98));
     border-radius:17px;
     padding:15px;
     display:flex;
@@ -477,10 +433,7 @@ a{
     font-size:10px;
 }
 
-/* =========================
-   MEMBERS
-========================= */
-
+/* MEMBROS */
 .members-card{
     border:1px solid rgba(255,255,255,.07);
     background:#101116;
@@ -559,10 +512,7 @@ a{
     color:#dce0e7;
 }
 
-/* =========================
-   LOADING
-========================= */
-
+/* LOADING E ERRO */
 .loading{
     border:1px solid rgba(255,255,255,.07);
     background:#101116;
@@ -577,10 +527,6 @@ a{
     margin-right:7px;
 }
 
-/* =========================
-   ERROR
-========================= */
-
 .error-card{
     display:none;
     border:1px solid rgba(179,19,36,.25);
@@ -593,10 +539,7 @@ a{
     line-height:1.5;
 }
 
-/* =========================
-   BOTTOM NAV
-========================= */
-
+/* NAVEGAÇÃO INFERIOR */
 .bottom-nav{
     position:fixed;
     z-index:50;
@@ -640,153 +583,91 @@ a{
 }
 
 @media(max-width:380px){
-    .container{
-        padding-left:12px;
-        padding-right:12px;
-    }
-
-    .header{
-        padding-left:14px;
-        padding-right:14px;
-    }
-
-    .team-name{
-        font-size:20px;
-    }
-
-    .logout{
-        padding:0 10px;
-    }
-
-    .logout span{
-        display:none;
-    }
+    .container{padding-left:12px;padding-right:12px;}
+    .header{padding-left:14px;padding-right:14px;}
+    .team-name{font-size:20px;}
+    .logout{padding:0 10px;}
+    .logout span{display:none;}
 }
 </style>
 </head>
-
 <body>
-
-<header class="header">
+      <header class="header">
     <div class="header-top">
-
         <div class="brand">
             <div class="brand-icon">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
-
             <div class="brand-info">
-                <div class="brand-title" id="usuarioNome">
-                    Organização Itália
-                </div>
-
-                <div class="brand-subtitle" id="usuarioPassaporte">
-                    Passaporte — 
-                </div>
+                <div class="brand-title" id="usuarioNome">Organização Itália</div>
+                <div class="brand-subtitle" id="usuarioPassaporte">Passaporte — </div>
             </div>
         </div>
-
         <button class="logout" id="btnSair" type="button">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Sair</span>
         </button>
-
     </div>
 </header>
 
-
 <main class="container">
-
     <div class="page-heading">
         <h1>Minha Equipe</h1>
-        <p>
-            Acompanhe sua equipe e sua integração com a escala atual.
-        </p>
+        <p>Acompanhe sua equipe e sua integração com a escala atual.</p>
     </div>
-
 
     <div class="status-card">
         <div class="status-icon">
             <i class="fa-solid fa-clock"></i>
         </div>
-
         <div class="status-info">
-            <div class="status-label">
-                Integração com a escala
-            </div>
-
-            <div class="status-value" id="statusEscala">
-                Verificando ponto...
-            </div>
+            <div class="status-label">Integração com a escala</div>
+            <div class="status-value" id="statusEscala">Verificando ponto...</div>
         </div>
     </div>
 
-
     <div class="error-card" id="erroCard"></div>
 
-
     <div id="conteudo">
-
         <div class="loading">
             <i class="fa-solid fa-spinner fa-spin"></i>
             Carregando equipe...
         </div>
-
     </div>
-
 </main>
-
 
 <nav class="bottom-nav">
     <div class="nav-inner">
-
         <a class="nav-item" href="painel.html">
             <i class="fa-solid fa-house"></i>
             <span>Início</span>
         </a>
-
         <a class="nav-item" href="bate-ponto.html">
             <i class="fa-solid fa-clock"></i>
             <span>Ponto</span>
         </a>
-
         <a class="nav-item active" href="equipe.html">
             <i class="fa-solid fa-users"></i>
             <span>Equipe</span>
         </a>
-
         <a class="nav-item" href="registros.html">
             <i class="fa-solid fa-clipboard-list"></i>
             <span>Registros</span>
         </a>
-
     </div>
 </nav>
-
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
-
 const supabaseClient = window.supabase.createClient(
     "https://vclwmikzmnuqfdxobtik.supabase.co",
     "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
 );
 
-
-/* ==========================================
-   USUÁRIO
-========================================== */
-
 let usuario = null;
 let equipeAtual = null;
 let pontoAtual = null;
 let membrosEquipe = [];
-
-
-/* ==========================================
-   HIERARQUIA ADMINISTRATIVA
-========================================== */
 
 const prioridadeCargos = {
     "mentor": 6,
@@ -798,11 +679,6 @@ const prioridadeCargos = {
     "novato": 1
 };
 
-
-/* ==========================================
-   ELEMENTOS
-========================================== */
-
 const conteudo = document.getElementById("conteudo");
 const statusEscala = document.getElementById("statusEscala");
 const erroCard = document.getElementById("erroCard");
@@ -810,17 +686,8 @@ const usuarioNome = document.getElementById("usuarioNome");
 const usuarioPassaporte = document.getElementById("usuarioPassaporte");
 const btnSair = document.getElementById("btnSair");
 
-
-/* ==========================================
-   FUNÇÕES BÁSICAS
-========================================== */
-
 function escaparHTML(valor){
-
-    if(valor === null || valor === undefined){
-        return "";
-    }
-
+    if(valor === null || valor === undefined) return "";
     return String(valor)
         .replace(/&/g,"&amp;")
         .replace(/</g,"&lt;")
@@ -829,129 +696,67 @@ function escaparHTML(valor){
         .replace(/'/g,"&#039;");
 }
 
-
 function mostrarErro(mensagem){
-
     erroCard.textContent = mensagem;
     erroCard.style.display = "block";
 }
 
-
 function esconderErro(){
-
     erroCard.textContent = "";
     erroCard.style.display = "none";
 }
 
-
 function normalizar(valor){
-
-    return String(valor || "")
-        .trim()
-        .toLowerCase();
+    return String(valor || "").trim().toLowerCase();
 }
 
-
 function formatarData(data){
-
-    if(!data){
-        return "—";
-    }
-
+    if(!data) return "—";
     const d = new Date(data);
-
-    if(Number.isNaN(d.getTime())){
-        return "—";
-    }
-
+    if(Number.isNaN(d.getTime())) return "—";
     return d.toLocaleString("pt-BR",{
-        day:"2-digit",
-        month:"2-digit",
-        year:"numeric",
-        hour:"2-digit",
-        minute:"2-digit"
+        day:"2-digit", month:"2-digit", year:"numeric",
+        hour:"2-digit", minute:"2-digit"
     });
 }
 
-
 function obterPrioridade(cargo){
-
     return prioridadeCargos[normalizar(cargo)] || 0;
 }
 
-
 function nomeCargo(valor){
-
-    if(!valor){
-        return "Não informado";
-    }
-
+    if(!valor) return "Não informado";
     return valor;
 }
 
-
-/* ==========================================
-   SESSÃO
-========================================== */
-
 function carregarUsuario(){
-
     const salvo = sessionStorage.getItem("italia_usuario");
-
     if(!salvo){
         window.location.href = "login.html";
         return false;
     }
-
     try{
-
         usuario = JSON.parse(salvo);
-
     }catch(e){
-
         sessionStorage.removeItem("italia_usuario");
         window.location.href = "login.html";
         return false;
     }
-
-
     if(!usuario || !usuario.passaporte){
-
         sessionStorage.removeItem("italia_usuario");
         window.location.href = "login.html";
         return false;
     }
-
-
-    usuarioNome.textContent =
-        usuario.nome || "Usuário";
-
-    usuarioPassaporte.textContent =
-        "Passaporte " + usuario.passaporte;
-
+    usuarioNome.textContent = usuario.nome || "Usuário";
+    usuarioPassaporte.textContent = "Passaporte " + usuario.passaporte;
     return true;
 }
 
-
-/* ==========================================
-   SAIR
-========================================== */
-
 btnSair.addEventListener("click",function(){
-
     sessionStorage.removeItem("italia_usuario");
-
     window.location.href = "login.html";
-
 });
-
-
-/* ==========================================
-   PONTO ATUAL
-========================================== */
-
-async function buscarPontoAtual(){
-
+      async function buscarPontoAtual(){
     const { data, error } = await supabaseClient
         .from("pontos")
         .select("*")
@@ -960,61 +765,31 @@ async function buscarPontoAtual(){
         .order("entrada",{ascending:false})
         .limit(1);
 
-    if(error){
-        throw error;
-    }
-
+    if(error) throw error;
     if(!data || !data.length){
         pontoAtual = null;
         return null;
     }
-
     pontoAtual = data[0];
-
     return pontoAtual;
 }
 
-
-/* ==========================================
-   EQUIPE
-========================================== */
-
 async function buscarEquipe(equipeId){
-
-    if(!equipeId){
-        return null;
-    }
-
+    if(!equipeId) return null;
     const { data, error } = await supabaseClient
         .from("equipes")
         .select("*")
         .eq("id",equipeId)
         .limit(1);
 
-    if(error){
-        throw error;
-    }
-
-    if(!data || !data.length){
-        return null;
-    }
-
+    if(error) throw error;
+    if(!data || !data.length) return null;
     equipeAtual = data[0];
-
     return equipeAtual;
 }
 
-
-/* ==========================================
-   MEMBROS DA EQUIPE
-========================================== */
-
 async function buscarMembrosEquipe(equipeId){
-
-    if(!equipeId){
-        return [];
-    }
-
+    if(!equipeId) return [];
     const { data, error } = await supabaseClient
         .from("equipe_membros")
         .select("*")
@@ -1022,948 +797,133 @@ async function buscarMembrosEquipe(equipeId){
         .neq("status","fora")
         .order("entrou_em",{ascending:true});
 
-    if(error){
-        throw error;
-    }
-
+    if(error) throw error;
     membrosEquipe = data || [];
-
     return membrosEquipe;
 }
 
-
-/* ==========================================
-   CARGOS ADMINISTRATIVOS
-========================================== */
-
 async function buscarCargosAdministrativos(membros){
-
-    if(!membros || !membros.length){
-        return membros || [];
-    }
-
-
-    const passaportes = membros
-        .map(m => m.passaporte)
-        .filter(Boolean)
-        .map(String);
-
-
-    if(!passaportes.length){
-        return membros;
-    }
-
+    if(!membros || !membros.length) return membros;
+    const passaportes = membros.map(m => m.passaporte).filter(Boolean).map(String);
+    if(!passaportes.length) return membros;
 
     const { data, error } = await supabaseClient
         .from("Membros")
         .select("Passaporte,Nome,Cargo")
         .in("Passaporte",passaportes);
 
-
     if(error){
-
-        console.warn(
-            "Não foi possível carregar os cargos administrativos:",
-            error
-        );
-
+        console.warn("Erro cargos:", error);
         return membros;
     }
 
-
     const mapa = {};
-
-    (data || []).forEach(membro => {
-
-        mapa[String(membro.Passaporte)] = {
-            nome:membro.Nome,
-            cargo:membro.Cargo
-        };
-
-    });
-
-
-    return membros.map(membro => {
-
-        const cadastro =
-            mapa[String(membro.passaporte)] || null;
-
-        return {
-            ...membro,
-            cargoAdministrativo:
-                cadastro ? cadastro.cargo : null
-        };
-
-    });
-
+    (data || []).forEach(m => mapa[String(m.Passaporte)] = {nome:m.Nome, cargo:m.Cargo});
+    
+    return membros.map(membro => ({
+        ...membro,
+        cargoAdministrativo: mapa[String(membro.passaporte)]?.cargo || null
+    }));
 }
-    /* ==========================================
-   RESPONSÁVEL DA EQUIPE
-========================================== */
 
 function encontrarResponsavel(membros){
-
-    if(!membros || !membros.length){
-        return null;
-    }
-
+    if(!membros || !membros.length) return null;
     const ordenados = [...membros].sort((a,b)=>{
-
-        const prioridadeA =
-            obterPrioridade(a.cargoAdministrativo);
-
-        const prioridadeB =
-            obterPrioridade(b.cargoAdministrativo);
-
-        if(prioridadeA !== prioridadeB){
-            return prioridadeB - prioridadeA;
-        }
-
-        const entradaA =
-            new Date(a.entrou_em || 0).getTime();
-
-        const entradaB =
-            new Date(b.entrou_em || 0).getTime();
-
-        return entradaA - entradaB;
+        const pA = obterPrioridade(a.cargoAdministrativo);
+        const pB = obterPrioridade(b.cargoAdministrativo);
+        if(pA !== pB) return pB - pA;
+        return new Date(a.entrou_em || 0) - new Date(b.entrou_em || 0);
     });
-
-    return ordenados[0] || null;
+    return ordenados[0];
 }
 
-
-/* ==========================================
-   REGRAS DA EQUIPE
-========================================== */
-
-function obterRegraEquipe(equipe){
-
-    if(!equipe){
-        return {
-            limite:null,
-            textoLimite:"—"
-        };
-    }
-
-    const tipo = normalizar(equipe.tipo);
-
-    if(tipo === "favela"){
-
-        return {
-            limite:null,
-            textoLimite:"Sem limite geral"
-        };
-
-    }
-
-    if(tipo === "farm"){
-
-        return {
-            limite:8,
-            textoLimite:"Até 4 por atividade"
-        };
-
-    }
-
-    if(tipo === "venda"){
-
-        return {
-            limite:4,
-            textoLimite:"Máximo de 4 membros"
-        };
-
-    }
-
-    if(tipo === "segurança"){
-
-        return {
-            limite:null,
-            textoLimite:"Sem limite"
-        };
-
-    }
-
-    if(equipe.limite !== null &&
-       equipe.limite !== undefined){
-
-        return {
-            limite:Number(equipe.limite),
-            textoLimite:"Máximo de " + equipe.limite
-        };
-
-    }
-
-    return {
-        limite:null,
-        textoLimite:"Não definido"
-    };
-}
-
-
-/* ==========================================
-   STATUS DA EQUIPE
-========================================== */
-
-function obterStatusEquipe(){
-
-    if(!equipeAtual){
-        return "Não encontrada";
-    }
-
-    if(equipeAtual.ativa === false){
-        return "Inativa";
-    }
-
-    return "Ativa";
-}
-
-
-/* ==========================================
-   TIPO DA EQUIPE
-========================================== */
-
-function obterTipoEquipe(){
-
-    if(!equipeAtual || !equipeAtual.tipo){
-        return "Não informado";
-    }
-
-    return equipeAtual.tipo;
-}
-
-
-/* ==========================================
-   DADOS DO USUÁRIO NA EQUIPE
-========================================== */
-
-function encontrarMeuMembro(){
-
-    if(!usuario || !membrosEquipe.length){
-        return null;
-    }
-
-    return membrosEquipe.find(m =>
-        String(m.passaporte) === String(usuario.passaporte)
-    ) || null;
-}
-
-
-/* ==========================================
-   CONTAGEM
-========================================== */
-
-function obterContagemEquipe(){
-
-    return membrosEquipe.filter(m =>
-        normalizar(m.status) !== "fora"
-    ).length;
-}
-
-
-/* ==========================================
-   TEXTO DE LIMITE
-========================================== */
-
-function textoContagemEquipe(){
-
-    const regra = obterRegraEquipe(equipeAtual);
-    const quantidade = obterContagemEquipe();
-
-    if(regra.limite === null){
-        return `${quantidade} membro${quantidade === 1 ? "" : "s"}`;
-    }
-
-    return `${quantidade}/${regra.limite} membros`;
-}
-
-
-/* ==========================================
-   RENDERIZAÇÃO — SEM EQUIPE
-========================================== */
-
-function renderizarSemEquipe(){
-
-    statusEscala.textContent = "Ponto fechado";
-
-    conteudo.innerHTML = `
-        <div class="empty">
-
-            <div class="empty-icon">
-                <i class="fa-solid fa-users-slash"></i>
-            </div>
-
-            <h2>Você não está em uma equipe</h2>
-
-            <p>
-                Para participar de uma equipe, abra seu ponto
-                e aguarde a integração com uma equipe disponível.
-            </p>
-
-            <button
-                class="primary-btn"
-                type="button"
-                onclick="window.location.href='bate-ponto.html'">
-
-                <i class="fa-solid fa-clock"></i>
-                Abrir ponto
-
-            </button>
-
-        </div>
-    `;
-}
-
-
-/* ==========================================
-   RENDERIZAÇÃO — EQUIPE
-========================================== */
-
-function renderizarEquipe(){
-
-    if(!equipeAtual){
-
-        renderizarSemEquipe();
-        return;
-    }
-
-
-    const meuMembro = encontrarMeuMembro();
-
-    const responsavel =
-        encontrarResponsavel(membrosEquipe);
-
-    const regra =
-        obterRegraEquipe(equipeAtual);
-
-    const meuCargo =
-        meuMembro?.cargoAdministrativo ||
-        "Não informado";
-
-    const minhaPosicao =
-        meuMembro?.posicao ||
-        "Não definida";
-
-    const minhaAtividade =
-        meuMembro?.atividade ||
-        "Não definida";
-
-    const meuVeiculo =
-        meuMembro?.veiculo ||
-        "Não informado";
-
-
-    statusEscala.textContent =
-        pontoAtual?.status === "pausado"
-            ? "Ponto pausado"
-            : "Ponto ativo";
-
-
-    const membrosHTML =
-        renderizarMembros();
-
-
-    conteudo.innerHTML = `
-
-        <div class="team-card">
-
-            <div class="team-top">
-
-                <div class="team-label">
-                    Equipe atual
-                </div>
-
-                <div class="team-name">
-                    ${escaparHTML(equipeAtual.nome || "Equipe")}
-                </div>
-
-                <div class="team-type">
-                    <i class="fa-solid fa-layer-group"></i>
-                    ${escaparHTML(obterTipoEquipe())}
-                </div>
-
-            </div>
-
-
-            <div class="team-grid">
-
-                <div class="team-stat">
-
-                    <div class="team-stat-label">
-                        Membros
-                    </div>
-
-                    <div class="team-stat-value">
-                        ${escaparHTML(textoContagemEquipe())}
-                    </div>
-
-                </div>
-
-
-                <div class="team-stat">
-
-                    <div class="team-stat-label">
-                        Regra
-                    </div>
-
-                    <div class="team-stat-value">
-                        ${escaparHTML(regra.textoLimite)}
-                    </div>
-
-                </div>
-
-
-                <div class="team-stat">
-
-                    <div class="team-stat-label">
-                        Status
-                    </div>
-
-                    <div class="team-stat-value">
-                        ${escaparHTML(obterStatusEquipe())}
-                    </div>
-
-                </div>
-
-
-                <div class="team-stat">
-
-                    <div class="team-stat-label">
-                        Área
-                    </div>
-
-                    <div class="team-stat-value">
-                        ${escaparHTML(
-                            equipeAtual.area || "Não informada"
-                        )}
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="section">
-
-            <div class="section-title">
-                <h2>Minha participação</h2>
-            </div>
-
-
-            <div class="info-card">
-
-                <div class="info-row">
-
-                    <div class="info-left">
-                        <div class="info-label">
-                            Cargo administrativo
-                        </div>
-                    </div>
-
-                    <div class="info-value">
-                        ${escaparHTML(nomeCargo(meuCargo))}
-                    </div>
-
-                </div>
-
-
-                <div class="info-row">
-
-                    <div class="info-left">
-                        <div class="info-label">
-                            Posição
-                        </div>
-                    </div>
-
-                    <div class="info-value">
-                        ${escaparHTML(minhaPosicao)}
-                    </div>
-
-                </div>
-
-
-                <div class="info-row">
-
-                    <div class="info-left">
-                        <div class="info-label">
-                            Atividade
-                        </div>
-                    </div>
-
-                    <div class="info-value">
-                        ${escaparHTML(minhaAtividade)}
-                    </div>
-
-                </div>
-
-
-                <div class="info-row">
-
-                    <div class="info-left">
-                        <div class="info-label">
-                            Veículo
-                        </div>
-                    </div>
-
-                    <div class="info-value">
-                        ${escaparHTML(meuVeiculo)}
-                    </div>
-
-                </div>
-
-
-                <div class="info-row">
-
-                    <div class="info-left">
-                        <div class="info-label">
-                            Entrada
-                        </div>
-                    </div>
-
-                    <div class="info-value">
-                        ${formatarData(
-                            pontoAtual?.entrada ||
-                            meuMembro?.entrou_em
-                        )}
-                    </div>
-
-                </div>
-
-
-                <div class="info-row">
-
-                    <div class="info-left">
-                        <div class="info-label">
-                            Estado do ponto
-                        </div>
-                    </div>
-
-                    <div class="info-value">
-                        ${
-                            pontoAtual?.status === "pausado"
-                                ? "Pausado"
-                                : "Ativo"
-                        }
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="section">
-
-            <div class="section-title">
-                <h2>Responsável</h2>
-            </div>
-
-            ${
-                responsavel
-                ? `
-                    <div class="responsible-card">
-
-                        <div class="responsible-icon">
-                            <i class="fa-solid fa-crown"></i>
-                        </div>
-
-                        <div class="responsible-info">
-
-                            <div class="responsible-label">
-                                Responsável atual
-                            </div>
-
-                            <div class="responsible-name">
-                                ${escaparHTML(
-                                    responsavel.nome ||
-                                    "Membro"
-                                )}
-                            </div>
-
-                            <div class="responsible-cargo">
-                                ${
-                                    escaparHTML(
-                                        responsavel.cargoAdministrativo ||
-                                        "Cargo não informado"
-                                    )
-                                }
-                            </div>
-
-                        </div>
-
-                    </div>
-                `
-                : `
-                    <div class="info-card">
-
-                        <div class="info-row">
-
-                            <div class="info-left">
-                                <div class="info-label">
-                                    Responsável
-                                </div>
-                            </div>
-
-                            <div class="info-value">
-                                Não definido
-                            </div>
-
-                        </div>
-
-                    </div>
-                `
-            }
-
-        </div>
-
-
-        <div class="section">
-
-            <div class="section-title">
-
-                <h2>Membros da equipe</h2>
-
-                <span>
-                    ${membrosEquipe.length}
-                    ${
-                        membrosEquipe.length === 1
-                            ? "membro"
-                            : "membros"
-                    }
-                </span>
-
-            </div>
-
-
-            <div class="members-card">
-
-                ${
-                    membrosHTML ||
-                    `
-                        <div class="member">
-                            <div class="member-main">
-                                <div class="member-name">
-                                    Nenhum membro encontrado
-                                </div>
-                            </div>
-                        </div>
-                    `
-                }
-
-            </div>
-
-        </div>
-
-    `;
-}
-
-
-/* ==========================================
-   RENDERIZAR MEMBROS
-========================================== */
-
-function renderizarMembros(){
-
-    if(!membrosEquipe.length){
-        return "";
-    }
-
-
-    return membrosEquipe.map(membro => {
-
-        const nome =
-            membro.nome ||
-            "Membro";
-
-        const cargo =
-            membro.cargoAdministrativo ||
-            "Cargo não informado";
-
-        const posicao =
-            membro.posicao ||
-            "";
-
-        const atividade =
-            membro.atividade ||
-            "";
-
-        const status =
-            normalizar(membro.status);
-
-
-        let badges = "";
-
-        if(posicao){
-
-            badges += `
-                <span class="badge">
-                    ${escaparHTML(posicao)}
-                </span>
-            `;
-
-        }
-
-        if(atividade){
-
-            badges += `
-                <span class="badge">
-                    ${escaparHTML(atividade)}
-                </span>
-            `;
-
-        }
-
-
-        return `
-
-            <div class="member">
-
-                <div class="member-avatar">
-                    <i class="fa-solid fa-user"></i>
-                </div>
-
-
-                <div class="member-main">
-
-                    <div class="member-name">
-                        ${escaparHTML(nome)}
-                    </div>
-
-                    <div class="member-meta">
-
-                        <span class="badge">
-                            ${escaparHTML(cargo)}
-                        </span>
-
-                        ${badges}
-
-                    </div>
-
-                </div>
-
-
-                <div class="member-side">
-
-                    <div class="member-status ${
-                        status === "ativo"
-                            ? "ativo"
-                            : ""
-                    }">
-
-                        ${
-                            status === "pausado"
-                                ? "Pausado"
-                                : "Ativo"
-                        }
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }).join("");
-
-    }
-    /* ==========================================
-   CARREGAMENTO PRINCIPAL
-========================================== */
-
-async function carregarDados(){
-
+async function renderizarTela(){
     esconderErro();
+    conteudo.innerHTML = `<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>`;
 
     try{
+        const ponto = await buscarPontoAtual();
+        statusEscala.textContent = ponto ? "Ponto ativo" : "Sem ponto ativo";
+        statusEscala.style.color = ponto ? "#22c55e" : "#e3263d";
 
-        statusEscala.textContent =
-            "Verificando ponto...";
-
-
-        /* ------------------------------
-           1. BUSCA PONTO
-        ------------------------------ */
-
-        const ponto =
-            await buscarPontoAtual();
-
-
-        if(!ponto){
-
-            renderizarSemEquipe();
-            return;
-
-        }
-
-
-        /* ------------------------------
-           2. VERIFICA EQUIPE
-        ------------------------------ */
-
-        if(!ponto.equipe_id){
-
-            statusEscala.textContent =
-                ponto.status === "pausado"
-                    ? "Ponto pausado"
-                    : "Ponto ativo";
-
+        if(!ponto || !ponto.equipe_id){
             conteudo.innerHTML = `
-
                 <div class="empty">
-
-                    <div class="empty-icon">
-                        <i class="fa-solid fa-hourglass-half"></i>
-                    </div>
-
-                    <h2>Equipe ainda não definida</h2>
-
-                    <p>
-                        Seu ponto está ${
-                            ponto.status === "pausado"
-                                ? "pausado"
-                                : "ativo"
-                        },
-                        mas nenhuma equipe foi vinculada a ele.
-                    </p>
-
-                    <button
-                        class="primary-btn"
-                        type="button"
-                        onclick="window.location.href='bate-ponto.html'">
-
-                        <i class="fa-solid fa-clock"></i>
-                        Ver meu ponto
-
-                    </button>
-
+                    <div class="empty-icon"><i class="fa-solid fa-users-slash"></i></div>
+                    <h2>Sem equipe vinculada</h2>
+                    <p>Inicie sua jornada para ser alocado.</p>
+                    <a href="bate-ponto.html"><button class="primary-btn">Ir para o Ponto</button></a>
                 </div>
-
             `;
-
             return;
         }
 
+        const [equipe, membros] = await Promise.all([
+            buscarEquipe(ponto.equipe_id),
+            buscarMembrosEquipe(ponto.equipe_id)
+        ]);
 
-        /* ------------------------------
-           3. BUSCA EQUIPE
-        ------------------------------ */
-
-        await buscarEquipe(ponto.equipe_id);
-
-
-        if(!equipeAtual){
-
-            throw new Error(
-                "A equipe vinculada ao ponto não foi encontrada."
-            );
-
-        }
-
-
-        /* ------------------------------
-           4. BUSCA MEMBROS
-        ------------------------------ */
-
-        await buscarMembrosEquipe(
-            ponto.equipe_id
-        );
-
-
-        /* ------------------------------
-           5. BUSCA CARGOS
-        ------------------------------ */
-
-        membrosEquipe =
-            await buscarCargosAdministrativos(
-                membrosEquipe
-            );
-
-
-        /* ------------------------------
-           6. MOSTRA TUDO
-        ------------------------------ */
-
-        renderizarEquipe();
-
-
-    }catch(error){
-
-        console.error(
-            "Erro ao carregar equipe:",
-            error
-        );
-
-
-        statusEscala.textContent =
-            "Erro ao carregar";
-
+        const membrosComCargos = await buscarCargosAdministrativos(membros);
+        const responsavel = encontrarResponsavel(membrosComCargos);
 
         conteudo.innerHTML = `
-
-            <div class="empty">
-
-                <div class="empty-icon">
-                    <i class="fa-solid fa-triangle-exclamation"></i>
+            <div class="team-card">
+                <div class="team-top">
+                    <p class="team-label">Equipe Atual</p>
+                    <h2 class="team-name">${escaparHTML(equipe?.nome || "DESCONHECIDA")}</h2>
+                    <div class="team-type"><i class="fas fa-layer-group"></i> ${escaparHTML(equipe?.funcao || "NÃO INFORMADO")}</div>
                 </div>
-
-                <h2>Não foi possível carregar</h2>
-
-                <p>
-                    Ocorreu um problema ao buscar
-                    os dados da sua equipe.
-                </p>
-
-                <button
-                    class="primary-btn"
-                    type="button"
-                    onclick="carregarDados()">
-
-                    <i class="fa-solid fa-rotate-right"></i>
-                    Tentar novamente
-
-                </button>
-
+                <div class="team-grid">
+                    <div class="team-stat"><p class="team-stat-label">Membros</p><p class="team-stat-value">${membrosComCargos.length}/4</p></div>
+                    <div class="team-stat"><p class="team-stat-label">Regra</p><p class="team-stat-value">Máximo 4</p></div>
+                    <div class="team-stat"><p class="team-stat-label">Status</p><p class="team-stat-value">${equipe?.ativa ? "Ativa" : "Inativa"}</p></div>
+                    <div class="team-stat"><p class="team-stat-label">Área</p><p class="team-stat-value">${escaparHTML(equipe?.area || "Farm")}</p></div>
+                </div>
             </div>
 
+            <div class="section-title"><h2>Minha Participação</h2></div>
+            <div class="info-card">
+                <div class="info-row"><div class="info-left"><p class="info-label">Cargo</p></div><p class="info-value">${nomeCargo(usuario.cargo)}</p></div>
+                <div class="info-row"><div class="info-left"><p class="info-label">Posição</p></div><p class="info-value">Não definida</p></div>
+                <div class="info-row"><div class="info-left"><p class="info-label">Entrada</p></div><p class="info-value">${formatarData(ponto.entrada)}</p></div>
+                <div class="info-row"><div class="info-left"><p class="info-label">Status</p></div><p class="info-value" style="color:#22c55e">Ativo</p></div>
+            </div>
+
+            <div class="section-title" style="margin-top:20px;"><h2>Responsável</h2></div>
+            <div class="responsible-card">
+                <div class="responsible-icon"><i class="fas fa-crown"></i></div>
+                <div class="responsible-info">
+                    <p class="responsible-label">ATUAL</p>
+                    <p class="responsible-name">${escaparHTML(responsavel?.nome || responsavel?.passaporte || "—")}</p>
+                    <p class="responsible-cargo">${nomeCargo(responsavel?.cargoAdministrativo)}</p>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top:20px;"><h2>Membros</h2><span>${membrosComCargos.length}</span></div>
+            <div class="members-card">
+                ${membrosComCargos.map(m => `
+                    <div class="member">
+                        <div class="member-avatar"><i class="fas fa-user"></i></div>
+                        <div class="member-main">
+                            <div class="member-name">${escaparHTML(m.nome || `PASS ${m.passaporte}`)}</div>
+                            <div class="member-meta"><span class="badge">${nomeCargo(m.cargoAdministrativo)}</span></div>
+                        </div>
+                        <span class="member-status ativo">Ativo</span>
+                    </div>
+                `).join("")}
+            </div>
         `;
 
-
-        mostrarErro(
-            error?.message ||
-            "Erro desconhecido ao carregar a equipe."
-        );
-
+    } catch(e){
+        console.error(e);
+        mostrarErro("Erro: " + e.message);
     }
-
 }
 
-
-/* ==========================================
-   INICIALIZAÇÃO
-========================================== */
-
-async function iniciar(){
-
-    const usuarioValido =
-        carregarUsuario();
-
-
-    if(!usuarioValido){
-        return;
-    }
-
-
-    await carregarDados();
-
-}
-
-
-iniciar();
+document.addEventListener("DOMContentLoaded",()=>{
+    if(carregarUsuario()) renderizarTela();
+});
 
 </script>
-
 </body>
 </html>
