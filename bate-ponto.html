@@ -2,14 +2,18 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#08090d">
+<meta name="mobile-web-app-capable" content="yes">
+
 <title>Meu Ponto</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
 *{
@@ -18,2479 +22,5239 @@
     padding:0;
 }
 
+:root{
+    --bg:#08090d;
+    --bg2:#0b0c11;
+    --panel:#11131a;
+    --panel2:#151820;
+    --panel3:#191b23;
+    --border:#242731;
+    --border-red:#421324;
+    --red:#ff174f;
+    --red2:#e91548;
+    --red-dark:#3b0d20;
+    --text:#f4f4f6;
+    --muted:#8d929f;
+    --muted2:#6e7380;
+    --green:#35d48a;
+    --yellow:#f5c542;
+    --blue:#4da3ff;
+}
+
+html,
 body{
-    background:#08090d;
-    color:#fff;
-    font-family:Inter,Arial,sans-serif;
-    min-height:100vh;
-    padding-bottom:85px;
+    min-height:100%;
+    background:var(--bg);
+}
+
+body{
+    font-family:"Inter",sans-serif;
+    color:var(--text);
+    overflow-x:hidden;
+    padding-bottom:90px;
+}
+
+button,
+input,
+select{
+    font:inherit;
 }
 
 button{
-    font-family:inherit;
+    border:0;
+    cursor:pointer;
+}
+
+button:disabled{
+    cursor:not-allowed;
 }
 
 a{
-    text-decoration:none;
     color:inherit;
+    text-decoration:none;
 }
 
-.container{
-    width:100%;
-    max-width:520px;
-    margin:auto;
-    padding:18px;
-}
+/* =========================
+   TOPO
+========================= */
 
-/* USUÁRIO */
-
-.usuario{
-    background:#101116;
-    border:1px solid #22252d;
-    border-radius:16px;
-    padding:13px;
+.topbar{
+    min-height:124px;
+    padding:20px 26px;
     display:flex;
     align-items:center;
-    gap:11px;
-    margin-bottom:24px;
+    justify-content:space-between;
+    gap:14px;
+    border-bottom:1px solid #181a20;
+    background:
+        linear-gradient(
+            105deg,
+            rgba(255,23,79,.035),
+            transparent 45%
+        ),
+        #090a0e;
 }
 
-.avatar{
-    width:42px;
-    height:42px;
-    border-radius:50%;
-    background:#1a1c23;
-    border:1px solid #30333c;
+.user-area{
     display:flex;
     align-items:center;
-    justify-content:center;
-    font-size:17px;
-    font-weight:800;
-    color:#fff;
-    flex-shrink:0;
-}
-
-.usuario-info{
-    flex:1;
+    gap:16px;
     min-width:0;
 }
 
-.usuario-nome{
-    font-size:14px;
+.user-avatar{
+    width:68px;
+    height:68px;
+    min-width:68px;
+    border-radius:20px;
+    border:1px solid #59152c;
+    background:
+        radial-gradient(
+            circle at 50% 30%,
+            rgba(255,23,79,.20),
+            transparent 65%
+        ),
+        #170b12;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--red);
+    font-size:28px;
+    box-shadow:
+        0 0 0 1px rgba(255,23,79,.035),
+        inset 0 0 25px rgba(255,23,79,.035);
+}
+
+.user-info{
+    min-width:0;
+}
+
+.user-name{
+    font-size:19px;
     font-weight:800;
+    margin-bottom:5px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
 }
 
-.usuario-dados{
-    color:#777b84;
-    font-size:10px;
-    margin-top:4px;
+.user-pass{
+    font-size:14px;
+    color:var(--muted);
+    white-space:nowrap;
 }
 
-.btn-sair{
-    background:#181a20;
-    border:1px solid #2a2d35;
-    color:#aeb1b9;
-    border-radius:9px;
-    padding:9px 11px;
-    font-size:10px;
+.back-btn{
+    min-width:116px;
+    height:56px;
+    padding:0 18px;
+    border-radius:17px;
+    color:#a4a8b3;
+    background:#12151b;
+    border:1px solid #282c35;
+    font-size:15px;
     font-weight:700;
+    transition:.2s;
 }
 
-/* CABEÇALHO */
-
-.titulo{
-    margin-bottom:18px;
+.back-btn:active{
+    transform:scale(.97);
 }
 
-.titulo h1{
-    font-size:25px;
+/* =========================
+   CONTEÚDO
+========================= */
+
+.page{
+    max-width:900px;
+    margin:0 auto;
+    padding:38px 26px 35px;
+}
+
+.section-label{
+    display:inline-flex;
+    align-items:center;
+    gap:9px;
+    padding:10px 15px;
+    border-radius:13px;
+    color:var(--red);
+    background:rgba(255,23,79,.07);
+    border:1px solid rgba(255,23,79,.20);
+    font-size:13px;
     font-weight:800;
+    letter-spacing:.1px;
 }
 
-.titulo p{
-    color:#777b84;
-    font-size:12px;
-    margin-top:6px;
+.section-label i{
+    font-size:13px;
 }
 
-/* CARDS */
+.page-title{
+    margin-top:22px;
+    font-size:44px;
+    line-height:1.05;
+    letter-spacing:-1.6px;
+    font-weight:900;
+}
 
-.grid{
+.page-subtitle{
+    margin-top:14px;
+    color:#969ba6;
+    font-size:19px;
+    line-height:1.4;
+}
+
+/* =========================
+   STATUS
+========================= */
+
+.summary-grid{
+    margin-top:25px;
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
-    margin-bottom:10px;
+    gap:18px;
 }
 
-.card-menu{
-    background:#101116;
-    border:1px solid #20232b;
-    border-radius:14px;
-    min-height:78px;
-    padding:14px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    cursor:pointer;
-    transition:.15s;
+.summary-card{
+    min-height:134px;
+    padding:28px 26px;
+    border-radius:25px;
+    border:1px solid #292d36;
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.018),
+            transparent
+        ),
+        #14171d;
 }
 
-.card-menu:active{
-    transform:scale(.98);
-}
-
-.card-menu i{
-    color:#e50914;
+.summary-title{
+    color:#8d929e;
     font-size:15px;
-    margin-bottom:9px;
-}
-
-.card-menu strong{
-    font-size:12px;
-    font-weight:800;
-}
-
-.card-menu span{
-    color:#777b84;
-    font-size:10px;
-    margin-top:4px;
-}
-
-/* CRONÔMETRO */
-
-.cronometro-card{
-    background:#101116;
-    border:1px solid #20232b;
-    border-radius:18px;
-    padding:25px 18px;
-    margin-top:18px;
-    text-align:center;
-}
-
-.cronometro-label{
-    color:#777b84;
+    font-weight:700;
+    letter-spacing:.3px;
     text-transform:uppercase;
-    letter-spacing:1px;
-    font-size:10px;
-    font-weight:800;
 }
 
-.cronometro{
-    font-size:44px;
+.summary-value{
+    margin-top:14px;
+    font-size:30px;
+    line-height:1;
+    font-weight:900;
+}
+
+.status-fora{
+    color:#f2f3f5;
+}
+
+.status-ativo{
+    color:var(--green);
+}
+
+.status-pausado{
+    color:var(--yellow);
+}
+
+/* =========================
+   ABAS
+========================= */
+
+.tabs{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    border-bottom:1px solid #1c1f26;
+}
+
+.tab{
+    min-height:72px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#858a97;
+    font-size:19px;
     font-weight:800;
-    letter-spacing:1px;
-    margin:12px 0 14px;
+    position:relative;
+    background:transparent;
+}
+
+.tab.active{
+    color:#f1f1f4;
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255,23,79,.10),
+            transparent
+        );
+}
+
+.tab.active::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:3px;
+    background:var(--red);
+}
+
+/* =========================
+   JORNADA
+========================= */
+
+.journey-box{
+    margin-top:32px;
+    border:1px solid #371526;
+    border-radius:31px;
+    padding:39px 32px 33px;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(255,23,79,.055),
+            transparent 45%
+        ),
+        linear-gradient(
+            135deg,
+            #150d12,
+            #101116 58%,
+            #0f1015
+        );
+    box-shadow:
+        0 10px 45px rgba(0,0,0,.20);
+}
+
+.journey-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+}
+
+.journey-label{
+    color:#878c98;
+    font-size:14px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.journey-status{
+    color:var(--red);
+    font-size:14px;
+    font-weight:900;
+    text-transform:uppercase;
+}
+
+.journey-status.ativo{
+    color:var(--green);
+}
+
+.journey-status.pausado{
+    color:var(--yellow);
+}
+
+.timer{
+    margin-top:42px;
+    text-align:center;
+    font-size:76px;
+    line-height:1;
+    letter-spacing:-3px;
+    font-weight:900;
     font-variant-numeric:tabular-nums;
 }
 
-.status{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
-    padding:7px 12px;
-    border-radius:20px;
-    background:#181a21;
-    color:#858892;
-    font-size:10px;
-    font-weight:700;
-    margin-bottom:20px;
-}
-
-.status.ativo{
-    color:#43d17d;
-}
-
-.status.pausado{
-    color:#f0b84b;
-}
-
-.dot{
-    width:7px;
-    height:7px;
-    border-radius:50%;
-    background:currentColor;
-}
-
-/* BOTÕES */
-
-.acoes{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:9px;
-}
-
-.btn{
-    min-height:50px;
-    border:0;
-    border-radius:12px;
-    font-size:12px;
-    font-weight:800;
-    cursor:pointer;
-}
-
-.btn-iniciar,
-.btn-retomar{
-    background:#e50914;
-    color:#fff;
-    grid-column:1 / -1;
-}
-
-.btn-pausar{
-    background:#24272e;
-    color:#fff;
-    border:1px solid #343740;
-}
-
-.btn-encerrar{
-    background:#17191f;
-    color:#ff5c64;
-    border:1px solid #342328;
-}
-
-.btn:disabled{
-    opacity:.5;
-}
-
-.loading{
-    display:none;
-    color:#777b84;
-    font-size:10px;
-    margin-top:11px;
-}
-
-.loading.mostrar{
-    display:block;
-}
-
-/* MODAIS */
-
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.72);
-    z-index:100;
-    padding:18px;
-    align-items:flex-end;
-    justify-content:center;
-}
-
-.modal.mostrar{
-    display:flex;
-}
-
-.modal-caixa{
-    width:100%;
-    max-width:520px;
-    max-height:80vh;
-    overflow:auto;
-    background:#111218;
-    border:1px solid #292c35;
-    border-radius:20px;
-    padding:20px;
-}
-
-.modal-topo{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:18px;
-}
-
-.modal-topo h2{
-    font-size:17px;
-    font-weight:800;
-}
-
-.fechar{
-    width:34px;
-    height:34px;
-    border-radius:9px;
-    border:1px solid #292c35;
-    background:#191b21;
-    color:#aaa;
-}
-
-.linha{
-    display:flex;
-    justify-content:space-between;
-    gap:15px;
-    padding:12px 0;
-    border-bottom:1px solid #20222a;
-    font-size:11px;
-}
-
-.linha span{
-    color:#777b84;
-}
-
-.vazio{
+.timer-description{
+    margin-top:19px;
     text-align:center;
-    color:#777b84;
-    font-size:12px;
-    padding:20px 0;
-}
-
-/* NAVEGAÇÃO */
-
-.nav{
-    position:fixed;
-    bottom:0;
-    left:0;
-    right:0;
-    height:70px;
-    background:#0d0e13;
-    border-top:1px solid #20232b;
-    z-index:90;
-}
-
-.nav-inner{
-    max-width:520px;
-    height:100%;
-    margin:auto;
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-}
-
-.nav a{
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    justify-content:center;
-    gap:5px;
-    color:#686b74;
-    font-size:9px;
-    font-weight:700;
-}
-
-.nav a i{
+    color:#858a96;
     font-size:16px;
 }
 
-.nav a.ativo{
-    color:#e50914;
+.time-info-grid{
+    margin-top:34px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:13px;
+}
+
+.time-info{
+    min-height:72px;
+    border:1px solid #22262f;
+    border-radius:20px;
+    background:#10131a;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:6px;
+}
+
+.time-info-label{
+    color:#777c88;
+    font-size:12px;
+    text-transform:uppercase;
+}
+
+.time-info-value{
+    color:#d7d9de;
+    font-size:15px;
+    font-weight:800;
+}
+
+/* =========================
+   BOTÕES DA JORNADA
+========================= */
+
+.journey-actions{
+    margin-top:32px;
+    display:flex;
+    gap:12px;
+}
+
+.action-btn{
+    min-height:62px;
+    border-radius:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-size:17px;
+    font-weight:900;
+    transition:
+        transform .15s,
+        opacity .2s,
+        background .2s;
+}
+
+.action-btn:active{
+    transform:scale(.985);
+}
+
+.action-btn i{
+    font-size:17px;
+}
+
+.btn-primary{
+    width:100%;
+    color:white;
+    background:linear-gradient(135deg,#ff174f,#df1245);
+    box-shadow:0 10px 28px rgba(255,23,79,.16);
+}
+
+.btn-pause{
+    flex:1;
+    color:white;
+    background:#272a32;
+    border:1px solid #343842;
+}
+
+.btn-end{
+    flex:1;
+    color:white;
+    background:#391421;
+    border:1px solid #64182e;
+}
+
+.btn-resume{
+    flex:1;
+    color:white;
+    background:linear-gradient(135deg,#168a5b,#1dbb79);
+}
+
+.action-btn.locked{
+    background:#17191f;
+    color:#646974;
+    border:1px solid #252830;
+    box-shadow:none;
+}
+
+.hidden{
+    display:none !important;
+}
+    /* =========================
+   COOLDOWN
+========================= */
+
+.cooldown-notice{
+    display:none;
+    margin:0 auto;
+    max-width:900px;
+    padding:0 26px;
+}
+
+.cooldown-notice.show{
+    display:block;
+}
+
+.cooldown-inner{
+    min-height:70px;
+    border:1px solid rgba(245,197,66,.32);
+    border-radius:19px;
+    background:
+        linear-gradient(
+            100deg,
+            rgba(245,197,66,.12),
+            rgba(245,197,66,.045)
+        );
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:13px 18px;
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+}
+
+.cooldown-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    min-width:0;
+}
+
+.cooldown-icon{
+    width:41px;
+    height:41px;
+    min-width:41px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#f5c542;
+    background:rgba(245,197,66,.10);
+    border:1px solid rgba(245,197,66,.18);
+}
+
+.cooldown-title{
+    color:#f5d66c;
+    font-size:13px;
+    font-weight:900;
+}
+
+.cooldown-text{
+    margin-top:3px;
+    color:#a6a198;
+    font-size:12px;
+}
+
+.cooldown-time{
+    color:#f5c542;
+    font-size:19px;
+    font-weight:900;
+    font-variant-numeric:tabular-nums;
+    white-space:nowrap;
+}
+
+/* =========================
+   MODAIS
+========================= */
+
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    z-index:1000;
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    padding:18px;
+    background:rgba(0,0,0,.72);
+    backdrop-filter:blur(8px);
+}
+
+.modal-overlay.show{
+    display:flex;
+}
+
+.modal{
+    width:100%;
+    max-width:700px;
+    max-height:90vh;
+    overflow-y:auto;
+    border:1px solid #292c35;
+    border-radius:29px;
+    background:
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(255,23,79,.055),
+            transparent 35%
+        ),
+        #101116;
+    box-shadow:0 25px 90px rgba(0,0,0,.55);
+    animation:modalIn .2s ease;
+}
+
+@keyframes modalIn{
+    from{
+        opacity:0;
+        transform:translateY(18px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.modal-header{
+    padding:22px 22px 17px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    border-bottom:1px solid #20232b;
+}
+
+.modal-title{
+    font-size:19px;
+    font-weight:900;
+}
+
+.modal-close{
+    width:39px;
+    height:39px;
+    border-radius:13px;
+    color:#999eaa;
+    background:#181b22;
+    border:1px solid #292d35;
+}
+
+.modal-body{
+    padding:22px;
+}
+
+/* =========================
+   MODAL STATUS
+========================= */
+
+.status-modal-card{
+    border-radius:22px;
+    padding:22px;
+    border:1px solid #292d35;
+    background:#14171d;
+}
+
+.status-modal-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+}
+
+.status-modal-name{
+    color:#9297a3;
+    font-size:13px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.status-modal-value{
+    margin-top:9px;
+    font-size:27px;
+    font-weight:900;
+}
+
+.status-pill{
+    padding:8px 12px;
+    border-radius:11px;
+    font-size:11px;
+    font-weight:900;
+    text-transform:uppercase;
+    border:1px solid #31343d;
+    background:#191c23;
+    color:#a2a6b1;
+}
+
+.status-pill.ativo{
+    color:var(--green);
+    border-color:rgba(53,212,138,.25);
+    background:rgba(53,212,138,.07);
+}
+
+.status-pill.pausado{
+    color:var(--yellow);
+    border-color:rgba(245,197,66,.25);
+    background:rgba(245,197,66,.07);
+}
+
+/* =========================
+   MODAL PAUSAS
+========================= */
+
+.pause-list{
+    display:flex;
+    flex-direction:column;
+    gap:11px;
+}
+
+.pause-empty{
+    padding:35px 20px;
+    text-align:center;
+    color:#777c87;
+    border:1px dashed #2a2d35;
+    border-radius:19px;
+}
+
+.pause-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:17px;
+    border-radius:17px;
+    background:#15181e;
+    border:1px solid #282b33;
+}
+
+.pause-item-title{
+    font-size:14px;
+    font-weight:800;
+}
+
+.pause-item-time{
+    margin-top:4px;
+    color:#7e838e;
+    font-size:12px;
+}
+
+.pause-duration{
+    color:#d4d6dc;
+    font-size:14px;
+    font-weight:800;
+}
+
+/* =========================
+   ENTRADA
+========================= */
+
+.entry-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.entry-card{
+    padding:19px;
+    border-radius:18px;
+    background:#15181e;
+    border:1px solid #282b33;
+}
+
+.entry-card span{
+    display:block;
+    color:#777c87;
+    font-size:12px;
+    text-transform:uppercase;
+}
+
+.entry-card strong{
+    display:block;
+    margin-top:8px;
+    font-size:17px;
+}
+
+/* =========================
+   EQUIPE RESUMO
+========================= */
+
+.team-summary{
+    padding:21px;
+    border-radius:21px;
+    background:#15181e;
+    border:1px solid #292d35;
+}
+
+.team-name{
+    font-size:21px;
+    font-weight:900;
+}
+
+.team-function{
+    margin-top:6px;
+    color:#8b909b;
+    font-size:14px;
+}
+
+.team-info-list{
+    margin-top:20px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.team-info-row{
+    min-height:48px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    padding:0 14px;
+    border-radius:13px;
+    background:#101319;
+}
+
+.team-info-row span{
+    color:#7f8490;
+    font-size:12px;
+}
+
+.team-info-row strong{
+    font-size:13px;
+    text-align:right;
+}
+
+/* =========================
+   HISTÓRICO
+========================= */
+
+.history-intro{
+    color:#8c919d;
+    font-size:13px;
+    line-height:1.55;
+}
+
+.history-filters{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.date-field label{
+    display:block;
+    margin-bottom:7px;
+    color:#888d99;
+    font-size:11px;
+    font-weight:800;
+    text-transform:uppercase;
+}
+
+.date-input{
+    width:100%;
+    height:48px;
+    padding:0 12px;
+    color:#dddfe4;
+    border-radius:14px;
+    outline:none;
+    border:1px solid #292d35;
+    background:#15181e;
+}
+
+.quick-periods{
+    margin-top:14px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:7px;
+}
+
+.period-btn{
+    min-height:40px;
+    border-radius:12px;
+    color:#858a96;
+    background:#14171d;
+    border:1px solid #272a32;
+    font-size:11px;
+    font-weight:800;
+}
+
+.period-btn.active{
+    color:#fff;
+    background:rgba(255,23,79,.11);
+    border-color:rgba(255,23,79,.34);
+}
+
+.export-btn{
+    margin-top:15px;
+    width:100%;
+    min-height:49px;
+    border-radius:15px;
+    color:#dddfe4;
+    background:#171a21;
+    border:1px solid #292d35;
+    font-weight:800;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+}
+
+.history-results{
+    margin-top:19px;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.history-empty{
+    padding:35px 20px;
+    text-align:center;
+    color:#777c87;
+    border:1px dashed #292d35;
+    border-radius:18px;
+    }
+    .history-item{
+    border-radius:19px;
+    border:1px solid #292c34;
+    background:#15181e;
+    overflow:hidden;
+}
+
+.history-main{
+    width:100%;
+    min-height:76px;
+    padding:13px 15px;
+    color:white;
+    background:transparent;
+    display:grid;
+    grid-template-columns:38px 1fr auto;
+    align-items:center;
+    gap:11px;
+    text-align:left;
+}
+
+.history-avatar{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#ff496f;
+    background:rgba(255,23,79,.09);
+    border:1px solid rgba(255,23,79,.17);
+    font-weight:900;
+}
+
+.history-person{
+    min-width:0;
+}
+
+.history-person strong{
+    display:block;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    font-size:13px;
+}
+
+.history-person span{
+    display:block;
+    margin-top:4px;
+    color:#777c87;
+    font-size:10px;
+}
+
+.history-total{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#d9dbe0;
+    font-size:13px;
+    font-weight:900;
+    white-space:nowrap;
+}
+
+.history-details{
+    display:none;
+    padding:0 15px 15px;
+}
+
+.history-item.open .history-details{
+    display:block;
+}
+
+.history-detail-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.history-detail{
+    padding:12px;
+    border-radius:13px;
+    background:#101319;
+    border:1px solid #23262e;
+}
+
+.history-detail span{
+    display:block;
+    color:#6f7480;
+    font-size:10px;
+    text-transform:uppercase;
+}
+
+.history-detail strong{
+    display:block;
+    margin-top:5px;
+    font-size:12px;
+}
+
+/* =========================
+   TOAST / ERROS
+========================= */
+
+.toast-container{
+    position:fixed;
+    z-index:2000;
+    left:16px;
+    right:16px;
+    bottom:88px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:9px;
+    pointer-events:none;
+}
+
+.toast{
+    width:100%;
+    max-width:500px;
+    padding:15px 16px;
+    border-radius:17px;
+    display:flex;
+    align-items:flex-start;
+    gap:12px;
+    border:1px solid #343740;
+    background:#17191f;
+    box-shadow:0 16px 50px rgba(0,0,0,.45);
+    animation:toastIn .22s ease;
+    pointer-events:auto;
+}
+
+@keyframes toastIn{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.toast.success{
+    border-color:rgba(53,212,138,.28);
+}
+
+.toast.error{
+    border-color:rgba(255,23,79,.35);
+}
+
+.toast.warning{
+    border-color:rgba(245,197,66,.30);
+}
+
+.toast-icon{
+    width:34px;
+    height:34px;
+    min-width:34px;
+    border-radius:11px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#22252c;
+}
+
+.toast.success .toast-icon{
+    color:var(--green);
+    background:rgba(53,212,138,.08);
+}
+
+.toast.error .toast-icon{
+    color:var(--red);
+    background:rgba(255,23,79,.08);
+}
+
+.toast.warning .toast-icon{
+    color:var(--yellow);
+    background:rgba(245,197,66,.08);
+}
+
+.toast-content strong{
+    display:block;
+    font-size:13px;
+    font-weight:900;
+}
+
+.toast-content p{
+    margin-top:4px;
+    color:#898e99;
+    font-size:11px;
+    line-height:1.45;
+}
+
+/* =========================
+   CONFIRMAÇÃO DE ENCERRAMENTO
+========================= */
+
+.confirm-card{
+    text-align:center;
+    padding:10px 3px 4px;
+}
+
+.confirm-icon{
+    width:68px;
+    height:68px;
+    margin:0 auto 17px;
+    border-radius:21px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--red);
+    background:rgba(255,23,79,.09);
+    border:1px solid rgba(255,23,79,.22);
+    font-size:27px;
+}
+
+.confirm-title{
+    font-size:22px;
+    font-weight:900;
+}
+
+.confirm-text{
+    margin-top:9px;
+    color:#898e99;
+    font-size:13px;
+    line-height:1.55;
+}
+
+.confirm-buttons{
+    margin-top:22px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.confirm-btn{
+    min-height:51px;
+    border-radius:15px;
+    font-size:14px;
+    font-weight:900;
+}
+
+.confirm-cancel{
+    color:#a1a5b0;
+    background:#181b21;
+    border:1px solid #292d35;
+}
+
+.confirm-danger{
+    color:white;
+    background:linear-gradient(135deg,#ff174f,#df1245);
+}
+
+/* =========================
+   MODAL ENCERRADO
+========================= */
+
+.finished-card{
+    text-align:center;
+    padding:8px 2px 4px;
+}
+
+.finished-icon{
+    width:78px;
+    height:78px;
+    margin:0 auto 18px;
+    border-radius:25px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--green);
+    background:rgba(53,212,138,.08);
+    border:1px solid rgba(53,212,138,.20);
+    font-size:30px;
+}
+
+.finished-title{
+    font-size:23px;
+    font-weight:900;
+}
+
+.finished-text{
+    margin-top:9px;
+    color:#9297a2;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.finished-count{
+    margin:22px auto 0;
+    max-width:250px;
+    padding:14px;
+    border-radius:17px;
+    color:#f5d66c;
+    background:rgba(245,197,66,.07);
+    border:1px solid rgba(245,197,66,.20);
+}
+
+.finished-count small{
+    display:block;
+    color:#8e8a80;
+    font-size:10px;
+    text-transform:uppercase;
+    font-weight:800;
+}
+
+.finished-count strong{
+    display:block;
+    margin-top:5px;
+    font-size:25px;
+    font-variant-numeric:tabular-nums;
+}
+
+.finished-ok{
+    margin-top:20px;
+    width:100%;
+    min-height:51px;
+    border-radius:15px;
+    color:white;
+    background:#22252c;
+    border:1px solid #30343d;
+    font-weight:900;
+}
+
+/* =========================
+   NAVEGAÇÃO
+========================= */
+
+.bottom-nav{
+    position:fixed;
+    z-index:900;
+    left:0;
+    right:0;
+    bottom:0;
+    height:82px;
+    background:#0c0e13;
+    border-top:1px solid #1c1f26;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    padding-bottom:env(safe-area-inset-bottom);
+}
+
+.nav-btn{
+    color:#666c78;
+    background:transparent;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+    gap:6px;
+    font-size:11px;
+    font-weight:800;
+}
+
+.nav-btn i{
+    font-size:21px;
+}
+
+.nav-btn.active{
+    color:var(--red);
+}
+
+.nav-btn.active span{
+    color:#e7e8eb;
+}
+
+.nav-btn:active{
+    opacity:.7;
+}
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media(max-width:600px){
+
+    .topbar{
+        min-height:124px;
+        padding:20px 25px;
+    }
+
+    .user-avatar{
+        width:68px;
+        height:68px;
+        min-width:68px;
+    }
+
+    .back-btn{
+        min-width:108px;
+    }
+
+    .page{
+        padding:37px 25px 30px;
+    }
+
+    .page-title{
+        font-size:43px;
+    }
+
+    .page-subtitle{
+        font-size:18px;
+    }
+
+    .summary-grid{
+        gap:18px;
+    }
+
+    .summary-card{
+        min-height:134px;
+        padding:28px 25px;
+    }
+
+    .journey-box{
+        padding:37px 32px 32px;
+    }
+
+    .timer{
+        font-size:64px;
+    }
+}
+
+@media(max-width:430px){
+
+    .topbar{
+        padding:17px 18px;
+    }
+
+    .user-avatar{
+        width:62px;
+        height:62px;
+        min-width:62px;
+        border-radius:18px;
+    }
+
+    .user-name{
+        font-size:17px;
+    }
+
+    .user-pass{
+        font-size:12px;
+    }
+
+    .back-btn{
+        min-width:96px;
+        height:50px;
+        padding:0 13px;
+        font-size:13px;
+    }
+
+    .page{
+        padding:30px 18px 25px;
+    }
+
+    .section-label{
+        font-size:11px;
+    }
+
+    .page-title{
+        font-size:38px;
+    }
+
+    .page-subtitle{
+        font-size:16px;
+    }
+
+    .summary-grid{
+        gap:12px;
+    }
+
+    .summary-card{
+        min-height:117px;
+        padding:23px 18px;
+        border-radius:22px;
+    }
+
+    .summary-title{
+        font-size:12px;
+    }
+
+    .summary-value{
+        font-size:27px;
+    }
+
+    .tab{
+        min-height:65px;
+        font-size:16px;
+    }
+
+    .journey-box{
+        margin-top:28px;
+        padding:29px 18px 25px;
+        border-radius:26px;
+    }
+
+    .journey-label,
+    .journey-status{
+        font-size:11px;
+    }
+
+    .timer{
+        margin-top:36px;
+        font-size:48px;
+        letter-spacing:-2px;
+    }
+
+    .timer-description{
+        font-size:13px;
+    }
+
+    .time-info-grid{
+        gap:8px;
+        margin-top:29px;
+    }
+
+    .time-info{
+        min-height:65px;
+        border-radius:16px;
+    }
+
+    .time-info-label{
+        font-size:9px;
+    }
+
+    .time-info-value{
+        font-size:12px;
+    }
+
+    .journey-actions{
+        margin-top:27px;
+        gap:9px;
+    }
+
+    .action-btn{
+        min-height:58px;
+        border-radius:17px;
+        font-size:15px;
+    }
+
+    .cooldown-notice{
+        padding:0 18px;
+    }
+
+    .cooldown-inner{
+        padding:11px 13px;
+    }
+
+    .cooldown-time{
+        font-size:16px;
+    }
+
+    .cooldown-text{
+        font-size:10px;
+    }
+
+    .modal-overlay{
+        padding:10px;
+    }
+
+    .modal{
+        max-height:93vh;
+        border-radius:25px;
+    }
+
+    .modal-body{
+        padding:17px;
+    }
+
+    .history-filters{
+        gap:8px;
+    }
+
+    .quick-periods{
+        gap:5px;
+    }
+
+    .period-btn{
+        font-size:10px;
+    }
 }
 </style>
 </head>
-
 <body>
 
-<div class="container">
-        <div class="usuario">
+<!-- =========================
+     NOTIFICAÇÃO DE COOLDOWN
+========================= -->
 
-        <div class="avatar" id="avatar">
-            F
+<div id="cooldownNotice" class="cooldown-notice">
+
+    <div class="cooldown-inner">
+
+        <div class="cooldown-left">
+
+            <div class="cooldown-icon">
+                <i class="fa-solid fa-hourglass-half"></i>
+            </div>
+
+            <div>
+                <div class="cooldown-title">
+                    AGUARDE PARA INICIAR NOVAMENTE
+                </div>
+
+                <div class="cooldown-text">
+                    Seu próximo início estará disponível em breve.
+                </div>
+            </div>
+
         </div>
 
-        <div class="usuario-info">
+        <div id="cooldownTime" class="cooldown-time">
+            01:00
+        </div>
 
-            <div class="usuario-nome" id="usuarioNome">
+    </div>
+
+</div>
+
+
+<!-- =========================
+     TOPO
+========================= -->
+
+<header class="topbar">
+
+    <div class="user-area">
+
+        <div id="userAvatar" class="user-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+        <div class="user-info">
+
+            <div id="userName" class="user-name">
                 Carregando...
             </div>
 
-            <div class="usuario-dados" id="usuarioDados">
-                Passaporte: —
+            <div id="userPass" class="user-pass">
+                Passaporte: -- • Ponto
             </div>
 
         </div>
 
-        <button
-            type="button"
-            class="btn-sair"
-            id="btnSair">
-            SAIR
-        </button>
-
     </div>
 
+    <button id="btnVoltar" class="back-btn">
+        <i class="fa-solid fa-arrow-left"></i>
+        Voltar
+    </button>
 
-    <div class="titulo">
+</header>
 
-        <h1>Meu Ponto</h1>
 
-        <p>
-            Controle sua jornada e acompanhe sua equipe
-        </p>
+<!-- =========================
+     CONTEÚDO PRINCIPAL
+========================= -->
 
+<main class="page">
+
+    <div class="section-label">
+        <i class="fa-solid fa-clock"></i>
+        CONTROLE DE JORNADA
     </div>
 
+    <h1 class="page-title">
+        Meu Ponto
+    </h1>
 
-    <div class="grid">
-
-        <button
-            type="button"
-            class="card-menu"
-            id="cardStatus">
-
-            <i class="fa-solid fa-circle-check"></i>
-
-            <strong>Meu Status</strong>
-
-            <span id="statusResumo">
-                Ponto fechado
-            </span>
-
-        </button>
+    <p class="page-subtitle">
+        Gerencie sua jornada de trabalho
+    </p>
 
 
-        <button
-            type="button"
-            class="card-menu"
-            id="cardPausas">
+    <!-- STATUS -->
 
-            <i class="fa-solid fa-pause"></i>
-
-            <strong>Pausas</strong>
-
-            <span id="pausasResumo">
-                Nenhuma pausa
-            </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="card-menu"
-            id="cardEntrada">
-
-            <i class="fa-solid fa-right-to-bracket"></i>
-
-            <strong>Entrada</strong>
-
-            <span id="entradaResumo">
-                —
-            </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="card-menu"
-            id="cardEquipe">
-
-            <i class="fa-solid fa-users"></i>
-
-            <strong>Equipe</strong>
-
-            <span id="equipeResumo">
-                Nenhuma equipe
-            </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="card-menu"
-            id="cardJornada">
-
-            <i class="fa-solid fa-clock"></i>
-
-            <strong>Minha Jornada</strong>
-
-            <span id="jornadaResumo">
-                Ponto fechado
-            </span>
-
-        </button>
-
-
-        <button
-            type="button"
-            class="card-menu"
-            id="cardHistorico">
-
-            <i class="fa-solid fa-clock-rotate-left"></i>
-
-            <strong>Meu Histórico</strong>
-
-            <span>
-                Ver registros
-            </span>
-
-        </button>
-
-    </div>
-
-
-    <div class="cronometro-card">
-
-        <div class="cronometro-label">
-            Cronômetro
-        </div>
+    <section class="summary-grid">
 
         <div
-            class="cronometro"
-            id="cronometro">
-            00:00:00
-        </div>
-
-        <div
-            class="status"
-            id="statusBox">
-
-            <span class="dot"></span>
-
-            <span id="statusTexto">
-                Ponto fechado
-            </span>
-
-        </div>
-
-
-        <div class="acoes">
-
-            <button
-                type="button"
-                id="btnIniciar"
-                class="btn btn-iniciar">
-
-                <i class="fa-solid fa-play"></i>
-                &nbsp; INICIAR
-
-            </button>
-
-
-            <button
-                type="button"
-                id="btnPausar"
-                class="btn btn-pausar"
-                style="display:none;">
-
-                <i class="fa-solid fa-pause"></i>
-                &nbsp; PAUSAR
-
-            </button>
-
-
-            <button
-                type="button"
-                id="btnRetomar"
-                class="btn btn-retomar"
-                style="display:none;">
-
-                <i class="fa-solid fa-play"></i>
-                &nbsp; RETOMAR
-
-            </button>
-
-
-            <button
-                type="button"
-                id="btnEncerrar"
-                class="btn btn-encerrar"
-                style="display:none;">
-
-                <i class="fa-solid fa-stop"></i>
-                &nbsp; ENCERRAR
-
-            </button>
-
-        </div>
-
-
-        <div
-            class="loading"
-            id="loading">
-            Processando...
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- MODAL STATUS -->
-
-<div class="modal" id="modalStatus">
-
-    <div class="modal-caixa">
-
-        <div class="modal-topo">
-
-            <h2>Meu Status</h2>
-
-            <button
-                class="fechar"
-                type="button"
-                data-fechar="modalStatus">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div id="conteudoStatus"></div>
-
-    </div>
-
-</div>
-<!-- MODAL PAUSAS -->
-
-<div class="modal" id="modalPausas">
-
-    <div class="modal-caixa">
-
-        <div class="modal-topo">
-
-            <h2>Pausas</h2>
-
-            <button
-                class="fechar"
-                type="button"
-                data-fechar="modalPausas">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div id="conteudoPausas"></div>
-
-    </div>
-
-</div>
-
-
-<!-- MODAL ENTRADA -->
-
-<div class="modal" id="modalEntrada">
-
-    <div class="modal-caixa">
-
-        <div class="modal-topo">
-
-            <h2>Entrada</h2>
-
-            <button
-                class="fechar"
-                type="button"
-                data-fechar="modalEntrada">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div id="conteudoEntrada"></div>
-
-    </div>
-
-</div>
-
-
-<!-- MODAL JORNADA -->
-
-<div class="modal" id="modalJornada">
-
-    <div class="modal-caixa">
-
-        <div class="modal-topo">
-
-            <h2>Minha Jornada</h2>
-
-            <button
-                class="fechar"
-                type="button"
-                data-fechar="modalJornada">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div id="conteudoJornada"></div>
-
-    </div>
-
-</div>
-
-
-<!-- MODAL HISTÓRICO -->
-
-<div class="modal" id="modalHistorico">
-
-    <div class="modal-caixa">
-
-        <div class="modal-topo">
-
-            <h2>Meu Histórico</h2>
-
-            <button
-                class="fechar"
-                type="button"
-                data-fechar="modalHistorico">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-        </div>
-
-        <div id="conteudoHistorico">
-            <div class="vazio">
-                Carregando histórico...
+            id="statusCard"
+            class="summary-card"
+            data-action="status"
+        >
+
+            <div class="summary-title">
+                Meu Status
             </div>
-        </div>
 
-    </div>
-
-</div>
-
-
-<!-- MODAL EQUIPE -->
-
-<div class="modal" id="modalEquipe">
-
-    <div class="modal-caixa">
-
-        <div class="modal-topo">
-
-            <h2>Equipe</h2>
-
-            <button
-                class="fechar"
-                type="button"
-                data-fechar="modalEquipe">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
+            <div
+                id="statusValue"
+                class="summary-value status-fora"
+            >
+                Fora
+            </div>
 
         </div>
 
-        <div id="conteudoEquipe"></div>
+
+        <div
+            class="summary-card"
+            data-action="pausas"
+        >
+
+            <div class="summary-title">
+                Pausados
+            </div>
+
+            <div
+                id="pausedValue"
+                class="summary-value"
+            >
+                0
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ABAS -->
+
+    <div class="tabs">
+
+        <button
+            id="tabJourney"
+            class="tab active"
+            type="button"
+        >
+            Minha Jornada
+        </button>
+
+        <button
+            id="tabHistory"
+            class="tab"
+            type="button"
+        >
+            Meu Histórico
+        </button>
 
     </div>
 
-</div>
+
+    <!-- JORNADA -->
+
+    <section id="journeySection">
+
+        <div class="journey-box">
+
+            <div class="journey-head">
+
+                <div class="journey-label">
+                    Jornada atual
+                </div>
+
+                <div
+                    id="journeyStatus"
+                    class="journey-status"
+                >
+                    Aguardando
+                </div>
+
+            </div>
 
 
-<nav class="nav">
+            <div
+                id="timer"
+                class="timer"
+            >
+                00:00:00
+            </div>
 
-    <div class="nav-inner">
 
-        <a href="painel.html">
-            <i class="fa-solid fa-house"></i>
-            <span>Início</span>
-        </a>
+            <div
+                id="timerDescription"
+                class="timer-description"
+            >
+                Nenhum turno aberto
+            </div>
 
-        <a href="bate-ponto.html" class="ativo">
-            <i class="fa-solid fa-clock"></i>
-            <span>Ponto</span>
-        </a>
 
-        <a href="equipe.html">
-            <i class="fa-solid fa-users"></i>
-            <span>Equipe</span>
-        </a>
+            <div class="time-info-grid">
 
-        <a href="registros.html">
-            <i class="fa-solid fa-list"></i>
-            <span>Registros</span>
-        </a>
+                <div class="time-info">
 
-    </div>
+                    <span class="time-info-label">
+                        Entrada
+                    </span>
+
+                    <strong
+                        id="entryTime"
+                        class="time-info-value"
+                    >
+                        --:--
+                    </strong>
+
+                </div>
+
+
+                <div class="time-info">
+
+                    <span class="time-info-label">
+                        Última pausa
+                    </span>
+
+                    <strong
+                        id="pauseTime"
+                        class="time-info-value"
+                    >
+                        --:--
+                    </strong>
+
+                </div>
+
+
+                <div class="time-info">
+
+                    <span class="time-info-label">
+                        Saída
+                    </span>
+
+                    <strong
+                        id="exitTime"
+                        class="time-info-value"
+                    >
+                        --:--
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- BOTÃO INICIAR -->
+
+            <div
+                id="startActions"
+                class="journey-actions"
+            >
+
+                <button
+                    id="btnIniciar"
+                    class="action-btn btn-primary"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-play"></i>
+
+                    <span>
+                        Iniciar Jornada
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- BOTÕES DURANTE A JORNADA -->
+
+            <div
+                id="activeActions"
+                class="journey-actions hidden"
+            >
+
+                <button
+                    id="btnPausar"
+                    class="action-btn btn-pause"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-pause"></i>
+
+                    <span>
+                        Pausar
+                    </span>
+
+                </button>
+
+
+                <button
+                    id="btnEncerrar"
+                    class="action-btn btn-end"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-stop"></i>
+
+                    <span>
+                        Encerrar
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- BOTÕES PAUSADO -->
+
+            <div
+                id="pausedActions"
+                class="journey-actions hidden"
+            >
+
+                <button
+                    id="btnRetomar"
+                    class="action-btn btn-resume"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-play"></i>
+
+                    <span>
+                        Retomar
+                    </span>
+
+                </button>
+
+
+                <button
+                    id="btnEncerrarPausado"
+                    class="action-btn btn-end"
+                    type="button"
+                >
+
+                    <i class="fa-solid fa-stop"></i>
+
+                    <span>
+                        Encerrar
+                    </span>
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =========================
+     NAVEGAÇÃO INFERIOR
+========================= -->
+
+<nav class="bottom-nav">
+
+    <button
+        class="nav-btn"
+        id="navInicio"
+        type="button"
+    >
+
+        <i class="fa-solid fa-house"></i>
+
+        <span>
+            Início
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-btn active"
+        id="navPonto"
+        type="button"
+    >
+
+        <i class="fa-solid fa-clock"></i>
+
+        <span>
+            Ponto
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-btn"
+        id="navEquipe"
+        type="button"
+    >
+
+        <i class="fa-solid fa-users"></i>
+
+        <span>
+            Equipe
+        </span>
+
+    </button>
+
+
+    <button
+        class="nav-btn"
+        id="navRegistros"
+        type="button"
+    >
+
+        <i class="fa-solid fa-folder-open"></i>
+
+        <span>
+            Registros
+        </span>
+
+    </button>
 
 </nav>
 
 
-<script>
+<!-- =========================
+     TOASTS
+========================= -->
 
-const supabaseClient =
-window.supabase.createClient(
+<div
+    id="toastContainer"
+    class="toast-container"
+></div>
+
+
+<!-- =========================
+     MODAL STATUS
+========================= -->
+
+<div
+    id="modalStatus"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Meu Status
+            </div>
+
+            <button
+                class="modal-close"
+                data-close="modalStatus"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="status-modal-card">
+
+                <div class="status-modal-top">
+
+                    <div>
+
+                        <div class="status-modal-name">
+                            Situação atual
+                        </div>
+
+                        <div
+                            id="modalStatusValue"
+                            class="status-modal-value"
+                        >
+                            Fora
+                        </div>
+
+                    </div>
+
+                    <div
+                        id="modalStatusPill"
+                        class="status-pill"
+                    >
+                        Fora
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    </div>
+    <!-- =========================
+     MODAL PAUSAS
+========================= -->
+
+<div
+    id="modalPausas"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Minhas Pausas
+            </div>
+
+            <button
+                class="modal-close"
+                data-close="modalPausas"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div
+                id="pauseList"
+                class="pause-list"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL ENTRADA
+========================= -->
+
+<div
+    id="modalEntrada"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Entrada da Jornada
+            </div>
+
+            <button
+                class="modal-close"
+                data-close="modalEntrada"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="entry-grid">
+
+                <div class="entry-card">
+
+                    <span>
+                        Entrada
+                    </span>
+
+                    <strong id="modalEntry">
+                        --:--
+                    </strong>
+
+                </div>
+
+
+                <div class="entry-card">
+
+                    <span>
+                        Saída
+                    </span>
+
+                    <strong id="modalExit">
+                        --:--
+                    </strong>
+
+                </div>
+
+
+                <div class="entry-card">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong id="modalEntryStatus">
+                        Fora
+                    </strong>
+
+                </div>
+
+
+                <div class="entry-card">
+
+                    <span>
+                        Pausas
+                    </span>
+
+                    <strong id="modalEntryPauses">
+                        0
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL EQUIPE
+========================= -->
+
+<div
+    id="modalEquipe"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Minha Equipe
+            </div>
+
+            <button
+                class="modal-close"
+                data-close="modalEquipe"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div
+                id="teamSummary"
+                class="team-summary"
+            >
+
+                <div class="team-name">
+                    Nenhuma equipe
+                </div>
+
+                <div class="team-function">
+                    Você ainda não está vinculado a uma equipe.
+                </div>
+
+                <div class="team-info-list">
+
+                    <div class="team-info-row">
+
+                        <span>
+                            Área
+                        </span>
+
+                        <strong>
+                            —
+                        </strong>
+
+                    </div>
+
+                    <div class="team-info-row">
+
+                        <span>
+                            Membros
+                        </span>
+
+                        <strong>
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL JORNADA
+========================= -->
+
+<div
+    id="modalJornada"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Minha Jornada
+            </div>
+
+            <button
+                class="modal-close"
+                data-close="modalJornada"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="entry-grid">
+
+                <div class="entry-card">
+
+                    <span>
+                        Tempo trabalhado
+                    </span>
+
+                    <strong id="modalJourneyTimer">
+                        00:00:00
+                    </strong>
+
+                </div>
+
+                <div class="entry-card">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <strong id="modalJourneyStatus">
+                        Aguardando
+                    </strong>
+
+                </div>
+
+                <div class="entry-card">
+
+                    <span>
+                        Entrada
+                    </span>
+
+                    <strong id="modalJourneyEntry">
+                        --:--
+                    </strong>
+
+                </div>
+
+                <div class="entry-card">
+
+                    <span>
+                        Última pausa
+                    </span>
+
+                    <strong id="modalJourneyPause">
+                        --:--
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL HISTÓRICO
+========================= -->
+
+<div
+    id="modalHistorico"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Meu Histórico de Ponto
+            </div>
+
+            <button
+                class="modal-close"
+                data-close="modalHistorico"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <p class="history-intro">
+                Escolha o período, busque por pessoa e veja quantas vezes iniciou,
+                tempo pausou e a que horas encerrou.
+            </p>
+
+
+            <div class="history-filters">
+
+                <div class="date-field">
+
+                    <label for="historyFrom">
+                        De
+                    </label>
+
+                    <input
+                        id="historyFrom"
+                        class="date-input"
+                        type="date"
+                    >
+
+                </div>
+
+
+                <div class="date-field">
+
+                    <label for="historyTo">
+                        Até
+                    </label>
+
+                    <input
+                        id="historyTo"
+                        class="date-input"
+                        type="date"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="quick-periods">
+
+                <button
+                    class="period-btn"
+                    data-period="today"
+                    type="button"
+                >
+                    Hoje
+                </button>
+
+                <button
+                    class="period-btn active"
+                    data-period="7"
+                    type="button"
+                >
+                    7 dias
+                </button>
+
+                <button
+                    class="period-btn"
+                    data-period="30"
+                    type="button"
+                >
+                    30 dias
+                </button>
+
+                <button
+                    class="period-btn"
+                    data-period="90"
+                    type="button"
+                >
+                    90 dias
+                </button>
+
+            </div>
+
+
+            <button
+                id="btnExportCsv"
+                class="export-btn"
+                type="button"
+            >
+
+                <i class="fa-solid fa-file-arrow-down"></i>
+
+                Exportar CSV detalhado
+
+            </button>
+
+
+            <div
+                id="historyResults"
+                class="history-results"
+            >
+
+                <div class="history-empty">
+                    Carregando histórico...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL CONFIRMAÇÃO
+========================= -->
+
+<div
+    id="modalConfirmarEncerramento"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-header">
+
+            <div class="modal-title">
+                Encerrar jornada
+            </div>
+
+            <button
+                class="modal-close"
+                data-close="modalConfirmarEncerramento"
+                type="button"
+            >
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+        </div>
+
+        <div class="modal-body">
+
+            <div class="confirm-card">
+
+                <div class="confirm-icon">
+                    <i class="fa-solid fa-stop"></i>
+                </div>
+
+                <div class="confirm-title">
+                    Deseja encerrar sua jornada?
+                </div>
+
+                <p class="confirm-text">
+                    Ao confirmar, seu ponto será encerrado e você deverá
+                    aguardar 1 minuto antes de iniciar uma nova jornada.
+                </p>
+
+
+                <div class="confirm-buttons">
+
+                    <button
+                        class="confirm-btn confirm-cancel"
+                        data-close="modalConfirmarEncerramento"
+                        type="button"
+                    >
+                        Cancelar
+                    </button>
+
+                    <button
+                        id="btnConfirmarEncerramento"
+                        class="confirm-btn confirm-danger"
+                        type="button"
+                    >
+                        Encerrar
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL JORNADA ENCERRADA
+========================= -->
+
+<div
+    id="modalEncerrado"
+    class="modal-overlay"
+>
+
+    <div class="modal">
+
+        <div class="modal-body">
+
+            <div class="finished-card">
+
+                <div class="finished-icon">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+
+                <div class="finished-title">
+                    Jornada encerrada
+                </div>
+
+                <p class="finished-text">
+                    Sua jornada foi encerrada com sucesso.
+                    Para iniciar novamente, aguarde o período de segurança
+                    de 1 minuto.
+                </p>
+
+
+                <div class="finished-count">
+
+                    <small>
+                        Próximo início disponível em
+                    </small>
+
+                    <strong id="finishedCountdown">
+                        01:00
+                    </strong>
+
+                </div>
+
+
+                <button
+                    id="btnFinishedOk"
+                    class="finished-ok"
+                    type="button"
+                >
+                    Entendi
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const supabaseClient = window.supabase.createClient(
     "https://vclwmikzmnuqfdxobtik.supabase.co",
     "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
 );
 
 
-const usuarioRaw =
-sessionStorage.getItem("italia_usuario");
+/* =========================================================
+   ESTADO
+========================================================= */
 
-
-if(!usuarioRaw){
-
-    window.location.href =
-    "login.html";
-
-    throw new Error("Usuário não autenticado.");
-
-}
-
-
-let usuario;
-
-try{
-
-    usuario =
-    JSON.parse(usuarioRaw);
-
-}catch(erro){
-
-    sessionStorage.removeItem(
-        "italia_usuario"
-    );
-
-    window.location.href =
-    "login.html";
-
-    throw erro;
-}
-
-
-if(
-    !usuario ||
-    !usuario.passaporte
-){
-
-    sessionStorage.removeItem(
-        "italia_usuario"
-    );
-
-    window.location.href =
-    "login.html";
-
-    throw new Error(
-        "Sessão inválida."
-    );
-}
-
-
-const passaporte =
-String(usuario.passaporte);
-
-const nome =
-usuario.nome || "Usuário";
-
-
-const STORAGE =
-`italia_ponto_${passaporte}`;
-
-const COOLDOWN =
-`italia_cooldown_${passaporte}`;
-
+let usuario = null;
 
 let ponto = null;
-let intervalo = null;
+
+let equipeAtual = null;
+
+let intervaloCronometro = null;
+
+let intervaloCooldown = null;
+
+let tempoAtual = 0;
+
+let tempoInicioAtivo = null;
+
+let tempoAcumulado = 0;
+
 let pausas = [];
 
+let cooldownFim = null;
 
-/* ELEMENTOS */
-
-const avatar =
-document.getElementById("avatar");
-
-const usuarioNome =
-document.getElementById("usuarioNome");
-
-const usuarioDados =
-document.getElementById("usuarioDados");
-
-const cronometro =
-document.getElementById("cronometro");
-
-const statusBox =
-document.getElementById("statusBox");
-
-const statusTexto =
-document.getElementById("statusTexto");
-
-const btnIniciar =
-document.getElementById("btnIniciar");
-
-const btnPausar =
-document.getElementById("btnPausar");
-
-const btnRetomar =
-document.getElementById("btnRetomar");
-
-const btnEncerrar =
-document.getElementById("btnEncerrar");
-
-const loading =
-document.getElementById("loading");
+let historicoCache = [];
 
 
-avatar.textContent =
-nome.charAt(0).toUpperCase();
+/* =========================================================
+   ELEMENTOS
+========================================================= */
 
-usuarioNome.textContent =
-nome;
-
-usuarioDados.textContent =
-`Passaporte: ${passaporte} • Ponto`;
-    function erroTexto(erro){
-
-    return (
-        erro?.message ||
-        erro?.details ||
-        erro?.hint ||
-        String(erro)
-    );
-}
+const $ = id => document.getElementById(id);
 
 
-function mostrarErro(titulo,erro){
+/* =========================================================
+   UTILITÁRIOS
+========================================================= */
 
-    console.error(
-        titulo,
-        erro
-    );
+function escapeHtml(valor){
 
-    alert(
-        `${titulo}\n\n${erroTexto(erro)}`
-    );
-}
-
-
-function carregarLocal(){
-
-    const salvo =
-    localStorage.getItem(STORAGE);
-
-    if(!salvo){
-        return null;
+    if(valor === null || valor === undefined){
+        return "";
     }
 
-    try{
-
-        return JSON.parse(salvo);
-
-    }catch(erro){
-
-        localStorage.removeItem(STORAGE);
-
-        return null;
-    }
+    return String(valor)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
 }
 
 
-function salvarLocal(){
-
-    if(!ponto){
-
-        localStorage.removeItem(
-            STORAGE
-        );
-
-        return;
-    }
-
-    localStorage.setItem(
-        STORAGE,
-        JSON.stringify(ponto)
-    );
-}
-
-
-function tempoEntre(data){
+function formatarHora(data){
 
     if(!data){
-        return 0;
+        return "--:--";
     }
 
-    const valor =
-    new Date(data).getTime();
+    const d = new Date(data);
 
-    if(!valor){
-        return 0;
+    if(Number.isNaN(d.getTime())){
+        return "--:--";
     }
 
-    return Math.max(
-        0,
-        Math.floor(
-            (Date.now() - valor) / 1000
-        )
-    );
+    return d.toLocaleTimeString("pt-BR",{
+        hour:"2-digit",
+        minute:"2-digit"
+    });
 }
 
 
-function formatar(segundos){
+function formatarData(data){
 
-    segundos =
-    Math.max(
+    if(!data){
+        return "--/--/----";
+    }
+
+    const d = new Date(data);
+
+    if(Number.isNaN(d.getTime())){
+        return "--/--/----";
+    }
+
+    return d.toLocaleDateString("pt-BR");
+}
+
+
+function formatarTempo(segundos){
+
+    segundos = Math.max(
         0,
-        Math.floor(segundos || 0)
+        Math.floor(Number(segundos) || 0)
     );
 
-    const h =
-    Math.floor(segundos / 3600);
+    const horas = Math.floor(segundos / 3600);
 
-    const m =
-    Math.floor(
+    const minutos = Math.floor(
         (segundos % 3600) / 60
     );
 
-    const s =
-    segundos % 60;
+    const seg = segundos % 60;
 
-    return (
-        String(h).padStart(2,"0") +
-        ":" +
-        String(m).padStart(2,"0") +
-        ":" +
-        String(s).padStart(2,"0")
+    return [
+        String(horas).padStart(2,"0"),
+        String(minutos).padStart(2,"0"),
+        String(seg).padStart(2,"0")
+    ].join(":");
+}
+
+
+function formatarMinutos(segundos){
+
+    segundos = Math.max(
+        0,
+        Math.floor(Number(segundos) || 0)
+    );
+
+    const horas = Math.floor(segundos / 3600);
+
+    const minutos = Math.floor(
+        (segundos % 3600) / 60
+    );
+
+    return `${horas}h${String(minutos).padStart(2,"0")}`;
+}
+
+
+function hojeISO(){
+
+    const d = new Date();
+
+    const ano = d.getFullYear();
+
+    const mes = String(
+        d.getMonth() + 1
+    ).padStart(2,"0");
+
+    const dia = String(
+        d.getDate()
+    ).padStart(2,"0");
+
+    return `${ano}-${mes}-${dia}`;
+}
+
+
+function adicionarDias(data, dias){
+
+    const d = new Date(data);
+
+    d.setDate(
+        d.getDate() + dias
+    );
+
+    return d;
+}
+
+
+/* =========================================================
+   NOTIFICAÇÃO DE ERRO / SUCESSO
+========================================================= */
+
+function mostrarToast(
+    titulo,
+    mensagem,
+    tipo = "error"
+){
+
+    const container = $("toastContainer");
+
+    if(!container){
+        return;
+    }
+
+    const div = document.createElement("div");
+
+    div.className = `toast ${tipo}`;
+
+    let icone = "fa-circle-exclamation";
+
+    if(tipo === "success"){
+        icone = "fa-circle-check";
+    }
+
+    if(tipo === "warning"){
+        icone = "fa-triangle-exclamation";
+    }
+
+    div.innerHTML = `
+        <div class="toast-icon">
+            <i class="fa-solid ${icone}"></i>
+        </div>
+
+        <div class="toast-content">
+            <strong>${escapeHtml(titulo)}</strong>
+            <p>${escapeHtml(mensagem)}</p>
+        </div>
+    `;
+
+    container.appendChild(div);
+
+    setTimeout(() => {
+
+        div.style.opacity = "0";
+        div.style.transform = "translateY(8px)";
+
+        setTimeout(() => {
+            div.remove();
+        },220);
+
+    },4500);
+}
+
+
+/* =========================================================
+   TRATAMENTO CENTRAL DE ERROS
+========================================================= */
+
+function tratarErro(
+    titulo,
+    erro,
+    codigo = ""
+){
+
+    console.error(
+        `[${codigo}]`,
+        erro
+    );
+
+    let mensagem =
+        "O sistema encontrou um problema. Tente novamente.";
+
+    if(erro){
+
+        if(typeof erro === "string"){
+            mensagem = erro;
+        }
+        else if(erro.message){
+            mensagem = erro.message;
+        }
+    }
+
+    if(codigo){
+        mensagem += ` Código: ${codigo}.`;
+    }
+
+    mostrarToast(
+        titulo,
+        mensagem,
+        "error"
     );
 }
 
 
-function tempoAtual(){
+/* =========================================================
+   SESSÃO
+========================================================= */
 
-    if(!ponto){
-        return 0;
+function carregarUsuario(){
+
+    try{
+
+        const bruto =
+            sessionStorage.getItem(
+                "italia_usuario"
+            );
+
+        if(!bruto){
+
+            tratarErro(
+                "Sessão não encontrada",
+                "Faça login novamente para acessar seu ponto.",
+                "SESSION"
+            );
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            },1200);
+
+            return false;
+        }
+
+        usuario = JSON.parse(bruto);
+
+        if(!usuario || !usuario.passaporte){
+
+            tratarErro(
+                "Sessão inválida",
+                "Não foi possível identificar seu passaporte.",
+                "USER_DATA"
+            );
+
+            setTimeout(() => {
+                window.location.href = "login.html";
+            },1200);
+
+            return false;
+        }
+
+        return true;
+
+    }catch(erro){
+
+        tratarErro(
+            "Erro na sessão",
+            erro,
+            "SESSION_PARSE"
+        );
+
+        return false;
+    }
+}
+    /* =========================================================
+   USUÁRIO NO TOPO
+========================================================= */
+
+function renderizarUsuario(){
+
+    if(!usuario){
+        return;
     }
 
-    let total =
-    Number(
-        ponto.tempo_acumulado || 0
+    const nome =
+        usuario.nome ||
+        "Usuário";
+
+    const passaporte =
+        usuario.passaporte;
+
+    $("userName").textContent =
+        nome;
+
+    $("userPass").textContent =
+        `Passaporte: ${passaporte} • Ponto`;
+
+    const inicial =
+        String(nome)
+        .trim()
+        .charAt(0)
+        .toUpperCase();
+
+    $("userAvatar").innerHTML =
+        inicial || '<i class="fa-solid fa-user"></i>';
+}
+
+
+/* =========================================================
+   LOCAL STORAGE
+========================================================= */
+
+function chavePonto(){
+
+    return `italia_ponto_${usuario.passaporte}`;
+}
+
+
+function chaveCooldown(){
+
+    return `italia_cooldown_${usuario.passaporte}`;
+}
+
+
+function salvarEstado(){
+
+    if(!ponto){
+        localStorage.removeItem(
+            chavePonto()
+        );
+        return;
+    }
+
+    const estado = {
+
+        ponto,
+
+        equipeAtual,
+
+        pausas,
+
+        tempoAcumulado,
+
+        tempoInicioAtivo,
+
+        salvoEm:Date.now()
+    };
+
+    localStorage.setItem(
+        chavePonto(),
+        JSON.stringify(estado)
+    );
+}
+
+
+function carregarEstadoLocal(){
+
+    try{
+
+        const bruto =
+            localStorage.getItem(
+                chavePonto()
+            );
+
+        if(!bruto){
+            return null;
+        }
+
+        return JSON.parse(bruto);
+
+    }catch(erro){
+
+        console.warn(
+            "Estado local inválido:",
+            erro
+        );
+
+        return null;
+    }
+}
+
+
+/* =========================================================
+   COOLDOWN
+========================================================= */
+
+function iniciarCooldown(){
+
+    cooldownFim =
+        Date.now() + 60000;
+
+    localStorage.setItem(
+        chaveCooldown(),
+        String(cooldownFim)
     );
 
+    atualizarCooldown();
 
-    if(
-        ponto.status === "ativo" &&
-        ponto.ultimo_inicio_ativo
-    ){
-
-        total +=
-        tempoEntre(
-            ponto.ultimo_inicio_ativo
+    if(intervaloCooldown){
+        clearInterval(
+            intervaloCooldown
         );
     }
 
-    return total;
+    intervaloCooldown =
+        setInterval(
+            atualizarCooldown,
+            250
+        );
 }
 
 
-function atualizarTela(){
+function carregarCooldown(){
 
-    clearInterval(intervalo);
+    const valor =
+        Number(
+            localStorage.getItem(
+                chaveCooldown()
+            )
+        );
 
+    if(!valor){
+        return;
+    }
 
-    if(!ponto){
+    if(valor <= Date.now()){
 
-        cronometro.textContent =
-        "00:00:00";
+        localStorage.removeItem(
+            chaveCooldown()
+        );
 
-        statusBox.className =
-        "status";
-
-        statusTexto.textContent =
-        "Ponto fechado";
-
-        btnIniciar.style.display =
-        "block";
-
-        btnPausar.style.display =
-        "none";
-
-        btnRetomar.style.display =
-        "none";
-
-        btnEncerrar.style.display =
-        "none";
-
-        document.getElementById(
-            "statusResumo"
-        ).textContent =
-        "Ponto fechado";
-
-        document.getElementById(
-            "jornadaResumo"
-        ).textContent =
-        "Ponto fechado";
-
-        document.getElementById(
-            "entradaResumo"
-        ).textContent =
-        "—";
-
-        document.getElementById(
-            "equipeResumo"
-        ).textContent =
-        "Nenhuma equipe";
-
-        document.getElementById(
-            "pausasResumo"
-        ).textContent =
-        "Nenhuma pausa";
+        cooldownFim = null;
 
         return;
     }
 
+    cooldownFim = valor;
 
-    if(ponto.status === "pausado"){
+    atualizarCooldown();
 
-        statusBox.className =
-        "status pausado";
+    intervaloCooldown =
+        setInterval(
+            atualizarCooldown,
+            250
+        );
+}
 
-        statusTexto.textContent =
-        "Jornada pausada";
 
-        btnIniciar.style.display =
-        "none";
+function atualizarCooldown(){
 
-        btnPausar.style.display =
-        "none";
-
-        btnRetomar.style.display =
-        "block";
-
-        btnEncerrar.style.display =
-        "block";
-
-    }else{
-
-        statusBox.className =
-        "status ativo";
-
-        statusTexto.textContent =
-        "Jornada ativa";
-
-        btnIniciar.style.display =
-        "none";
-
-        btnPausar.style.display =
-        "block";
-
-        btnRetomar.style.display =
-        "none";
-
-        btnEncerrar.style.display =
-        "block";
+    if(!cooldownFim){
+        return;
     }
 
+    const restante =
+        Math.max(
+            0,
+            cooldownFim - Date.now()
+        );
 
-    cronometro.textContent =
-    formatar(
-        tempoAtual()
+    if(restante <= 0){
+
+        clearInterval(
+            intervaloCooldown
+        );
+
+        intervaloCooldown = null;
+
+        cooldownFim = null;
+
+        localStorage.removeItem(
+            chaveCooldown()
+        );
+
+        $("cooldownNotice")
+            .classList.remove("show");
+
+        desbloquearInicio();
+
+        mostrarToast(
+            "Jornada disponível",
+            "Você já pode iniciar uma nova jornada.",
+            "success"
+        );
+
+        return;
+    }
+
+    const segundos =
+        Math.ceil(restante / 1000);
+
+    const minutos =
+        Math.floor(segundos / 60);
+
+    const seg =
+        segundos % 60;
+
+    const texto =
+        `${String(minutos).padStart(2,"0")}:${String(seg).padStart(2,"0")}`;
+
+    $("cooldownNotice")
+        .classList.add("show");
+
+    $("cooldownTime")
+        .textContent = texto;
+
+    $("finishedCountdown")
+        .textContent = texto;
+
+    bloquearInicio();
+}
+
+
+function bloquearInicio(){
+
+    const btn =
+        $("btnIniciar");
+
+    if(!btn){
+        return;
+    }
+
+    btn.disabled = true;
+
+    btn.classList.add(
+        "locked"
     );
 
-
-    document.getElementById(
-        "statusResumo"
-    ).textContent =
-    ponto.status === "pausado"
-    ? "Jornada pausada"
-    : "Jornada ativa";
+    btn.innerHTML = `
+        <i class="fa-solid fa-lock"></i>
+        <span>Aguarde ${formatarCooldownRestante()}</span>
+    `;
+}
 
 
-    document.getElementById(
-        "jornadaResumo"
-    ).textContent =
-    formatar(
-        tempoAtual()
+function formatarCooldownRestante(){
+
+    if(!cooldownFim){
+        return "01:00";
+    }
+
+    const restante =
+        Math.max(
+            0,
+            cooldownFim - Date.now()
+        );
+
+    const segundos =
+        Math.ceil(
+            restante / 1000
+        );
+
+    const minutos =
+        Math.floor(
+            segundos / 60
+        );
+
+    const seg =
+        segundos % 60;
+
+    return `${String(minutos).padStart(2,"0")}:${String(seg).padStart(2,"0")}`;
+}
+
+
+function desbloquearInicio(){
+
+    const btn =
+        $("btnIniciar");
+
+    if(!btn){
+        return;
+    }
+
+    btn.disabled = false;
+
+    btn.classList.remove(
+        "locked"
     );
 
-
-    document.getElementById(
-        "entradaResumo"
-    ).textContent =
-    ponto.entrada
-    ? new Date(
-        ponto.entrada
-      ).toLocaleTimeString(
-        "pt-BR",
-        {
-            hour:"2-digit",
-            minute:"2-digit"
-        }
-      )
-    : "—";
+    btn.innerHTML = `
+        <i class="fa-solid fa-play"></i>
+        <span>Iniciar Jornada</span>
+    `;
+}
 
 
-    document.getElementById(
-        "equipeResumo"
-    ).textContent =
-    ponto.equipe_nome ||
-    "Equipe";
+/* =========================================================
+   CRONÔMETRO
+========================================================= */
+
+function iniciarCronometro(){
+
+    pararCronometro();
+
+    intervaloCronometro =
+        setInterval(
+            atualizarCronometro,
+            1000
+        );
+
+    atualizarCronometro();
+}
 
 
-    document.getElementById(
-        "pausasResumo"
-    ).textContent =
-    pausas.length
-    ? `${pausas.length} pausa(s)`
-    : "Nenhuma pausa";
+function pararCronometro(){
+
+    if(intervaloCronometro){
+
+        clearInterval(
+            intervaloCronometro
+        );
+
+        intervaloCronometro = null;
+    }
+}
 
 
-    intervalo =
-    setInterval(
-        atualizarCronometro,
-        1000
+function calcularTempoAtual(){
+
+    if(
+        !ponto ||
+        !tempoInicioAtivo
+    ){
+        return tempoAcumulado;
+    }
+
+    const agora =
+        Date.now();
+
+    const inicio =
+        new Date(
+            tempoInicioAtivo
+        ).getTime();
+
+    if(Number.isNaN(inicio)){
+        return tempoAcumulado;
+    }
+
+    return (
+        tempoAcumulado +
+        Math.max(
+            0,
+            Math.floor(
+                (agora - inicio) / 1000
+            )
+        )
     );
 }
 
 
 function atualizarCronometro(){
 
-    if(!ponto){
-        return;
-    }
+    tempoAtual =
+        calcularTempoAtual();
 
-    cronometro.textContent =
-    formatar(
-        tempoAtual()
-    );
+    $("timer")
+        .textContent =
+        formatarTempo(
+            tempoAtual
+        );
 
-    document.getElementById(
-        "jornadaResumo"
-    ).textContent =
-    formatar(
-        tempoAtual()
-    );
+    $("modalJourneyTimer")
+        .textContent =
+        formatarTempo(
+            tempoAtual
+        );
 }
 
 
-/* EQUIPE DISPONÍVEL */
+/* =========================================================
+   ESTADO VISUAL
+========================================================= */
 
-async function buscarEquipe(){
+function atualizarInterface(){
 
-    const resposta =
-    await supabaseClient
-    .from("equipes")
-    .select(
-        "id,nome,funcao,area,limite,ativa,tipo"
-    )
-    .eq("ativa",true);
+    const ativo =
+        ponto &&
+        ponto.status === "ativo";
+
+    const pausado =
+        ponto &&
+        ponto.status === "pausado";
+
+    const fora =
+        !ponto ||
+        ponto.status === "encerrado";
 
 
-    if(resposta.error){
+    /* STATUS */
 
-        throw new Error(
-            `Erro ao buscar equipes: ${resposta.error.message}`
-        );
+    let textoStatus = "Fora";
+
+    if(ativo){
+        textoStatus = "Em jornada";
+    }
+
+    if(pausado){
+        textoStatus = "Pausado";
     }
 
 
-    const equipes =
-    resposta.data || [];
+    $("statusValue")
+        .textContent =
+        textoStatus;
+
+    $("modalStatusValue")
+        .textContent =
+        textoStatus;
+
+    $("modalStatusPill")
+        .textContent =
+        textoStatus;
 
 
-    if(!equipes.length){
-
-        throw new Error(
-            "Nenhuma equipe ativa foi encontrada."
-        );
-    }
-
-
-    const disponiveis = [];
-
-
-    for(
-        const equipe of equipes
-    ){
-
-        const membrosResposta =
-        await supabaseClient
-        .from("equipe_membros")
-        .select(
-            "id,passaporte,status"
-        )
-        .eq(
-            "equipe_id",
-            equipe.id
-        )
-        .neq(
-            "status",
-            "fora"
+    $("statusValue")
+        .className =
+        "summary-value " +
+        (
+            ativo
+                ? "status-ativo"
+                : pausado
+                    ? "status-pausado"
+                    : "status-fora"
         );
 
 
-        if(membrosResposta.error){
-
-            throw new Error(
-                `Erro ao verificar a equipe ${equipe.nome}: ${membrosResposta.error.message}`
-            );
-        }
-
-
-        const membros =
-        membrosResposta.data || [];
-
-
-        let limite =
-        Number(
-            equipe.limite || 0
+    $("modalStatusPill")
+        .className =
+        "status-pill " +
+        (
+            ativo
+                ? "ativo"
+                : pausado
+                    ? "pausado"
+                    : ""
         );
 
 
-        const tipo =
-        String(
-            equipe.tipo || ""
-        ).toLowerCase();
-
-        const nomeEquipe =
-        String(
-            equipe.nome || ""
-        ).toLowerCase();
-
-        const funcao =
-        String(
-            equipe.funcao || ""
-        ).toLowerCase();
-
-
-        const venda =
-        tipo.includes("venda") ||
-        nomeEquipe.includes("venda") ||
-        funcao.includes("venda");
-
-
-        const favela =
-        tipo.includes("favela") ||
-        nomeEquipe.includes("favela") ||
-        funcao.includes("favela");
-
-
-        const seguranca =
-        tipo.includes("segurança") ||
-        tipo.includes("seguranca") ||
-        nomeEquipe.includes("segurança") ||
-        nomeEquipe.includes("seguranca");
-
-
-        if(venda){
-            limite = 4;
-        }
-
-
-        if(
-            limite > 0 &&
-            membros.length >= limite
-        ){
-            continue;
-        }
-
-
-        disponiveis.push({
-            equipe:equipe,
-            quantidade:membros.length
-        });
-    }
-
-
-    if(!disponiveis.length){
-
-        throw new Error(
-            "Todas as equipes disponíveis estão lotadas."
-        );
-    }
-
-
-    disponiveis.sort(
-        (a,b) =>
-        a.quantidade -
-        b.quantidade
-    );
-
-
-    return disponiveis[0].equipe;
-    }
-    /* INICIAR */
-
-async function iniciarJornada(){
-
-    console.log(
-        "Botão INICIAR pressionado."
-    );
-
-
-    if(ponto){
-
-        alert(
-            "Você já possui uma jornada aberta."
-        );
-
-        return;
-    }
-
-
-    const cooldown =
-    Number(
-        localStorage.getItem(
-            COOLDOWN
-        )
-    );
-
-
-    if(
-        cooldown &&
-        Date.now() < cooldown
-    ){
-
-        const segundos =
-        Math.ceil(
-            (cooldown - Date.now()) /
-            1000
-        );
-
-        alert(
-            `Aguarde ${segundos} segundos para iniciar novamente.`
-        );
-
-        return;
-    }
-
-
-    loading.classList.add(
-        "mostrar"
-    );
-
-    btnIniciar.disabled =
-    true;
-
-
-    try{
-
-        const equipe =
-        await buscarEquipe();
-
-
-        const entrada =
-        new Date().toISOString();
-
-
-        const pontoResposta =
-        await supabaseClient
-        .from("pontos")
-        .insert({
-            passaporte:passaporte,
-            nome:nome,
-            equipe_id:equipe.id,
-            entrada:entrada,
-            status:"ativo"
-        })
-        .select()
-        .limit(1);
-
-
-        if(pontoResposta.error){
-
-            throw new Error(
-                `Erro ao criar ponto: ${pontoResposta.error.message}`
-            );
-        }
-
-
-        const novoPonto =
-        pontoResposta.data?.[0];
-
-
-        if(!novoPonto){
-
-            throw new Error(
-                "O ponto foi enviado, mas o Supabase não retornou o registro criado."
-            );
-        }
-
-
-        const membroResposta =
-        await supabaseClient
-        .from("equipe_membros")
-        .insert({
-            equipe_id:equipe.id,
-            passaporte:passaporte,
-            nome:nome,
-            status:"ativo",
-            entrou_em:entrada
-        })
-        .select()
-        .limit(1);
-
-
-        if(membroResposta.error){
-
-            await supabaseClient
-            .from("pontos")
-            .delete()
-            .eq(
-                "id",
-                novoPonto.id
-            );
-
-
-            throw new Error(
-                `Erro ao entrar na equipe: ${membroResposta.error.message}`
-            );
-        }
-
-
-        ponto = {
-
-            id:novoPonto.id,
-
-            passaporte:passaporte,
-
-            nome:nome,
-
-            equipe_id:equipe.id,
-
-            equipe_nome:equipe.nome,
-
-            equipe_funcao:equipe.funcao,
-
-            equipe_area:equipe.area,
-
-            entrada:entrada,
-
-            status:"ativo",
-
-            tempo_acumulado:0,
-
-            ultimo_inicio_ativo:entrada
-        };
-
-
-        pausas = [];
-
-
-        salvarLocal();
-
-        atualizarTela();
-
-
-        /*
-          Depois que o banco confirma tudo,
-          abre a página completa da equipe.
-        */
-
-        window.location.href =
-        "equipe.html";
-
-
-    }catch(erro){
-
-        mostrarErro(
-            "Erro ao iniciar o ponto.",
-            erro
-        );
-
-        loading.classList.remove(
-            "mostrar"
-        );
-
-        btnIniciar.disabled =
-        false;
-    }
-}
-
-
-/* PAUSAR */
-
-async function pausarJornada(){
-
-    if(!ponto){
-        return;
-    }
-
-
-    loading.classList.add(
-        "mostrar"
-    );
-
-
-    try{
-
-        const agora =
-        new Date().toISOString();
-
-
-        const acumulado =
-        tempoAtual();
-
-
-        const resposta =
-        await supabaseClient
-        .from("pontos")
-        .update({
-            status:"pausado",
-            pausa_inicio:agora
-        })
-        .eq(
-            "id",
-            ponto.id
+    /* STATUS DA JORNADA */
+
+    $("journeyStatus")
+        .textContent =
+        ativo
+            ? "Em andamento"
+            : pausado
+                ? "Pausado"
+                : "Aguardando";
+
+    $("journeyStatus")
+        .className =
+        "journey-status " +
+        (
+            ativo
+                ? "ativo"
+                : pausado
+                    ? "pausado"
+                    : ""
         );
 
 
-        if(resposta.error){
-
-            throw new Error(
-                `Erro ao pausar: ${resposta.error.message}`
-            );
-        }
-
-
-        pausas.push({
-            inicio:agora,
-            fim:null
-        });
-
-
-        ponto.status =
-        "pausado";
-
-        ponto.tempo_acumulado =
-        acumulado;
-
-        ponto.ultimo_inicio_ativo =
-        null;
-
-
-        await supabaseClient
-        .from("equipe_membros")
-        .update({
-            status:"pausado"
-        })
-        .eq(
-            "equipe_id",
-            ponto.equipe_id
-        )
-        .eq(
-            "passaporte",
-            passaporte
-        )
-        .neq(
-            "status",
-            "fora"
-        );
-
-
-        salvarLocal();
-
-        atualizarTela();
-
-        carregarModais();
-
-
-    }catch(erro){
-
-        mostrarErro(
-            "Erro ao pausar.",
-            erro
-        );
-
-    }finally{
-
-        loading.classList.remove(
-            "mostrar"
-        );
-    }
-}
-
-
-/* RETOMAR */
-
-async function retomarJornada(){
-
-    if(!ponto){
-        return;
-    }
-
-
-    loading.classList.add(
-        "mostrar"
-    );
-
-
-    try{
-
-        const agora =
-        new Date().toISOString();
-
-
-        const resposta =
-        await supabaseClient
-        .from("pontos")
-        .update({
-            status:"ativo",
-            pausa_fim:agora
-        })
-        .eq(
-            "id",
-            ponto.id
-        );
-
-
-        if(resposta.error){
-
-            throw new Error(
-                `Erro ao retomar: ${resposta.error.message}`
-            );
-        }
-
-
-        if(
-            pausas.length &&
-            !pausas[pausas.length-1].fim
-        ){
-
-            pausas[
-                pausas.length-1
-            ].fim = agora;
-        }
-
-
-        ponto.status =
-        "ativo";
-
-        ponto.ultimo_inicio_ativo =
-        agora;
-
-
-        await supabaseClient
-        .from("equipe_membros")
-        .update({
-            status:"ativo"
-        })
-        .eq(
-            "equipe_id",
-            ponto.equipe_id
-        )
-        .eq(
-            "passaporte",
-            passaporte
-        )
-        .neq(
-            "status",
-            "fora"
-        );
-
-
-        salvarLocal();
-
-        atualizarTela();
-
-        carregarModais();
-
-
-    }catch(erro){
-
-        mostrarErro(
-            "Erro ao retomar.",
-            erro
-        );
-
-    }finally{
-
-        loading.classList.remove(
-            "mostrar"
-        );
-    }
-    }
-    /* ENCERRAR */
-
-async function encerrarJornada(){
-
-    if(!ponto){
-        return;
-    }
-
-
-    if(
-        !confirm(
-            "Deseja realmente encerrar sua jornada?"
-        )
-    ){
-        return;
-    }
-
-
-    loading.classList.add(
-        "mostrar"
-    );
-
-
-    try{
-
-        const agora =
-        new Date().toISOString();
-
-
-        const tempoFinal =
-        tempoAtual();
-
-
-        const resposta =
-        await supabaseClient
-        .from("pontos")
-        .update({
-            saida:agora,
-            status:"encerrado"
-        })
-        .eq(
-            "id",
-            ponto.id
-        );
-
-
-        if(resposta.error){
-
-            throw new Error(
-                `Erro ao encerrar o ponto: ${resposta.error.message}`
-            );
-        }
-
-
-        const membroResposta =
-        await supabaseClient
-        .from("equipe_membros")
-        .update({
-            status:"fora",
-            saiu_em:agora
-        })
-        .eq(
-            "equipe_id",
-            ponto.equipe_id
-        )
-        .eq(
-            "passaporte",
-            passaporte
-        )
-        .neq(
-            "status",
-            "fora"
-        );
-
-
-        if(membroResposta.error){
-
-            console.warn(
-                "Ponto encerrado, mas não foi possível atualizar a saída da equipe:",
-                membroResposta.error
-            );
-        }
-
-
-        localStorage.setItem(
-            COOLDOWN,
-            String(
-                Date.now() + 60000
+    $("modalJourneyStatus")
+        .textContent =
+        ativo
+            ? "Em andamento"
+            : pausado
+                ? "Pausado"
+                : "Aguardando";
+
+
+    /* DESCRIÇÃO */
+
+    $("timerDescription")
+        .textContent =
+        ativo
+            ? "Jornada em andamento"
+            : pausado
+                ? "Sua jornada está pausada"
+                : "Nenhum turno aberto";
+
+
+    /* HORÁRIOS */
+
+    $("entryTime")
+        .textContent =
+        ponto
+            ? formatarHora(
+                ponto.entrada
             )
+            : "--:--";
+
+    $("exitTime")
+        .textContent =
+        ponto &&
+        ponto.saida
+            ? formatarHora(
+                ponto.saida
+            )
+            : "--:--";
+
+    $("pauseTime")
+        .textContent =
+        pausas.length
+            ? formatarHora(
+                pausas[pausas.length - 1].inicio
+            )
+            : "--:--";
+
+
+    $("modalEntry")
+        .textContent =
+        ponto
+            ? formatarHora(
+                ponto.entrada
+            )
+            : "--:--";
+
+    $("modalExit")
+        .textContent =
+        ponto && ponto.saida
+            ? formatarHora(
+                ponto.saida
+            )
+            : "--:--";
+
+    $("modalEntryStatus")
+        .textContent =
+        textoStatus;
+
+    $("modalEntryPauses")
+        .textContent =
+        pausas.length;
+
+
+    $("modalJourneyEntry")
+        .textContent =
+        ponto
+            ? formatarHora(
+                ponto.entrada
+            )
+            : "--:--";
+
+    $("modalJourneyPause")
+        .textContent =
+        pausas.length
+            ? formatarHora(
+                pausas[pausas.length - 1].inicio
+            )
+            : "--:--";
+
+
+    /* BOTÕES */
+
+    $("startActions")
+        .classList.toggle(
+            "hidden",
+            !fora
+        );
+
+    $("activeActions")
+        .classList.toggle(
+            "hidden",
+            !ativo
+        );
+
+    $("pausedActions")
+        .classList.toggle(
+            "hidden",
+            !pausado
         );
 
 
-        ponto = null;
-
-        pausas = [];
-
-
-        salvarLocal();
-
-        atualizarTela();
-
-        carregarModais();
-
-
-        alert(
-            `Jornada encerrada.\nTempo registrado: ${formatar(tempoFinal)}`
-        );
-
-
-    }catch(erro){
-
-        mostrarErro(
-            "Erro ao encerrar.",
-            erro
-        );
-
-    }finally{
-
-        loading.classList.remove(
-            "mostrar"
-        );
+    if(ativo || pausado){
+        iniciarCronometro();
+    }else{
+        pararCronometro();
     }
+
+
+    $("pausedValue")
+        .textContent =
+        pausas.length;
+
+
+    atualizarPausasModal();
+    atualizarEquipeModal();
 }
 
 
-/* MODAIS */
+/* =========================================================
+   MODAIS
+========================================================= */
 
 function abrirModal(id){
 
-    document
-    .getElementById(id)
-    .classList.add("mostrar");
+    const modal =
+        $(id);
+
+    if(!modal){
+        return;
+    }
+
+    modal.classList.add(
+        "show"
+    );
+
+    document.body.style.overflow =
+        "hidden";
 }
 
 
 function fecharModal(id){
 
-    document
-    .getElementById(id)
-    .classList.remove("mostrar");
+    const modal =
+        $(id);
+
+    if(!modal){
+        return;
+    }
+
+    modal.classList.remove(
+        "show"
+    );
+
+    if(
+        !document.querySelector(
+            ".modal-overlay.show"
+        )
+    ){
+        document.body.style.overflow =
+            "";
+    }
 }
 
 
-document
-.querySelectorAll("[data-fechar]")
-.forEach(botao => {
+function fecharTodosModais(){
 
-    botao.addEventListener(
-        "click",
-        () => {
-            fecharModal(
-                botao.dataset.fechar
+    document
+        .querySelectorAll(
+            ".modal-overlay.show"
+        )
+        .forEach(modal => {
+            modal.classList.remove(
+                "show"
             );
-        }
-    );
+        });
 
-});
-
-
-document
-.querySelectorAll(".modal")
-.forEach(modal => {
-
-    modal.addEventListener(
-        "click",
-        evento => {
-
-            if(
-                evento.target === modal
-            ){
-                modal.classList.remove(
-                    "mostrar"
-                );
-            }
-
-        }
-    );
-
-});
+    document.body.style.overflow =
+        "";
+}
 
 
-function carregarModais(){
+/* =========================================================
+   PAUSAS
+========================================================= */
 
-    const status =
-    document.getElementById(
-        "conteudoStatus"
-    );
+function atualizarPausasModal(){
 
-    const entrada =
-    document.getElementById(
-        "conteudoEntrada"
-    );
+    const lista =
+        $("pauseList");
 
-    const jornada =
-    document.getElementById(
-        "conteudoJornada"
-    );
+    if(!lista){
+        return;
+    }
 
-    const equipe =
-    document.getElementById(
-        "conteudoEquipe"
-    );
+    if(!pausas.length){
 
-    const pausasBox =
-    document.getElementById(
-        "conteudoPausas"
-    );
-
-
-    if(!ponto){
-
-        status.innerHTML =
-        `<div class="vazio">
-            Nenhuma jornada aberta.
-        </div>`;
-
-        entrada.innerHTML =
-        `<div class="vazio">
-            Nenhum horário de entrada.
-        </div>`;
-
-        jornada.innerHTML =
-        `<div class="vazio">
-            Sua jornada está fechada.
-        </div>`;
-
-        equipe.innerHTML =
-        `<div class="vazio">
-            Você não está em uma equipe.
-        </div>`;
-
-        pausasBox.innerHTML =
-        `<div class="vazio">
-            Nenhuma pausa registrada.
-        </div>`;
+        lista.innerHTML = `
+            <div class="pause-empty">
+                <i class="fa-regular fa-clock"></i>
+                <br><br>
+                Nenhuma pausa registrada nesta jornada.
+            </div>
+        `;
 
         return;
     }
 
-
-    status.innerHTML = `
-        <div class="linha">
-            <span>Status</span>
-            <strong>
-                ${
-                    ponto.status === "pausado"
-                    ? "Pausado"
-                    : "Ativo"
-                }
-            </strong>
-        </div>
-    `;
-
-
-    entrada.innerHTML = `
-        <div class="linha">
-            <span>Entrada</span>
-            <strong>
-                ${
-                    new Date(
-                        ponto.entrada
-                    ).toLocaleString(
-                        "pt-BR"
-                    )
-                }
-            </strong>
-        </div>
-    `;
-
-
-    jornada.innerHTML = `
-        <div class="linha">
-            <span>Tempo</span>
-            <strong>
-                ${formatar(tempoAtual())}
-            </strong>
-        </div>
-
-        <div class="linha">
-            <span>Status</span>
-            <strong>
-                ${
-                    ponto.status === "pausado"
-                    ? "Pausada"
-                    : "Em andamento"
-                }
-            </strong>
-        </div>
-    `;
-
-
-    equipe.innerHTML = `
-        <div class="linha">
-            <span>Equipe</span>
-            <strong>
-                ${ponto.equipe_nome || "—"}
-            </strong>
-        </div>
-
-        <div class="linha">
-            <span>Função</span>
-            <strong>
-                ${ponto.equipe_funcao || "—"}
-            </strong>
-        </div>
-
-        <div class="linha">
-            <span>Área</span>
-            <strong>
-                ${ponto.equipe_area || "—"}
-            </strong>
-        </div>
-    `;
-
-
-    if(!pausas.length){
-
-        pausasBox.innerHTML =
-        `<div class="vazio">
-            Nenhuma pausa registrada.
-        </div>`;
-
-    }else{
-
-        pausasBox.innerHTML =
+    lista.innerHTML =
         pausas.map(
             (pausa,index) => {
 
+                const inicio =
+                    formatarHora(
+                        pausa.inicio
+                    );
+
+                const fim =
+                    pausa.fim
+                        ? formatarHora(
+                            pausa.fim
+                        )
+                        : "Em andamento";
+
+                let duracao =
+                    Number(
+                        pausa.duracao || 0
+                    );
+
+                if(
+                    !pausa.fim &&
+                    pausa.inicio
+                ){
+
+                    duracao =
+                        Math.max(
+                            0,
+                            Math.floor(
+                                (
+                                    Date.now() -
+                                    new Date(
+                                        pausa.inicio
+                                    ).getTime()
+                                ) / 1000
+                            )
+                        );
+                }
+
                 return `
-                    <div class="linha">
-                        <span>
-                            Pausa ${index + 1}
-                        </span>
+                    <div class="pause-item">
 
-                        <strong>
-                            ${new Date(
-                                pausa.inicio
-                            ).toLocaleTimeString(
-                                "pt-BR",
-                                {
-                                    hour:"2-digit",
-                                    minute:"2-digit"
-                                }
-                            )}
+                        <div>
+                            <div class="pause-item-title">
+                                Pausa ${index + 1}
+                            </div>
 
-                            ${
-                                pausa.fim
-                                ? " → " +
-                                  new Date(
-                                      pausa.fim
-                                  ).toLocaleTimeString(
-                                      "pt-BR",
-                                      {
-                                          hour:"2-digit",
-                                          minute:"2-digit"
-                                      }
-                                  )
-                                : " → em andamento"
-                            }
-                        </strong>
+                            <div class="pause-item-time">
+                                ${inicio} → ${fim}
+                            </div>
+                        </div>
+
+                        <div class="pause-duration">
+                            ${formatarTempo(duracao)}
+                        </div>
+
                     </div>
                 `;
+
             }
         ).join("");
+    }
+    /* =========================================================
+   EQUIPE
+========================================================= */
+
+function atualizarEquipeModal(){
+
+    const nome =
+        $("teamName");
+
+    const funcao =
+        $("teamFunction");
+
+    const area =
+        $("teamArea");
+
+    const membros =
+        $("teamMembers");
+
+    if(!nome){
+        return;
+    }
+
+    if(!equipeAtual){
+
+        nome.textContent =
+            "Nenhuma equipe";
+
+        funcao.textContent =
+            "Você ainda não está em uma equipe.";
+
+        area.textContent =
+            "—";
+
+        membros.textContent =
+            "—";
+
+        return;
+    }
+
+    nome.textContent =
+        equipeAtual.nome ||
+        "Equipe";
+
+    funcao.textContent =
+        equipeAtual.funcao ||
+        "—";
+
+    area.textContent =
+        equipeAtual.area ||
+        "—";
+
+    membros.textContent =
+        equipeAtual.membros != null
+            ? equipeAtual.membros
+            : "—";
+}
+
+
+/* =========================================================
+   NOTIFICAÇÕES
+========================================================= */
+
+function mostrarToast(
+    titulo,
+    mensagem,
+    tipo = "info"
+){
+
+    const container =
+        $("toastContainer");
+
+    if(!container){
+        return;
+    }
+
+    const toast =
+        document.createElement("div");
+
+    toast.className =
+        `toast toast-${tipo}`;
+
+    let icone =
+        "fa-circle-info";
+
+    if(tipo === "success"){
+        icone = "fa-circle-check";
+    }
+
+    if(tipo === "error"){
+        icone = "fa-circle-xmark";
+    }
+
+    if(tipo === "warning"){
+        icone = "fa-triangle-exclamation";
+    }
+
+    toast.innerHTML = `
+        <div class="toast-icon">
+            <i class="fa-solid ${icone}"></i>
+        </div>
+
+        <div class="toast-content">
+            <strong>${esc(titulo)}</strong>
+            <span>${esc(mensagem)}</span>
+        </div>
+
+        <button
+            type="button"
+            class="toast-close"
+            aria-label="Fechar"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    `;
+
+    container.appendChild(toast);
+
+    requestAnimationFrame(() => {
+        toast.classList.add("show");
+    });
+
+    const fechar =
+        () => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+            setTimeout(() => {
+                toast.remove();
+            }, 250);
+        };
+
+    toast
+        .querySelector(".toast-close")
+        .addEventListener(
+            "click",
+            fechar
+        );
+
+    setTimeout(
+        fechar,
+        tipo === "error"
+            ? 6500
+            : 4000
+    );
+}
+
+
+/* =========================================================
+   ERROS
+========================================================= */
+
+function mostrarErro(
+    titulo,
+    erro
+){
+
+    console.error(
+        titulo,
+        erro
+    );
+
+    let mensagem =
+        "Não foi possível concluir a operação.";
+
+    if(
+        erro &&
+        typeof erro === "object"
+    ){
+
+        if(erro.message){
+            mensagem =
+                erro.message;
+        }else if(erro.error_description){
+            mensagem =
+                erro.error_description;
+        }else if(erro.details){
+            mensagem =
+                erro.details;
+        }
+    }
+
+    mostrarToast(
+        titulo,
+        mensagem,
+        "error"
+    );
+}
+
+
+window.addEventListener(
+    "error",
+    evento => {
+
+        console.error(
+            "Erro global:",
+            evento.error
+        );
+
+        mostrarToast(
+            "Erro inesperado",
+            "Ocorreu um erro na página. Tente novamente.",
+            "error"
+        );
+    }
+);
+
+
+window.addEventListener(
+    "unhandledrejection",
+    evento => {
+
+        console.error(
+            "Promise rejeitada:",
+            evento.reason
+        );
+
+        mostrarToast(
+            "Erro inesperado",
+            "Não foi possível concluir uma operação.",
+            "error"
+        );
+    }
+);
+
+
+/* =========================================================
+   CONFIRMAÇÃO DE ENCERRAMENTO
+========================================================= */
+
+function abrirConfirmacaoEncerramento(){
+
+    if(
+        !ponto ||
+        (
+            ponto.status !== "ativo" &&
+            ponto.status !== "pausado"
+        )
+    ){
+        return;
+    }
+
+    const modal =
+        $("modalConfirmarEncerramento");
+
+    if(!modal){
+        encerrarJornada();
+        return;
+    }
+
+    const tempo =
+        calcularTempoAtual();
+
+    const valor =
+        $("confirmacaoTempo");
+
+    if(valor){
+        valor.textContent =
+            formatarTempo(tempo);
+    }
+
+    modal.classList.add(
+        "show"
+    );
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+function fecharConfirmacaoEncerramento(){
+
+    const modal =
+        $("modalConfirmarEncerramento");
+
+    if(!modal){
+        return;
+    }
+
+    modal.classList.remove(
+        "show"
+    );
+
+    if(
+        !document.querySelector(
+            ".modal-overlay.show"
+        )
+    ){
+        document.body.style.overflow =
+            "";
     }
 }
 
 
-/* HISTÓRICO */
+/* =========================================================
+   MODAL DE ENCERRAMENTO
+========================================================= */
 
-async function abrirHistorico(){
+function mostrarEncerramentoSucesso(){
 
-    const conteudo =
-    document.getElementById(
-        "conteudoHistorico"
+    const modal =
+        $("modalEncerramento");
+
+    if(!modal){
+        return;
+    }
+
+    const tempo =
+        $("encerramentoTempo");
+
+    if(tempo){
+        tempo.textContent =
+            formatarTempo(
+                tempoAtual
+            );
+    }
+
+    modal.classList.add(
+        "show"
     );
 
+    document.body.style.overflow =
+        "hidden";
+}
 
-    abrirModal(
-        "modalHistorico"
+
+function fecharEncerramentoSucesso(){
+
+    const modal =
+        $("modalEncerramento");
+
+    if(!modal){
+        return;
+    }
+
+    modal.classList.remove(
+        "show"
     );
 
-
-    conteudo.innerHTML =
-    `<div class="vazio">
-        Carregando histórico...
-    </div>`;
-
-
-    const resposta =
-    await supabaseClient
-    .from("pontos")
-    .select(`
-        id,
-        entrada,
-        saida,
-        status,
-        equipes (
-            nome
+    if(
+        !document.querySelector(
+            ".modal-overlay.show"
         )
-    `)
-    .eq(
-        "passaporte",
-        passaporte
-    )
-    .order(
-        "entrada",
-        {
-            ascending:false
-        }
-    )
-    .limit(20);
+    ){
+        document.body.style.overflow =
+            "";
+    }
+}
 
 
-    if(resposta.error){
+/* =========================================================
+   HISTÓRICO
+========================================================= */
 
-        conteudo.innerHTML =
-        `<div class="vazio">
-            Não foi possível carregar o histórico.
-        </div>`;
+let historicoRegistros = [];
 
-        console.error(
-            resposta.error
+
+function abrirHistorico(){
+
+    const modal =
+        $("modalHistorico");
+
+    if(!modal){
+        mostrarToast(
+            "Histórico",
+            "A janela de histórico não está disponível.",
+            "error"
         );
 
         return;
     }
 
+    modal.classList.add(
+        "show"
+    );
 
-    const registros =
-    resposta.data || [];
+    document.body.style.overflow =
+        "hidden";
 
+    definirPeriodoHistorico(
+        7
+    );
+
+    carregarHistorico();
+}
+
+
+function fecharHistorico(){
+
+    const modal =
+        $("modalHistorico");
+
+    if(!modal){
+        return;
+    }
+
+    modal.classList.remove(
+        "show"
+    );
+
+    if(
+        !document.querySelector(
+            ".modal-overlay.show"
+        )
+    ){
+        document.body.style.overflow =
+            "";
+    }
+}
+
+
+function obterDatasHistorico(){
+
+    const hoje =
+        new Date();
+
+    const ate =
+        new Date(
+            hoje
+        );
+
+    ate.setHours(
+        23,
+        59,
+        59,
+        999
+    );
+
+    const campoDe =
+        $("historicoDe");
+
+    const campoAte =
+        $("historicoAte");
+
+    if(
+        campoDe &&
+        campoDe.value
+    ){
+
+        const inicio =
+            new Date(
+                campoDe.value +
+                "T00:00:00"
+            );
+
+        return {
+            inicio,
+            fim:
+                campoAte &&
+                campoAte.value
+                    ? new Date(
+                        campoAte.value +
+                        "T23:59:59"
+                    )
+                    : ate
+        };
+    }
+
+    const inicio =
+        new Date();
+
+    inicio.setDate(
+        inicio.getDate() - 6
+    );
+
+    inicio.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+    return {
+        inicio,
+        fim: ate
+    };
+}
+
+
+function definirPeriodoHistorico(
+    dias
+){
+
+    const hoje =
+        new Date();
+
+    const inicio =
+        new Date(
+            hoje
+        );
+
+    inicio.setDate(
+        inicio.getDate() -
+        (
+            Number(dias) - 1
+        )
+    );
+
+    const campoDe =
+        $("historicoDe");
+
+    const campoAte =
+        $("historicoAte");
+
+    if(campoDe){
+
+        campoDe.value =
+            inicio
+                .toISOString()
+                .slice(
+                    0,
+                    10
+                );
+    }
+
+    if(campoAte){
+
+        campoAte.value =
+            hoje
+                .toISOString()
+                .slice(
+                    0,
+                    10
+                );
+    }
+
+    document
+        .querySelectorAll(
+            ".historico-filtro"
+        )
+        .forEach(
+            botao => {
+
+                botao.classList.toggle(
+                    "active",
+                    Number(
+                        botao.dataset.dias
+                    ) === Number(dias)
+                );
+            }
+        );
+}
+
+
+async function buscarHistorico(){
+
+    if(!usuario){
+        return [];
+    }
+
+    const {
+        inicio,
+        fim
+    } =
+        obterDatasHistorico();
+
+    const inicioIso =
+        inicio.toISOString();
+
+    const fimIso =
+        fim.toISOString();
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("pontos")
+            .select("*")
+            .eq(
+                "passaporte",
+                usuario.passaporte
+            )
+            .gte(
+                "entrada",
+                inicioIso
+            )
+            .lte(
+                "entrada",
+                fimIso
+            )
+            .order(
+                "entrada",
+                {
+                    ascending:false
+                }
+            );
+
+    if(error){
+        throw error;
+    }
+
+    return data || [];
+}
+
+
+function calcularPausaRegistro(
+    registro
+){
+
+    if(
+        registro.tempo_pausa != null
+    ){
+
+        return Number(
+            registro.tempo_pausa
+        ) || 0;
+    }
+
+    return 0;
+}
+
+
+function calcularTotalRegistro(
+    registro
+){
+
+    if(
+        registro.tempo_total != null
+    ){
+
+        return Number(
+            registro.tempo_total
+        ) || 0;
+    }
+
+    if(
+        registro.entrada &&
+        registro.saida
+    ){
+
+        const entrada =
+            new Date(
+                registro.entrada
+            ).getTime();
+
+        const saida =
+            new Date(
+                registro.saida
+            ).getTime();
+
+        if(
+            !Number.isNaN(
+                entrada
+            ) &&
+            !Number.isNaN(
+                saida
+            )
+        ){
+
+            return Math.max(
+                0,
+                Math.floor(
+                    (
+                        saida -
+                        entrada
+                    ) / 1000
+                ) -
+                calcularPausaRegistro(
+                    registro
+                )
+            );
+        }
+    }
+
+    return 0;
+}
+
+
+function renderizarHistorico(
+    registros
+){
+
+    const lista =
+        $("historicoLista");
+
+    if(!lista){
+        return;
+    }
 
     if(!registros.length){
 
-        conteudo.innerHTML =
-        `<div class="vazio">
-            Nenhum registro encontrado.
-        </div>`;
+        lista.innerHTML = `
+            <div class="history-empty">
+                <i class="fa-regular fa-calendar-xmark"></i>
+
+                <strong>
+                    Nenhum registro encontrado
+                </strong>
+
+                <span>
+                    Não há jornadas no período selecionado.
+                </span>
+            </div>
+        `;
+
+        atualizarResumoHistorico(
+            []
+        );
 
         return;
     }
 
+    lista.innerHTML =
+        registros.map(
+            registro => {
 
-    conteudo.innerHTML =
-    registros.map(
-        registro => {
+                const total =
+                    calcularTotalRegistro(
+                        registro
+                    );
 
-            const entrada =
-            registro.entrada
-            ? new Date(
-                registro.entrada
-              ).toLocaleString(
-                "pt-BR"
-              )
-            : "—";
+                const pausa =
+                    calcularPausaRegistro(
+                        registro
+                    );
+
+                const entrada =
+                    registro.entrada
+                        ? formatarHora(
+                            registro.entrada
+                        )
+                        : "--:--";
+
+                const saida =
+                    registro.saida
+                        ? formatarHora(
+                            registro.saida
+                        )
+                        : "—";
+
+                const data =
+                    registro.entrada
+                        ? new Date(
+                            registro.entrada
+                        ).toLocaleDateString(
+                            "pt-BR"
+                        )
+                        : "—";
+
+                return `
+                    <div class="history-card">
+
+                        <div class="history-card-top">
+
+                            <div class="history-avatar">
+                                ${
+                                    esc(
+                                        String(
+                                            usuario.nome ||
+                                            "U"
+                                        )
+                                    )
+                                    .charAt(0)
+                                    .toUpperCase()
+                                }
+                            </div>
+
+                            <div class="history-person">
+
+                                <strong>
+                                    ${esc(
+                                        usuario.nome ||
+                                        "Usuário"
+                                    )}
+                                </strong>
+
+                                <span>
+                                    Passaporte:
+                                    ${esc(
+                                        String(
+                                            usuario.passaporte
+                                        )
+                                    )}
+                                </span>
+
+                            </div>
+
+                            <div class="history-date">
+                                ${data}
+                            </div>
+
+                        </div>
+
+                        <div class="history-stats">
+
+                            <div>
+                                <small>Entrada</small>
+                                <strong>${entrada}</strong>
+                            </div>
+
+                            <div>
+                                <small>Saída</small>
+                                <strong>${saida}</strong>
+                            </div>
+
+                            <div>
+                                <small>Total</small>
+                                <strong>${formatarTempo(total)}</strong>
+                            </div>
+
+                            <div>
+                                <small>Pausa</small>
+                                <strong>${formatarTempo(pausa)}</strong>
+                            </div>
+
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        ).join("");
+
+    atualizarResumoHistorico(
+        registros
+    );
+}
 
 
-            const saida =
-            registro.saida
-            ? new Date(
-                registro.saida
-              ).toLocaleString(
-                "pt-BR"
-              )
-            : "Em aberto";
+function atualizarResumoHistorico(
+    registros
+){
+
+    const quantidade =
+        registros.length;
+
+    const total =
+        registros.reduce(
+            (
+                soma,
+                registro
+            ) =>
+                soma +
+                calcularTotalRegistro(
+                    registro
+                ),
+            0
+        );
+
+    const pausasTotal =
+        registros.reduce(
+            (
+                soma,
+                registro
+            ) =>
+                soma +
+                calcularPausaRegistro(
+                    registro
+                ),
+            0
+        );
+
+    const elQuantidade =
+        $("historicoQuantidade");
+
+    const elTotal =
+        $("historicoTotal");
+
+    const elPausa =
+        $("historicoPausa");
+
+    if(elQuantidade){
+        elQuantidade.textContent =
+            quantidade;
+    }
+
+    if(elTotal){
+        elTotal.textContent =
+            formatarTempo(
+                total
+            );
+    }
+
+    if(elPausa){
+        elPausa.textContent =
+            formatarTempo(
+                pausasTotal
+            );
+    }
+}
 
 
-            return `
-                <div class="linha">
+async function carregarHistorico(){
 
-                    <span>
-                        ${registro.equipes?.nome || "Equipe"}
-                        <br>
-                        ${entrada}
-                    </span>
+    const lista =
+        $("historicoLista");
+
+    if(lista){
+
+        lista.innerHTML = `
+            <div class="history-loading">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Carregando histórico...
+            </div>
+        `;
+    }
+
+    try{
+
+        historicoRegistros =
+            await buscarHistorico();
+
+        renderizarHistorico(
+            historicoRegistros
+        );
+
+    }catch(erro){
+
+        if(lista){
+
+            lista.innerHTML = `
+                <div class="history-empty error">
+                    <i class="fa-solid fa-circle-exclamation"></i>
 
                     <strong>
-                        ${saida}
+                        Não foi possível carregar
                     </strong>
 
+                    <span>
+                        Tente novamente em alguns segundos.
+                    </span>
                 </div>
             `;
         }
-    ).join("");
+
+        mostrarErro(
+            "Erro no histórico",
+            erro
+        );
+    }
+    }
+    /* =========================================================
+   EXPORTAÇÃO CSV
+========================================================= */
+
+function exportarHistoricoCSV(){
+
+    if(!historicoRegistros.length){
+
+        mostrarToast(
+            "Histórico vazio",
+            "Não existem registros para exportar.",
+            "warning"
+        );
+
+        return;
+    }
+
+    const cabecalho = [
+        "Nome",
+        "Passaporte",
+        "Data",
+        "Entrada",
+        "Saida",
+        "Total",
+        "Pausa",
+        "Status"
+    ];
+
+    const linhas =
+        historicoRegistros.map(
+            registro => {
+
+                const total =
+                    calcularTotalRegistro(
+                        registro
+                    );
+
+                const pausa =
+                    calcularPausaRegistro(
+                        registro
+                    );
+
+                return [
+                    usuario.nome || "",
+                    usuario.passaporte || "",
+                    registro.entrada
+                        ? new Date(
+                            registro.entrada
+                        ).toLocaleDateString(
+                            "pt-BR"
+                        )
+                        : "",
+                    registro.entrada
+                        ? formatarHora(
+                            registro.entrada
+                        )
+                        : "",
+                    registro.saida
+                        ? formatarHora(
+                            registro.saida
+                        )
+                        : "",
+                    formatarTempo(
+                        total
+                    ),
+                    formatarTempo(
+                        pausa
+                    ),
+                    registro.status || ""
+                ];
+            }
+        );
+
+    const csv =
+        [
+            cabecalho,
+            ...linhas
+        ]
+        .map(
+            linha =>
+                linha
+                    .map(
+                        valor =>
+                            `"${String(
+                                valor
+                            ).replace(
+                                /"/g,
+                                '""'
+                            )}"`
+                    )
+                    .join(";")
+        )
+        .join("\n");
+
+    const blob =
+        new Blob(
+            [
+                "\uFEFF" +
+                csv
+            ],
+            {
+                type:
+                    "text/csv;charset=utf-8;"
+            }
+        );
+
+    const url =
+        URL.createObjectURL(
+            blob
+        );
+
+    const link =
+        document.createElement(
+            "a"
+        );
+
+    link.href =
+        url;
+
+    link.download =
+        `historico-ponto-${usuario.passaporte}.csv`;
+
+    document.body.appendChild(
+        link
+    );
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(
+        url
+    );
+
+    mostrarToast(
+        "Exportação concluída",
+        "O histórico foi preparado em CSV.",
+        "success"
+    );
 }
 
 
-/* CLIQUES */
+/* =========================================================
+   BOTÕES
+========================================================= */
 
-btnIniciar.addEventListener(
-    "click",
-    iniciarJornada
-);
+$("btnIniciar")
+    .addEventListener(
+        "click",
+        iniciarJornada
+    );
 
-btnPausar.addEventListener(
-    "click",
-    pausarJornada
-);
 
-btnRetomar.addEventListener(
-    "click",
-    retomarJornada
-);
+$("btnPausar")
+    .addEventListener(
+        "click",
+        pausarJornada
+    );
 
-btnEncerrar.addEventListener(
-    "click",
-    encerrarJornada
-);
+
+$("btnRetomar")
+    .addEventListener(
+        "click",
+        retomarJornada
+    );
+
+
+$("btnEncerrar")
+    .addEventListener(
+        "click",
+        abrirConfirmacaoEncerramento
+    );
+
+
+$("btnCancelarEncerramento")
+    .addEventListener(
+        "click",
+        fecharConfirmacaoEncerramento
+    );
+
+
+$("btnConfirmarEncerramento")
+    .addEventListener(
+        "click",
+        async () => {
+
+            fecharConfirmacaoEncerramento();
+
+            await encerrarJornada();
+
+            mostrarEncerramentoSucesso();
+
+            iniciarCooldown();
+        }
+    );
+
+
+$("btnFecharEncerramento")
+    .addEventListener(
+        "click",
+        fecharEncerramentoSucesso
+    );
+
+
+$("btnHistorico")
+    .addEventListener(
+        "click",
+        abrirHistorico
+    );
+
+
+$("btnFecharHistorico")
+    .addEventListener(
+        "click",
+        fecharHistorico
+    );
+
+
+$("btnExportarHistorico")
+    .addEventListener(
+        "click",
+        exportarHistoricoCSV
+    );
 
 
 document
-.getElementById("cardStatus")
-.addEventListener(
-    "click",
-    () => {
-        carregarModais();
-        abrirModal("modalStatus");
-    }
-);
+    .querySelectorAll(
+        ".historico-filtro"
+    )
+    .forEach(
+        botao => {
+
+            botao.addEventListener(
+                "click",
+                () => {
+
+                    const dias =
+                        Number(
+                            botao.dataset.dias
+                        );
+
+                    definirPeriodoHistorico(
+                        dias
+                    );
+
+                    carregarHistorico();
+                }
+            );
+        }
+    );
+
+
+$("btnBuscarHistorico")
+    .addEventListener(
+        "click",
+        carregarHistorico
+    );
+
+
+$("btnFecharPausas")
+    ?.addEventListener(
+        "click",
+        () => {
+            fecharModal(
+                "modalPausas"
+            );
+        }
+    );
+
+
+$("btnFecharStatus")
+    ?.addEventListener(
+        "click",
+        () => {
+            fecharModal(
+                "modalStatus"
+            );
+        }
+    );
+
+
+$("btnFecharEntrada")
+    ?.addEventListener(
+        "click",
+        () => {
+            fecharModal(
+                "modalEntrada"
+            );
+        }
+    );
+
+
+$("btnFecharJornada")
+    ?.addEventListener(
+        "click",
+        () => {
+            fecharModal(
+                "modalJornada"
+            );
+        }
+    );
+
+
+$("btnFecharEquipe")
+    ?.addEventListener(
+        "click",
+        () => {
+            fecharModal(
+                "modalEquipe"
+            );
+        }
+    );
 
 
 document
-.getElementById("cardPausas")
-.addEventListener(
-    "click",
-    () => {
-        carregarModais();
-        abrirModal("modalPausas");
-    }
-);
+    .querySelectorAll(
+        ".modal-overlay"
+    )
+    .forEach(
+        modal => {
+
+            modal.addEventListener(
+                "click",
+                evento => {
+
+                    if(
+                        evento.target ===
+                        modal
+                    ){
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                        document.body.style.overflow =
+                            "";
+                    }
+                }
+            );
+        }
+    );
 
 
-document
-.getElementById("cardEntrada")
-.addEventListener(
-    "click",
-    () => {
-        carregarModais();
-        abrirModal("modalEntrada");
-    }
-);
-
-
-document
-.getElementById("cardJornada")
-.addEventListener(
-    "click",
-    () => {
-        carregarModais();
-        abrirModal("modalJornada");
-    }
-);
-
-
-document
-.getElementById("cardEquipe")
-.addEventListener(
-    "click",
-    () => {
-        carregarModais();
-        abrirModal("modalEquipe");
-    }
-);
-
-
-document
-.getElementById("cardHistorico")
-.addEventListener(
-    "click",
-    abrirHistorico
-);
-
-
-/* SAIR */
-
-document
-.getElementById("btnSair")
-.addEventListener(
-    "click",
-    () => {
+document.addEventListener(
+    "keydown",
+    evento => {
 
         if(
-            confirm(
-                "Deseja sair da sua conta?"
-            )
+            evento.key ===
+            "Escape"
         ){
 
-            sessionStorage.removeItem(
-                "italia_usuario"
-            );
+            fecharTodosModais();
+        }
+    }
+);
+
+
+/* =========================================================
+   NAVEGAÇÃO
+========================================================= */
+
+$("btnVoltar")
+    .addEventListener(
+        "click",
+        () => {
 
             window.location.href =
-            "login.html";
+                "painel.html";
+        }
+    );
+
+
+$("navInicio")
+    ?.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "painel.html";
+        }
+    );
+
+
+$("navPonto")
+    ?.addEventListener(
+        "click",
+        evento => {
+
+            evento.preventDefault();
+
+            window.scrollTo({
+                top:0,
+                behavior:"smooth"
+            });
+        }
+    );
+
+
+$("navEquipe")
+    ?.addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "equipe.html";
+        }
+    );
+
+
+$("navRegistros")
+    ?.addEventListener(
+        "click",
+        () => {
+
+            abrirHistorico();
+        }
+    );
+
+
+/* =========================================================
+   ABERTURA DOS MODAIS DE RESUMO
+========================================================= */
+
+$("cardStatus")
+    ?.addEventListener(
+        "click",
+        () => {
+            abrirModal(
+                "modalStatus"
+            );
+        }
+    );
+
+
+$("cardPausas")
+    ?.addEventListener(
+        "click",
+        () => {
+            abrirModal(
+                "modalPausas"
+            );
+        }
+    );
+
+
+$("cardJornada")
+    ?.addEventListener(
+        "click",
+        () => {
+            abrirModal(
+                "modalJornada"
+            );
+        }
+    );
+
+
+$("cardHistorico")
+    ?.addEventListener(
+        "click",
+        abrirHistorico
+    );
+
+
+$("cardEntrada")
+    ?.addEventListener(
+        "click",
+        () => {
+            abrirModal(
+                "modalEntrada"
+            );
+        }
+    );
+
+
+$("cardEquipe")
+    ?.addEventListener(
+        "click",
+        () => {
+            abrirModal(
+                "modalEquipe"
+            );
+        }
+    );
+
+
+/* =========================================================
+   INICIALIZAÇÃO
+========================================================= */
+
+async function iniciarSistema(){
+
+    try{
+
+        renderizarUsuario();
+
+        carregarCooldown();
+
+        const local =
+            carregarEstadoLocal();
+
+        if(local){
+
+            ponto =
+                local.ponto ||
+                null;
+
+            equipeAtual =
+                local.equipeAtual ||
+                null;
+
+            pausas =
+                Array.isArray(
+                    local.pausas
+                )
+                    ? local.pausas
+                    : [];
+
+            tempoAcumulado =
+                Number(
+                    local.tempoAcumulado ||
+                    0
+                );
+
+            tempoInicioAtivo =
+                local.tempoInicioAtivo ||
+                null;
+
+            if(
+                ponto &&
+                (
+                    ponto.status === "ativo" ||
+                    ponto.status === "pausado"
+                )
+            ){
+
+                atualizarInterface();
+
+                iniciarCronometro();
+
+            }else{
+
+                ponto = null;
+
+                equipeAtual = null;
+
+                pausas = [];
+
+                tempoAcumulado = 0;
+
+                tempoInicioAtivo = null;
+
+                atualizarInterface();
+            }
+        }else{
+
+            ponto = null;
+
+            equipeAtual = null;
+
+            pausas = [];
+
+            tempoAcumulado = 0;
+
+            tempoInicioAtivo = null;
+
+            atualizarInterface();
         }
 
+
+        if(
+            ponto &&
+            ponto.id
+        ){
+
+            try{
+
+                const {
+                    data,
+                    error
+                } =
+                    await supabaseClient
+                        .from("pontos")
+                        .select("*")
+                        .eq(
+                            "id",
+                            ponto.id
+                        )
+                        .limit(1);
+
+                if(
+                    !error &&
+                    data &&
+                    data.length
+                ){
+
+                    const remoto =
+                        data[0];
+
+                    if(
+                        remoto.status ===
+                            "ativo" ||
+                        remoto.status ===
+                            "pausado"
+                    ){
+
+                        ponto =
+                            {
+                                ...ponto,
+                                ...remoto
+                            };
+
+                        salvarEstado();
+
+                        atualizarInterface();
+                    }
+                }
+
+            }catch(erro){
+
+                console.warn(
+                    "Não foi possível sincronizar o ponto:",
+                    erro
+                );
+            }
+        }
+
+    }catch(erro){
+
+        mostrarErro(
+            "Erro ao carregar o ponto",
+            erro
+        );
+    }
+
+    atualizarCronometro();
+}
+
+
+/* =========================================================
+   PROTEÇÕES
+========================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+
+        try{
+            salvarEstado();
+        }catch(erro){
+            console.warn(
+                erro
+            );
+        }
     }
 );
 
 
-/* INICIALIZAÇÃO */
-
-async function iniciarPagina(){
-
-    ponto =
-    carregarLocal();
-
-
-    atualizarTela();
-
-    carregarModais();
-
-
-    /*
-      Se não houver ponto salvo localmente,
-      procura no banco uma jornada aberta.
-    */
-
-    if(!ponto){
-
-        const resposta =
-        await supabaseClient
-        .from("pontos")
-        .select(`
-            id,
-            passaporte,
-            nome,
-            equipe_id,
-            entrada,
-            saida,
-            status,
-            pausa_inicio,
-            pausa_fim,
-            equipes (
-                nome,
-                funcao,
-                area
-            )
-        `)
-        .eq(
-            "passaporte",
-            passaporte
-        )
-        .in(
-            "status",
-            [
-                "ativo",
-                "pausado"
-            ]
-        )
-        .order(
-            "entrada",
-            {
-                ascending:false
-            }
-        )
-        .limit(1);
-
+document.addEventListener(
+    "visibilitychange",
+    () => {
 
         if(
-            !resposta.error &&
-            resposta.data?.length
+            document.visibilityState ===
+            "visible"
         ){
 
-            const registro =
-            resposta.data[0];
-
-
-            ponto = {
-
-                id:registro.id,
-
-                passaporte:
-                registro.passaporte,
-
-                nome:
-                registro.nome,
-
-                equipe_id:
-                registro.equipe_id,
-
-                equipe_nome:
-                registro.equipes?.nome || "",
-
-                equipe_funcao:
-                registro.equipes?.funcao || "",
-
-                equipe_area:
-                registro.equipes?.area || "",
-
-                entrada:
-                registro.entrada,
-
-                status:
-                registro.status,
-
-                tempo_acumulado:0,
-
-                ultimo_inicio_ativo:
-                registro.status === "ativo"
-                ? registro.entrada
-                : null
-            };
-
-
-            salvarLocal();
-
-            atualizarTela();
-
-            carregarModais();
+            atualizarCronometro();
+            atualizarCooldown();
+            atualizarPausasModal();
         }
     }
+);
+
+
+/* =========================================================
+   INICIAR
+========================================================= */
+
+if(
+    document.readyState ===
+    "loading"
+){
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        iniciarSistema
+    );
+
+}else{
+
+    iniciarSistema();
 }
-
-
-iniciarPagina();
 
 </script>
 
