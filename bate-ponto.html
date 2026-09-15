@@ -31,12 +31,85 @@ button{font-family:inherit}
 .btn-principal{width:100%;border:0;border-radius:15px;padding:15px;color:#fff;background:var(--red);font-weight:800;font-size:13px;cursor:pointer}.btn-principal:disabled{opacity:.65;cursor:not-allowed}
 .grupo-botoes{display:none;gap:10px;margin-top:10px}.btn-acao{flex:1;border:0;border-radius:15px;padding:14px;color:#fff;font-weight:800;font-size:13px;cursor:pointer}.btn-pausar{background:var(--yellow);color:#000}.btn-encerrar{background:var(--red)}
 .aviso-cooldown{background:rgba(245,158,11,.15);border:1px solid var(--yellow);color:#ffdd66;padding:14px;border-radius:14px;margin-bottom:18px;text-align:center;display:none}
-.aviso-confirm{background:rgba(225,29,72,.15);border:1px solid var(--red);color:#ffb3b3;padding:16px;border-radius:14px;margin-bottom:18px;text-align:center;font-weight:500;line-height:1.5;display:none}
 .erro-box{background:rgba(225,29,72,.12);border:1px solid var(--red);border-radius:14px;padding:16px;margin-bottom:20px;color:#ffb3b3;display:none}
 .sucesso-box{background:rgba(34,197,94,.12);border:1px solid var(--green);border-radius:14px;padding:16px;margin-bottom:20px;color:#bbf7d0;display:none}
 #historico{display:none}.history-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:10px}.history-card div{font-size:12px;color:var(--muted);margin-top:5px}.loading{color:var(--muted);text-align:center;padding:40px 20px}
 .bottom-nav{position:fixed;z-index:30;left:12px;right:12px;bottom:12px;height:66px;border-radius:21px;background:rgba(18,21,27,.94);backdrop-filter:blur(16px);border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:5px}
 .nav-item{border:0;background:transparent;color:var(--muted);border-radius:16px;font-size:10px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;gap:4px}.nav-item i{font-size:16px}.nav-item.active{background:rgba(225,29,72,.1);color:var(--red2)}
+
+/* MODAL PERSONALIZADA */
+.modal-fundo {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.75);
+  backdrop-filter: blur(6px);
+  z-index: 999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.modal-card {
+  width: 100%;
+  max-width: 420px;
+  background: linear-gradient(145deg, #12151b, #0f0c12);
+  border: 1px solid rgba(225,29,72,.25);
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0,0,0,.4), 0 0 0 1px rgba(225,29,72,.08);
+}
+.modal-icone {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(225,29,72,.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.modal-icone i {
+  font-size: 22px;
+  color: #ff4d6d;
+}
+.modal-titulo {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #fff;
+}
+.modal-texto {
+  color: #b8bcc6;
+  font-size: 15px;
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+.modal-botoes {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+.modal-btn {
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform .2s, opacity .2s;
+}
+.modal-btn:active { transform: scale(.97); }
+.modal-btn-secundario {
+  background: rgba(255,255,255,.08);
+  color: #e2e2e2;
+  border: 1px solid rgba(255,255,255,.1);
+}
+.modal-btn-principal {
+  background: linear-gradient(135deg, #e11d48, #9f1239);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(225,29,72,.25);
+}
 </style>
 </head>
 <body>
@@ -51,7 +124,6 @@ button{font-family:inherit}
 
 <main class="container">
 <div id="caixaMensagem" class="erro-box"></div>
-<div id="avisoConfirm" class="aviso-confirm">⚠️ Ao encerrar, deverá aguardar 1 minuto para iniciar uma nova jornada.</div>
 <div id="avisoCooldown" class="aviso-cooldown">🔒 Cooldown: <span id="contadorCooldown">60</span>s — Aguarde para iniciar nova jornada</div>
 
 <section class="title">
@@ -86,7 +158,7 @@ button{font-family:inherit}
 
 <div class="grupo-botoes" id="grupoBotoes">
 <button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()"><i class="fa-solid fa-pause"></i> Pausar</button>
-<button class="btn-acao btn-encerrar" onclick="encerrarJornada()"><i class="fa-solid fa-stop"></i> Encerrar</button>
+<button class="btn-acao btn-encerrar" onclick="abrirModal()"><i class="fa-solid fa-stop"></i> Encerrar</button>
 </div>
 </div>
 </section>
@@ -94,12 +166,31 @@ button{font-family:inherit}
 <section id="historico"><div class="loading">Carregando histórico...</div></section>
 </main>
 
+<!-- MODAL CONFIRMAÇÃO -->
+<div id="modalConfirmacao" class="modal-fundo">
+  <div class="modal-card">
+    <div class="modal-icone">
+      <i class="fa-solid fa-triangle-exclamation"></i>
+    </div>
+    <h3 class="modal-titulo">Encerrar Jornada</h3>
+    <p class="modal-texto">
+      Ao encerrar, deverá aguardar <strong>1 minuto</strong> para iniciar uma nova jornada.<br><br>
+      Deseja realmente encerrar agora?
+    </p>
+    <div class="modal-botoes">
+      <button class="modal-btn modal-btn-secundario" onclick="fecharModal()">Cancelar</button>
+      <button class="modal-btn modal-btn-principal" onclick="confirmarEncerramento()">Encerrar</button>
+    </div>
+  </div>
+</div>
+
 <nav class="bottom-nav">
 <a class="nav-item" href="painel.html"><i class="fa-solid fa-house"></i>Início</a>
 <a class="nav-item active"><i class="fa-solid fa-clock"></i>Ponto</a>
 <a class="nav-item" href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
 <a class="nav-item" href="registros.html"><i class="fa-solid fa-folder-open"></i>Registros</a>
-                                                             </nav>
+</nav>
+
 <script>
 const supabaseClient = window.supabase.createClient(
   "https://vclwmikzmnuqfdxobtik.supabase.co",
@@ -127,9 +218,9 @@ const el = {
   btnPausar: document.getElementById("btnPausar"),
   historico: document.getElementById("historico"),
   caixaMensagem: document.getElementById("caixaMensagem"),
-  avisoConfirm: document.getElementById("avisoConfirm"),
   avisoCooldown: document.getElementById("avisoCooldown"),
-  contadorCooldown: document.getElementById("contadorCooldown")
+  contadorCooldown: document.getElementById("contadorCooldown"),
+  modal: document.getElementById("modalConfirmacao")
 };
 
 let ponto = null, intervalo = null, pausado = false;
@@ -168,6 +259,13 @@ function mostrarAba(n,b){
   b.classList.add("active");
   if(n==="historico") carregarHistorico();
 }
+
+// --- MODAL ---
+function abrirModal(){ el.modal.style.display="flex"; }
+function fecharModal(){ el.modal.style.display="none"; }
+document.getElementById("modalConfirmacao").addEventListener("click", e=>{
+  if(e.target.id === "modalConfirmacao") fecharModal();
+});
 
 // --- COOLDOWN ---
 function verificarCooldownSalvo(){
@@ -287,23 +385,23 @@ async function pausarContinuar(){
   } catch(e){ mostrarErro("Erro", e.message); }
 }
 
-async function encerrarJornada(){
-  if(!ponto) return;
-  // Mostra aviso obrigatório antes
-  if(!confirm("⚠️ Ao encerrar, deverá aguardar 1 minuto para iniciar uma nova jornada.\n\nDeseja realmente encerrar?")) return;
+async function confirmarEncerramento(){
+  fecharModal();
   limparMsg();
   try{
     const agora = new Date().toISOString();
     await supabaseClient.from("pontos").update({saida: agora, status:"encerrado"}).eq("id",ponto.id);
     await supabaseClient.from("equipe_membros").update({status:"fora"}).eq("passaporte", usuario.passaporte).eq("equipe_id", ponto.equipe_id);
+    
     el.marcSaida.textContent = hora();
     el.status.textContent = "Offline"; el.status.style.color = "var(--muted)";
     el.btnIniciar.style.display = "block"; el.grupo.style.display = "none";
     clearInterval(intervalo); el.timer.textContent = "00:00:00";
     el.equipe.textContent = "--";
-    // INICIA COOLDOWN
+    
     iniciarCooldown(60);
-    mostrarSucesso("Jornada Encerrada", `Encerrado às ${hora()}\nAguarde 1 minuto para reiniciar.`);
+    mostrarSucesso("✅ Jornada Encerrada", `Encerrado às ${hora()}\nAguarde 1 minuto para reiniciar.`);
+    
     ponto = null; inicio = null; pausaInicio = null; tempoPausa = 0;
   } catch(e){ mostrarErro("Erro ao encerrar", e.message); }
 }
@@ -330,5 +428,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   await restaurarEstado();
 });
 </script>
+
 </body>
-</html>
+  </html>
+  
