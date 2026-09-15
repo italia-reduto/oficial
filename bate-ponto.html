@@ -28,15 +28,11 @@ button{font-family:inherit}
 .timer{font-size:clamp(42px,12vw,70px);font-weight:800;letter-spacing:-2px;margin:10px 0 18px;font-variant-numeric:tabular-nums}
 .markers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
 .marker{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 5px}.marker span{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}.marker strong{display:block;font-size:11px}
-.btn-principal{width:100%;border:0;border-radius:15px;padding:15px;color:#fff;background:var(--red);font-weight:800;font-size:13px;cursor:pointer}.btn-principal:disabled{opacity:.7}
+.btn-principal{width:100%;border:0;border-radius:15px;padding:15px;color:#fff;background:var(--red);font-weight:800;font-size:13px;cursor:pointer}.btn-principal:disabled{opacity:.65;cursor:not-allowed}
 .grupo-botoes{display:none;gap:10px;margin-top:10px}.btn-acao{flex:1;border:0;border-radius:15px;padding:14px;color:#fff;font-weight:800;font-size:13px;cursor:pointer}.btn-pausar{background:var(--yellow);color:#000}.btn-encerrar{background:var(--red)}
-.equipe-card{display:none;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:17px;margin-top:12px}
-.equipe-topo{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}.equipe-nome{font-size:15px;font-weight:800}.equipe-funcao,.equipe-area{font-size:11px;color:var(--muted);margin-top:4px}
-.equipe-membros{border-top:1px solid var(--border);padding-top:12px}.membro{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.04)}.membro:last-child{border:0}
-.membro-nome{font-size:12px;font-weight:700}.membro-pass{font-size:10px;color:var(--muted);margin-top:3px}.membro-status{font-size:10px;font-weight:700;white-space:nowrap}
+.aviso-cooldown{background:rgba(245,158,11,.15);border:1px solid var(--yellow);color:#ffdd66;padding:14px;border-radius:14px;margin-bottom:18px;text-align:center;display:none}
+.aviso-confirm{background:rgba(225,29,72,.15);border:1px solid var(--red);color:#ffb3b3;padding:16px;border-radius:14px;margin-bottom:18px;text-align:center;font-weight:500;line-height:1.5;display:none}
 .erro-box{background:rgba(225,29,72,.12);border:1px solid var(--red);border-radius:14px;padding:16px;margin-bottom:20px;color:#ffb3b3;display:none}
-.erro-titulo{font-weight:700;margin-bottom:8px;color:#ff8a8a}
-.erro-detalhe{font-size:13px;line-height:1.5}
 .sucesso-box{background:rgba(34,197,94,.12);border:1px solid var(--green);border-radius:14px;padding:16px;margin-bottom:20px;color:#bbf7d0;display:none}
 #historico{display:none}.history-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:10px}.history-card div{font-size:12px;color:var(--muted);margin-top:5px}.loading{color:var(--muted);text-align:center;padding:40px 20px}
 .bottom-nav{position:fixed;z-index:30;left:12px;right:12px;bottom:12px;height:66px;border-radius:21px;background:rgba(18,21,27,.94);backdrop-filter:blur(16px);border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:5px}
@@ -44,7 +40,8 @@ button{font-family:inherit}
 </style>
 </head>
 <body>
-  <header class="topbar">
+
+<header class="topbar">
 <div class="avatar" id="avatar">?</div>
 <div class="topbar-info">
 <div class="topbar-nome" id="nomeUsuario">Carregando...</div>
@@ -54,6 +51,8 @@ button{font-family:inherit}
 
 <main class="container">
 <div id="caixaMensagem" class="erro-box"></div>
+<div id="avisoConfirm" class="aviso-confirm">⚠️ Ao encerrar, deverá aguardar 1 minuto para iniciar uma nova jornada.</div>
+<div id="avisoCooldown" class="aviso-cooldown">🔒 Cooldown: <span id="contadorCooldown">60</span>s — Aguarde para iniciar nova jornada</div>
 
 <section class="title">
 <h1>Meu Ponto</h1>
@@ -66,6 +65,7 @@ button{font-family:inherit}
 <div class="stat"><div class="stat-label">Entrada</div><div class="stat-value" id="entradaTexto">--:--</div></div>
 <div class="stat"><div class="stat-label">Equipe</div><div class="stat-value" id="equipeTexto">--</div></div>
 </section>
+
 <div class="tabs">
 <button class="tab active" onclick="mostrarAba('jornada',this)">Minha Jornada</button>
 <button class="tab" onclick="mostrarAba('historico',this)">Meu Histórico</button>
@@ -89,18 +89,6 @@ button{font-family:inherit}
 <button class="btn-acao btn-encerrar" onclick="encerrarJornada()"><i class="fa-solid fa-stop"></i> Encerrar</button>
 </div>
 </div>
-
-<div class="equipe-card" id="equipeCard">
-<div class="equipe-topo">
-<div>
-<div class="equipe-nome" id="equipeNome">--</div>
-<div class="equipe-funcao" id="equipeFuncao">--</div>
-<div class="equipe-area" id="equipeArea">--</div>
-</div>
-<i class="fa-solid fa-users" style="color:var(--blue)"></i>
-</div>
-<div class="equipe-membros" id="equipeMembros"><div class="loading" style="padding:15px">Carregando membros...</div></div>
-</div>
 </section>
 
 <section id="historico"><div class="loading">Carregando histórico...</div></section>
@@ -111,183 +99,235 @@ button{font-family:inherit}
 <a class="nav-item active"><i class="fa-solid fa-clock"></i>Ponto</a>
 <a class="nav-item" href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
 <a class="nav-item" href="registros.html"><i class="fa-solid fa-folder-open"></i>Registros</a>
-</nav>
+                                                             </nav>
 <script>
-const supabaseClient=window.supabase.createClient("https://vclwmikzmnuqfdxobtik.supabase.co","sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF");
-const sessao=sessionStorage.getItem("italia_usuario");
-if(!sessao){location.href="login.html";throw Error("Usuário não autenticado.");}
-const usuario=JSON.parse(sessao);
+const supabaseClient = window.supabase.createClient(
+  "https://vclwmikzmnuqfdxobtik.supabase.co",
+  "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
+);
 
-const el={
-nome:document.getElementById("nomeUsuario"),pass:document.getElementById("passaporteUsuario"),
-avatar:document.getElementById("avatar"),status:document.getElementById("statusTexto"),
-pausas:document.getElementById("pausasTexto"),entrada:document.getElementById("entradaTexto"),
-equipe:document.getElementById("equipeTexto"),timer:document.getElementById("timer"),
-marcEntrada:document.getElementById("marcadorEntrada"),marcPausa:document.getElementById("marcadorPausa"),
-marcSaida:document.getElementById("marcadorSaida"),btnIniciar:document.getElementById("btnIniciar"),
-grupo:document.getElementById("grupoBotoes"),btnPausar:document.getElementById("btnPausar"),
-historico:document.getElementById("historico"),equipeCard:document.getElementById("equipeCard"),
-equipeNome:document.getElementById("equipeNome"),equipeFuncao:document.getElementById("equipeFuncao"),
-equipeArea:document.getElementById("equipeArea"),equipeMembros:document.getElementById("equipeMembros"),
-caixaMensagem:document.getElementById("caixaMensagem")
+const sessao = sessionStorage.getItem("italia_usuario");
+if (!sessao) { location.href = "login.html"; throw new Error("Sem sessão"); }
+const usuario = JSON.parse(sessao);
+
+const el = {
+  nome: document.getElementById("nomeUsuario"),
+  pass: document.getElementById("passaporteUsuario"),
+  avatar: document.getElementById("avatar"),
+  status: document.getElementById("statusTexto"),
+  pausas: document.getElementById("pausasTexto"),
+  entrada: document.getElementById("entradaTexto"),
+  equipe: document.getElementById("equipeTexto"),
+  timer: document.getElementById("timer"),
+  marcEntrada: document.getElementById("marcadorEntrada"),
+  marcPausa: document.getElementById("marcadorPausa"),
+  marcSaida: document.getElementById("marcadorSaida"),
+  btnIniciar: document.getElementById("btnIniciar"),
+  grupo: document.getElementById("grupoBotoes"),
+  btnPausar: document.getElementById("btnPausar"),
+  historico: document.getElementById("historico"),
+  caixaMensagem: document.getElementById("caixaMensagem"),
+  avisoConfirm: document.getElementById("avisoConfirm"),
+  avisoCooldown: document.getElementById("avisoCooldown"),
+  contadorCooldown: document.getElementById("contadorCooldown")
 };
 
-let ponto=null,intervalo=null,pausado=false,inicio=null,pausaInicio=null,tempoPausa=0,pausas=0,equipeAtual=null;
+let ponto = null, intervalo = null, pausado = false;
+let inicio = null, tempoPausa = 0, pausaInicio = null;
+let cooldownAtivo = false, timerCooldown = null;
 
-el.nome.textContent=usuario.nome||"Usuário";
-el.pass.textContent=`Passaporte: ${usuario.passaporte} • Ponto`;
-el.avatar.textContent=(usuario.nome||"?")[0].toUpperCase();
+el.nome.textContent = usuario.nome || "Usuário";
+el.pass.textContent = `Passaporte: ${usuario.passaporte} • Ponto`;
+el.avatar.textContent = (usuario.nome || "?")[0].toUpperCase();
 
-function mostrarErro(titulo, mensagem, codigo=""){
-    el.caixaMensagem.className="erro-box";
-    el.caixaMensagem.style.display="block";
-    el.caixaMensagem.innerHTML=`
-        <div class="erro-titulo"><i class="fa-solid fa-triangle-exclamation"></i> ${titulo}</div>
-        <div class="erro-detalhe">
-            ${mensagem.replaceAll("\n","<br>")}
-            ${codigo?`<br><br><strong>Código:</strong> ${codigo}`:""}
-        </div>
-    `;
-    console.error(`[ERRO] ${titulo}: ${mensagem}`, codigo);
+function mostrarErro(titulo, msg, cod=""){
+  el.caixaMensagem.className = "erro-box";
+  el.caixaMensagem.style.display = "block";
+  el.caixaMensagem.innerHTML = `<strong>${titulo}</strong><br>${msg}${cod?`<br><small>Código: ${cod}</small>`:""}`;
+  console.error(titulo, msg);
+}
+function mostrarSucesso(titulo, msg){
+  el.caixaMensagem.className = "sucesso-box";
+  el.caixaMensagem.style.display = "block";
+  el.caixaMensagem.innerHTML = `<strong>${titulo}</strong><br>${msg}`;
+}
+function limparMsg(){ el.caixaMensagem.style.display="none"; }
+function hora(d=new Date()){ return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
+function tempoFormat(seg){
+  let h=Math.floor(seg/3600),m=Math.floor((seg%3600)/60),s=seg%60;
+  return [h,m,s].map(v=>String(v).padStart(2,"0")).join(":");
+}
+function atualizarTimer(){
+  if(!inicio || pausado) return;
+  el.timer.textContent = tempoFormat(Math.floor((Date.now()-inicio)/1000)-tempoPausa);
+}
+function mostrarAba(n,b){
+  document.getElementById("jornada").style.display = n==="jornada"?"block":"none";
+  el.historico.style.display = n==="historico"?"block":"none";
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  b.classList.add("active");
+  if(n==="historico") carregarHistorico();
 }
 
-function mostrarSucesso(titulo, mensagem){
-    el.caixaMensagem.className="sucesso-box";
-    el.caixaMensagem.style.display="block";
-    el.caixaMensagem.innerHTML=`
-        <div class="erro-titulo" style="color:#86efac"><i class="fa-solid fa-check-circle"></i> ${titulo}</div>
-        <div class="erro-detalhe">${mensagem.replaceAll("\n","<br>")}</div>
-    `;
+// --- COOLDOWN ---
+function verificarCooldownSalvo(){
+  const fim = localStorage.getItem("cooldownFimPonto");
+  if(!fim) return false;
+  const restante = Math.ceil((parseInt(fim)-Date.now())/1000);
+  if(restante <= 0){ localStorage.removeItem("cooldownFimPonto"); return false; }
+  iniciarCooldown(restante);
+  return true;
+}
+function iniciarCooldown(seg=60){
+  cooldownAtivo = true;
+  el.btnIniciar.disabled = true;
+  el.avisoCooldown.style.display = "block";
+  el.contadorCooldown.textContent = seg;
+  localStorage.setItem("cooldownFimPonto", String(Date.now()+seg*1000));
+  if(timerCooldown) clearInterval(timerCooldown);
+  timerCooldown = setInterval(()=>{
+    let atual = parseInt(el.contadorCooldown.textContent)-1;
+    if(atual <= 0){
+      clearInterval(timerCooldown);
+      cooldownAtivo = false;
+      el.btnIniciar.disabled = false;
+      el.avisoCooldown.style.display = "none";
+      localStorage.removeItem("cooldownFimPonto");
+    } else el.contadorCooldown.textContent = atual;
+  }, 1000);
 }
 
-function limparMensagem(){
-    el.caixaMensagem.style.display="none";
-    el.caixaMensagem.innerHTML="";
+// --- BANCO ---
+async function jornadaAtiva(){
+  const {data,error} = await supabaseClient.from("pontos")
+    .select("*, equipes(*)")
+    .eq("passaporte", usuario.passaporte)
+    .in("status", ["ativo","pausado"])
+    .order("entrada",{ascending:false})
+    .limit(1);
+  if(error) return null;
+  return data?.[0] || null;
 }
 
-function hora(d=new Date()){return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"})}
-function tempo(s){let h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=Math.floor(s%60);return[h,m,x].map(v=>String(v).padStart(2,"0")).join(":")}
-function esc(v){return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;")}
-function atualizarTimer(){if(!inicio||pausado)return;el.timer.textContent=tempo(Math.max(0,Math.floor((Date.now()-inicio)/1000)-tempoPausa))}
-function mostrarAba(n,b){document.getElementById("jornada").style.display=n==="jornada"?"block":"none";el.historico.style.display=n==="historico"?"block":"none";document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");if(n==="historico")carregarHistorico()}
-
-async function carregarJornadaAtiva(){
-    try{
-        const {data,error}=await supabaseClient.from("pontos")
-            .select("*")
-            .eq("passaporte",usuario.passaporte)
-            .in("status",["ativo","pausado"])
-            .order("entrada",{ascending:false})
-            .limit(1);
-        if(error) throw error;
-        return data?.length?data[0]:null;
-    }catch(e){
-        console.warn("Não foi possível verificar jornada:",e);
-        return null;
-    }
+async function restaurarEstado(){
+  const reg = await jornadaAtiva();
+  if(!reg) return;
+  ponto = reg;
+  inicio = new Date(reg.entrada).getTime();
+  pausado = reg.status === "pausado";
+  el.entrada.textContent = hora(new Date(reg.entrada));
+  el.marcEntrada.textContent = hora(new Date(reg.entrada));
+  el.equipe.textContent = reg.equipes?.nome || "--";
+  el.status.textContent = pausado ? "Pausado" : "Ativo";
+  el.status.style.color = pausado ? "var(--yellow)" : "var(--green)";
+  el.btnPausar.innerHTML = pausado ? `<i class="fa-solid fa-play"></i> Continuar` : `<i class="fa-solid fa-pause"></i> Pausar`;
+  el.btnIniciar.style.display = "none";
+  el.grupo.style.display = "flex";
+  intervalo = setInterval(atualizarTimer, 1000);
+  atualizarTimer();
 }
 
-async function aplicarEstadoJornada(registro){
-    if(!registro) return;
-    ponto=registro;
-    inicio=new Date(registro.entrada).getTime();
-    pausado=(registro.status==="pausado");
-    pausas=registro.pausas||0;
-    if(registro.pausa_inicio){
-        const pi=new Date(registro.pausa_inicio);
-        tempoPausa=registro.pausa_fim?Math.floor((new Date(registro.pausa_fim)-pi)/1000):0;
-    }
-    el.entrada.textContent=hora(new Date(registro.entrada));
-    el.marcEntrada.textContent=hora(new Date(registro.entrada));
-    el.pausas.textContent=pausas;
-    if(registro.status==="ativo"){
-        el.status.textContent="Ativo";el.status.style.color="var(--green)";
-        el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
-    }else{
-        el.status.textContent="Pausado";el.status.style.color="var(--yellow)";
-        el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
-    }
-    el.btnIniciar.style.display="none";el.grupo.style.display="flex";
-    if(registro.equipe_id) await carregarEquipe(registro.equipe_id);
-    intervalo=setInterval(atualizarTimer,1000);atualizarTimer();
-}
-
-async function buscarEquipeDisponivel(){
-    try{
-        const {data:e,error:a}=await supabaseClient.from("equipes").select("*").eq("ativa",true);
-        if(a) throw a;
-        const {data:m,error:b}=await supabaseClient.from("equipe_membros").select("id,equipe_id").neq("status","fora");
-        if(b) throw b;
-        const c=e.map(x=>({...x,quantidade:(m||[]).filter(y=>y.equipe_id===x.id).length}))
-        .sort((a,b)=>a.quantidade-b.quantidade).filter(x=>!x.limite||x.quantidade<x.limite);
-        if(!c.length) throw new Error("Sem vagas em equipes.");
-        return c[0];
-    }catch(e){throw e}
-}
-
-async function carregarEquipe(id){
-    try{
-        const {data:e,error:a}=await supabaseClient.from("equipes").select("*").eq("id",id).single();
-        if(a) throw a;
-        el.equipe.textContent=e.nome;el.equipeNome.textContent=e.nome;
-        el.equipeFuncao.textContent=e.funcao||"--";el.equipeArea.textContent=e.area||"--";
-        el.equipeCard.style.display="block";
-        const {data:m}=await supabaseClient.from("equipe_membros").select("nome,passaporte,status").eq("equipe_id",id).neq("status","fora");
-        el.equipeMembros.innerHTML=m?.map(x=>`<div class="membro"><div><div class="membro-nome">${esc(x.nome)}</div><div class="membro-pass">${esc(x.passaporte)}</div></div></div>`).join("")||"<div class='loading'>Sem membros</div>";
-    }catch(e){console.error(e)}
+async function buscarEquipe(){
+  const {data:eqs} = await supabaseClient.from("equipes").select("*").eq("ativa",true);
+  const {data:memb} = await supabaseClient.from("equipe_membros").select("equipe_id");
+  const eq = eqs.map(e=>({...e,qtd:memb?.filter(x=>x.equipe_id===e.id).length||0}))
+    .sort((a,b)=>a.qtd-b.qtd)[0];
+  return eq;
 }
 
 async function iniciarJornada(){
-    limparMensagem();el.btnIniciar.disabled=true;el.btnIniciar.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Analisando...';
-    try{
-        const jaExiste=await carregarJornadaAtiva();
-        if(jaExiste) throw new Error(`Jornada já ativa!\nEntrada: ${new Date(jaExiste.entrada).toLocaleString("pt-BR")}`);
-        const eq=await buscarEquipeDisponivel(),agora=new Date().toISOString();
-        const {data:pt}=await supabaseClient.from("pontos").insert({passaporte:usuario.passaporte,nome:usuario.nome,entrada:agora,status:"ativo",equipe_id:eq.id}).select().single();
-        await supabaseClient.from("equipe_membros").insert({equipe_id:eq.id,passaporte:usuario.passaporte,nome:usuario.nome,status:"ativo"});
-        ponto=pt;inicio=Date.now();el.btnIniciar.style.display="none";el.grupo.style.display="flex";
-        el.entrada.textContent=hora();el.marcEntrada.textContent=hora();
-        el.status.textContent="Ativo";el.status.style.color="var(--green)";
-        await carregarEquipe(eq.id);intervalo=setInterval(atualizarTimer,1000);
-        mostrarSucesso("Jornada Iniciada",`Equipe: ${eq.nome}`);
-    }catch(e){mostrarErro("Erro",e.message);}
-    el.btnIniciar.disabled=false;el.btnIniciar.innerHTML='<i class="fa-solid fa-play"></i> Iniciar Jornada';
+  if(cooldownAtivo){ mostrarErro("Bloqueado","Aguarde o cooldown"); return; }
+  limparMsg(); el.btnIniciar.disabled = true;
+  el.btnIniciar.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;
+  try{
+    const ja = await jornadaAtiva();
+    if(ja) throw new Error(`Jornada já ativa!\nEntrada: ${hora(new Date(ja.entrada))}`);
+    const eq = await buscarEquipe();
+    if(!eq) throw new Error("Sem equipes disponíveis");
+    const agora = new Date().toISOString();
+    const {data:pt, error:er1} = await supabaseClient.from("pontos").insert({
+      passaporte: usuario.passaporte, nome: usuario.nome, entrada: agora,
+      status: "ativo", equipe_id: eq.id
+    }).select().single();
+    if(er1) throw er1;
+    await supabaseClient.from("equipe_membros").insert({
+      equipe_id: eq.id, passaporte: usuario.passaporte, nome: usuario.nome, status: "ativo"
+    });
+    ponto = pt; inicio = Date.now(); pausado = false;
+    el.entrada.textContent = hora(); el.marcEntrada.textContent = hora();
+    el.equipe.textContent = eq.nome;
+    el.status.textContent = "Ativo"; el.status.style.color = "var(--green)";
+    el.btnIniciar.style.display = "none"; el.grupo.style.display = "flex";
+    intervalo = setInterval(atualizarTimer,1000);
+    mostrarSucesso("Jornada Iniciada", `Equipe: ${eq.nome}`);
+  } catch(e){ mostrarErro("Erro ao iniciar", e.message); }
+  el.btnIniciar.disabled = false;
+  el.btnIniciar.innerHTML = `<i class="fa-solid fa-play"></i> Iniciar Jornada`;
 }
 
 async function pausarContinuar(){
-    if(!ponto) return;
-    const agora=new Date().toISOString();
+  if(!ponto) return;
+  limparMsg();
+  try{
     if(!pausado){
-        await supabaseClient.from("pontos").update({pausa_inicio:agora,status:"pausado"}).eq("id",ponto.id);
-        pausado=true;pausas++;el.status.textContent="Pausado";el.btnPausar.innerHTML='<i class="fa-solid fa-play"></i> Continuar';
-        el.marcPausa.textContent=hora();mostrarSucesso("Pausado","");
-    }else{
-        await supabaseClient.from("pontos").update({pausa_fim:agora,status:"ativo"}).eq("id",ponto.id);
-        pausado=false;el.status.textContent="Ativo";el.btnPausar.innerHTML='<i class="fa-solid fa-pause"></i> Pausar';
-        mostrarSucesso("Retomado","");
+      await supabaseClient.from("pontos").update({pausa_inicio: new Date().toISOString(), status:"pausado"}).eq("id",ponto.id);
+      pausado = true; pausaInicio = Date.now();
+      el.status.textContent = "Pausado"; el.status.style.color = "var(--yellow)";
+      el.btnPausar.innerHTML = `<i class="fa-solid fa-play"></i> Continuar`;
+      el.marcPausa.textContent = hora();
+      mostrarSucesso("Pausado", "Jornada pausada");
+    } else {
+      tempoPausa += Math.floor((Date.now()-pausaInicio)/1000);
+      await supabaseClient.from("pontos").update({status:"ativo"}).eq("id",ponto.id);
+      pausado = false;
+      el.status.textContent = "Ativo"; el.status.style.color = "var(--green)";
+      el.btnPausar.innerHTML = `<i class="fa-solid fa-pause"></i> Pausar`;
+      mostrarSucesso("Retomado", "Jornada continuada");
     }
+  } catch(e){ mostrarErro("Erro", e.message); }
 }
 
 async function encerrarJornada(){
-    if(!ponto||!confirm("Encerrar?")) return;
-    const agora=new Date().toISOString();
-    await supabaseClient.from("pontos").update({saida:agora,status:"encerrado"}).eq("id",ponto.id);
-    el.marcSaida.textContent=hora();el.status.textContent="Offline";
-    el.btnIniciar.style.display="block";el.grupo.style.display="none";
-    clearInterval(intervalo);el.timer.textContent="00:00:00";
-    el.equipeCard.style.display="none";ponto=null;
-    mostrarSucesso("Encerrado",`${hora()}`);
+  if(!ponto) return;
+  // Mostra aviso obrigatório antes
+  if(!confirm("⚠️ Ao encerrar, deverá aguardar 1 minuto para iniciar uma nova jornada.\n\nDeseja realmente encerrar?")) return;
+  limparMsg();
+  try{
+    const agora = new Date().toISOString();
+    await supabaseClient.from("pontos").update({saida: agora, status:"encerrado"}).eq("id",ponto.id);
+    await supabaseClient.from("equipe_membros").update({status:"fora"}).eq("passaporte", usuario.passaporte).eq("equipe_id", ponto.equipe_id);
+    el.marcSaida.textContent = hora();
+    el.status.textContent = "Offline"; el.status.style.color = "var(--muted)";
+    el.btnIniciar.style.display = "block"; el.grupo.style.display = "none";
+    clearInterval(intervalo); el.timer.textContent = "00:00:00";
+    el.equipe.textContent = "--";
+    // INICIA COOLDOWN
+    iniciarCooldown(60);
+    mostrarSucesso("Jornada Encerrada", `Encerrado às ${hora()}\nAguarde 1 minuto para reiniciar.`);
+    ponto = null; inicio = null; pausaInicio = null; tempoPausa = 0;
+  } catch(e){ mostrarErro("Erro ao encerrar", e.message); }
 }
 
 async function carregarHistorico(){
-    try{
-        const {data}=await supabaseClient.from("pontos").select("entrada,saida,status").eq("passaporte",usuario.passaporte).order("entrada",{ascending:false});
-        el.historico.innerHTML=data?.map(x=>`<div class="history-card"><strong>${x.status}</strong><div>${x.entrada?new Date(x.entrada).toLocaleString():""}</div></div>`).join("")||"<div class='loading'>Vazio</div>";
-    }catch(e){el.historico.innerHTML="<div class='loading'>Erro</div>"}
+  try{
+    const {data,error} = await supabaseClient.from("pontos")
+      .select("entrada,saida,status,equipes(nome)")
+      .eq("passaporte", usuario.passaporte)
+      .order("entrada",{ascending:false});
+    if(error) throw error;
+    el.historico.innerHTML = data.length ? data.map(x=>`
+      <div class="history-card">
+        <strong>${x.status}</strong> — ${x.equipes?.nome||"Sem equipe"}
+        <div>Entrada: ${new Date(x.entrada).toLocaleString("pt-BR")}</div>
+        <div>Saída: ${x.saida?new Date(x.saida).toLocaleString("pt-BR"):"--"}</div>
+      </div>
+    `).join("") : "<div class='loading'>Nenhum registro</div>";
+  } catch(e){ el.historico.innerHTML="<div class='loading'>Erro</div>"; }
 }
 
-document.addEventListener("DOMContentLoaded",async ()=>{
-    const j=await carregarJornadaAtiva();if(j) aplicarEstadoJornada(j);
+document.addEventListener("DOMContentLoaded", async ()=>{
+  verificarCooldownSalvo();
+  await restaurarEstado();
 });
 </script>
 </body>
