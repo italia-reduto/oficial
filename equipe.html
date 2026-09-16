@@ -5,18 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Minha Equipe</title>
 
-    <!-- Fontes e Ícones -->
+    <!-- Recursos Externos -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <!-- Estilos CSS (Parte 2) -->
     <style>
-/* === COLOQUE A PARTE 2 (CSS) AQUI === */
-    </style>
-</head>
-  * {
+        * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
@@ -575,8 +573,10 @@ a {
     .logout span {
         display: none;
     }
-}
-  <body>
+        }
+            </style>
+</head>
+<body>
 
 <!-- Cabeçalho -->
 <header class="header">
@@ -646,11 +646,8 @@ a {
     </div>
 </nav>
 
-<!-- Conexão Supabase e Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- JavaScript -->
 <script>
-/* === COLOQUE A PARTE 4 (JAVASCRIPT) AQUI === */
-</script>
 const supabaseClient = window.supabase.createClient(
     "https://vclwmikzmnuqfdxobtik.supabase.co",
     "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF"
@@ -956,7 +953,7 @@ async function inicializar() {
 }
 
 document.addEventListener("DOMContentLoaded", inicializar);
-  
+</script>
+
 </body>
 </html>
-
