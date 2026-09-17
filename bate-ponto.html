@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // ========== CONEXÃO SUPABASE ==========
         const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -211,7 +212,7 @@
             color: #8b929f; font-size: 14px;
         }
 
-        /* ✅ NOTIFICAÇÕES CORRIGIDAS */
+        /* Notificações */
         .notificacao {
             position: fixed; 
             top: 25px; 
@@ -269,7 +270,7 @@
     </style>
 </head>
 <body>
- <!-- Carregamento -->
+    <!-- Carregamento -->
 <div id="carregando">
     <i class="fas fa-spinner fa-spin"></i>
     <span>Carregando...</span>
@@ -291,7 +292,7 @@
                 <div class="usuario-passaporte">Passaporte: <span id="passaporte-usuario">17274</span></div>
             </div>
         </div>
-        <button class="btn-saida" onclick="mostrarNotificacao('Opção de saída')">
+        <button class="btn-saida" onclick="sairParaPainel()">
             <i class="fas fa-sign-out-alt"></i>
         </button>
     </div>
@@ -325,8 +326,9 @@
     <div class="abas">
         <button class="aba ativa" id="aba-jornada" onclick="trocarAba('jornada')">Minha Jornada</button>
         <button class="aba" id="aba-historico" onclick="trocarAba('historico')">Meu Histórico</button>
-        </div>
-        <!-- Área Jornada -->
+    </div>
+
+    <!-- Área Jornada -->
     <div id="area-jornada">
         <div class="cronometro-card">
             <div class="cronometro-label">Tempo em Serviço</div>
@@ -388,54 +390,30 @@
     </button>
     </nav>
     <script>
-// Estado
+// ========== ESTADO GLOBAL ==========
 let estado = {
     ativo: false,
     pausado: false,
     tempoInicio: null,
     intervalo: null,
-    pausas: 0
+    pausas: 0,
+    registroId: null
 };
 
-// Carregamento
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const el = document.getElementById('carregando');
-        el.style.opacity = '0';
-        setTimeout(() => el.style.display = 'none', 400);
-    }, 600);
-});
+// Dados do usuário
+const usuario = {
+    nome: "Falcão",
+    passaporte: "17274"
+};
 
-// Notificações
+// ========== UTILITÁRIOS ==========
 function mostrarNotificacao(mensagem) {
     const el = document.getElementById('notificacao');
     document.getElementById('texto-notif').textContent = mensagem;
     el.style.display = 'flex';
-    setTimeout(() => el.style.display = 'none', 3000);
+    setTimeout(() => el.style.display = 'none', 2000);
 }
 
-// Navegação
-const itensMenu = document.querySelectorAll('.menu-item');
-itensMenu.forEach(item => {
-    item.addEventListener('click', () => {
-        itensMenu.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        const pagina = item.dataset.pagina;
-        if (pagina === 'inicio') window.location.href = "painel.html";
-        if (pagina === 'equipe') window.location.href = "equipe.html";
-        if (pagina === 'registros') window.location.href = "registros.html";
-    });
-});
-
-// Troca de abas
-function trocarAba(aba) {
-    document.getElementById('area-jornada').style.display = aba === 'jornada' ? 'block' : 'none';
-    document.getElementById('area-historico').style.display = aba === 'historico' ? 'block' : 'none';
-    document.getElementById('aba-jornada').classList.toggle('ativa', aba === 'jornada');
-    document.getElementById('aba-historico').classList.toggle('ativa', aba === 'historico');
-}
-
-// Formatar tempo
 function formatarTempo(segundos) {
     const h = Math.floor(segundos / 3600);
     const m = Math.floor((segundos % 3600) / 60);
@@ -447,54 +425,213 @@ function horaAtual() {
     return new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
 }
 
-// Funções do ponto
-function iniciarJornada() {
-    estado.ativo = true;
-    estado.tempoInicio = Date.now();
-    document.getElementById('status-ponto').textContent = 'Ativo';
-    document.getElementById('hora-entrada').textContent = horaAtual();
-    document.getElementById('marc-entrada').textContent = horaAtual();
-    document.getElementById('btn-iniciar').style.display = 'none';
-    document.getElementById('botoes-acao').style.display = 'grid';
-    mostrarNotificacao('Jornada iniciada com sucesso!');
-    
-    estado.intervalo = setInterval(() => {
-        const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
-        document.getElementById('cronometro').textContent = formatarTempo(decorrido);
-    }, 1000);
+// ========== NAVEGAÇÃO ==========
+function sairParaPainel() {
+    if (estado.intervalo) clearInterval(estado.intervalo);
+    window.location.href = "painel.html";
 }
 
-function pausarJornada() {
-    if (estado.pausado) {
-        estado.pausado = false;
-        document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-pause"></i> Pausar';
-        estado.tempoInicio = Date.now() - (estado.tempoPausado || 0);
+const itensMenu = document.querySelectorAll('.menu-item');
+itensMenu.forEach(item => {
+    item.addEventListener('click', () => {
+        itensMenu.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const pagina = item.dataset.pagina;
+        if (pagina === 'inicio') sairParaPainel();
+        if (pagina === 'equipe') window.location.href = "equipe.html";
+        if (pagina === 'registros') window.location.href = "registros.html";
+    });
+});
+
+function trocarAba(aba) {
+    document.getElementById('area-jornada').style.display = aba === 'jornada' ? 'block' : 'none';
+    document.getElementById('area-historico').style.display = aba === 'historico' ? 'block' : 'none';
+    document.getElementById('aba-jornada').classList.toggle('ativa', aba === 'jornada');
+    document.getElementById('aba-historico').classList.toggle('ativa', aba === 'historico');
+}
+
+// ========== FUNÇÕES SUPABASE ==========
+async function buscarPontoAberto() {
+    try {
+        const { data, error } = await supabase
+            .from('pontos')
+            .select('*')
+            .eq('passaporte', usuario.passaporte)
+            .in('status', ['ativo', 'pausado'])
+            .order('entrada', { ascending: false })
+            .limit(1)
+            .single();
+        
+        if (error) return null;
+        return data;
+    } catch (e) { return null; }
+}
+
+async function criarPonto() {
+    const dados = {
+        passaporte: usuario.passaporte,
+        nome: usuario.nome,
+        entrada: new Date().toISOString(),
+        status: 'ativo'
+    };
+
+    const { data, error } = await supabase
+        .from('pontos')
+        .insert([dados])
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data.id;
+}
+
+async function atualizarPonto(dados) {
+    const { error } = await supabase
+        .from('pontos')
+        .update(dados)
+        .eq('id', estado.registroId);
+    
+    if (error) throw error;
+}
+        // ========== AÇÕES DO PONTO ==========
+async function iniciarJornada() {
+    try {
+        estado.registroId = await criarPonto();
+        
+        estado.ativo = true;
+        estado.tempoInicio = Date.now();
+        
+        document.getElementById('status-ponto').textContent = 'Ativo';
+        document.getElementById('hora-entrada').textContent = horaAtual();
+        document.getElementById('marc-entrada').textContent = horaAtual();
+        document.getElementById('btn-iniciar').style.display = 'none';
+        document.getElementById('botoes-acao').style.display = 'grid';
+        
+        mostrarNotificacao('✅ Jornada iniciada!');
+        
         estado.intervalo = setInterval(() => {
             const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
             document.getElementById('cronometro').textContent = formatarTempo(decorrido);
         }, 1000);
-        mostrarNotificacao('Jornada retomada!');
-    } else {
-        estado.pausado = true;
-        estado.pausas++;
-        document.getElementById('cont-pausas').textContent = estado.pausas;
-        document.getElementById('marc-pausa').textContent = horaAtual();
-        document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-play"></i> Retomar';
-        estado.tempoPausado = Date.now() - estado.tempoInicio;
-        clearInterval(estado.intervalo);
-        mostrarNotificacao('Jornada pausada!');
+
+        // ✅ REDIRECIONA PARA EQUIPE
+        setTimeout(() => {
+            window.location.href = "equipe.html";
+        }, 1200);
+    } catch (err) {
+        console.error(err);
+        mostrarNotificacao('❌ Erro ao iniciar: ' + err.message);
     }
 }
 
-function encerrarJornada() {
-    clearInterval(estado.intervalo);
-    document.getElementById('marc-saida').textContent = horaAtual();
-    document.getElementById('status-ponto').textContent = 'Offline';
-    document.getElementById('btn-iniciar').style.display = 'block';
-    document.getElementById('botoes-acao').style.display = 'none';
-    mostrarNotificacao('Jornada encerrada. Bom descanso!');
-    estado = { ativo: false, pausado: false, tempoInicio: null, intervalo: null, pausas: 0 };
+async function pausarJornada() {
+    try {
+        if (estado.pausado) {
+            estado.pausado = false;
+            document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-pause"></i> Pausar';
+            
+            await atualizarPonto({ 
+                status: 'ativo',
+                pausa_fim: new Date().toISOString()
+            });
+            
+            estado.intervalo = setInterval(() => {
+                const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
+                document.getElementById('cronometro').textContent = formatarTempo(decorrido);
+            }, 1000);
+            
+            mostrarNotificacao('▶️ Jornada retomada!');
+        } else {
+            estado.pausado = true;
+            estado.pausas++;
+            
+            const horaPausa = horaAtual();
+            document.getElementById('cont-pausas').textContent = estado.pausas;
+            document.getElementById('marc-pausa').textContent = horaPausa;
+            
+            await atualizarPonto({ 
+                status: 'pausado',
+                pausa_inicio: new Date().toISOString()
+            });
+            
+            document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-play"></i> Retomar';
+            clearInterval(estado.intervalo);
+            
+            mostrarNotificacao('⏸️ Jornada pausada!');
+        }
+    } catch (err) {
+        console.error(err);
+        mostrarNotificacao('❌ Erro: ' + err.message);
+    }
 }
+
+async function encerrarJornada() {
+    try {
+        clearInterval(estado.intervalo);
+        
+        await atualizarPonto({ 
+            saida: new Date().toISOString(),
+            status: 'encerrado'
+        });
+        
+        document.getElementById('marc-saida').textContent = horaAtual();
+        document.getElementById('status-ponto').textContent = 'Offline';
+        document.getElementById('btn-iniciar').style.display = 'block';
+        document.getElementById('botoes-acao').style.display = 'none';
+        
+        mostrarNotificacao('✅ Jornada encerrada!');
+        
+        estado = { ativo: false, pausado: false, tempoInicio: null, intervalo: null, pausas: 0, registroId: null };
+    } catch (err) {
+        console.error(err);
+        mostrarNotificacao('❌ Erro ao encerrar: ' + err.message);
+    }
+}
+
+// ========== INICIALIZAÇÃO ==========
+window.addEventListener('load', async () => {
+    document.getElementById('nome-usuario').textContent = usuario.nome;
+    document.getElementById('passaporte-usuario').textContent = usuario.passaporte;
+
+    const pontoAberto = await buscarPontoAberto();
+    
+    if (pontoAberto) {
+        estado.registroId = pontoAberto.id;
+        estado.ativo = true;
+        estado.pausado = pontoAberto.status === 'pausado';
+        
+        const entrada = new Date(pontoAberto.entrada);
+        document.getElementById('hora-entrada').textContent = entrada.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+        document.getElementById('marc-entrada').textContent = document.getElementById('hora-entrada').textContent;
+        
+        document.getElementById('status-ponto').textContent = pontoAberto.status === 'pausado' ? 'Pausado' : 'Ativo';
+        document.getElementById('btn-iniciar').style.display = 'none';
+        document.getElementById('botoes-acao').style.display = 'grid';
+        
+        if (estado.pausado) {
+            document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-play"></i> Retomar';
+            if (pontoAberto.pausa_inicio) {
+                const pausa = new Date(pontoAberto.pausa_inicio);
+                document.getElementById('marc-pausa').textContent = pausa.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+            }
+        } else {
+            const decorridoMs = Date.now() - entrada.getTime();
+            estado.tempoInicio = Date.now() - decorridoMs;
+            
+            estado.intervalo = setInterval(() => {
+                const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
+                document.getElementById('cronometro').textContent = formatarTempo(decorrido);
+            }, 1000);
+        }
+    }
+
+    setTimeout(() => {
+        const el = document.getElementById('carregando');
+        el.style.opacity = '0';
+        setTimeout(() => el.style.display = 'none', 400);
+    }, 600);
+});
 </script>
+
 </body>
 </html>
