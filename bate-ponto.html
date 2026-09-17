@@ -203,91 +203,35 @@
         .btn-pausar { background: #f59e0b; color: #000; }
         .btn-encerrar { background: #191c23; color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
 
-        /* Estilos Histórico */
-        #area-historico {
-            background: #12151b;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 17px;
-            padding: 20px;
+        /* Histórico */
+        #area-historico { display: none; }
+        .aviso-vazio {
+            background: #12151b; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 17px; padding: 24px; text-align: center;
+            color: #8b929f; font-size: 14px;
         }
-        .hist-titulo {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-        .hist-subtitulo {
-            color: #8b929f;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        .filtro-linhas {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        .filtro-grupo label {
-            display: block;
-            font-size: 14px;
-            color: #aaa;
-            margin-bottom: 6px;
-        }
-        .filtro-input {
-            width: 100%;
-            background: #0f1218;
+
+        /* ✅ NOTIFICAÇÕES CORRIGIDAS */
+        .notificacao {
+            position: fixed; 
+            top: 25px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            background: #12151b; 
             border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 12px;
-            padding: 12px;
-            color: #fff;
-            font-size: 15px;
+            border-radius: 14px; 
+            padding: 14px 20px; 
+            z-index: 9999;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            display: none; 
+            align-items: center; 
+            gap: 10px;
+            max-width: 90%; 
+            width: fit-content;
+            backdrop-filter: blur(10px);
         }
-        .atalhos {
-            display: flex;
-            justify-content: space-between;
-            margin: 20px 0;
-        }
-        .atalho-btn {
-            background: transparent;
-            border: none;
-            color: #8b929f;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 15px;
-            cursor: pointer;
-        }
-        .atalho-btn.ativo, .atalho-btn:hover {
-            background: rgba(225,29,72,0.1);
-            color: #fb365d;
-        }
-        .lista-registros {
-            margin-top: 20px;
-        }
-        .registro-item {
-            background: #0f1218;
-            border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
-        }
-        .registro-cabecalho {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        .registro-nome { font-weight: bold; }
-        .registro-total { color: #4ade80; font-weight: bold; }
-        .registro-dados {
-            font-size: 14px;
-            color: #aaa;
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        .vazio {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-        }
+        .notificacao i { color: #e11d48; font-size: 16px; }
+        .notificacao span { font-size: 14px; color: #f2f2f4; font-weight: 500; }
 
         /* Menu inferior */
         .menu-container {
@@ -325,7 +269,7 @@
     </style>
 </head>
 <body>
-  <!-- Carregamento -->
+ <!-- Carregamento -->
 <div id="carregando">
     <i class="fas fa-spinner fa-spin"></i>
     <span>Carregando...</span>
@@ -381,8 +325,8 @@
     <div class="abas">
         <button class="aba ativa" id="aba-jornada" onclick="trocarAba('jornada')">Minha Jornada</button>
         <button class="aba" id="aba-historico" onclick="trocarAba('historico')">Meu Histórico</button>
-  </div>
-      <!-- ÁREA JORNADA -->
+        </div>
+        <!-- Área Jornada -->
     <div id="area-jornada">
         <div class="cronometro-card">
             <div class="cronometro-label">Tempo em Serviço</div>
@@ -419,39 +363,16 @@
         </div>
     </div>
 
-    <!-- ÁREA HISTÓRICO -->
-    <div id="area-historico" style="display:none;">
-        <h2 class="hist-titulo">Meu Histórico de Ponto</h2>
-        <p class="hist-subtitulo">Escolha o período para consultar seus registros.</p>
-
-        <div class="filtro-linhas">
-            <div class="filtro-grupo">
-                <label>De</label>
-                <input type="date" class="filtro-input" value="2026-08-19">
-            </div>
-            <div class="filtro-grupo">
-                <label>Até</label>
-                <input type="date" class="filtro-input" value="2026-09-17">
-            </div>
-        </div>
-
-        <div class="atalhos">
-            <button class="atalho-btn ativo">Hoje</button>
-            <button class="atalho-btn">7 dias</button>
-            <button class="atalho-btn">30 dias</button>
-            <button class="atalho-btn">90 dias</button>
-        </div>
-
-        <div class="lista-registros">
-            <div class="vazio">
-                <i class="fas fa-clipboard-list" style="font-size: 28px; opacity:0.3; margin-bottom:10px;"></i>
-                <p>Nenhum registro carregado ainda.</p>
-            </div>
+    <!-- Área Histórico -->
+    <div id="area-historico">
+        <div class="aviso-vazio">
+            <i class="fas fa-history" style="font-size: 28px; margin-bottom: 10px; opacity: 0.4;"></i>
+            <p>Nenhum registro encontrado.</p>
         </div>
     </div>
 </main>
 
-<!-- Menu de Navegação -->
+<!-- Menu Navegação -->
 <nav class="menu-container">
     <button class="menu-item" data-pagina="inicio">
         <i class="fas fa-home"></i><span>Início</span>
@@ -465,9 +386,9 @@
     <button class="menu-item" data-pagina="registros">
         <i class="fas fa-folder-open"></i><span>Registros</span>
     </button>
-</nav>
-<script>
-// Estado da aplicação
+    </nav>
+    <script>
+// Estado
 let estado = {
     ativo: false,
     pausado: false,
@@ -493,7 +414,7 @@ function mostrarNotificacao(mensagem) {
     setTimeout(() => el.style.display = 'none', 3000);
 }
 
-// Navegação do menu
+// Navegação
 const itensMenu = document.querySelectorAll('.menu-item');
 itensMenu.forEach(item => {
     item.addEventListener('click', () => {
