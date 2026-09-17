@@ -1,478 +1,579 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#08090d">
-<title>Meu Ponto · Organização Itália</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Ponto · Organização Itália</title>
+    <meta name="theme-color" content="#08090d">
+    <meta name="color-scheme" content="dark">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body {
+            min-height: 100vh; background: #08090d; color: #f5f5f5;
+            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            padding-bottom: 92px;
+        }
+        button { font-family: inherit; }
+        .btn { border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .btn:active { transform: scale(0.97); }
 
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#08090d;--bg2:#0d0f14;--card:#12151b;--card2:#171a21;
-  --border:rgba(255,255,255,.07);--text:#f5f5f5;--muted:#8b929f;
-  --red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b;
-  --suave-green:rgba(34,197,94,.08);--suave-yellow:rgba(245,158,11,.08);
-  --suave-red:rgba(225,29,72,.08);--borda-suave:rgba(255,255,255,.05);
-  --sombra-suave:rgba(0,0,0,.15)
-}
-body{
-  min-height:100vh;background:radial-gradient(circle at top right,rgba(225,29,72,.07),transparent 35%),var(--bg);
-  color:var(--text);font-family:Inter,sans-serif;padding-bottom:90px
-}
-button{font-family:inherit}
+        /* Carregamento */
+        #carregando {
+            position: fixed; inset: 0; z-index: 2000; background: #08090d;
+            display: flex; align-items: center; justify-content: center;
+            flex-direction: column; gap: 14px;
+        }
+        #carregando i { color: #e11d48; font-size: 28px; }
+        #carregando span { color: #8b929f; font-size: 13px; }
 
-/* ✅ TOPBAR COM PROPORÇÃO IDÊNTICA AO INÍCIO */
-.topbar{
-  background:var(--bg);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);gap:18px
-}
-.perfil-esquerda{display:flex;align-items:center;gap:18px}
-.perfil-icone{
-  width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#e11d48,#9f1239);
-  display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;
-  box-shadow:0 4px 16px rgba(225,29,72,.2);flex-shrink:0
-}
-.perfil-dados{display:flex;flex-direction:column;gap:4px}
-.perfil-nome{font-size:19px;font-weight:700;color:#fff;letter-spacing:.2px}
-.perfil-detalhe{font-size:15px;color:var(--muted)}
-.btn-sair{
-  width:48px;height:48px;border-radius:14px;background:rgba(225,29,72,.12);border:none;
-  color:var(--red2);display:flex;align-items:center;justify-content:center;cursor:pointer;
-  font-size:19px;transition:transform .2s,background .2s;flex-shrink:0
-}
-.btn-sair:active{transform:scale(.95);background:rgba(225,29,72,.18)}
+        /* Cabeçalho */
+        .topo {
+            position: sticky; top: 0; z-index: 100;
+            background: rgba(8, 9, 13, 0.88);
+            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding: 14px 18px;
+        }
+        .topo-conteudo {
+            display: flex; align-items: center; justify-content: space-between;
+            max-width: 700px; margin: 0 auto;
+        }
+        .usuario-topo { display: flex; align-items: center; gap: 12px; min-width: 0; }
+        .avatar {
+            width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px;
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(145deg, rgba(225,29,72,0.22), rgba(225,29,72,0.08));
+            border: 1px solid rgba(225,29,72,0.25);
+            color: #fb365d; font-size: 18px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.22);
+        }
+        .usuario-info { min-width: 0; }
+        .usuario-nome {
+            font-size: 15px; font-weight: 700;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            max-width: 220px;
+        }
+        .usuario-passaporte { margin-top: 2px; font-size: 12px; color: #8b929f; }
 
-/* ✅ CONTAINER E ESPAÇAMENTO CORRIGIDO - NÃO MAIS APERTADO */
-.container{width:min(900px,calc(100% - 32px));margin:auto;padding:26px 24px 0}
-.title{margin-bottom:28px}
-.title h1{font-size:28px;letter-spacing:-.8px;margin-bottom:6px}
-.title p{color:var(--muted);font-size:14px}
+        /* Botão saída */
+        .btn-saida {
+            width: 42px; height: 42px; flex-shrink: 0;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 13px;
+            background: rgba(225,29,72,0.08);
+            border: 1px solid rgba(225,29,72,0.18);
+            color: #fb365d; font-size: 15px; transition: 0.2s ease;
+        }
+        .btn-saida:active { background: rgba(225,29,72,0.16); }
 
-/* ✅ CARDS DE STATUS: MESMA PROPORÇÃO E ALTURA DO INÍCIO */
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:24px}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px 20px}
-.stat-label{color:var(--muted);font-size:14px;margin-bottom:10px}
-.stat-value{font-size:22px;font-weight:800}
+        /* Conteúdo principal */
+        main {
+            width: 100%; max-width: 700px; margin: 0 auto;
+            padding: 20px 16px 25px;
+        }
 
-.tabs{display:flex;gap:8px;background:var(--bg2);border:1px solid var(--border);padding:6px;border-radius:16px;margin:24px 0}
-.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:16px 12px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer}
-.tab.active{background:var(--card2);color:#fff}
+        /* Título da página */
+        .pagina-titulo {
+            margin-bottom: 24px;
+        }
+        .pagina-titulo h1 {
+            font-size: 28px; font-weight: 750; margin-bottom: 6px;
+        }
+        .pagina-titulo p {
+            color: #8b929f; font-size: 14px;
+        }
 
-/* ✅ CARD DO CRONÔMETRO: MAIS ESPAÇO INTERNO */
-.clock-card{
-  background:radial-gradient(circle at top right,rgba(225,29,72,.13),transparent 38%),var(--card);
-  border:1px solid var(--border);border-radius:24px;padding:36px 28px;text-align:center
-}
-.clock-label{color:var(--muted);font-size:14px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
-.timer{font-size:clamp(52px,14vw,80px);font-weight:800;letter-spacing:-2px;margin:20px 0 28px;font-variant-numeric:tabular-nums}
+        /* Cards de status */
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+        .info-card {
+            position: relative; min-width: 0; background: #12151b;
+            border: 1px solid rgba(255,255,255,0.065); border-radius: 17px;
+            padding: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .info-label {
+            color: #777f8c; font-size: 10px; margin-bottom: 4px;
+        }
+        .info-valor {
+            color: #f2f2f4; font-size: 14px; font-weight: 700;
+        }
 
-/* ✅ MARCADORES (ENTRADA/PAUSA/SAÍDA) COM ALTURA E ESPAÇO IGUAIS */
-.markers{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:28px}
-.marker{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:20px 12px}
-.marker span{display:block;color:var(--muted);font-size:12px;margin-bottom:8px}
-.marker strong{display:block;font-size:15px}
+        /* Abas */
+        .abas {
+            display: flex; gap: 8px; background: #10131a;
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 6px; border-radius: 16px; margin-bottom: 20px;
+        }
+        .aba {
+            flex: 1; border: none; background: transparent; color: #8b929f;
+            padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: all 0.2s ease;
+        }
+        .aba.ativa {
+            background: #191c23; color: #fff;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
 
-.btn-principal{width:100%;border:0;border-radius:16px;padding:18px;color:#fff;background:var(--red);font-weight:800;font-size:16px;cursor:pointer}
-.btn-principal:disabled{opacity:.65;cursor:not-allowed}
-.grupo-botoes{display:none;gap:16px;margin-top:16px}
-.btn-acao{flex:1;border:0;border-radius:16px;padding:18px;color:#fff;font-weight:800;font-size:16px;cursor:pointer}
-.btn-pausar{background:var(--yellow);color:#000}
-.btn-encerrar{background:var(--red)}
+        /* Card do cronômetro */
+        .cronometro-card {
+            position: relative;
+            background: linear-gradient(145deg, #12151b 0%, #0f1116 100%);
+            border: 1px solid rgba(255,255,255,0.07); border-radius: 20px;
+            padding: 24px; margin-bottom: 16px;
+            text-align: center;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+            overflow: hidden;
+        }
+        .cronometro-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle at top right, rgba(225, 29, 72, 0.15), transparent 70%);
+            pointer-events: none;
+        }
+        .cronometro-label {
+            color: #8b929f; font-size: 14px; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 16px;
+            position: relative;
+            z-index: 1;
+        }
+        .cronometro-valor {
+            font-size: clamp(48px, 12vw, 72px); font-weight: 800;
+            font-variant-numeric: tabular-nums; margin-bottom: 24px;
+            background: linear-gradient(180deg, #ffffff, #cccccc);
+            -webkit-background-clip: text; background-clip: text;
+            color: transparent;
+            position: relative;
+            z-index: 1;
+        }
 
-.aviso-cooldown, .erro-box, .sucesso-box{
-  border-radius:18px;padding:20px 24px;margin-bottom:24px;display:none;position:relative;overflow:hidden;
-  border:1px solid var(--borda-suave);box-shadow:0 4px 14px var(--sombra-suave);
-  font-size:15px;line-height:1.6;gap:12px;align-items:center
-}
-.aviso-cooldown{background:var(--suave-yellow);color:#fcd34d}
-.sucesso-box{background:var(--suave-green);color:#86efac}
-.erro-box{background:rgba(239,68,68,.08);color:#fca5a5}
-.aviso-cooldown i, .sucesso-box i, .erro-box i{font-size:18px}
+        /* Marcadores */
+        .marcadores {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .marcador {
+            background: #10131a; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 16px 8px;
+        }
+        .marcador-titulo {
+            color: #777f8c; font-size: 11px; margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .marcador-valor {
+            color: #f2f2f4; font-size: 14px; font-weight: 600;
+        }
 
-#historico{display:none}
-.history-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:24px;margin-bottom:16px}
-.history-card strong{display:block;margin-bottom:8px}
-.history-card div{font-size:14px;color:var(--muted);margin-top:8px}
-.loading{color:var(--muted);text-align:center;padding:60px 24px}
+        /* Botões */
+        .area-botoes {
+            display: grid; gap: 12px; margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .btn-principal {
+            width: 100%; padding: 16px; border-radius: 16px;
+            font-size: 15px; font-weight: 700; border: none;
+            background: linear-gradient(135deg, #e11d48, #c9183f); color: white;
+            box-shadow: 0 7px 20px rgba(225,29,72,0.20);
+            cursor: pointer; transition: transform 0.2s ease;
+        }
+        .btn-grupo {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            display: none;
+        }
+        .btn-secundario {
+            padding: 16px; border-radius: 16px; font-size: 15px; font-weight: 700;
+            border: none; cursor: pointer; transition: all 0.2s ease;
+        }
+        .btn-pausar { background: #f59e0b; color: #000; }
+        .btn-encerrar { background: #191c23; color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
 
-/* ✅ MENU INFERIOR: MESMO ESPAÇO E ALTURA DO INÍCIO */
-.bottom-nav{
-  position:fixed;z-index:30;left:16px;right:16px;bottom:16px;height:72px;border-radius:24px;background:rgba(18,21,27,.94);
-  backdrop-filter:blur(16px);border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:8px
-}
-.nav-item{
-  border:0;background:transparent;color:var(--muted);border-radius:18px;font-size:12px;font-weight:700;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;gap:6px;padding:10px
-}
-.nav-item i{font-size:20px}
-.nav-item.active{background:rgba(225,29,72,.1);color:var(--red2)}
+        /* Estilos Histórico */
+        #area-historico {
+            background: #12151b;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 17px;
+            padding: 20px;
+        }
+        .hist-titulo {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .hist-subtitulo {
+            color: #8b929f;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .filtro-linhas {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .filtro-grupo label {
+            display: block;
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 6px;
+        }
+        .filtro-input {
+            width: 100%;
+            background: #0f1218;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 12px;
+            padding: 12px;
+            color: #fff;
+            font-size: 15px;
+        }
+        .atalhos {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+        .atalho-btn {
+            background: transparent;
+            border: none;
+            color: #8b929f;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+        }
+        .atalho-btn.ativo, .atalho-btn:hover {
+            background: rgba(225,29,72,0.1);
+            color: #fb365d;
+        }
+        .lista-registros {
+            margin-top: 20px;
+        }
+        .registro-item {
+            background: #0f1218;
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .registro-cabecalho {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+        .registro-nome { font-weight: bold; }
+        .registro-total { color: #4ade80; font-weight: bold; }
+        .registro-dados {
+            font-size: 14px;
+            color: #aaa;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .vazio {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
 
-.modal-fundo{
-  position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:999;
-  display:none;align-items:center;justify-content:center;padding:20px
-}
-.modal-card{
-  width:100%;max-width:440px;background:linear-gradient(145deg,#12151b,#0f0c12);
-  border:1px solid rgba(225,29,72,.25);border-radius:24px;padding:32px;
-  box-shadow:0 10px 40px rgba(0,0,0,.4)
-}
-.modal-icone{
-  width:56px;height:56px;border-radius:16px;background:rgba(225,29,72,.15);
-  display:flex;align-items:center;justify-content:center;margin-bottom:24px
-}
-.modal-icone i{font-size:24px;color:#ff4d6d}
-.modal-titulo{font-size:22px;font-weight:800;margin-bottom:16px;color:#fff}
-.modal-texto{color:#b8bcc6;font-size:16px;line-height:1.65;margin-bottom:32px}
-.modal-botoes{display:flex;gap:16px;justify-content:flex-end;flex-wrap:wrap}
-.modal-btn{border:none;border-radius:14px;padding:15px 28px;font-weight:700;font-size:15px;cursor:pointer}
-.modal-btn-secundario{background:rgba(255,255,255,.08);color:#e2e2e2;border:1px solid rgba(255,255,255,.1)}
-.modal-btn-principal{background:linear-gradient(135deg,#e11d48,#9f1239);color:#fff}
-</style>
-  </head>
-  <body>
+        /* Menu inferior */
+        .menu-container {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
+            display: flex; align-items: center; justify-content: space-around;
+            height: 78px;
+            padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+            background: rgba(13,15,20,0.94);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255,255,255,0.07);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.20);
+        }
+        .menu-item {
+            position: relative; width: 20%; max-width: 80px; height: 58px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 5px; background: transparent; border: none;
+            color: #5d6470; cursor: pointer; transition: color 0.2s ease;
+        }
+        .menu-item i { font-size: 17px; transition: transform 0.2s ease; }
+        .menu-item span { font-size: 9px; font-weight: 600; }
+        .menu-item.active { color: #f5f5f5; }
+        .menu-item.active i { color: #fb365d; transform: translateY(-1px); }
+        .menu-item.active::before {
+            content: ""; position: absolute; top: 1px;
+            width: 24px; height: 3px; border-radius: 10px;
+            background: #e11d48; box-shadow: 0 0 12px rgba(225,29,72,0.45);
+        }
 
-<header class="topbar">
-  <div class="perfil-esquerda">
-    <div class="perfil-icone">
-      <i class="fa-solid fa-user"></i>
-    </div>
-    <div class="perfil-dados">
-      <div class="perfil-nome" id="nomeUsuario">Carregando...</div>
-      <div class="perfil-detalhe" id="passaporteUsuario">Passaporte: --</div>
-    </div>
-  </div>
-  <button class="btn-sair" title="Sair" onclick="sairSistema()">
-    <i class="fa-solid fa-right-to-bracket"></i>
-  </button>
-</header>
-
-<main class="container">
-  <div id="caixaMensagem" class="erro-box"></div>
-  <div id="avisoCooldown" class="aviso-cooldown">
-    <i class="fa-solid fa-lock"></i>
-    <span>Cooldown: <span id="contadorCooldown">60</span>s — Aguarde para iniciar nova jornada</span>
-  </div>
-
-  <section class="title">
-    <h1>Meu Ponto</h1>
-    <p>Controle sua jornada de trabalho.</p>
-  </section>
-
-  <section class="stats">
-    <div class="stat"><div class="stat-label">Meu Status</div><div class="stat-value" id="statusTexto">Offline</div></div>
-    <div class="stat"><div class="stat-label">Pausas</div><div class="stat-value" id="pausasTexto">0</div></div>
-    <div class="stat"><div class="stat-label">Entrada</div><div class="stat-value" id="entradaTexto">--:--</div></div>
-    <div class="stat"><div class="stat-label">Equipe</div><div class="stat-value" id="equipeTexto">--</div></div>
-  </section>
-
-  <div class="tabs">
-    <button class="tab active" onclick="mostrarAba('jornada',this)">Minha Jornada</button>
-    <button class="tab" onclick="mostrarAba('historico',this)">Meu Histórico</button>
-  </div>
-
-  <section id="jornada">
-    <div class="clock-card">
-      <div class="clock-label">Tempo em Serviço</div>
-      <div class="timer" id="timer">00:00:00</div>
-      <div class="markers">
-        <div class="marker"><span>ENTRADA</span><strong id="marcadorEntrada">--:--</strong></div>
-        <div class="marker"><span>ÚLTIMA PAUSA</span><strong id="marcadorPausa">--:--</strong></div>
-        <div class="marker"><span>SAÍDA</span><strong id="marcadorSaida">--:--</strong></div>
-      </div>
-      <button class="btn-principal" id="btnIniciar" onclick="iniciarJornada()"><i class="fa-solid fa-play"></i> Iniciar Jornada</button>
-      <div class="grupo-botoes" id="grupoBotoes">
-        <button class="btn-acao btn-pausar" id="btnPausar" onclick="pausarContinuar()"><i class="fa-solid fa-pause"></i> Pausar</button>
-        <button class="btn-acao btn-encerrar" onclick="abrirModal()"><i class="fa-solid fa-stop"></i> Encerrar</button>
-      </div>
-    </div>
-  </section>
-
-  <section id="historico"><div class="loading">Carregando histórico...</div></section>
-</main>
-
-<div id="modalConfirmacao" class="modal-fundo">
-  <div class="modal-card">
-    <div class="modal-icone"><i class="fa-solid fa-triangle-exclamation"></i></div>
-    <h3 class="modal-titulo">Encerrar Jornada</h3>
-    <p class="modal-texto">Ao encerrar, deverá aguardar <strong>1 minuto</strong> para iniciar nova jornada.<br><br>Deseja encerrar agora?</p>
-    <div class="modal-botoes">
-      <button class="modal-btn modal-btn-secundario" onclick="fecharModal()">Cancelar</button>
-      <button class="modal-btn modal-btn-principal" onclick="confirmarEncerramento()">Encerrar</button>
-    </div>
-  </div>
+        /* Responsivo */
+        @media (max-width: 380px) {
+            main { padding-left: 12px; padding-right: 12px; }
+            .info-grid { gap: 8px; }
+            .marcadores { gap: 8px; }
+        }
+    </style>
+</head>
+<body>
+  <!-- Carregamento -->
+<div id="carregando">
+    <i class="fas fa-spinner fa-spin"></i>
+    <span>Carregando...</span>
 </div>
 
-<nav class="bottom-nav">
-  <a class="nav-item" href="painel.html"><i class="fa-solid fa-house"></i>Início</a>
-  <a class="nav-item active"><i class="fa-solid fa-clock"></i>Ponto</a>
-  <a class="nav-item" href="equipe.html"><i class="fa-solid fa-users"></i>Equipe</a>
-  <a class="nav-item" href="registros.html"><i class="fa-solid fa-folder-open"></i>Registros</a>
+<!-- Notificação -->
+<div id="notificacao" class="notificacao">
+    <i class="fas fa-bell"></i>
+    <span id="texto-notif"></span>
+</div>
+
+<!-- Cabeçalho -->
+<header class="topo">
+    <div class="topo-conteudo">
+        <div class="usuario-topo">
+            <div class="avatar"><i class="fas fa-user"></i></div>
+            <div class="usuario-info">
+                <div class="usuario-nome" id="nome-usuario">Falcão</div>
+                <div class="usuario-passaporte">Passaporte: <span id="passaporte-usuario">17274</span></div>
+            </div>
+        </div>
+        <button class="btn-saida" onclick="mostrarNotificacao('Opção de saída')">
+            <i class="fas fa-sign-out-alt"></i>
+        </button>
+    </div>
+</header>
+
+<main>
+    <section class="pagina-titulo">
+        <h1>Meu Ponto</h1>
+        <p>Controle sua jornada de trabalho.</p>
+    </section>
+
+    <div class="info-grid">
+        <div class="info-card">
+            <div class="info-label">Meu Status</div>
+            <div class="info-valor" id="status-ponto">Offline</div>
+        </div>
+        <div class="info-card">
+            <div class="info-label">Pausas</div>
+            <div class="info-valor" id="cont-pausas">0</div>
+        </div>
+        <div class="info-card">
+            <div class="info-label">Entrada</div>
+            <div class="info-valor" id="hora-entrada">--:--</div>
+        </div>
+        <div class="info-card">
+            <div class="info-label">Equipe</div>
+            <div class="info-valor" id="nome-equipe">--</div>
+        </div>
+    </div>
+
+    <div class="abas">
+        <button class="aba ativa" id="aba-jornada" onclick="trocarAba('jornada')">Minha Jornada</button>
+        <button class="aba" id="aba-historico" onclick="trocarAba('historico')">Meu Histórico</button>
+  </div>
+      <!-- ÁREA JORNADA -->
+    <div id="area-jornada">
+        <div class="cronometro-card">
+            <div class="cronometro-label">Tempo em Serviço</div>
+            <div class="cronometro-valor" id="cronometro">00:00:00</div>
+
+            <div class="marcadores">
+                <div class="marcador">
+                    <div class="marcador-titulo">Entrada</div>
+                    <div class="marcador-valor" id="marc-entrada">--:--</div>
+                </div>
+                <div class="marcador">
+                    <div class="marcador-titulo">Última Pausa</div>
+                    <div class="marcador-valor" id="marc-pausa">--:--</div>
+                </div>
+                <div class="marcador">
+                    <div class="marcador-titulo">Saída</div>
+                    <div class="marcador-valor" id="marc-saida">--:--</div>
+                </div>
+            </div>
+
+            <div class="area-botoes">
+                <button id="btn-iniciar" class="btn-principal" onclick="iniciarJornada()">
+                    <i class="fas fa-play"></i> Iniciar Jornada
+                </button>
+                <div id="botoes-acao" class="btn-grupo">
+                    <button class="btn-secundario btn-pausar" id="btn-pausar" onclick="pausarJornada()">
+                        <i class="fas fa-pause"></i> Pausar
+                    </button>
+                    <button class="btn-secundario btn-encerrar" onclick="encerrarJornada()">
+                        <i class="fas fa-stop"></i> Encerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ÁREA HISTÓRICO -->
+    <div id="area-historico" style="display:none;">
+        <h2 class="hist-titulo">Meu Histórico de Ponto</h2>
+        <p class="hist-subtitulo">Escolha o período para consultar seus registros.</p>
+
+        <div class="filtro-linhas">
+            <div class="filtro-grupo">
+                <label>De</label>
+                <input type="date" class="filtro-input" value="2026-08-19">
+            </div>
+            <div class="filtro-grupo">
+                <label>Até</label>
+                <input type="date" class="filtro-input" value="2026-09-17">
+            </div>
+        </div>
+
+        <div class="atalhos">
+            <button class="atalho-btn ativo">Hoje</button>
+            <button class="atalho-btn">7 dias</button>
+            <button class="atalho-btn">30 dias</button>
+            <button class="atalho-btn">90 dias</button>
+        </div>
+
+        <div class="lista-registros">
+            <div class="vazio">
+                <i class="fas fa-clipboard-list" style="font-size: 28px; opacity:0.3; margin-bottom:10px;"></i>
+                <p>Nenhum registro carregado ainda.</p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Menu de Navegação -->
+<nav class="menu-container">
+    <button class="menu-item" data-pagina="inicio">
+        <i class="fas fa-home"></i><span>Início</span>
+    </button>
+    <button class="menu-item active" data-pagina="ponto">
+        <i class="fas fa-clock"></i><span>Ponto</span>
+    </button>
+    <button class="menu-item" data-pagina="equipe">
+        <i class="fas fa-users"></i><span>Equipe</span>
+    </button>
+    <button class="menu-item" data-pagina="registros">
+        <i class="fas fa-folder-open"></i><span>Registros</span>
+    </button>
 </nav>
 <script>
-const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-const sessao = sessionStorage.getItem("italia_usuario");
-if (!sessao) { location.href = "login.html"; throw new Error("Sem sessão"); }
-const usuario = JSON.parse(sessao);
-
-const el = {
-  nome: document.getElementById("nomeUsuario"), 
-  pass: document.getElementById("passaporteUsuario"), 
-  status: document.getElementById("statusTexto"), 
-  pausas: document.getElementById("pausasTexto"), 
-  entrada: document.getElementById("entradaTexto"),
-  equipe: document.getElementById("equipeTexto"), 
-  timer: document.getElementById("timer"), 
-  marcEntrada: document.getElementById("marcadorEntrada"),
-  marcPausa: document.getElementById("marcadorPausa"), 
-  marcSaida: document.getElementById("marcadorSaida"), 
-  btnIniciar: document.getElementById("btnIniciar"),
-  grupo: document.getElementById("grupoBotoes"), 
-  btnPausar: document.getElementById("btnPausar"), 
-  historico: document.getElementById("historico"),
-  caixaMensagem: document.getElementById("caixaMensagem"), 
-  avisoCooldown: document.getElementById("avisoCooldown"), 
-  contadorCooldown: document.getElementById("contadorCooldown"),
-  modal: document.getElementById("modalConfirmacao")
+// Estado da aplicação
+let estado = {
+    ativo: false,
+    pausado: false,
+    tempoInicio: null,
+    intervalo: null,
+    pausas: 0
 };
 
-let ponto = null, intervalo = null, pausado = false, inicio = null, tempoPausa = 0, pausaInicio = null;
-let cooldownAtivo = false, timerCooldown = null;
-let contadorPausas = parseInt(localStorage.getItem("contadorPausas") || "0");
-
-el.nome.textContent = usuario.nome || "Falcão";
-el.pass.textContent = `Passaporte: ${usuario.passaporte || "17274"}`;
-el.pausas.textContent = contadorPausas;
-
-function sairSistema(){
-  if(confirm("Deseja realmente sair?")){
-    sessionStorage.removeItem("italia_usuario");
-    location.href = "login.html";
-  }
-}
-
-function mostrarErro(titulo, msg){ 
-  el.caixaMensagem.className = "erro-box"; 
-  el.caixaMensagem.style.display = "flex"; 
-  el.caixaMensagem.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i><div><strong>${titulo}</strong><br>${msg}</div>`; 
-}
-function mostrarSucesso(titulo, msg){ 
-  el.caixaMensagem.className = "sucesso-box"; 
-  el.caixaMensagem.style.display = "flex"; 
-  el.caixaMensagem.innerHTML = `<div><strong>${titulo}</strong><br>${msg}</div>`; 
-}
-function hora(d=new Date()){ return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
-function tempoFormat(seg){
-  let h=Math.floor(seg/3600),m=Math.floor((seg%3600)/60),s=seg%60;
-  return [h,m,s].map(v=>String(v).padStart(2,"0")).join(":");
-}
-function atualizarTimer(){ 
-  if(!inicio || pausado) return; 
-  el.timer.textContent = tempoFormat(Math.floor((Date.now()-inicio)/1000)-tempoPausa); 
-}
-function mostrarAba(n,b){
-  document.getElementById("jornada").style.display = n==="jornada"?"block":"none";
-  el.historico.style.display = n==="historico"?"block":"none";
-  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active"); 
-  if(n==="historico") carregarHistorico();
-}
-
-function abrirModal(){ el.modal.style.display="flex"; }
-function fecharModal(){ el.modal.style.display="none"; }
-
-function verificarCooldownSalvo(){
-  const fim = localStorage.getItem("cooldownFimPonto"); 
-  if(!fim) return false;
-  const restante = Math.ceil((parseInt(fim)-Date.now())/1000);
-  if(restante<=0){ localStorage.removeItem("cooldownFimPonto"); return false; }
-  iniciarCooldown(restante); 
-  return true;
-}
-function iniciarCooldown(seg=60){
-  cooldownAtivo=true; 
-  el.btnIniciar.disabled=true; 
-  el.avisoCooldown.style.display="flex"; 
-  el.contadorCooldown.textContent=seg;
-  localStorage.setItem("cooldownFimPonto",String(Date.now()+seg*1000));
-  if(timerCooldown) clearInterval(timerCooldown);
-  timerCooldown=setInterval(()=>{
-    let atual=parseInt(el.contadorCooldown.textContent)-1;
-    if(atual<=0){ 
-      clearInterval(timerCooldown); 
-      cooldownAtivo=false; 
-      el.btnIniciar.disabled=false; 
-      el.avisoCooldown.style.display="none"; 
-    }
-    else el.contadorCooldown.textContent=atual;
-  },1000);
-}
-
-async function jornadaAtiva(){
-  const {data,error}=await supabaseClient.from("pontos").select("*, equipes(*)")
-    .eq("passaporte",usuario.passaporte).in("status",["ativo","pausado"]).order("entrada",{ascending:false}).limit(1);
-  if(error) return null; 
-  return data?.[0]||null;
-}
-
-async function restaurarEstado(){
-  const reg=await jornadaAtiva(); 
-  if(!reg) return;
-  ponto=reg; 
-  inicio=new Date(reg.entrada).getTime(); 
-  pausado=reg.status==="pausado";
-  el.entrada.textContent=hora(new Date(reg.entrada)); 
-  el.marcEntrada.textContent=hora(new Date(reg.entrada));
-  el.equipe.textContent=reg.equipes?.nome||"--";
-  el.status.textContent=pausado?"Pausado":"Ativo"; 
-  el.status.style.color=pausado?"var(--yellow)":"var(--green)";
-  el.btnPausar.innerHTML=pausado?`<i class="fa-solid fa-play"></i> Continuar`:`<i class="fa-solid fa-pause"></i> Pausar`;
-  el.btnIniciar.style.display="none"; 
-  el.grupo.style.display="flex";
-  
-  if(!pausado){ 
-    intervalo=setInterval(atualizarTimer,1000); 
-    atualizarTimer();
-  }
-}
-
-async function buscarEquipe(){
-  const {data:eqs}=await supabaseClient.from("equipes").select("*").eq("ativa",true);
-  const {data:memb}=await supabaseClient.from("equipe_membros").select("equipe_id");
-  const eq=eqs.map(e=>({...e,qtd:memb?.filter(x=>x.equipe_id===e.id).length||0})).sort((a,b)=>a.qtd-b.qtd)[0];
-  return eq;
-}
-
-async function iniciarJornada(){
-  if(cooldownAtivo){ mostrarErro("Bloqueado","Aguarde o cooldown"); return; }
-  el.btnIniciar.disabled=true; 
-  el.btnIniciar.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;
-  try{
-    const ja=await jornadaAtiva(); 
-    if(ja) throw new Error(`Já tem jornada ativa às ${hora(new Date(ja.entrada))}`);
-    const eq=await buscarEquipe(); 
-    if(!eq) throw new Error("Sem equipes disponíveis");
-    const agora=new Date().toISOString();
-    const {data:pt,error:er1}=await supabaseClient.from("pontos").insert({
-      passaporte:usuario.passaporte,
-      nome:usuario.nome,
-      entrada:agora,
-      status:"ativo",
-      equipe_id:eq.id
-    }).select().single(); 
-    if(er1) throw er1;
-    await supabaseClient.from("equipe_membros").insert({
-      equipe_id:eq.id,
-      passaporte:usuario.passaporte,
-      nome:usuario.nome,
-      status:"ativo"
-    });
-    ponto=pt; 
-    inicio=Date.now(); 
-    pausado=false;
-    el.entrada.textContent=hora(); 
-    el.marcEntrada.textContent=hora(); 
-    el.equipe.textContent=eq.nome;
-    el.status.textContent="Ativo"; 
-    el.status.style.color="var(--green)";
-    el.btnIniciar.style.display="none"; 
-    el.grupo.style.display="flex";
-    intervalo=setInterval(atualizarTimer,1000);
-    mostrarSucesso("Jornada Iniciada", `Equipe: ${eq.nome}`);
-    
-  }catch(e){ mostrarErro("Erro ao iniciar",e.message); }
-  el.btnIniciar.disabled=false; 
-  el.btnIniciar.innerHTML=`<i class="fa-solid fa-play"></i> Iniciar Jornada`;
-}
-
-async function pausarContinuar(){
-  if(!ponto) return; 
-  try{
-    if(!pausado){
-      await supabaseClient.from("pontos").update({pausa_inicio:new Date().toISOString(),status:"pausado"}).eq("id",ponto.id);
-      pausado=true; 
-      pausaInicio=Date.now();
-      el.status.textContent="Pausado"; 
-      el.status.style.color="var(--yellow)";
-      el.btnPausar.innerHTML=`<i class="fa-solid fa-play"></i> Continuar`;
-      el.marcPausa.textContent=hora();
-      
-      contadorPausas++;
-      localStorage.setItem("contadorPausas", contadorPausas);
-      el.pausas.textContent = contadorPausas;
-      clearInterval(intervalo);
-      
-      mostrarSucesso("Pausado", "Jornada pausada");
-    }else{
-      tempoPausa+=Math.floor((Date.now()-pausaInicio)/1000);
-      await supabaseClient.from("pontos").update({status:"ativo"}).eq("id",ponto.id);
-      pausado=false;
-      el.status.textContent="Ativo"; 
-      el.status.style.color="var(--green)";
-      el.btnPausar.innerHTML=`<i class="fa-solid fa-pause"></i> Pausar`;
-      intervalo=setInterval(atualizarTimer,1000);
-      mostrarSucesso("Retomado", "Jornada continuada");
-    }
-  }catch(e){ mostrarErro("Erro",e.message); }
-}
-
-async function confirmarEncerramento(){
-  fecharModal(); 
-  try{
-    const agora=new Date().toISOString();
-    await supabaseClient.from("pontos").update({saida:agora,status:"encerrado"}).eq("id",ponto.id);
-    await supabaseClient.from("equipe_membros").update({status:"fora"}).eq("passaporte",usuario.passaporte).eq("equipe_id",ponto.equipe_id);
-    el.marcSaida.textContent=hora(); 
-    el.status.textContent="Offline"; 
-    el.status.style.color="var(--muted)";
-    el.btnIniciar.style.display="block"; 
-    el.grupo.style.display="none";
-    clearInterval(intervalo); 
-    el.timer.textContent="00:00:00"; 
-    el.equipe.textContent="--";
-    
-    contadorPausas = 0;
-    localStorage.setItem("contadorPausas", contadorPausas);
-    el.pausas.textContent = contadorPausas;
-    
-    iniciarCooldown(60); 
-    mostrarSucesso("Encerrado", `Às ${hora()}`);
-    ponto=null; 
-    inicio=null; 
-    pausaInicio=null; 
-    tempoPausa=0;
-  }catch(e){ mostrarErro("Erro ao encerrar",e.message); }
-}
-
-async function carregarHistorico(){
-  try{
-    const {data,error}=await supabaseClient.from("pontos").select("entrada,saida,status,equipes(nome)")
-      .eq("passaporte",usuario.passaporte).order("entrada",{ascending:false});
-    if(error) throw error;
-    el.historico.innerHTML=data.length?data.map(x=>`
-      <div class="history-card">
-        <strong>${x.status}</strong> — ${x.equipes?.nome||"Sem equipe"}
-        <div>Entrada: ${new Date(x.entrada).toLocaleString("pt-BR")}</div>
-        <div>Saída: ${x.saida?new Date(x.saida).toLocaleString("pt-BR"):"--"}</div>
-      </div>
-    `).join(""):"<div class='loading'>Nenhum registro</div>";
-  }catch(e){ el.historico.innerHTML="<div class='loading'>Erro</div>"; }
-}
-
-document.addEventListener("DOMContentLoaded",async ()=>{ 
-  verificarCooldownSalvo(); 
-  await restaurarEstado(); 
+// Carregamento
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const el = document.getElementById('carregando');
+        el.style.opacity = '0';
+        setTimeout(() => el.style.display = 'none', 400);
+    }, 600);
 });
-</script>
 
+// Notificações
+function mostrarNotificacao(mensagem) {
+    const el = document.getElementById('notificacao');
+    document.getElementById('texto-notif').textContent = mensagem;
+    el.style.display = 'flex';
+    setTimeout(() => el.style.display = 'none', 3000);
+}
+
+// Navegação do menu
+const itensMenu = document.querySelectorAll('.menu-item');
+itensMenu.forEach(item => {
+    item.addEventListener('click', () => {
+        itensMenu.forEach(i => i.classList.remove('active'));
+        item.classList.add('active');
+        const pagina = item.dataset.pagina;
+        if (pagina === 'inicio') window.location.href = "painel.html";
+        if (pagina === 'equipe') window.location.href = "equipe.html";
+        if (pagina === 'registros') window.location.href = "registros.html";
+    });
+});
+
+// Troca de abas
+function trocarAba(aba) {
+    document.getElementById('area-jornada').style.display = aba === 'jornada' ? 'block' : 'none';
+    document.getElementById('area-historico').style.display = aba === 'historico' ? 'block' : 'none';
+    document.getElementById('aba-jornada').classList.toggle('ativa', aba === 'jornada');
+    document.getElementById('aba-historico').classList.toggle('ativa', aba === 'historico');
+}
+
+// Formatar tempo
+function formatarTempo(segundos) {
+    const h = Math.floor(segundos / 3600);
+    const m = Math.floor((segundos % 3600) / 60);
+    const s = segundos % 60;
+    return [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
+}
+
+function horaAtual() {
+    return new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+}
+
+// Funções do ponto
+function iniciarJornada() {
+    estado.ativo = true;
+    estado.tempoInicio = Date.now();
+    document.getElementById('status-ponto').textContent = 'Ativo';
+    document.getElementById('hora-entrada').textContent = horaAtual();
+    document.getElementById('marc-entrada').textContent = horaAtual();
+    document.getElementById('btn-iniciar').style.display = 'none';
+    document.getElementById('botoes-acao').style.display = 'grid';
+    mostrarNotificacao('Jornada iniciada com sucesso!');
+    
+    estado.intervalo = setInterval(() => {
+        const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
+        document.getElementById('cronometro').textContent = formatarTempo(decorrido);
+    }, 1000);
+}
+
+function pausarJornada() {
+    if (estado.pausado) {
+        estado.pausado = false;
+        document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-pause"></i> Pausar';
+        estado.tempoInicio = Date.now() - (estado.tempoPausado || 0);
+        estado.intervalo = setInterval(() => {
+            const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
+            document.getElementById('cronometro').textContent = formatarTempo(decorrido);
+        }, 1000);
+        mostrarNotificacao('Jornada retomada!');
+    } else {
+        estado.pausado = true;
+        estado.pausas++;
+        document.getElementById('cont-pausas').textContent = estado.pausas;
+        document.getElementById('marc-pausa').textContent = horaAtual();
+        document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-play"></i> Retomar';
+        estado.tempoPausado = Date.now() - estado.tempoInicio;
+        clearInterval(estado.intervalo);
+        mostrarNotificacao('Jornada pausada!');
+    }
+}
+
+function encerrarJornada() {
+    clearInterval(estado.intervalo);
+    document.getElementById('marc-saida').textContent = horaAtual();
+    document.getElementById('status-ponto').textContent = 'Offline';
+    document.getElementById('btn-iniciar').style.display = 'block';
+    document.getElementById('botoes-acao').style.display = 'none';
+    mostrarNotificacao('Jornada encerrada. Bom descanso!');
+    estado = { ativo: false, pausado: false, tempoInicio: null, intervalo: null, pausas: 0 };
+}
+</script>
 </body>
 </html>
