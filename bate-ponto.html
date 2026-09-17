@@ -9,7 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -18,7 +17,10 @@
 :root{
   --bg:#08090d;--bg2:#0d0f14;--card:#12151b;--card2:#171a21;
   --border:rgba(255,255,255,.07);--text:#f5f5f5;--muted:#8b929f;
-  --red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b
+  --red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b;
+  --suave-green:rgba(34,197,94,.08);--suave-yellow:rgba(245,158,11,.08);
+  --suave-red:rgba(225,29,72,.08);--suave-blue:rgba(59,130,246,.08);
+  --borda-suave:rgba(255,255,255,.05);--sombra-suave:rgba(0,0,0,.15)
 }
 body{
   min-height:100vh;background:radial-gradient(circle at top right,rgba(225,29,72,.07),transparent 35%),var(--bg);
@@ -64,9 +66,18 @@ button{font-family:inherit}
 .btn-acao{flex:1;border:0;border-radius:15px;padding:14px;color:#fff;font-weight:800;font-size:13px;cursor:pointer}
 .btn-pausar{background:var(--yellow);color:#000}
 .btn-encerrar{background:var(--red)}
-.aviso-cooldown{background:rgba(245,158,11,.15);border:1px solid var(--yellow);color:#ffdd66;padding:14px;border-radius:14px;margin-bottom:18px;text-align:center;display:none}
-.erro-box{background:rgba(225,29,72,.12);border:1px solid var(--red);border-radius:14px;padding:16px;margin-bottom:20px;color:#ffb3b3;display:none}
-.sucesso-box{background:rgba(34,197,94,.12);border:1px solid var(--green);border-radius:14px;padding:16px;margin-bottom:20px;color:#bbf7d0;display:none}
+
+/* NOTIFICAÇÕES MAIS SUAVES / CLEAN */
+.aviso-cooldown, .erro-box, .sucesso-box{
+  border-radius:16px;padding:16px 18px;margin-bottom:20px;display:none;
+  border:1px solid var(--borda-suave);box-shadow:0 4px 12px var(--sombra-suave);
+  font-size:14px;line-height:1.5;gap:10px;align-items:center
+}
+.aviso-cooldown{background:var(--suave-yellow);color:#fcd34d;display:flex}
+.sucesso-box{background:var(--suave-green);color:#86efac;display:flex}
+.erro-box{background:rgba(239,68,68,.08);color:#fca5a5;display:flex}
+.aviso-cooldown i, .sucesso-box i, .erro-box i{font-size:16px}
+
 #historico{display:none}
 .history-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:10px}
 .history-card div{font-size:12px;color:var(--muted);margin-top:5px}
@@ -104,7 +115,7 @@ button{font-family:inherit}
 .modal-btn-principal{background:linear-gradient(135deg,#e11d48,#9f1239);color:#fff;box-shadow:0 4px 14px rgba(225,29,72,.25)}
 </style>
 </head>
-<body>
+  <body>
 
 <header class="topbar">
   <div class="avatar" id="avatar">?</div>
@@ -116,7 +127,10 @@ button{font-family:inherit}
 
 <main class="container">
   <div id="caixaMensagem" class="erro-box"></div>
-  <div id="avisoCooldown" class="aviso-cooldown">🔒 Cooldown: <span id="contadorCooldown">60</span>s — Aguarde para iniciar nova jornada</div>
+  <div id="avisoCooldown" class="aviso-cooldown">
+    <i class="fa-solid fa-lock"></i>
+    <span>Cooldown: <span id="contadorCooldown">60</span>s — Aguarde para iniciar nova jornada</span>
+  </div>
 
   <section class="title">
     <h1>Meu Ponto</h1>
@@ -198,21 +212,34 @@ const el = {
 
 let ponto = null, intervalo = null, pausado = false, inicio = null, tempoPausa = 0, pausaInicio = null;
 let cooldownAtivo = false, timerCooldown = null;
-let contadorPausas = 0; // ✅ Contador de pausas adicionado
+let contadorPausas = parseInt(localStorage.getItem("contadorPausas") || "0");
 
 el.nome.textContent = usuario.nome || "Usuário";
 el.pass.textContent = `Passaporte: ${usuario.passaporte} • Ponto`;
 el.avatar.textContent = (usuario.nome || "?")[0].toUpperCase();
+el.pausas.textContent = contadorPausas;
 
-function mostrarErro(titulo, msg){ el.caixaMensagem.className = "erro-box"; el.caixaMensagem.style.display = "block"; el.caixaMensagem.innerHTML = `<strong>${titulo}</strong><br>${msg}`; console.error(titulo,msg); }
-function mostrarSucesso(titulo, msg){ el.caixaMensagem.className = "sucesso-box"; el.caixaMensagem.style.display = "block"; el.caixaMensagem.innerHTML = `<strong>${titulo}</strong><br>${msg}`; }
+function mostrarErro(titulo, msg){ 
+  el.caixaMensagem.className = "erro-box"; 
+  el.caixaMensagem.style.display = "flex"; 
+  el.caixaMensagem.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i><div><strong>${titulo}</strong><br>${msg}</div>`; 
+  console.error(titulo,msg); 
+}
+function mostrarSucesso(titulo, msg){ 
+  el.caixaMensagem.className = "sucesso-box"; 
+  el.caixaMensagem.style.display = "flex"; 
+  el.caixaMensagem.innerHTML = `<div><strong>${titulo}</strong><br>${msg}</div>`; 
+}
 function limparMsg(){ el.caixaMensagem.style.display="none"; }
 function hora(d=new Date()){ return d.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"}); }
 function tempoFormat(seg){
   let h=Math.floor(seg/3600),m=Math.floor((seg%3600)/60),s=seg%60;
   return [h,m,s].map(v=>String(v).padStart(2,"0")).join(":");
 }
-function atualizarTimer(){ if(!inicio || pausado) return; el.timer.textContent = tempoFormat(Math.floor((Date.now()-inicio)/1000)-tempoPausa); }
+function atualizarTimer(){ 
+  if(!inicio || pausado) return; 
+  el.timer.textContent = tempoFormat(Math.floor((Date.now()-inicio)/1000)-tempoPausa); 
+}
 function mostrarAba(n,b){
   document.getElementById("jornada").style.display = n==="jornada"?"block":"none";
   el.historico.style.display = n==="historico"?"block":"none";
@@ -231,7 +258,7 @@ function verificarCooldownSalvo(){
   iniciarCooldown(restante); return true;
 }
 function iniciarCooldown(seg=60){
-  cooldownAtivo=true; el.btnIniciar.disabled=true; el.avisoCooldown.style.display="block"; el.contadorCooldown.textContent=seg;
+  cooldownAtivo=true; el.btnIniciar.disabled=true; el.avisoCooldown.style.display="flex"; el.contadorCooldown.textContent=seg;
   localStorage.setItem("cooldownFimPonto",String(Date.now()+seg*1000));
   if(timerCooldown) clearInterval(timerCooldown);
   timerCooldown=setInterval(()=>{
@@ -249,13 +276,22 @@ async function jornadaAtiva(){
 
 async function restaurarEstado(){
   const reg=await jornadaAtiva(); if(!reg) return;
-  ponto=reg; inicio=new Date(reg.entrada).getTime(); pausado=reg.status==="pausado";
-  el.entrada.textContent=hora(new Date(reg.entrada)); el.marcEntrada.textContent=hora(new Date(reg.entrada));
+  ponto=reg; 
+  inicio=new Date(reg.entrada).getTime(); 
+  pausado=reg.status==="pausado";
+  el.entrada.textContent=hora(new Date(reg.entrada)); 
+  el.marcEntrada.textContent=hora(new Date(reg.entrada));
   el.equipe.textContent=reg.equipes?.nome||"--";
-  el.status.textContent=pausado?"Pausado":"Ativo"; el.status.style.color=pausado?"var(--yellow)":"var(--green)";
+  el.status.textContent=pausado?"Pausado":"Ativo"; 
+  el.status.style.color=pausado?"var(--yellow)":"var(--green)";
   el.btnPausar.innerHTML=pausado?`<i class="fa-solid fa-play"></i> Continuar`:`<i class="fa-solid fa-pause"></i> Pausar`;
-  el.btnIniciar.style.display="none"; el.grupo.style.display="flex";
-  intervalo=setInterval(atualizarTimer,1000); atualizarTimer();
+  el.btnIniciar.style.display="none"; 
+  el.grupo.style.display="flex";
+  
+  if(!pausado){ 
+    intervalo=setInterval(atualizarTimer,1000); 
+    atualizarTimer();
+  }
 }
 
 async function buscarEquipe(){
@@ -283,6 +319,8 @@ async function iniciarJornada(){
     intervalo=setInterval(atualizarTimer,1000);
     mostrarSucesso("<i class='fa-solid fa-circle-check'></i> Jornada Iniciada", `Equipe: ${eq.nome}`);
     
+    setTimeout(()=>{ window.location.href = "equipe.html"; }, 800);
+    
   }catch(e){ mostrarErro("Erro ao iniciar",e.message); }
   el.btnIniciar.disabled=false; el.btnIniciar.innerHTML=`<i class="fa-solid fa-play"></i> Iniciar Jornada`;
 }
@@ -297,20 +335,20 @@ async function pausarContinuar(){
       el.btnPausar.innerHTML=`<i class="fa-solid fa-play"></i> Continuar`;
       el.marcPausa.textContent=hora();
       
-      // ✅ Incrementa e atualiza contador de pausas
       contadorPausas++;
+      localStorage.setItem("contadorPausas", contadorPausas);
       el.pausas.textContent = contadorPausas;
+      clearInterval(intervalo);
       
-      mostrarSucesso("<i class='fa-solid fa-pause'></i> Pausado","Jornada pausada");
-      
+      mostrarSucesso("<i class='fa-solid fa-pause'></i> Pausado", "Jornada pausada");
     }else{
       tempoPausa+=Math.floor((Date.now()-pausaInicio)/1000);
       await supabaseClient.from("pontos").update({status:"ativo"}).eq("id",ponto.id);
       pausado=false;
       el.status.textContent="Ativo"; el.status.style.color="var(--green)";
       el.btnPausar.innerHTML=`<i class="fa-solid fa-pause"></i> Pausar`;
-      mostrarSucesso("<i class='fa-solid fa-play'></i> Retomado","Jornada continuada");
-      
+      intervalo=setInterval(atualizarTimer,1000);
+      mostrarSucesso("<i class='fa-solid fa-play'></i> Retomado", "Jornada continuada");
     }
   }catch(e){ mostrarErro("Erro",e.message); }
 }
@@ -325,12 +363,11 @@ async function confirmarEncerramento(){
     el.btnIniciar.style.display="block"; el.grupo.style.display="none";
     clearInterval(intervalo); el.timer.textContent="00:00:00"; el.equipe.textContent="--";
     
-    // ✅ Reseta contador ao encerrar
     contadorPausas = 0;
+    localStorage.setItem("contadorPausas", contadorPausas);
     el.pausas.textContent = contadorPausas;
     
-    iniciarCooldown(60); mostrarSucesso("<i class='fa-solid fa-stop'></i> Encerrado",`Às ${hora()}\nAguarde 1 minuto`);
-    
+    iniciarCooldown(60); mostrarSucesso("<i class='fa-solid fa-stop'></i> Encerrado", `Às ${hora()}\nAguarde 1 minuto`);
     ponto=null; inicio=null; pausaInicio=null; tempoPausa=0;
   }catch(e){ mostrarErro("Erro ao encerrar",e.message); }
 }
@@ -350,8 +387,12 @@ async function carregarHistorico(){
   }catch(e){ el.historico.innerHTML="<div class='loading'>Erro</div>"; }
 }
 
-document.addEventListener("DOMContentLoaded",async ()=>{ verificarCooldownSalvo(); await restaurarEstado(); });
+document.addEventListener("DOMContentLoaded",async ()=>{ 
+  verificarCooldownSalvo(); 
+  await restaurarEstado(); 
+});
 </script>
 
 </body>
-</html>
+        </html>
+                                           
