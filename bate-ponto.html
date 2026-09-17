@@ -28,62 +28,61 @@ body{
 }
 button{font-family:inherit}
 
-/* ✅ TOPBAR IGUAL À IMAGEM */
+/* TOPBAR: ÍCONE DE USUÁRIO + ESPAÇAMENTO CONFORTÁVEL */
 .topbar{
-  background:var(--bg);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:1px solid var(--border);gap:14px
+  background:var(--bg);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);gap:18px
 }
-.perfil-esquerda{display:flex;align-items:center;gap:14px}
+.perfil-esquerda{display:flex;align-items:center;gap:18px}
 .perfil-icone{
-  width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#e11d48,#9f1239);
-  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;
-  box-shadow:0 4px 12px rgba(225,29,72,.18)
+  width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,#e11d48,#9f1239);
+  display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;
+  box-shadow:0 4px 16px rgba(225,29,72,.2);flex-shrink:0
 }
-.perfil-dados{display:flex;flex-direction:column;gap:3px}
-.perfil-nome{font-size:18px;font-weight:700;color:#fff}
+.perfil-dados{display:flex;flex-direction:column;gap:4px}
+.perfil-nome{font-size:19px;font-weight:700;color:#fff;letter-spacing:.2px}
 .perfil-detalhe{font-size:15px;color:var(--muted)}
 .btn-sair{
-  width:46px;height:46px;border-radius:14px;background:rgba(225,29,72,.12);border:none;
+  width:48px;height:48px;border-radius:14px;background:rgba(225,29,72,.12);border:none;
   color:var(--red2);display:flex;align-items:center;justify-content:center;cursor:pointer;
-  font-size:18px;transition:transform .2s
+  font-size:19px;transition:transform .2s,background .2s;flex-shrink:0
 }
-.btn-sair:active{transform:scale(.95)}
+.btn-sair:active{transform:scale(.95);background:rgba(225,29,72,.18)}
 
-.container{width:min(900px,calc(100% - 28px));margin:auto;padding:22px 18px 0}
-.title{margin-bottom:25px}
-.title h1{font-size:27px;letter-spacing:-.8px;margin-bottom:6px}
-.title p{color:var(--muted);font-size:13px}
-.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px}
-.stat{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:15px}
-.stat-label{color:var(--muted);font-size:11px;margin-bottom:9px}
-.stat-value{font-size:17px;font-weight:800}
-.tabs{display:flex;gap:6px;background:var(--bg2);border:1px solid var(--border);padding:5px;border-radius:14px;margin:16px 0}
-.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:11px 8px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer}
+.container{width:min(900px,calc(100% - 32px));margin:auto;padding:26px 24px 0}
+.title{margin-bottom:28px}
+.title h1{font-size:28px;letter-spacing:-.8px;margin-bottom:6px}
+.title p{color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:16px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:18px}
+.stat-label{color:var(--muted);font-size:12px;margin-bottom:10px}
+.stat-value{font-size:18px;font-weight:800}
+.tabs{display:flex;gap:8px;background:var(--bg2);border:1px solid var(--border);padding:6px;border-radius:16px;margin:20px 0}
+.tab{flex:1;border:0;background:transparent;color:var(--muted);padding:13px 10px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer}
 .tab.active{background:var(--card2);color:#fff}
 .clock-card{
   background:radial-gradient(circle at top right,rgba(225,29,72,.13),transparent 38%),var(--card);
-  border:1px solid var(--border);border-radius:22px;padding:24px;text-align:center
+  border:1px solid var(--border);border-radius:24px;padding:28px;text-align:center
 }
-.clock-label{color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
-.timer{font-size:clamp(42px,12vw,70px);font-weight:800;letter-spacing:-2px;margin:10px 0 18px;font-variant-numeric:tabular-nums}
-.markers{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
-.marker{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:13px;padding:11px 5px}
-.marker span{display:block;color:var(--muted);font-size:9px;margin-bottom:5px}
-.marker strong{display:block;font-size:11px}
-.btn-principal{width:100%;border:0;border-radius:15px;padding:15px;color:#fff;background:var(--red);font-weight:800;font-size:13px;cursor:pointer}
+.clock-label{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
+.timer{font-size:clamp(46px,13vw,74px);font-weight:800;letter-spacing:-2px;margin:14px 0 22px;font-variant-numeric:tabular-nums}
+.markers{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:22px}
+.marker{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:16px;padding:14px 8px}
+.marker span{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}
+.marker strong{display:block;font-size:13px}
+.btn-principal{width:100%;border:0;border-radius:16px;padding:17px;color:#fff;background:var(--red);font-weight:800;font-size:14px;cursor:pointer}
 .btn-principal:disabled{opacity:.65;cursor:not-allowed}
-.grupo-botoes{display:none;gap:10px;margin-top:10px}
-.btn-acao{flex:1;border:0;border-radius:15px;padding:14px;color:#fff;font-weight:800;font-size:13px;cursor:pointer}
+.grupo-botoes{display:none;gap:12px;margin-top:14px}
+.btn-acao{flex:1;border:0;border-radius:16px;padding:16px;color:#fff;font-weight:800;font-size:14px;cursor:pointer}
 .btn-pausar{background:var(--yellow);color:#000}
 .btn-encerrar{background:var(--red)}
 
-/* ✅ NOTIFICAÇÕES + ANIMAÇÃO BORDA ÚNICA */
+/* NOTIFICAÇÕES + ANIMAÇÃO BORDA ÚNICA */
 .aviso-cooldown, .erro-box, .sucesso-box{
-  border-radius:16px;padding:16px 18px;margin-bottom:20px;display:none;position:relative;overflow:hidden;
-  border:1px solid var(--borda-suave);box-shadow:0 4px 12px var(--sombra-suave);
-  font-size:14px;line-height:1.5;gap:10px;align-items:center
+  border-radius:18px;padding:18px 20px;margin-bottom:24px;display:none;position:relative;overflow:hidden;
+  border:1px solid var(--borda-suave);box-shadow:0 4px 14px var(--sombra-suave);
+  font-size:15px;line-height:1.6;gap:12px;align-items:center
 }
-/* Animação de borda 1 volta só */
 .aviso-cooldown::after, .erro-box::after, .sucesso-box::after{
   content:"";position:absolute;inset:-2px;border-radius:inherit;
   background:conic-gradient(from 0deg,transparent 0deg,currentColor 120deg,transparent 360deg);
@@ -95,55 +94,56 @@ button{font-family:inherit}
   100%{transform:rotate(360deg) scale(1.1);opacity:0}
 }
 .aviso-cooldown > *, .erro-box > *, .sucesso-box > *{position:relative;z-index:1}
-
 .aviso-cooldown{background:var(--suave-yellow);color:#fcd34d}
 .sucesso-box{background:var(--suave-green);color:#86efac}
 .erro-box{background:rgba(239,68,68,.08);color:#fca5a5}
-.aviso-cooldown i, .sucesso-box i, .erro-box i{font-size:16px}
+.aviso-cooldown i, .sucesso-box i, .erro-box i{font-size:18px}
 
 #historico{display:none}
-.history-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:15px;margin-bottom:10px}
-.history-card div{font-size:12px;color:var(--muted);margin-top:5px}
-.loading{color:var(--muted);text-align:center;padding:40px 20px}
+.history-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px}
+.history-card strong{display:block;margin-bottom:6px}
+.history-card div{font-size:13px;color:var(--muted);margin-top:6px}
+.loading{color:var(--muted);text-align:center;padding:50px 24px}
 .bottom-nav{
-  position:fixed;z-index:30;left:12px;right:12px;bottom:12px;height:66px;border-radius:21px;background:rgba(18,21,27,.94);
-  backdrop-filter:blur(16px);border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:5px
+  position:fixed;z-index:30;left:16px;right:16px;bottom:16px;height:70px;border-radius:24px;background:rgba(18,21,27,.94);
+  backdrop-filter:blur(16px);border:1px solid var(--border);display:grid;grid-template-columns:repeat(4,1fr);padding:6px
 }
 .nav-item{
-  border:0;background:transparent;color:var(--muted);border-radius:16px;font-size:10px;font-weight:700;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;gap:4px
+  border:0;background:transparent;color:var(--muted);border-radius:18px;font-size:11px;font-weight:700;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-decoration:none;gap:6px;padding:8px
 }
-.nav-item i{font-size:16px}
+.nav-item i{font-size:18px}
 .nav-item.active{background:rgba(225,29,72,.1);color:var(--red2)}
 .modal-fundo{
   position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);z-index:999;
-  display:none;align-items:center;justify-content:center;padding:16px
+  display:none;align-items:center;justify-content:center;padding:20px
 }
 .modal-card{
-  width:100%;max-width:420px;background:linear-gradient(145deg,#12151b,#0f0c12);
-  border:1px solid rgba(225,29,72,.25);border-radius:20px;padding:24px;
+  width:100%;max-width:440px;background:linear-gradient(145deg,#12151b,#0f0c12);
+  border:1px solid rgba(225,29,72,.25);border-radius:24px;padding:28px;
   box-shadow:0 10px 40px rgba(0,0,0,.4),0 0 0 1px rgba(225,29,72,.08)
 }
 .modal-icone{
-  width:52px;height:52px;border-radius:14px;background:rgba(225,29,72,.15);
-  display:flex;align-items:center;justify-content:center;margin-bottom:16px
+  width:56px;height:56px;border-radius:16px;background:rgba(225,29,72,.15);
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px
 }
-.modal-icone i{font-size:22px;color:#ff4d6d}
-.modal-titulo{font-size:18px;font-weight:800;margin-bottom:10px;color:#fff}
-.modal-texto{color:#b8bcc6;font-size:15px;line-height:1.6;margin-bottom:22px}
-.modal-botoes{display:flex;gap:12px;justify-content:flex-end;flex-wrap:wrap}
-.modal-btn{border:none;border-radius:12px;padding:12px 20px;font-weight:700;font-size:14px;cursor:pointer;transition:transform .2s}
+.modal-icone i{font-size:24px;color:#ff4d6d}
+.modal-titulo{font-size:20px;font-weight:800;margin-bottom:12px;color:#fff}
+.modal-texto{color:#b8bcc6;font-size:16px;line-height:1.65;margin-bottom:26px}
+.modal-botoes{display:flex;gap:14px;justify-content:flex-end;flex-wrap:wrap}
+.modal-btn{border:none;border-radius:14px;padding:14px 24px;font-weight:700;font-size:15px;cursor:pointer;transition:transform .2s}
 .modal-btn:active{transform:scale(.97)}
 .modal-btn-secundario{background:rgba(255,255,255,.08);color:#e2e2e2;border:1px solid rgba(255,255,255,.1)}
 .modal-btn-principal{background:linear-gradient(135deg,#e11d48,#9f1239);color:#fff;box-shadow:0 4px 14px rgba(225,29,72,.25)}
 </style>
-  </head>
-  <body>
+</head>
+<body>
 
-<!-- ✅ TOPBAR IGUAL À IMAGEM -->
 <header class="topbar">
   <div class="perfil-esquerda">
-    <div class="perfil-icone" id="perfilIcone">?</div>
+    <div class="perfil-icone">
+      <i class="fa-solid fa-user"></i>
+    </div>
     <div class="perfil-dados">
       <div class="perfil-nome" id="nomeUsuario">Carregando...</div>
       <div class="perfil-detalhe" id="passaporteUsuario">Passaporte: --</div>
@@ -156,7 +156,6 @@ button{font-family:inherit}
 
 <main class="container">
   <div id="caixaMensagem" class="erro-box"></div>
-  <!-- ✅ COOLDOWN OCULTO POR PADRÃO -->
   <div id="avisoCooldown" class="aviso-cooldown">
     <i class="fa-solid fa-lock"></i>
     <span>Cooldown: <span id="contadorCooldown">60</span>s — Aguarde para iniciar nova jornada</span>
@@ -231,12 +230,24 @@ const usuario = JSON.parse(sessao);
 
 // Elementos
 const el = {
-  nome: document.getElementById("nomeUsuario"), pass: document.getElementById("passaporteUsuario"), avatar: document.getElementById("perfilIcone"),
-  status: document.getElementById("statusTexto"), pausas: document.getElementById("pausasTexto"), entrada: document.getElementById("entradaTexto"),
-  equipe: document.getElementById("equipeTexto"), timer: document.getElementById("timer"), marcEntrada: document.getElementById("marcadorEntrada"),
-  marcPausa: document.getElementById("marcadorPausa"), marcSaida: document.getElementById("marcadorSaida"), btnIniciar: document.getElementById("btnIniciar"),
-  grupo: document.getElementById("grupoBotoes"), btnPausar: document.getElementById("btnPausar"), historico: document.getElementById("historico"),
-  caixaMensagem: document.getElementById("caixaMensagem"), avisoCooldown: document.getElementById("avisoCooldown"), contadorCooldown: document.getElementById("contadorCooldown"),
+  nome: document.getElementById("nomeUsuario"), 
+  pass: document.getElementById("passaporteUsuario"), 
+  avatar: document.querySelector(".perfil-icone i"),
+  status: document.getElementById("statusTexto"), 
+  pausas: document.getElementById("pausasTexto"), 
+  entrada: document.getElementById("entradaTexto"),
+  equipe: document.getElementById("equipeTexto"), 
+  timer: document.getElementById("timer"), 
+  marcEntrada: document.getElementById("marcadorEntrada"),
+  marcPausa: document.getElementById("marcadorPausa"), 
+  marcSaida: document.getElementById("marcadorSaida"), 
+  btnIniciar: document.getElementById("btnIniciar"),
+  grupo: document.getElementById("grupoBotoes"), 
+  btnPausar: document.getElementById("btnPausar"), 
+  historico: document.getElementById("historico"),
+  caixaMensagem: document.getElementById("caixaMensagem"), 
+  avisoCooldown: document.getElementById("avisoCooldown"), 
+  contadorCooldown: document.getElementById("contadorCooldown"),
   modal: document.getElementById("modalConfirmacao")
 };
 
@@ -244,10 +255,9 @@ let ponto = null, intervalo = null, pausado = false, inicio = null, tempoPausa =
 let cooldownAtivo = false, timerCooldown = null;
 let contadorPausas = parseInt(localStorage.getItem("contadorPausas") || "0");
 
-// ✅ DADOS DO PERFIL IGUAL À IMAGEM
+// Dados do usuário
 el.nome.textContent = usuario.nome || "Falcão";
 el.pass.textContent = `Passaporte: ${usuario.passaporte || "17274"}`;
-el.avatar.textContent = (usuario.nome || "Falcão")[0].toUpperCase();
 el.pausas.textContent = contadorPausas;
 
 // Função de saída
@@ -283,7 +293,8 @@ function mostrarAba(n,b){
   document.getElementById("jornada").style.display = n==="jornada"?"block":"none";
   el.historico.style.display = n==="historico"?"block":"none";
   document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
-  b.classList.add("active"); if(n==="historico") carregarHistorico();
+  b.classList.add("active"); 
+  if(n==="historico") carregarHistorico();
 }
 
 function abrirModal(){ el.modal.style.display="flex"; }
@@ -291,20 +302,29 @@ function fecharModal(){ el.modal.style.display="none"; }
 document.getElementById("modalConfirmacao").addEventListener("click",e=>{ if(e.target.id==="modalConfirmacao") fecharModal(); });
 
 function verificarCooldownSalvo(){
-  const fim = localStorage.getItem("cooldownFimPonto"); if(!fim) return false;
+  const fim = localStorage.getItem("cooldownFimPonto"); 
+  if(!fim) return false;
   const restante = Math.ceil((parseInt(fim)-Date.now())/1000);
   if(restante<=0){ localStorage.removeItem("cooldownFimPonto"); return false; }
-  iniciarCooldown(restante); return true;
+  iniciarCooldown(restante); 
+  return true;
 }
 function iniciarCooldown(seg=60){
-  cooldownAtivo=true; el.btnIniciar.disabled=true; 
-  el.avisoCooldown.style.display="flex"; // ✅ SÓ APARECE AQUI
+  cooldownAtivo=true; 
+  el.btnIniciar.disabled=true; 
+  el.avisoCooldown.style.display="flex"; 
   el.contadorCooldown.textContent=seg;
   localStorage.setItem("cooldownFimPonto",String(Date.now()+seg*1000));
   if(timerCooldown) clearInterval(timerCooldown);
   timerCooldown=setInterval(()=>{
     let atual=parseInt(el.contadorCooldown.textContent)-1;
-    if(atual<=0){ clearInterval(timerCooldown); cooldownAtivo=false; el.btnIniciar.disabled=false; el.avisoCooldown.style.display="none"; localStorage.removeItem("cooldownFimPonto"); }
+    if(atual<=0){ 
+      clearInterval(timerCooldown); 
+      cooldownAtivo=false; 
+      el.btnIniciar.disabled=false; 
+      el.avisoCooldown.style.display="none"; 
+      localStorage.removeItem("cooldownFimPonto"); 
+    }
     else el.contadorCooldown.textContent=atual;
   },1000);
 }
@@ -312,11 +332,13 @@ function iniciarCooldown(seg=60){
 async function jornadaAtiva(){
   const {data,error}=await supabaseClient.from("pontos").select("*, equipes(*)")
     .eq("passaporte",usuario.passaporte).in("status",["ativo","pausado"]).order("entrada",{ascending:false}).limit(1);
-  if(error) return null; return data?.[0]||null;
+  if(error) return null; 
+  return data?.[0]||null;
 }
 
 async function restaurarEstado(){
-  const reg=await jornadaAtiva(); if(!reg) return;
+  const reg=await jornadaAtiva(); 
+  if(!reg) return;
   ponto=reg; 
   inicio=new Date(reg.entrada).getTime(); 
   pausado=reg.status==="pausado";
@@ -344,35 +366,59 @@ async function buscarEquipe(){
 
 async function iniciarJornada(){
   if(cooldownAtivo){ mostrarErro("Bloqueado","Aguarde o cooldown"); return; }
-  limparMsg(); el.btnIniciar.disabled=true; el.btnIniciar.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;
+  limparMsg(); 
+  el.btnIniciar.disabled=true; 
+  el.btnIniciar.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> Processando...`;
   try{
-    const ja=await jornadaAtiva(); if(ja) throw new Error(`Já tem jornada ativa às ${hora(new Date(ja.entrada))}`);
-    const eq=await buscarEquipe(); if(!eq) throw new Error("Sem equipes disponíveis");
+    const ja=await jornadaAtiva(); 
+    if(ja) throw new Error(`Já tem jornada ativa às ${hora(new Date(ja.entrada))}`);
+    const eq=await buscarEquipe(); 
+    if(!eq) throw new Error("Sem equipes disponíveis");
     const agora=new Date().toISOString();
     const {data:pt,error:er1}=await supabaseClient.from("pontos").insert({
-      passaporte:usuario.passaporte,nome:usuario.nome,entrada:agora,status:"ativo",equipe_id:eq.id
-    }).select().single(); if(er1) throw er1;
-    await supabaseClient.from("equipe_membros").insert({equipe_id:eq.id,passaporte:usuario.passaporte,nome:usuario.nome,status:"ativo"});
-    ponto=pt; inicio=Date.now(); pausado=false;
-    el.entrada.textContent=hora(); el.marcEntrada.textContent=hora(); el.equipe.textContent=eq.nome;
-    el.status.textContent="Ativo"; el.status.style.color="var(--green)";
-    el.btnIniciar.style.display="none"; el.grupo.style.display="flex";
+      passaporte:usuario.passaporte,
+      nome:usuario.nome,
+      entrada:agora,
+      status:"ativo",
+      equipe_id:eq.id
+    }).select().single(); 
+    if(er1) throw er1;
+    await supabaseClient.from("equipe_membros").insert({
+      equipe_id:eq.id,
+      passaporte:usuario.passaporte,
+      nome:usuario.nome,
+      status:"ativo"
+    });
+    ponto=pt; 
+    inicio=Date.now(); 
+    pausado=false;
+    el.entrada.textContent=hora(); 
+    el.marcEntrada.textContent=hora(); 
+    el.equipe.textContent=eq.nome;
+    el.status.textContent="Ativo"; 
+    el.status.style.color="var(--green)";
+    el.btnIniciar.style.display="none"; 
+    el.grupo.style.display="flex";
     intervalo=setInterval(atualizarTimer,1000);
     mostrarSucesso("<i class='fa-solid fa-circle-check'></i> Jornada Iniciada", `Equipe: ${eq.nome}`);
     
     setTimeout(()=>{ window.location.href = "equipe.html"; }, 800);
     
   }catch(e){ mostrarErro("Erro ao iniciar",e.message); }
-  el.btnIniciar.disabled=false; el.btnIniciar.innerHTML=`<i class="fa-solid fa-play"></i> Iniciar Jornada`;
+  el.btnIniciar.disabled=false; 
+  el.btnIniciar.innerHTML=`<i class="fa-solid fa-play"></i> Iniciar Jornada`;
 }
 
 async function pausarContinuar(){
-  if(!ponto) return; limparMsg();
+  if(!ponto) return; 
+  limparMsg();
   try{
     if(!pausado){
       await supabaseClient.from("pontos").update({pausa_inicio:new Date().toISOString(),status:"pausado"}).eq("id",ponto.id);
-      pausado=true; pausaInicio=Date.now();
-      el.status.textContent="Pausado"; el.status.style.color="var(--yellow)";
+      pausado=true; 
+      pausaInicio=Date.now();
+      el.status.textContent="Pausado"; 
+      el.status.style.color="var(--yellow)";
       el.btnPausar.innerHTML=`<i class="fa-solid fa-play"></i> Continuar`;
       el.marcPausa.textContent=hora();
       
@@ -386,7 +432,8 @@ async function pausarContinuar(){
       tempoPausa+=Math.floor((Date.now()-pausaInicio)/1000);
       await supabaseClient.from("pontos").update({status:"ativo"}).eq("id",ponto.id);
       pausado=false;
-      el.status.textContent="Ativo"; el.status.style.color="var(--green)";
+      el.status.textContent="Ativo"; 
+      el.status.style.color="var(--green)";
       el.btnPausar.innerHTML=`<i class="fa-solid fa-pause"></i> Pausar`;
       intervalo=setInterval(atualizarTimer,1000);
       mostrarSucesso("<i class='fa-solid fa-play'></i> Retomado", "Jornada continuada");
@@ -395,21 +442,31 @@ async function pausarContinuar(){
 }
 
 async function confirmarEncerramento(){
-  fecharModal(); limparMsg();
+  fecharModal(); 
+  limparMsg();
   try{
     const agora=new Date().toISOString();
     await supabaseClient.from("pontos").update({saida:agora,status:"encerrado"}).eq("id",ponto.id);
     await supabaseClient.from("equipe_membros").update({status:"fora"}).eq("passaporte",usuario.passaporte).eq("equipe_id",ponto.equipe_id);
-    el.marcSaida.textContent=hora(); el.status.textContent="Offline"; el.status.style.color="var(--muted)";
-    el.btnIniciar.style.display="block"; el.grupo.style.display="none";
-    clearInterval(intervalo); el.timer.textContent="00:00:00"; el.equipe.textContent="--";
+    el.marcSaida.textContent=hora(); 
+    el.status.textContent="Offline"; 
+    el.status.style.color="var(--muted)";
+    el.btnIniciar.style.display="block"; 
+    el.grupo.style.display="none";
+    clearInterval(intervalo); 
+    el.timer.textContent="00:00:00"; 
+    el.equipe.textContent="--";
     
     contadorPausas = 0;
     localStorage.setItem("contadorPausas", contadorPausas);
     el.pausas.textContent = contadorPausas;
     
-    iniciarCooldown(60); mostrarSucesso("<i class='fa-solid fa-stop'></i> Encerrado", `Às ${hora()}\nAguarde 1 minuto`);
-    ponto=null; inicio=null; pausaInicio=null; tempoPausa=0;
+    iniciarCooldown(60); 
+    mostrarSucesso("<i class='fa-solid fa-stop'></i> Encerrado", `Às ${hora()}\nAguarde 1 minuto`);
+    ponto=null; 
+    inicio=null; 
+    pausaInicio=null; 
+    tempoPausa=0;
   }catch(e){ mostrarErro("Erro ao encerrar",e.message); }
 }
 
@@ -435,4 +492,5 @@ document.addEventListener("DOMContentLoaded",async ()=>{
 </script>
 
 </body>
-</html>
+        </html>
+        
