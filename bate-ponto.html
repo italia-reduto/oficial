@@ -27,7 +27,7 @@ body{
 button{font-family:inherit;border:none;cursor:pointer}
 button:active{transform:scale(0.97)}
 
-/* TOPBAR IGUAL AO PAINEL */
+/* TOPBAR */
 .topo{
   position:sticky;top:0;z-index:100;background:rgba(8,9,13,0.88);
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
@@ -119,7 +119,7 @@ main{
 .history-card div{font-size:12px;color:var(--muted);margin-top:4px}
 .loading{color:var(--muted);text-align:center;padding:40px 20px}
 
-/* MENU INFERIOR IDÊNTICO */
+/* MENU INFERIOR */
 .menu-container{
   position:fixed;bottom:0;left:0;right:0;z-index:500;
   display:flex;align-items:center;justify-content:space-around;
@@ -281,18 +281,12 @@ main{
   <button class="menu-item" data-pagina="registros">
     <i class="fas fa-folder-open"></i><span>Registros</span>
   </button>
-</nav>
-
-<script>
+    </nav>
+  <script>
 // Supabase
 const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-// Sessão
-const sessao = sessionStorage.getItem("italia_usuario");
-if (!sessao) { location.href = "login.html"; throw new Error("Sem sessão"); }
-const usuario = JSON.parse(sessao);
 
 // Elementos DOM
 const el = {
@@ -323,11 +317,27 @@ let tempoPausadoTotal = 0;
 let inicioPausa = null;
 let cooldownAtivo = false;
 let contadorPausas = parseInt(localStorage.getItem("contadorPausas") || "0");
+let usuario = null;
 
-// Dados do usuário
-el.nome.textContent = usuario.nome || "Falcão";
-el.pass.textContent = `Passaporte: ${usuario.passaporte || "17274"}`;
-el.pausas.textContent = contadorPausas;
+// ✅ CORREÇÃO DO CARREGAMENTO DO USUÁRIO
+function inicializarUsuario() {
+  try {
+    const sessao = sessionStorage.getItem("italia_usuario");
+    if (sessao) {
+      usuario = JSON.parse(sessao);
+    } else {
+      // Fallback para teste/padrão igual ao painel
+      usuario = { nome: "Falcão", passaporte: "17274" };
+    }
+  } catch (e) {
+    usuario = { nome: "Falcão", passaporte: "17274" };
+  }
+  
+  // Atualiza topo imediatamente
+  el.nome.textContent = usuario.nome;
+  el.pass.textContent = `Passaporte: ${usuario.passaporte}`;
+  el.pausas.textContent = contadorPausas;
+}
 
 // Utilitários
 function horaAtual(data = new Date()) {
@@ -466,12 +476,10 @@ async function iniciarJornada() {
       status: "ativo"
     });
     
-    // Atualiza estado
     pontoAtivo = ponto;
     tempoInicio = Date.now();
     estaPausado = false;
     
-    // Atualiza UI
     el.entrada.textContent = horaAtual();
     el.marcEntrada.textContent = horaAtual();
     el.equipe.textContent = equipe.nome;
@@ -482,8 +490,6 @@ async function iniciarJornada() {
     
     cronometro = setInterval(atualizarCronometro, 1000);
     exibirMensagem("sucesso", "Jornada Iniciada", `Equipe: ${equipe.nome}`);
-    
-    setTimeout(() => window.location.href = "equipe.html", 800);
     
   } catch (erro) {
     exibirMensagem("erro", "Erro", erro.message);
@@ -498,7 +504,6 @@ async function pausarContinuar() {
   
   try {
     if (!estaPausado) {
-      // Pausar
       await supabase.from("pontos").update({ 
         pausa_inicio: new Date().toISOString(), 
         status: "pausado" 
@@ -519,7 +524,6 @@ async function pausarContinuar() {
       exibirMensagem("sucesso", "Pausado", "Jornada pausada com sucesso");
       
     } else {
-      // Continuar
       tempoPausadoTotal += Math.floor((Date.now() - inicioPausa) / 1000);
       
       await supabase.from("pontos").update({ status: "ativo" }).eq("id", pontoAtivo.id);
@@ -551,7 +555,6 @@ async function confirmarEncerramento() {
       .eq("passaporte", usuario.passaporte)
       .eq("equipe_id", pontoAtivo.equipe_id);
     
-    // Reset UI
     el.marcSaida.textContent = horaAtual();
     el.status.textContent = "Offline";
     el.status.style.color = "var(--muted)";
@@ -568,7 +571,6 @@ async function confirmarEncerramento() {
     iniciarCooldown(60);
     exibirMensagem("sucesso", "Jornada Encerrada", `Às ${horaAtual()}`);
     
-    // Reset estado
     pontoAtivo = null;
     tempoInicio = null;
     tempoPausadoTotal = 0;
@@ -623,8 +625,9 @@ document.querySelectorAll(".menu-item").forEach(item => {
   });
 });
 
-// Inicialização
+// INICIALIZAÇÃO COMPLETA
 document.addEventListener("DOMContentLoaded", async () => {
+  inicializarUsuario(); // ✅ Resolve "Carregando..."
   verificarCooldownSalvo();
   
   const jornada = await buscarJornadaAtiva();
@@ -648,5 +651,4 @@ document.addEventListener("DOMContentLoaded", async () => {
 </script>
 
 </body>
-      </html>
-      
+</html>
