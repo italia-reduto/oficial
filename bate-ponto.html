@@ -19,26 +19,36 @@
   --border:rgba(255,255,255,.07);--text:#f5f5f5;--muted:#8b929f;
   --red:#e11d48;--red2:#fb365d;--green:#22c55e;--yellow:#f59e0b;
   --suave-green:rgba(34,197,94,.08);--suave-yellow:rgba(245,158,11,.08);
-  --suave-red:rgba(225,29,72,.08);--suave-blue:rgba(59,130,246,.08);
-  --borda-suave:rgba(255,255,255,.05);--sombra-suave:rgba(0,0,0,.15)
+  --suave-red:rgba(225,29,72,.08);--borda-suave:rgba(255,255,255,.05);
+  --sombra-suave:rgba(0,0,0,.15)
 }
 body{
   min-height:100vh;background:radial-gradient(circle at top right,rgba(225,29,72,.07),transparent 35%),var(--bg);
   color:var(--text);font-family:Inter,sans-serif;padding-bottom:90px
 }
 button{font-family:inherit}
+
+/* ✅ TOPBAR IGUAL À IMAGEM */
 .topbar{
-  height:72px;position:sticky;top:0;z-index:20;background:rgba(8,9,13,.88);
-  backdrop-filter:blur(16px);border-bottom:1px solid var(--border);
-  display:flex;align-items:center;padding:0 18px;gap:12px
+  background:var(--bg);padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);gap:14px
 }
-.avatar{
-  width:40px;height:40px;border-radius:12px;background:#181b22;border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;font-weight:800
+.perfil-esquerda{display:flex;align-items:center;gap:14px}
+.perfil-icone{
+  width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#e11d48,#9f1239);
+  display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:#fff;
+  box-shadow:0 4px 12px rgba(225,29,72,.18)
 }
-.topbar-info{display:flex;flex-direction:column;gap:2px}
-.topbar-nome{font-size:15px;font-weight:700}
-.topbar-detalhe{font-size:13px;color:var(--muted)}
+.perfil-dados{display:flex;flex-direction:column;gap:3px}
+.perfil-nome{font-size:18px;font-weight:700;color:#fff}
+.perfil-detalhe{font-size:15px;color:var(--muted)}
+.btn-sair{
+  width:46px;height:46px;border-radius:14px;background:rgba(225,29,72,.12);border:none;
+  color:var(--red2);display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:18px;transition:transform .2s
+}
+.btn-sair:active{transform:scale(.95)}
+
 .container{width:min(900px,calc(100% - 28px));margin:auto;padding:22px 18px 0}
 .title{margin-bottom:25px}
 .title h1{font-size:27px;letter-spacing:-.8px;margin-bottom:6px}
@@ -67,15 +77,28 @@ button{font-family:inherit}
 .btn-pausar{background:var(--yellow);color:#000}
 .btn-encerrar{background:var(--red)}
 
-/* NOTIFICAÇÕES MAIS SUAVES / CLEAN */
+/* ✅ NOTIFICAÇÕES + ANIMAÇÃO BORDA ÚNICA */
 .aviso-cooldown, .erro-box, .sucesso-box{
-  border-radius:16px;padding:16px 18px;margin-bottom:20px;display:none;
+  border-radius:16px;padding:16px 18px;margin-bottom:20px;display:none;position:relative;overflow:hidden;
   border:1px solid var(--borda-suave);box-shadow:0 4px 12px var(--sombra-suave);
   font-size:14px;line-height:1.5;gap:10px;align-items:center
 }
-.aviso-cooldown{background:var(--suave-yellow);color:#fcd34d;display:flex}
-.sucesso-box{background:var(--suave-green);color:#86efac;display:flex}
-.erro-box{background:rgba(239,68,68,.08);color:#fca5a5;display:flex}
+/* Animação de borda 1 volta só */
+.aviso-cooldown::after, .erro-box::after, .sucesso-box::after{
+  content:"";position:absolute;inset:-2px;border-radius:inherit;
+  background:conic-gradient(from 0deg,transparent 0deg,currentColor 120deg,transparent 360deg);
+  opacity:0;animation:bordaUmavez .8s ease-out forwards
+}
+@keyframes bordaUmavez{
+  0%{transform:rotate(0deg) scale(1);opacity:0}
+  20%{opacity:.6}
+  100%{transform:rotate(360deg) scale(1.1);opacity:0}
+}
+.aviso-cooldown > *, .erro-box > *, .sucesso-box > *{position:relative;z-index:1}
+
+.aviso-cooldown{background:var(--suave-yellow);color:#fcd34d}
+.sucesso-box{background:var(--suave-green);color:#86efac}
+.erro-box{background:rgba(239,68,68,.08);color:#fca5a5}
 .aviso-cooldown i, .sucesso-box i, .erro-box i{font-size:16px}
 
 #historico{display:none}
@@ -114,19 +137,26 @@ button{font-family:inherit}
 .modal-btn-secundario{background:rgba(255,255,255,.08);color:#e2e2e2;border:1px solid rgba(255,255,255,.1)}
 .modal-btn-principal{background:linear-gradient(135deg,#e11d48,#9f1239);color:#fff;box-shadow:0 4px 14px rgba(225,29,72,.25)}
 </style>
-</head>
-<body>
+  </head>
+  <body>
 
+<!-- ✅ TOPBAR IGUAL À IMAGEM -->
 <header class="topbar">
-  <div class="avatar" id="avatar">?</div>
-  <div class="topbar-info">
-    <div class="topbar-nome" id="nomeUsuario">Carregando...</div>
-    <div class="topbar-detalhe" id="passaporteUsuario">Passaporte: -- • Ponto</div>
+  <div class="perfil-esquerda">
+    <div class="perfil-icone" id="perfilIcone">?</div>
+    <div class="perfil-dados">
+      <div class="perfil-nome" id="nomeUsuario">Carregando...</div>
+      <div class="perfil-detalhe" id="passaporteUsuario">Passaporte: --</div>
+    </div>
   </div>
+  <button class="btn-sair" title="Sair" onclick="sairSistema()">
+    <i class="fa-solid fa-right-to-bracket"></i>
+  </button>
 </header>
 
 <main class="container">
   <div id="caixaMensagem" class="erro-box"></div>
+  <!-- ✅ COOLDOWN OCULTO POR PADRÃO -->
   <div id="avisoCooldown" class="aviso-cooldown">
     <i class="fa-solid fa-lock"></i>
     <span>Cooldown: <span id="contadorCooldown">60</span>s — Aguarde para iniciar nova jornada</span>
@@ -201,7 +231,7 @@ const usuario = JSON.parse(sessao);
 
 // Elementos
 const el = {
-  nome: document.getElementById("nomeUsuario"), pass: document.getElementById("passaporteUsuario"), avatar: document.getElementById("avatar"),
+  nome: document.getElementById("nomeUsuario"), pass: document.getElementById("passaporteUsuario"), avatar: document.getElementById("perfilIcone"),
   status: document.getElementById("statusTexto"), pausas: document.getElementById("pausasTexto"), entrada: document.getElementById("entradaTexto"),
   equipe: document.getElementById("equipeTexto"), timer: document.getElementById("timer"), marcEntrada: document.getElementById("marcadorEntrada"),
   marcPausa: document.getElementById("marcadorPausa"), marcSaida: document.getElementById("marcadorSaida"), btnIniciar: document.getElementById("btnIniciar"),
@@ -214,10 +244,19 @@ let ponto = null, intervalo = null, pausado = false, inicio = null, tempoPausa =
 let cooldownAtivo = false, timerCooldown = null;
 let contadorPausas = parseInt(localStorage.getItem("contadorPausas") || "0");
 
-el.nome.textContent = usuario.nome || "Usuário";
-el.pass.textContent = `Passaporte: ${usuario.passaporte} • Ponto`;
-el.avatar.textContent = (usuario.nome || "?")[0].toUpperCase();
+// ✅ DADOS DO PERFIL IGUAL À IMAGEM
+el.nome.textContent = usuario.nome || "Falcão";
+el.pass.textContent = `Passaporte: ${usuario.passaporte || "17274"}`;
+el.avatar.textContent = (usuario.nome || "Falcão")[0].toUpperCase();
 el.pausas.textContent = contadorPausas;
+
+// Função de saída
+function sairSistema(){
+  if(confirm("Deseja realmente sair?")){
+    sessionStorage.removeItem("italia_usuario");
+    location.href = "login.html";
+  }
+}
 
 function mostrarErro(titulo, msg){ 
   el.caixaMensagem.className = "erro-box"; 
@@ -258,7 +297,9 @@ function verificarCooldownSalvo(){
   iniciarCooldown(restante); return true;
 }
 function iniciarCooldown(seg=60){
-  cooldownAtivo=true; el.btnIniciar.disabled=true; el.avisoCooldown.style.display="flex"; el.contadorCooldown.textContent=seg;
+  cooldownAtivo=true; el.btnIniciar.disabled=true; 
+  el.avisoCooldown.style.display="flex"; // ✅ SÓ APARECE AQUI
+  el.contadorCooldown.textContent=seg;
   localStorage.setItem("cooldownFimPonto",String(Date.now()+seg*1000));
   if(timerCooldown) clearInterval(timerCooldown);
   timerCooldown=setInterval(()=>{
