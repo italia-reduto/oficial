@@ -198,6 +198,7 @@ const el = {
 
 let ponto = null, intervalo = null, pausado = false, inicio = null, tempoPausa = 0, pausaInicio = null;
 let cooldownAtivo = false, timerCooldown = null;
+let contadorPausas = 0; // ✅ Contador de pausas adicionado
 
 el.nome.textContent = usuario.nome || "Usuário";
 el.pass.textContent = `Passaporte: ${usuario.passaporte} • Ponto`;
@@ -280,7 +281,8 @@ async function iniciarJornada(){
     el.status.textContent="Ativo"; el.status.style.color="var(--green)";
     el.btnIniciar.style.display="none"; el.grupo.style.display="flex";
     intervalo=setInterval(atualizarTimer,1000);
-    mostrarSucesso("✅ Jornada Iniciada",`Equipe: ${eq.nome}`);
+    mostrarSucesso("<i class='fa-solid fa-circle-check'></i> Jornada Iniciada", `Equipe: ${eq.nome}`);
+    
   }catch(e){ mostrarErro("Erro ao iniciar",e.message); }
   el.btnIniciar.disabled=false; el.btnIniciar.innerHTML=`<i class="fa-solid fa-play"></i> Iniciar Jornada`;
 }
@@ -293,14 +295,22 @@ async function pausarContinuar(){
       pausado=true; pausaInicio=Date.now();
       el.status.textContent="Pausado"; el.status.style.color="var(--yellow)";
       el.btnPausar.innerHTML=`<i class="fa-solid fa-play"></i> Continuar`;
-      el.marcPausa.textContent=hora(); mostrarSucesso("⏸️ Pausado","Jornada pausada");
+      el.marcPausa.textContent=hora();
+      
+      // ✅ Incrementa e atualiza contador de pausas
+      contadorPausas++;
+      el.pausas.textContent = contadorPausas;
+      
+      mostrarSucesso("<i class='fa-solid fa-pause'></i> Pausado","Jornada pausada");
+      
     }else{
       tempoPausa+=Math.floor((Date.now()-pausaInicio)/1000);
       await supabaseClient.from("pontos").update({status:"ativo"}).eq("id",ponto.id);
       pausado=false;
       el.status.textContent="Ativo"; el.status.style.color="var(--green)";
       el.btnPausar.innerHTML=`<i class="fa-solid fa-pause"></i> Pausar`;
-      mostrarSucesso("▶️ Retomado","Jornada continuada");
+      mostrarSucesso("<i class='fa-solid fa-play'></i> Retomado","Jornada continuada");
+      
     }
   }catch(e){ mostrarErro("Erro",e.message); }
 }
@@ -314,7 +324,13 @@ async function confirmarEncerramento(){
     el.marcSaida.textContent=hora(); el.status.textContent="Offline"; el.status.style.color="var(--muted)";
     el.btnIniciar.style.display="block"; el.grupo.style.display="none";
     clearInterval(intervalo); el.timer.textContent="00:00:00"; el.equipe.textContent="--";
-    iniciarCooldown(60); mostrarSucesso("✅ Encerrado",`Às ${hora()}\nAguarde 1 minuto`);
+    
+    // ✅ Reseta contador ao encerrar
+    contadorPausas = 0;
+    el.pausas.textContent = contadorPausas;
+    
+    iniciarCooldown(60); mostrarSucesso("<i class='fa-solid fa-stop'></i> Encerrado",`Às ${hora()}\nAguarde 1 minuto`);
+    
     ponto=null; inicio=null; pausaInicio=null; tempoPausa=0;
   }catch(e){ mostrarErro("Erro ao encerrar",e.message); }
 }
@@ -338,5 +354,4 @@ document.addEventListener("DOMContentLoaded",async ()=>{ verificarCooldownSalvo(
 </script>
 
 </body>
-        </html>
-        
+</html>
