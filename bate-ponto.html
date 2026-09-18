@@ -1,637 +1,1984 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Ponto · Organização Itália</title>
-    <meta name="theme-color" content="#08090d">
-    <meta name="color-scheme" content="dark">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        // ========== CONEXÃO SUPABASE ==========
-        const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08090d">
+<title>Meu Ponto</title>
 
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        html { scroll-behavior: smooth; }
-        body {
-            min-height: 100vh; background: #08090d; color: #f5f5f5;
-            font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            padding-bottom: 92px;
-        }
-        button { font-family: inherit; }
-        .btn { border: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .btn:active { transform: scale(0.97); }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-        /* Carregamento */
-        #carregando {
-            position: fixed; inset: 0; z-index: 2000; background: #08090d;
-            display: flex; align-items: center; justify-content: center;
-            flex-direction: column; gap: 14px;
-        }
-        #carregando i { color: #e11d48; font-size: 28px; }
-        #carregando span { color: #8b929f; font-size: 13px; }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    -webkit-tap-highlight-color:transparent;
+}
 
-        /* Cabeçalho */
-        .topo {
-            position: sticky; top: 0; z-index: 100;
-            background: rgba(8, 9, 13, 0.88);
-            backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-            border-bottom: 1px solid rgba(255,255,255,0.06);
-            padding: 14px 18px;
-        }
-        .topo-conteudo {
-            display: flex; align-items: center; justify-content: space-between;
-            max-width: 700px; margin: 0 auto;
-        }
-        .usuario-topo { display: flex; align-items: center; gap: 12px; min-width: 0; }
-        .avatar {
-            width: 44px; height: 44px; flex-shrink: 0; border-radius: 14px;
-            display: flex; align-items: center; justify-content: center;
-            background: linear-gradient(145deg, rgba(225,29,72,0.22), rgba(225,29,72,0.08));
-            border: 1px solid rgba(225,29,72,0.25);
-            color: #fb365d; font-size: 18px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.22);
-        }
-        .usuario-info { min-width: 0; }
-        .usuario-nome {
-            font-size: 15px; font-weight: 700;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-            max-width: 220px;
-        }
-        .usuario-passaporte { margin-top: 2px; font-size: 12px; color: #8b929f; }
+:root{
+    --bg:#08090d;
+    --card:#111217;
+    --card2:#15161c;
+    --border:#25262d;
+    --text:#f5f5f7;
+    --muted:#8c8e98;
+    --red:#e21d2f;
+    --red-dark:#a90f1d;
+    --green:#28c76f;
+    --yellow:#ffb020;
+}
 
-        /* Botão saída */
-        .btn-saida {
-            width: 42px; height: 42px; flex-shrink: 0;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 13px;
-            background: rgba(225,29,72,0.08);
-            border: 1px solid rgba(225,29,72,0.18);
-            color: #fb365d; font-size: 15px; transition: 0.2s ease;
-        }
-        .btn-saida:active { background: rgba(225,29,72,0.16); }
+html{
+    background:var(--bg);
+}
 
-        /* Conteúdo principal */
-        main {
-            width: 100%; max-width: 700px; margin: 0 auto;
-            padding: 20px 16px 25px;
-        }
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top right,rgba(226,29,47,.08),transparent 35%),
+        var(--bg);
+    color:var(--text);
+    font-family:Inter,Arial,sans-serif;
+    padding-bottom:90px;
+}
 
-        /* Título da página */
-        .pagina-titulo {
-            margin-bottom: 24px;
-        }
-        .pagina-titulo h1 {
-            font-size: 28px; font-weight: 750; margin-bottom: 6px;
-        }
-        .pagina-titulo p {
-            color: #8b929f; font-size: 14px;
-        }
+button{
+    font-family:inherit;
+}
 
-        /* Cards de status */
-        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
-        .info-card {
-            position: relative; min-width: 0; background: #12151b;
-            border: 1px solid rgba(255,255,255,0.065); border-radius: 17px;
-            padding: 14px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-        }
-        .info-label {
-            color: #777f8c; font-size: 10px; margin-bottom: 4px;
-        }
-        .info-valor {
-            color: #f2f2f4; font-size: 14px; font-weight: 700;
-        }
+.loading{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#08090d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.3s;
+}
 
-        /* Abas */
-        .abas {
-            display: flex; gap: 8px; background: #10131a;
-            border: 1px solid rgba(255,255,255,0.06);
-            padding: 6px; border-radius: 16px; margin-bottom: 20px;
-        }
-        .aba {
-            flex: 1; border: none; background: transparent; color: #8b929f;
-            padding: 12px; border-radius: 12px; font-size: 14px; font-weight: 600;
-            cursor: pointer; transition: all 0.2s ease;
-        }
-        .aba.ativa {
-            background: #191c23; color: #fff;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        }
+.loading.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
 
-        /* Card do cronômetro */
-        .cronometro-card {
-            position: relative;
-            background: linear-gradient(145deg, #12151b 0%, #0f1116 100%);
-            border: 1px solid rgba(255,255,255,0.07); border-radius: 20px;
-            padding: 24px; margin-bottom: 16px;
-            text-align: center;
-            box-shadow: 0 12px 35px rgba(0,0,0,0.18);
-            overflow: hidden;
-        }
-        .cronometro-card::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle at top right, rgba(225, 29, 72, 0.15), transparent 70%);
-            pointer-events: none;
-        }
-        .cronometro-label {
-            color: #8b929f; font-size: 14px; text-transform: uppercase;
-            letter-spacing: 1px; margin-bottom: 16px;
-            position: relative;
-            z-index: 1;
-        }
-        .cronometro-valor {
-            font-size: clamp(48px, 12vw, 72px); font-weight: 800;
-            font-variant-numeric: tabular-nums; margin-bottom: 24px;
-            background: linear-gradient(180deg, #ffffff, #cccccc);
-            -webkit-background-clip: text; background-clip: text;
-            color: transparent;
-            position: relative;
-            z-index: 1;
-        }
+.loader-box{
+    text-align:center;
+}
 
-        /* Marcadores */
-        .marcadores {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        .marcador {
-            background: #10131a; border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 16px; padding: 16px 8px;
-        }
-        .marcador-titulo {
-            color: #777f8c; font-size: 11px; margin-bottom: 6px;
-            text-transform: uppercase;
-        }
-        .marcador-valor {
-            color: #f2f2f4; font-size: 14px; font-weight: 600;
-        }
+.loader{
+    width:36px;
+    height:36px;
+    border:3px solid #292a31;
+    border-top-color:var(--red);
+    border-radius:50%;
+    animation:girar .8s linear infinite;
+    margin:auto auto 12px;
+}
 
-        /* Botões */
-        .area-botoes {
-            display: grid; gap: 12px; margin-bottom: 20px;
-            position: relative;
-            z-index: 1;
-        }
-        .btn-principal {
-            width: 100%; padding: 16px; border-radius: 16px;
-            font-size: 15px; font-weight: 700; border: none;
-            background: linear-gradient(135deg, #e11d48, #c9183f); color: white;
-            box-shadow: 0 7px 20px rgba(225,29,72,0.20);
-            cursor: pointer; transition: transform 0.2s ease;
-        }
-        .btn-grupo {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-            display: none;
-        }
-        .btn-secundario {
-            padding: 16px; border-radius: 16px; font-size: 15px; font-weight: 700;
-            border: none; cursor: pointer; transition: all 0.2s ease;
-        }
-        .btn-pausar { background: #f59e0b; color: #000; }
-        .btn-encerrar { background: #191c23; color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+.loader-box span{
+    color:var(--muted);
+    font-size:12px;
+}
 
-        /* Histórico */
-        #area-historico { display: none; }
-        .aviso-vazio {
-            background: #12151b; border: 1px solid rgba(255,255,255,0.06);
-            border-radius: 17px; padding: 24px; text-align: center;
-            color: #8b929f; font-size: 14px;
-        }
+@keyframes girar{
+    to{transform:rotate(360deg)}
+}
 
-        /* Notificações */
-        .notificacao {
-            position: fixed; 
-            top: 25px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            background: #12151b; 
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 14px; 
-            padding: 14px 20px; 
-            z-index: 9999;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-            display: none; 
-            align-items: center; 
-            gap: 10px;
-            max-width: 90%; 
-            width: fit-content;
-            backdrop-filter: blur(10px);
-        }
-        .notificacao i { color: #e11d48; font-size: 16px; }
-        .notificacao span { font-size: 14px; color: #f2f2f4; font-weight: 500; }
+header{
+    position:sticky;
+    top:0;
+    z-index:50;
+    padding:18px 16px 14px;
+    background:rgba(8,9,13,.92);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,.04);
+}
 
-        /* Menu inferior */
-        .menu-container {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 500;
-            display: flex; align-items: center; justify-content: space-around;
-            height: 78px;
-            padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
-            background: rgba(13,15,20,0.94);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-top: 1px solid rgba(255,255,255,0.07);
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.20);
-        }
-        .menu-item {
-            position: relative; width: 20%; max-width: 80px; height: 58px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            gap: 5px; background: transparent; border: none;
-            color: #5d6470; cursor: pointer; transition: color 0.2s ease;
-        }
-        .menu-item i { font-size: 17px; transition: transform 0.2s ease; }
-        .menu-item span { font-size: 9px; font-weight: 600; }
-        .menu-item.active { color: #f5f5f5; }
-        .menu-item.active i { color: #fb365d; transform: translateY(-1px); }
-        .menu-item.active::before {
-            content: ""; position: absolute; top: 1px;
-            width: 24px; height: 3px; border-radius: 10px;
-            background: #e11d48; box-shadow: 0 0 12px rgba(225,29,72,0.45);
-        }
+.header-inner{
+    max-width:600px;
+    margin:auto;
+}
 
-        /* Responsivo */
-        @media (max-width: 380px) {
-            main { padding-left: 12px; padding-right: 12px; }
-            .info-grid { gap: 8px; }
-            .marcadores { gap: 8px; }
-        }
-    </style>
+.header-title{
+    font-size:20px;
+    font-weight:800;
+    letter-spacing:-.5px;
+}
+
+.header-sub{
+    color:var(--muted);
+    font-size:12px;
+    margin-top:4px;
+}
+
+.container{
+    width:100%;
+    max-width:600px;
+    margin:auto;
+    padding:16px;
+}
+
+.user-card{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    background:linear-gradient(145deg,#15161c,#101116);
+    border:1px solid var(--border);
+    border-radius:17px;
+    padding:15px;
+    margin-bottom:14px;
+}
+
+.user-avatar{
+    width:48px;
+    height:48px;
+    flex:none;
+    border-radius:14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(226,29,47,.13);
+    color:var(--red);
+    font-size:19px;
+}
+
+.user-info{
+    min-width:0;
+}
+
+.user-name{
+    font-size:15px;
+    font-weight:700;
+}
+
+.user-pass{
+    color:var(--muted);
+    font-size:11px;
+    margin-top:3px;
+}
+
+.status-pill{
+    margin-left:auto;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 9px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:700;
+    white-space:nowrap;
+    background:#24252b;
+    color:var(--muted);
+}
+
+.status-dot{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:#777;
+}
+
+.status-pill.ativo{
+    color:var(--green);
+    background:rgba(40,199,111,.09);
+}
+
+.status-pill.ativo .status-dot{
+    background:var(--green);
+}
+
+.status-pill.pausado{
+    color:var(--yellow);
+    background:rgba(255,176,32,.09);
+}
+
+.status-pill.pausado .status-dot{
+    background:var(--yellow);
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:16px;
+}
+
+.summary-card{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:15px;
+    padding:14px;
+}
+
+.summary-icon{
+    width:31px;
+    height:31px;
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(226,29,47,.1);
+    color:var(--red);
+    font-size:13px;
+    margin-bottom:10px;
+}
+
+.summary-label{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.summary-value{
+    font-size:15px;
+    font-weight:700;
+    margin-top:4px;
+}
+
+.tabs{
+    display:flex;
+    background:#101116;
+    border:1px solid var(--border);
+    border-radius:13px;
+    padding:4px;
+    margin-bottom:14px;
+}
+
+.tab{
+    flex:1;
+    border:0;
+    background:transparent;
+    color:var(--muted);
+    padding:10px 7px;
+    border-radius:9px;
+    font-size:11px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.tab.active{
+    background:#22232a;
+    color:#fff;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.journey-card{
+    background:linear-gradient(145deg,#15161c,#101116);
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:12px;
+}
+
+.card-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:18px;
+}
+
+.card-title strong{
+    font-size:13px;
+}
+
+.card-title span{
+    color:var(--muted);
+    font-size:10px;
+}
+
+.timer-wrap{
+    text-align:center;
+    padding:12px 0 20px;
+}
+
+.timer-label{
+    color:var(--muted);
+    font-size:10px;
+    margin-bottom:7px;
+}
+
+.timer{
+    font-size:37px;
+    line-height:1;
+    font-weight:800;
+    letter-spacing:1px;
+    font-variant-numeric:tabular-nums;
+}
+
+.time-info{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:12px;
+}
+
+.time-item{
+    background:#0d0e12;
+    border:1px solid #202127;
+    border-radius:11px;
+    padding:10px;
+}
+
+.time-item span{
+    display:block;
+    color:var(--muted);
+    font-size:9px;
+    margin-bottom:4px;
+}
+
+.time-item strong{
+    font-size:12px;
+}
+
+.actions{
+    display:grid;
+    gap:9px;
+    margin-top:16px;
+}
+
+.btn{
+    width:100%;
+    border:0;
+    border-radius:12px;
+    min-height:46px;
+    padding:12px 15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    font-size:12px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.15s;
+}
+
+.btn:active{
+    transform:scale(.98);
+}
+
+.btn-primary{
+    color:#fff;
+    background:var(--red);
+}
+
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled{
+    opacity:.45;
+    pointer-events:none;
+}
+
+.btn-secondary{
+    color:#fff;
+    background:#24252b;
+    border:1px solid #303139;
+}
+
+.btn-danger{
+    color:#ff6572;
+    background:rgba(226,29,47,.08);
+    border:1px solid rgba(226,29,47,.22);
+}
+
+.empty{
+    text-align:center;
+    padding:35px 15px;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+}
+
+.empty i{
+    font-size:24px;
+    color:#555761;
+    margin-bottom:12px;
+}
+
+.empty strong{
+    display:block;
+    font-size:13px;
+}
+
+.empty span{
+    display:block;
+    color:var(--muted);
+    font-size:11px;
+    margin-top:5px;
+}
+
+.history-list{
+    display:grid;
+    gap:9px;
+}
+
+.history-item{
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:13px;
+}
+
+.history-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+}
+
+.history-date{
+    font-size:12px;
+    font-weight:700;
+}
+
+.history-status{
+    font-size:9px;
+    font-weight:700;
+    color:var(--muted);
+    padding:5px 7px;
+    border-radius:8px;
+    background:#202127;
+}
+
+.history-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:7px;
+}
+
+.history-data{
+    background:#0d0e12;
+    border-radius:9px;
+    padding:8px;
+}
+
+.history-data span{
+    display:block;
+    color:var(--muted);
+    font-size:8px;
+    margin-bottom:3px;
+}
+
+.history-data strong{
+    font-size:10px;
+}
+
+.notification{
+    position:fixed;
+    left:16px;
+    right:16px;
+    bottom:86px;
+    z-index:100;
+    max-width:568px;
+    margin:auto;
+    background:#191a20;
+    border:1px solid #303139;
+    border-radius:13px;
+    padding:13px 14px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    box-shadow:0 10px 35px rgba(0,0,0,.4);
+    transform:translateY(130px);
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+}
+
+.notification.show{
+    transform:translateY(0);
+    opacity:1;
+}
+
+.notification i{
+    color:var(--red);
+}
+
+.notification-text{
+    font-size:11px;
+    line-height:1.4;
+}
+
+.bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    z-index:60;
+    height:72px;
+    background:rgba(12,13,17,.96);
+    border-top:1px solid var(--border);
+    backdrop-filter:blur(15px);
+    display:flex;
+    justify-content:center;
+}
+
+.nav-inner{
+    width:100%;
+    max-width:600px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+}
+
+.nav-item{
+    border:0;
+    background:transparent;
+    color:#686a74;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    font-size:9px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+.nav-item i{
+    font-size:16px;
+}
+
+.nav-item.active{
+    color:var(--red);
+}
+
+@media(min-width:601px){
+    body{
+        padding-bottom:20px;
+    }
+
+    .bottom-nav{
+        position:static;
+        margin-top:15px;
+        border:1px solid var(--border);
+        border-radius:15px;
+        max-width:600px;
+        margin-left:auto;
+        margin-right:auto;
+    }
+}
+</style>
 </head>
+
 <body>
-    <!-- Carregamento -->
-<div id="carregando">
-    <i class="fas fa-spinner fa-spin"></i>
-    <span>Carregando...</span>
+
+<div class="loading" id="loading">
+    <div class="loader-box">
+        <div class="loader"></div>
+        <span>Carregando seu ponto...</span>
+    </div>
 </div>
 
-<!-- Notificação -->
-<div id="notificacao" class="notificacao">
-    <i class="fas fa-bell"></i>
-    <span id="texto-notif"></span>
-</div>
-
-<!-- Cabeçalho -->
-<header class="topo">
-    <div class="topo-conteudo">
-        <div class="usuario-topo">
-            <div class="avatar"><i class="fas fa-user"></i></div>
-            <div class="usuario-info">
-                <div class="usuario-nome" id="nome-usuario">Falcão</div>
-                <div class="usuario-passaporte">Passaporte: <span id="passaporte-usuario">17274</span></div>
-            </div>
-        </div>
-        <button class="btn-saida" onclick="sairParaPainel()">
-            <i class="fas fa-sign-out-alt"></i>
-        </button>
+<header>
+    <div class="header-inner">
+        <div class="header-title">Meu Ponto</div>
+        <div class="header-sub">Controle da sua jornada</div>
     </div>
 </header>
 
-<main>
-    <section class="pagina-titulo">
-        <h1>Meu Ponto</h1>
-        <p>Controle sua jornada de trabalho.</p>
+<main class="container">
+
+    <div class="user-card">
+        <div class="user-avatar">
+            <i class="fa-solid fa-user"></i>
+        </div>
+
+        <div class="user-info">
+            <div class="user-name" id="nomeUsuario">Falcão</div>
+            <div class="user-pass">
+                Passaporte <span id="passaporteUsuario">17274</span>
+            </div>
+        </div>
+
+        <div class="status-pill" id="statusPill">
+            <span class="status-dot"></span>
+            <span id="statusTexto">Sem jornada</span>
+        </div>
+    </div>
+
+    <div class="summary-grid">
+        <div class="summary-card">
+            <div class="summary-icon">
+                <i class="fa-regular fa-clock"></i>
+            </div>
+            <div class="summary-label">Status de hoje</div>
+            <div class="summary-value" id="statusResumo">Inativo</div>
+        </div>
+
+        <div class="summary-card">
+            <div class="summary-icon">
+                <i class="fa-solid fa-stopwatch"></i>
+            </div>
+            <div class="summary-label">Tempo de jornada</div>
+            <div class="summary-value" id="tempoResumo">00:00:00</div>
+        </div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab active" id="tabJornada">
+            Minha Jornada
+        </button>
+
+        <button class="tab" id="tabHistorico">
+            Meu Histórico
+        </button>
+    </div>
+
+    <section class="section active" id="secaoJornada">
+
+        <div class="journey-card">
+
+            <div class="card-title">
+                <strong>Jornada atual</strong>
+                <span id="dataAtual"></span>
+            </div>
+
+            <div class="timer-wrap">
+                <div class="timer-label">TEMPO TRABALHADO</div>
+                <div class="timer" id="timer">00:00:00</div>
+            </div>
+
+            <div class="time-info">
+                <div class="time-item">
+                    <span>ENTRADA</span>
+                    <strong id="entradaTexto">--:--</strong>
+                </div>
+
+                <div class="time-item">
+                    <span>PAUSA</span>
+                    <strong id="pausaTexto">--:--</strong>
+                </div>
+            </div>
+
+            <div class="actions">
+
+                <button class="btn btn-primary" id="btnIniciar">
+                    <i class="fa-solid fa-play"></i>
+                    Iniciar Jornada
+                </button>
+
+                <button class="btn btn-secondary" id="btnPausa" disabled>
+                    <i class="fa-solid fa-pause"></i>
+                    Pausar
+                </button>
+
+                <button class="btn btn-danger" id="btnEncerrar" disabled>
+                    <i class="fa-solid fa-stop"></i>
+                    Encerrar Jornada
+                </button>
+
+            </div>
+        </div>
+
+        <div class="empty" id="semJornada">
+            <i class="fa-regular fa-calendar-check"></i>
+            <strong>Nenhuma jornada ativa</strong>
+            <span>Inicie sua jornada para começar a contabilizar seu tempo.</span>
+        </div>
+
     </section>
 
-    <div class="info-grid">
-        <div class="info-card">
-            <div class="info-label">Meu Status</div>
-            <div class="info-valor" id="status-ponto">Offline</div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">Pausas</div>
-            <div class="info-valor" id="cont-pausas">0</div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">Entrada</div>
-            <div class="info-valor" id="hora-entrada">--:--</div>
-        </div>
-        <div class="info-card">
-            <div class="info-label">Equipe</div>
-            <div class="info-valor" id="nome-equipe">--</div>
-        </div>
-    </div>
+    <section class="section" id="secaoHistorico">
 
-    <div class="abas">
-        <button class="aba ativa" id="aba-jornada" onclick="trocarAba('jornada')">Minha Jornada</button>
-        <button class="aba" id="aba-historico" onclick="trocarAba('historico')">Meu Histórico</button>
-    </div>
+        <div class="history-list" id="historicoLista"></div>
 
-    <!-- Área Jornada -->
-    <div id="area-jornada">
-        <div class="cronometro-card">
-            <div class="cronometro-label">Tempo em Serviço</div>
-            <div class="cronometro-valor" id="cronometro">00:00:00</div>
-
-            <div class="marcadores">
-                <div class="marcador">
-                    <div class="marcador-titulo">Entrada</div>
-                    <div class="marcador-valor" id="marc-entrada">--:--</div>
-                </div>
-                <div class="marcador">
-                    <div class="marcador-titulo">Última Pausa</div>
-                    <div class="marcador-valor" id="marc-pausa">--:--</div>
-                </div>
-                <div class="marcador">
-                    <div class="marcador-titulo">Saída</div>
-                    <div class="marcador-valor" id="marc-saida">--:--</div>
-                </div>
-            </div>
-
-            <div class="area-botoes">
-                <button id="btn-iniciar" class="btn-principal" onclick="iniciarJornada()">
-                    <i class="fas fa-play"></i> Iniciar Jornada
-                </button>
-                <div id="botoes-acao" class="btn-grupo">
-                    <button class="btn-secundario btn-pausar" id="btn-pausar" onclick="pausarJornada()">
-                        <i class="fas fa-pause"></i> Pausar
-                    </button>
-                    <button class="btn-secundario btn-encerrar" onclick="encerrarJornada()">
-                        <i class="fas fa-stop"></i> Encerrar
-                    </button>
-                </div>
-            </div>
+        <div class="empty" id="historicoVazio">
+            <i class="fa-regular fa-folder-open"></i>
+            <strong>Nenhum registro encontrado</strong>
+            <span>Suas jornadas encerradas aparecerão aqui.</span>
         </div>
-    </div>
 
-    <!-- Área Histórico -->
-    <div id="area-historico">
-        <div class="aviso-vazio">
-            <i class="fas fa-history" style="font-size: 28px; margin-bottom: 10px; opacity: 0.4;"></i>
-            <p>Nenhum registro encontrado.</p>
-        </div>
-    </div>
+    </section>
+
 </main>
 
-<!-- Menu Navegação -->
-<nav class="menu-container">
-    <button class="menu-item" data-pagina="inicio">
-        <i class="fas fa-home"></i><span>Início</span>
-    </button>
-    <button class="menu-item active" data-pagina="ponto">
-        <i class="fas fa-clock"></i><span>Ponto</span>
-    </button>
-    <button class="menu-item" data-pagina="equipe">
-        <i class="fas fa-users"></i><span>Equipe</span>
-    </button>
-    <button class="menu-item" data-pagina="registros">
-        <i class="fas fa-folder-open"></i><span>Registros</span>
-    </button>
-    </nav>
-    <script>
-// ========== ESTADO GLOBAL ==========
+<div class="notification" id="notification">
+    <i class="fa-solid fa-circle-info"></i>
+    <div class="notification-text" id="notificationText"></div>
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-inner">
+
+        <button class="nav-item" data-page="painel.html">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </button>
+
+        <button class="nav-item active">
+            <i class="fa-solid fa-clock"></i>
+            <span>Ponto</span>
+        </button>
+
+        <button class="nav-item" data-page="equipe.html">
+            <i class="fa-solid fa-users"></i>
+            <span>Equipe</span>
+        </button>
+
+        <button class="nav-item" data-page="registros.html">
+            <i class="fa-solid fa-file-lines"></i>
+            <span>Registros</span>
+        </button>
+
+    </div>
+</nav>
+<script>
+/* =========================================================
+   CONFIGURAÇÃO SUPABASE
+   ========================================================= */
+
+const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
+
+const SUPABASE_ANON_KEY =
+    "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
+
+const clienteSupabase = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_ANON_KEY
+);
+
+
+/* =========================================================
+   DADOS DO USUÁRIO
+   ========================================================= */
+
+const PASSAPORTE = "17274";
+const NOME_USUARIO = "Falcão";
+
+
+/* =========================================================
+   ESTADO DO SISTEMA
+   ========================================================= */
+
 let estado = {
-    ativo: false,
-    pausado: false,
-    tempoInicio: null,
+    registro: null,
     intervalo: null,
-    pausas: 0,
-    registroId: null
+    carregandoAcao: false
 };
 
-// Dados do usuário
-const usuario = {
-    nome: "Falcão",
-    passaporte: "17274"
-};
 
-// ========== UTILITÁRIOS ==========
-function mostrarNotificacao(mensagem) {
-    const el = document.getElementById('notificacao');
-    document.getElementById('texto-notif').textContent = mensagem;
-    el.style.display = 'flex';
-    setTimeout(() => el.style.display = 'none', 2000);
+/* =========================================================
+   ELEMENTOS
+   ========================================================= */
+
+const loading = document.getElementById("loading");
+
+const nomeUsuario = document.getElementById("nomeUsuario");
+const passaporteUsuario = document.getElementById("passaporteUsuario");
+
+const statusBadge = document.getElementById("statusBadge");
+const statusTexto = document.getElementById("statusTexto");
+
+const tempoJornada = document.getElementById("tempoJornada");
+const entradaInfo = document.getElementById("entradaInfo");
+const pausaInfo = document.getElementById("pausaInfo");
+
+const btnIniciar = document.getElementById("btnIniciar");
+const btnPausa = document.getElementById("btnPausa");
+const btnEncerrar = document.getElementById("btnEncerrar");
+
+const tabJornada = document.getElementById("tabJornada");
+const tabHistorico = document.getElementById("tabHistorico");
+
+const secaoJornada = document.getElementById("secaoJornada");
+const secaoHistorico = document.getElementById("secaoHistorico");
+
+const historicoLista = document.getElementById("historicoLista");
+
+
+/* =========================================================
+   PREENCHER USUÁRIO
+   ========================================================= */
+
+if (nomeUsuario) {
+    nomeUsuario.textContent = NOME_USUARIO;
 }
 
-function formatarTempo(segundos) {
-    const h = Math.floor(segundos / 3600);
-    const m = Math.floor((segundos % 3600) / 60);
-    const s = segundos % 60;
-    return [h,m,s].map(v => String(v).padStart(2,'0')).join(':');
+if (passaporteUsuario) {
+    passaporteUsuario.textContent = `Passaporte ${PASSAPORTE}`;
 }
 
-function horaAtual() {
-    return new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
+
+/* =========================================================
+   UTILITÁRIOS
+   ========================================================= */
+
+function mostrarLoading(mostrar = true) {
+    if (!loading) return;
+
+    if (mostrar) {
+        loading.classList.remove("oculto");
+    } else {
+        loading.classList.add("oculto");
+    }
 }
 
-// ========== NAVEGAÇÃO ==========
-function sairParaPainel() {
-    if (estado.intervalo) clearInterval(estado.intervalo);
-    window.location.href = "painel.html";
+
+function escaparHTML(texto) {
+    if (texto === null || texto === undefined) {
+        return "";
+    }
+
+    return String(texto)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 }
 
-const itensMenu = document.querySelectorAll('.menu-item');
-itensMenu.forEach(item => {
-    item.addEventListener('click', () => {
-        itensMenu.forEach(i => i.classList.remove('active'));
-        item.classList.add('active');
-        const pagina = item.dataset.pagina;
-        if (pagina === 'inicio') sairParaPainel();
-        if (pagina === 'equipe') window.location.href = "equipe.html";
-        if (pagina === 'registros') window.location.href = "registros.html";
+
+function formatarData(data) {
+    if (!data) return "--/--/----";
+
+    const dataObj = new Date(data);
+
+    if (Number.isNaN(dataObj.getTime())) {
+        return "--/--/----";
+    }
+
+    return dataObj.toLocaleDateString("pt-BR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric"
+    });
+}
+
+
+function formatarHora(data) {
+    if (!data) return "--:--";
+
+    const dataObj = new Date(data);
+
+    if (Number.isNaN(dataObj.getTime())) {
+        return "--:--";
+    }
+
+    return dataObj.toLocaleTimeString("pt-BR", {
+        hour: "2-digit",
+        minute: "2-digit"
+    });
+}
+
+
+function formatarDataHora(data) {
+    if (!data) return "--/--/---- --:--";
+
+    return `${formatarData(data)} às ${formatarHora(data)}`;
+}
+
+
+function calcularDuracao(inicio, fim) {
+    if (!inicio) {
+        return 0;
+    }
+
+    const inicioData = new Date(inicio);
+
+    const fimData = fim
+        ? new Date(fim)
+        : new Date();
+
+    if (
+        Number.isNaN(inicioData.getTime()) ||
+        Number.isNaN(fimData.getTime())
+    ) {
+        return 0;
+    }
+
+    let diferenca = fimData.getTime() - inicioData.getTime();
+
+    if (diferenca < 0) {
+        diferenca = 0;
+    }
+
+    return diferenca;
+}
+
+
+function formatarDuracao(milissegundos) {
+    let segundos = Math.floor(milissegundos / 1000);
+
+    if (segundos < 0 || Number.isNaN(segundos)) {
+        segundos = 0;
+    }
+
+    const horas = Math.floor(segundos / 3600);
+
+    segundos %= 3600;
+
+    const minutos = Math.floor(segundos / 60);
+
+    segundos %= 60;
+
+    return [
+        String(horas).padStart(2, "0"),
+        String(minutos).padStart(2, "0"),
+        String(segundos).padStart(2, "0")
+    ].join(":");
+}
+
+
+function obterDuracaoJornada(registro) {
+    if (!registro || !registro.entrada) {
+        return 0;
+    }
+
+    const inicio = new Date(registro.entrada);
+
+    let fim = new Date();
+
+    if (registro.saida) {
+        fim = new Date(registro.saida);
+    }
+
+    let total = fim.getTime() - inicio.getTime();
+
+    /*
+     * Como a tabela possui apenas uma pausa_inicio e uma pausa_fim,
+     * fazemos o desconto da pausa quando ela estiver registrada.
+     */
+
+    if (registro.pausa_inicio) {
+        const pausaInicio = new Date(registro.pausa_inicio);
+
+        let pausaFim = null;
+
+        if (registro.pausa_fim) {
+            pausaFim = new Date(registro.pausa_fim);
+        } else if (registro.status === "pausado") {
+            pausaFim = new Date();
+        }
+
+        if (pausaFim) {
+            const pausa = pausaFim.getTime() - pausaInicio.getTime();
+
+            if (pausa > 0) {
+                total -= pausa;
+            }
+        }
+    }
+
+    if (total < 0) {
+        total = 0;
+    }
+
+    return total;
+}
+
+
+/* =========================================================
+   NOTIFICAÇÕES
+   ========================================================= */
+
+function mostrarMensagem(mensagem, tipo = "normal") {
+    const antiga = document.querySelector(".mensagem-temporaria");
+
+    if (antiga) {
+        antiga.remove();
+    }
+
+    const elemento = document.createElement("div");
+
+    elemento.className = `mensagem-temporaria ${tipo}`;
+
+    elemento.textContent = mensagem;
+
+    document.body.appendChild(elemento);
+
+    setTimeout(() => {
+        elemento.classList.add("sumindo");
+
+        setTimeout(() => {
+            elemento.remove();
+        }, 300);
+    }, 2600);
+}
+
+
+/* =========================================================
+   ATUALIZAÇÃO DOS BOTÕES
+   ========================================================= */
+
+function atualizarBotoes() {
+    const registro = estado.registro;
+
+    if (!btnIniciar || !btnPausa || !btnEncerrar) {
+        return;
+    }
+
+    btnIniciar.disabled = false;
+    btnPausa.disabled = false;
+    btnEncerrar.disabled = false;
+
+    if (!registro) {
+        btnIniciar.style.display = "flex";
+        btnPausa.style.display = "none";
+        btnEncerrar.style.display = "none";
+
+        return;
+    }
+
+    btnIniciar.style.display = "none";
+
+    btnPausa.style.display = "flex";
+    btnEncerrar.style.display = "flex";
+
+    if (registro.status === "pausado") {
+        btnPausa.textContent = "▶ Retomar Jornada";
+    } else {
+        btnPausa.textContent = "Ⅱ Pausar Jornada";
+    }
+
+    if (registro.status === "encerrado") {
+        btnIniciar.style.display = "flex";
+        btnPausa.style.display = "none";
+        btnEncerrar.style.display = "none";
+    }
+}
+
+
+/* =========================================================
+   ATUALIZAR STATUS VISUAL
+   ========================================================= */
+
+function atualizarStatusVisual() {
+    if (!statusBadge || !statusTexto) {
+        return;
+    }
+
+    const registro = estado.registro;
+
+    statusBadge.classList.remove(
+        "ativo",
+        "pausado",
+        "encerrado",
+        "inativo"
+    );
+
+    if (!registro) {
+        statusBadge.classList.add("inativo");
+
+        statusTexto.textContent = "Fora de jornada";
+
+        return;
+    }
+
+    if (registro.status === "ativo") {
+        statusBadge.classList.add("ativo");
+
+        statusTexto.textContent = "Jornada ativa";
+
+        return;
+    }
+
+    if (registro.status === "pausado") {
+        statusBadge.classList.add("pausado");
+
+        statusTexto.textContent = "Jornada pausada";
+
+        return;
+    }
+
+    statusBadge.classList.add("encerrado");
+
+    statusTexto.textContent = "Jornada encerrada";
+}
+
+
+/* =========================================================
+   ATUALIZAR INFORMAÇÕES DA JORNADA
+   ========================================================= */
+
+function atualizarInformacoesJornada() {
+    const registro = estado.registro;
+
+    if (!registro) {
+        if (tempoJornada) {
+            tempoJornada.textContent = "00:00:00";
+        }
+
+        if (entradaInfo) {
+            entradaInfo.textContent = "--:--";
+        }
+
+        if (pausaInfo) {
+            pausaInfo.textContent = "Sem pausa";
+        }
+
+        return;
+    }
+
+    if (entradaInfo) {
+        entradaInfo.textContent = formatarHora(registro.entrada);
+    }
+
+    if (pausaInfo) {
+        if (registro.pausa_inicio && registro.pausa_fim) {
+            pausaInfo.textContent =
+                `${formatarHora(registro.pausa_inicio)} - ${formatarHora(registro.pausa_fim)}`;
+        } else if (registro.pausa_inicio) {
+            pausaInfo.textContent =
+                `${formatarHora(registro.pausa_inicio)} - em pausa`;
+        } else {
+            pausaInfo.textContent = "Sem pausa";
+        }
+    }
+
+    if (tempoJornada) {
+        tempoJornada.textContent =
+            formatarDuracao(obterDuracaoJornada(registro));
+    }
+}
+
+
+/* =========================================================
+   CRONÔMETRO
+   ========================================================= */
+
+function iniciarCronometro() {
+    if (estado.intervalo) {
+        clearInterval(estado.intervalo);
+    }
+
+    estado.intervalo = setInterval(() => {
+        if (!estado.registro) {
+            atualizarInformacoesJornada();
+
+            return;
+        }
+
+        atualizarInformacoesJornada();
+    }, 1000);
+}
+
+
+function pararCronometro() {
+    if (estado.intervalo) {
+        clearInterval(estado.intervalo);
+
+        estado.intervalo = null;
+    }
+}
+</script>
+<script>
+/* =========================================================
+   CARREGAR JORNADA ATUAL
+   ========================================================= */
+
+async function carregarJornadaAtual() {
+    try {
+        const { data, error } = await clienteSupabase
+            .from("pontos")
+            .select("*")
+            .eq("passaporte", PASSAPORTE)
+            .in("status", ["ativo", "pausado"])
+            .is("saida", null)
+            .order("criado_em", {
+                ascending: false
+            })
+            .limit(1);
+
+        if (error) {
+            console.error("Erro ao carregar jornada:", error);
+
+            mostrarMensagem(
+                "Não foi possível carregar sua jornada.",
+                "erro"
+            );
+
+            estado.registro = null;
+
+            atualizarTela();
+
+            return;
+        }
+
+        if (data && data.length > 0) {
+            estado.registro = data[0];
+        } else {
+            estado.registro = null;
+        }
+
+        atualizarTela();
+
+    } catch (erro) {
+        console.error(erro);
+
+        mostrarMensagem(
+            "Erro de conexão com o sistema.",
+            "erro"
+        );
+    }
+}
+
+
+/* =========================================================
+   ATUALIZAR TELA
+   ========================================================= */
+
+function atualizarTela() {
+    atualizarStatusVisual();
+    atualizarInformacoesJornada();
+    atualizarBotoes();
+
+    if (estado.registro) {
+        iniciarCronometro();
+    } else {
+        pararCronometro();
+    }
+}
+
+
+/* =========================================================
+   INICIAR JORNADA
+   ========================================================= */
+
+async function iniciarJornada() {
+    if (estado.carregandoAcao) {
+        return;
+    }
+
+    estado.carregandoAcao = true;
+
+    if (btnIniciar) {
+        btnIniciar.disabled = true;
+        btnIniciar.textContent = "Iniciando...";
+    }
+
+    try {
+        const agora = new Date().toISOString();
+
+        /*
+         * IMPORTANTE:
+         * Aqui usamos somente as colunas que realmente existem
+         * na tabela pontos.
+         */
+
+        const novoRegistro = {
+            passaporte: PASSAPORTE,
+            entrada: agora,
+            pausa_inicio: null,
+            pausa_fim: null,
+            saida: null,
+            status: "ativo"
+        };
+
+        const { data, error } = await clienteSupabase
+            .from("pontos")
+            .insert([novoRegistro])
+            .select()
+            .single();
+
+        if (error) {
+            console.error("Erro ao iniciar jornada:", error);
+
+            mostrarMensagem(
+                "Não foi possível iniciar a jornada.",
+                "erro"
+            );
+
+            return;
+        }
+
+        estado.registro = data;
+
+        atualizarTela();
+
+        mostrarMensagem(
+            "Jornada iniciada com sucesso!",
+            "sucesso"
+        );
+
+        /*
+         * Depois de iniciar a jornada, o usuário é levado
+         * automaticamente para a página de equipe.
+         */
+
+        setTimeout(() => {
+            window.location.href = "equipe.html";
+        }, 500);
+
+    } catch (erro) {
+        console.error(erro);
+
+        mostrarMensagem(
+            "Erro inesperado ao iniciar a jornada.",
+            "erro"
+        );
+
+    } finally {
+        estado.carregandoAcao = false;
+
+        if (btnIniciar && !estado.registro) {
+            btnIniciar.disabled = false;
+            btnIniciar.textContent = "Iniciar Jornada";
+        }
+    }
+}
+
+
+/* =========================================================
+   PAUSAR / RETOMAR
+   ========================================================= */
+
+async function pausarOuRetomar() {
+    if (estado.carregandoAcao) {
+        return;
+    }
+
+    if (!estado.registro) {
+        mostrarMensagem(
+            "Você não possui uma jornada ativa.",
+            "erro"
+        );
+
+        return;
+    }
+
+    estado.carregandoAcao = true;
+
+    if (btnPausa) {
+        btnPausa.disabled = true;
+        btnPausa.textContent = "Processando...";
+    }
+
+    try {
+        const agora = new Date().toISOString();
+
+        let atualizacao = {};
+
+        /*
+         * Se está ativo, entra em pausa.
+         */
+
+        if (estado.registro.status === "ativo") {
+            atualizacao = {
+                status: "pausado",
+                pausa_inicio: agora
+            };
+        }
+
+        /*
+         * Se está pausado, retoma.
+         */
+
+        else if (estado.registro.status === "pausado") {
+            atualizacao = {
+                status: "ativo",
+                pausa_fim: agora
+            };
+        }
+
+        else {
+            mostrarMensagem(
+                "Essa jornada já foi encerrada.",
+                "erro"
+            );
+
+            return;
+        }
+
+        const { data, error } = await clienteSupabase
+            .from("pontos")
+            .update(atualizacao)
+            .eq("id", estado.registro.id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error(
+                "Erro ao pausar/retomar:",
+                error
+            );
+
+            mostrarMensagem(
+                "Não foi possível atualizar a jornada.",
+                "erro"
+            );
+
+            return;
+        }
+
+        estado.registro = data;
+
+        atualizarTela();
+
+        if (data.status === "pausado") {
+            mostrarMensagem(
+                "Jornada pausada.",
+                "sucesso"
+            );
+        } else {
+            mostrarMensagem(
+                "Jornada retomada.",
+                "sucesso"
+            );
+        }
+
+    } catch (erro) {
+        console.error(erro);
+
+        mostrarMensagem(
+            "Erro inesperado ao atualizar a jornada.",
+            "erro"
+        );
+
+    } finally {
+        estado.carregandoAcao = false;
+
+        atualizarBotoes();
+    }
+}
+
+
+/* =========================================================
+   ENCERRAR JORNADA
+   ========================================================= */
+
+async function encerrarJornada() {
+    if (estado.carregandoAcao) {
+        return;
+    }
+
+    if (!estado.registro) {
+        mostrarMensagem(
+            "Você não possui uma jornada ativa.",
+            "erro"
+        );
+
+        return;
+    }
+
+    const confirmar = window.confirm(
+        "Deseja realmente encerrar sua jornada?"
+    );
+
+    if (!confirmar) {
+        return;
+    }
+
+    estado.carregandoAcao = true;
+
+    if (btnEncerrar) {
+        btnEncerrar.disabled = true;
+        btnEncerrar.textContent = "Encerrando...";
+    }
+
+    try {
+        const agora = new Date().toISOString();
+
+        const atualizacao = {
+            saida: agora,
+            status: "encerrado"
+        };
+
+        /*
+         * Se a pessoa estiver pausada e encerrar a jornada,
+         * fechamos a pausa automaticamente no mesmo horário.
+         */
+
+        if (
+            estado.registro.status === "pausado" &&
+            estado.registro.pausa_inicio &&
+            !estado.registro.pausa_fim
+        ) {
+            atualizacao.pausa_fim = agora;
+        }
+
+        const { data, error } = await clienteSupabase
+            .from("pontos")
+            .update(atualizacao)
+            .eq("id", estado.registro.id)
+            .select()
+            .single();
+
+        if (error) {
+            console.error(
+                "Erro ao encerrar jornada:",
+                error
+            );
+
+            mostrarMensagem(
+                "Não foi possível encerrar a jornada.",
+                "erro"
+            );
+
+            return;
+        }
+
+        estado.registro = null;
+
+        pararCronometro();
+
+        atualizarTela();
+
+        mostrarMensagem(
+            "Jornada encerrada com sucesso!",
+            "sucesso"
+        );
+
+        await carregarHistorico();
+
+    } catch (erro) {
+        console.error(erro);
+
+        mostrarMensagem(
+            "Erro inesperado ao encerrar a jornada.",
+            "erro"
+        );
+
+    } finally {
+        estado.carregandoAcao = false;
+
+        atualizarBotoes();
+    }
+}
+
+
+/* =========================================================
+   HISTÓRICO
+   ========================================================= */
+
+async function carregarHistorico() {
+    if (!historicoLista) {
+        return;
+    }
+
+    historicoLista.innerHTML = `
+        <div class="historico-carregando">
+            Carregando histórico...
+        </div>
+    `;
+
+    try {
+        const { data, error } = await clienteSupabase
+            .from("pontos")
+            .select("*")
+            .eq("passaporte", PASSAPORTE)
+            .order("criado_em", {
+                ascending: false
+            })
+            .limit(20);
+
+        if (error) {
+            console.error(
+                "Erro ao carregar histórico:",
+                error
+            );
+
+            historicoLista.innerHTML = `
+                <div class="historico-vazio">
+                    Não foi possível carregar o histórico.
+                </div>
+            `;
+
+            return;
+        }
+
+        if (!data || data.length === 0) {
+            historicoLista.innerHTML = `
+                <div class="historico-vazio">
+                    Nenhuma jornada registrada.
+                </div>
+            `;
+
+            return;
+        }
+
+        historicoLista.innerHTML = "";
+
+        data.forEach((registro) => {
+            historicoLista.appendChild(
+                criarItemHistorico(registro)
+            );
+        });
+
+    } catch (erro) {
+        console.error(erro);
+
+        historicoLista.innerHTML = `
+            <div class="historico-vazio">
+                Erro ao carregar histórico.
+            </div>
+        `;
+    }
+}
+
+
+/* =========================================================
+   ITEM DO HISTÓRICO
+   ========================================================= */
+
+function criarItemHistorico(registro) {
+    const item = document.createElement("div");
+
+    item.className = "historico-item";
+
+    const entrada = formatarHora(registro.entrada);
+
+    const saida = registro.saida
+        ? formatarHora(registro.saida)
+        : "--:--";
+
+    const data = formatarData(
+        registro.entrada || registro.criado_em
+    );
+
+    const duracao = registro.saida
+        ? formatarDuracao(
+            obterDuracaoJornada(registro)
+        )
+        : "Em andamento";
+
+    let statusLabel = "Encerrado";
+
+    if (registro.status === "ativo") {
+        statusLabel = "Ativo";
+    }
+
+    if (registro.status === "pausado") {
+        statusLabel = "Pausado";
+    }
+
+    item.innerHTML = `
+        <div class="historico-topo">
+            <div>
+                <strong>${escaparHTML(data)}</strong>
+            </div>
+
+            <span class="historico-status ${escaparHTML(registro.status || "")}">
+                ${escaparHTML(statusLabel)}
+            </span>
+        </div>
+
+        <div class="historico-horarios">
+            <div>
+                <small>Entrada</small>
+                <span>${escaparHTML(entrada)}</span>
+            </div>
+
+            <div>
+                <small>Saída</small>
+                <span>${escaparHTML(saida)}</span>
+            </div>
+
+            <div>
+                <small>Duração</small>
+                <span>${escaparHTML(duracao)}</span>
+            </div>
+        </div>
+    `;
+
+    return item;
+}
+            </script>
+            <script>
+/* =========================================================
+   ABAS
+   ========================================================= */
+
+function abrirAbaJornada() {
+    if (tabJornada) {
+        tabJornada.classList.add("ativa");
+    }
+
+    if (tabHistorico) {
+        tabHistorico.classList.remove("ativa");
+    }
+
+    if (secaoJornada) {
+        secaoJornada.style.display = "block";
+    }
+
+    if (secaoHistorico) {
+        secaoHistorico.style.display = "none";
+    }
+}
+
+
+function abrirAbaHistorico() {
+    if (tabHistorico) {
+        tabHistorico.classList.add("ativa");
+    }
+
+    if (tabJornada) {
+        tabJornada.classList.remove("ativa");
+    }
+
+    if (secaoHistorico) {
+        secaoHistorico.style.display = "block";
+    }
+
+    if (secaoJornada) {
+        secaoJornada.style.display = "none";
+    }
+
+    carregarHistorico();
+}
+
+
+/* =========================================================
+   EVENTOS DOS BOTÕES
+   ========================================================= */
+
+if (btnIniciar) {
+    btnIniciar.addEventListener(
+        "click",
+        iniciarJornada
+    );
+}
+
+
+if (btnPausa) {
+    btnPausa.addEventListener(
+        "click",
+        pausarOuRetomar
+    );
+}
+
+
+if (btnEncerrar) {
+    btnEncerrar.addEventListener(
+        "click",
+        encerrarJornada
+    );
+}
+
+
+if (tabJornada) {
+    tabJornada.addEventListener(
+        "click",
+        abrirAbaJornada
+    );
+}
+
+
+if (tabHistorico) {
+    tabHistorico.addEventListener(
+        "click",
+        abrirAbaHistorico
+    );
+}
+
+
+/* =========================================================
+   NAVEGAÇÃO INFERIOR
+   ========================================================= */
+
+const navegacaoInferior = document.querySelectorAll(
+    "[data-navegacao]"
+);
+
+navegacaoInferior.forEach((item) => {
+    item.addEventListener("click", () => {
+        const destino = item.getAttribute(
+            "data-navegacao"
+        );
+
+        if (!destino) {
+            return;
+        }
+
+        window.location.href = destino;
     });
 });
 
-function trocarAba(aba) {
-    document.getElementById('area-jornada').style.display = aba === 'jornada' ? 'block' : 'none';
-    document.getElementById('area-historico').style.display = aba === 'historico' ? 'block' : 'none';
-    document.getElementById('aba-jornada').classList.toggle('ativa', aba === 'jornada');
-    document.getElementById('aba-historico').classList.toggle('ativa', aba === 'historico');
-}
 
-// ========== FUNÇÕES SUPABASE ==========
-async function buscarPontoAberto() {
-    try {
-        const { data, error } = await supabase
-            .from('pontos')
-            .select('*')
-            .eq('passaporte', usuario.passaporte)
-            .in('status', ['ativo', 'pausado'])
-            .order('entrada', { ascending: false })
-            .limit(1)
-            .single();
-        
-        if (error) return null;
-        return data;
-    } catch (e) { return null; }
-}
+/* =========================================================
+   TAMBÉM ACEITA LINKS NORMAIS
+   ========================================================= */
 
-async function criarPonto() {
-    const dados = {
-        passaporte: usuario.passaporte,
-        nome: usuario.nome,
-        entrada: new Date().toISOString(),
-        status: 'ativo'
-    };
+const linksNavegacao =
+    document.querySelectorAll(
+        ".navegacao-inferior a"
+    );
 
-    const { data, error } = await supabase
-        .from('pontos')
-        .insert([dados])
-        .select()
-        .single();
+linksNavegacao.forEach((link) => {
+    link.addEventListener("click", (evento) => {
+        const destino = link.getAttribute("href");
 
-    if (error) throw error;
-    return data.id;
-}
-
-async function atualizarPonto(dados) {
-    const { error } = await supabase
-        .from('pontos')
-        .update(dados)
-        .eq('id', estado.registroId);
-    
-    if (error) throw error;
-}
-        // ========== AÇÕES DO PONTO ==========
-async function iniciarJornada() {
-    try {
-        estado.registroId = await criarPonto();
-        
-        estado.ativo = true;
-        estado.tempoInicio = Date.now();
-        
-        document.getElementById('status-ponto').textContent = 'Ativo';
-        document.getElementById('hora-entrada').textContent = horaAtual();
-        document.getElementById('marc-entrada').textContent = horaAtual();
-        document.getElementById('btn-iniciar').style.display = 'none';
-        document.getElementById('botoes-acao').style.display = 'grid';
-        
-        mostrarNotificacao('✅ Jornada iniciada!');
-        
-        estado.intervalo = setInterval(() => {
-            const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
-            document.getElementById('cronometro').textContent = formatarTempo(decorrido);
-        }, 1000);
-
-        // ✅ REDIRECIONA PARA EQUIPE
-        setTimeout(() => {
-            window.location.href = "equipe.html";
-        }, 1200);
-    } catch (err) {
-        console.error(err);
-        mostrarNotificacao('❌ Erro ao iniciar: ' + err.message);
-    }
-}
-
-async function pausarJornada() {
-    try {
-        if (estado.pausado) {
-            estado.pausado = false;
-            document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-pause"></i> Pausar';
-            
-            await atualizarPonto({ 
-                status: 'ativo',
-                pausa_fim: new Date().toISOString()
-            });
-            
-            estado.intervalo = setInterval(() => {
-                const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
-                document.getElementById('cronometro').textContent = formatarTempo(decorrido);
-            }, 1000);
-            
-            mostrarNotificacao('▶️ Jornada retomada!');
-        } else {
-            estado.pausado = true;
-            estado.pausas++;
-            
-            const horaPausa = horaAtual();
-            document.getElementById('cont-pausas').textContent = estado.pausas;
-            document.getElementById('marc-pausa').textContent = horaPausa;
-            
-            await atualizarPonto({ 
-                status: 'pausado',
-                pausa_inicio: new Date().toISOString()
-            });
-            
-            document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-play"></i> Retomar';
-            clearInterval(estado.intervalo);
-            
-            mostrarNotificacao('⏸️ Jornada pausada!');
+        if (
+            !destino ||
+            destino === "#" ||
+            destino.startsWith("javascript:")
+        ) {
+            evento.preventDefault();
+            return;
         }
-    } catch (err) {
-        console.error(err);
-        mostrarNotificacao('❌ Erro: ' + err.message);
-    }
-}
 
-async function encerrarJornada() {
-    try {
-        clearInterval(estado.intervalo);
-        
-        await atualizarPonto({ 
-            saida: new Date().toISOString(),
-            status: 'encerrado'
-        });
-        
-        document.getElementById('marc-saida').textContent = horaAtual();
-        document.getElementById('status-ponto').textContent = 'Offline';
-        document.getElementById('btn-iniciar').style.display = 'block';
-        document.getElementById('botoes-acao').style.display = 'none';
-        
-        mostrarNotificacao('✅ Jornada encerrada!');
-        
-        estado = { ativo: false, pausado: false, tempoInicio: null, intervalo: null, pausas: 0, registroId: null };
-    } catch (err) {
-        console.error(err);
-        mostrarNotificacao('❌ Erro ao encerrar: ' + err.message);
-    }
-}
-
-// ========== INICIALIZAÇÃO ==========
-window.addEventListener('load', async () => {
-    document.getElementById('nome-usuario').textContent = usuario.nome;
-    document.getElementById('passaporte-usuario').textContent = usuario.passaporte;
-
-    const pontoAberto = await buscarPontoAberto();
-    
-    if (pontoAberto) {
-        estado.registroId = pontoAberto.id;
-        estado.ativo = true;
-        estado.pausado = pontoAberto.status === 'pausado';
-        
-        const entrada = new Date(pontoAberto.entrada);
-        document.getElementById('hora-entrada').textContent = entrada.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-        document.getElementById('marc-entrada').textContent = document.getElementById('hora-entrada').textContent;
-        
-        document.getElementById('status-ponto').textContent = pontoAberto.status === 'pausado' ? 'Pausado' : 'Ativo';
-        document.getElementById('btn-iniciar').style.display = 'none';
-        document.getElementById('botoes-acao').style.display = 'grid';
-        
-        if (estado.pausado) {
-            document.getElementById('btn-pausar').innerHTML = '<i class="fas fa-play"></i> Retomar';
-            if (pontoAberto.pausa_inicio) {
-                const pausa = new Date(pontoAberto.pausa_inicio);
-                document.getElementById('marc-pausa').textContent = pausa.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
-            }
-        } else {
-            const decorridoMs = Date.now() - entrada.getTime();
-            estado.tempoInicio = Date.now() - decorridoMs;
-            
-            estado.intervalo = setInterval(() => {
-                const decorrido = Math.floor((Date.now() - estado.tempoInicio) / 1000);
-                document.getElementById('cronometro').textContent = formatarTempo(decorrido);
-            }, 1000);
-        }
-    }
-
-    setTimeout(() => {
-        const el = document.getElementById('carregando');
-        el.style.opacity = '0';
-        setTimeout(() => el.style.display = 'none', 400);
-    }, 600);
+        /*
+         * Deixa o navegador fazer a navegação normalmente.
+         */
+    });
 });
-</script>
 
-</body>
+
+/* =========================================================
+   PROTEÇÃO CONTRA CLIQUE DUPLO
+   ========================================================= */
+
+document.addEventListener(
+    "dblclick",
+    (evento) => {
+        const botao = evento.target.closest(
+            "button"
+        );
+
+        if (!botao) {
+            return;
+        }
+
+        if (
+            botao === btnIniciar ||
+            botao === btnPausa ||
+            botao === btnEncerrar
+        ) {
+            evento.preventDefault();
+        }
+    }
+);
+
+
+/* =========================================================
+   VISIBILIDADE DA PÁGINA
+   ========================================================= */
+
+document.addEventListener(
+    "visibilitychange",
+    () => {
+        if (
+            document.visibilityState === "visible"
+        ) {
+            if (estado.registro) {
+                atualizarInformacoesJornada();
+            }
+        }
+    }
+);
+            </script>
+            <script>
+/* =========================================================
+   INICIALIZAÇÃO
+   ========================================================= */
+
+let sistemaInicializado = false;
+
+
+async function inicializarSistema() {
+    if (sistemaInicializado) {
+        return;
+    }
+
+    sistemaInicializado = true;
+
+    try {
+        /*
+         * Primeiro carregamos a jornada atual.
+         */
+
+        await carregarJornadaAtual();
+
+        /*
+         * Depois carregamos o histórico.
+         */
+
+        await carregarHistorico();
+
+        /*
+         * Garantimos que a aba correta esteja aberta.
+         */
+
+        abrirAbaJornada();
+
+    } catch (erro) {
+        console.error(
+            "Erro na inicialização:",
+            erro
+        );
+
+        mostrarMensagem(
+            "Não foi possível carregar o sistema.",
+            "erro"
+        );
+
+    } finally {
+        /*
+         * Pequeno atraso para o carregamento não
+         * desaparecer de forma brusca.
+         */
+
+        setTimeout(() => {
+            mostrarLoading(false);
+        }, 250);
+    }
+}
+
+
+/* =========================================================
+   DOM READY
+   ========================================================= */
+
+if (
+    document.readyState === "loading"
+) {
+    document.addEventListener(
+        "DOMContentLoaded",
+        inicializarSistema
+    );
+} else {
+    inicializarSistema();
+}
+
+
+/* =========================================================
+   GARANTIA EXTRA PARA CELULAR
+   ========================================================= */
+
+window.addEventListener(
+    "load",
+    () => {
+        if (!sistemaInicializado) {
+            inicializarSistema();
+        }
+    }
+);
+
+
+/* =========================================================
+   SEGURANÇA DO LOADING
+   ========================================================= */
+
+/*
+ * Se a conexão com o Supabase demorar demais,
+ * o carregamento não fica preso para sempre.
+ */
+
+setTimeout(() => {
+    mostrarLoading(false);
+}, 5000);
+
+
+/* =========================================================
+   LIMPEZA AO SAIR DA PÁGINA
+   ========================================================= */
+
+window.addEventListener(
+    "beforeunload",
+    () => {
+        pararCronometro();
+    }
+);
+            </script>
+            </body>
 </html>
