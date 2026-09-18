@@ -328,7 +328,7 @@ a{
 .secao[style*="display: none"]{
     display:none !important;
 }
-    <style>
+<style>
 /* AÇÕES */
 
 .acoes{
@@ -768,9 +768,17 @@ a{
 
 </nav>
 
+<!--
+    SUPABASE:
+    O script fica DEPOIS de todo o HTML.
+    Assim os elementos já existem quando o JavaScript iniciar.
+-->
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+"use strict";
+
 /* =========================================================
    CONFIGURAÇÃO
    ========================================================= */
@@ -781,151 +789,122 @@ const SUPABASE_URL =
 const SUPABASE_ANON_KEY =
     "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
 
-const PASSAPORTE = "17274";
-const NOME_USUARIO = "Falcão";
+const PASSAPORTE =
+    "17274";
+
+const NOME_USUARIO =
+    "Falcão";
 
 
 /* =========================================================
-   ESTADO
+   VARIÁVEIS
    ========================================================= */
 
 let clienteSupabase = null;
 
-let estado = {
-    registro: null,
-    intervalo: null,
-    carregandoAcao: false,
-    inicializado: false
-};
+let registroAtual = null;
+
+let intervaloCronometro = null;
+
+let processando = false;
 
 
 /* =========================================================
    ELEMENTOS
    ========================================================= */
 
-let loading;
-let nomeUsuario;
-let passaporteUsuario;
-let statusBadge;
-let statusTexto;
-let tempoJornada;
-let entradaInfo;
-let pausaInfo;
-let btnIniciar;
-let btnPausa;
-let btnEncerrar;
-let tabJornada;
-let tabHistorico;
-let secaoJornada;
-let secaoHistorico;
-let historicoLista;
+const nomeUsuario =
+    document.getElementById(
+        "nomeUsuario"
+    );
+
+const passaporteUsuario =
+    document.getElementById(
+        "passaporteUsuario"
+    );
+
+const statusBadge =
+    document.getElementById(
+        "statusBadge"
+    );
+
+const statusTexto =
+    document.getElementById(
+        "statusTexto"
+    );
+
+const tempoJornada =
+    document.getElementById(
+        "tempoJornada"
+    );
+
+const entradaInfo =
+    document.getElementById(
+        "entradaInfo"
+    );
+
+const pausaInfo =
+    document.getElementById(
+        "pausaInfo"
+    );
+
+const btnIniciar =
+    document.getElementById(
+        "btnIniciar"
+    );
+
+const btnPausa =
+    document.getElementById(
+        "btnPausa"
+    );
+
+const btnEncerrar =
+    document.getElementById(
+        "btnEncerrar"
+    );
+
+const tabJornada =
+    document.getElementById(
+        "tabJornada"
+    );
+
+const tabHistorico =
+    document.getElementById(
+        "tabHistorico"
+    );
+
+const secaoJornada =
+    document.getElementById(
+        "secaoJornada"
+    );
+
+const secaoHistorico =
+    document.getElementById(
+        "secaoHistorico"
+    );
+
+const historicoLista =
+    document.getElementById(
+        "historicoLista"
+    );
 
 
 /* =========================================================
-   PEGAR ELEMENTOS
+   USUÁRIO
    ========================================================= */
 
-function pegarElementos() {
+nomeUsuario.textContent =
+    NOME_USUARIO;
 
-    loading =
-        document.getElementById("loading");
-
-    nomeUsuario =
-        document.getElementById("nomeUsuario");
-
-    passaporteUsuario =
-        document.getElementById("passaporteUsuario");
-
-    statusBadge =
-        document.getElementById("statusBadge");
-
-    statusTexto =
-        document.getElementById("statusTexto");
-
-    tempoJornada =
-        document.getElementById("tempoJornada");
-
-    entradaInfo =
-        document.getElementById("entradaInfo");
-
-    pausaInfo =
-        document.getElementById("pausaInfo");
-
-    btnIniciar =
-        document.getElementById("btnIniciar");
-
-    btnPausa =
-        document.getElementById("btnPausa");
-
-    btnEncerrar =
-        document.getElementById("btnEncerrar");
-
-    tabJornada =
-        document.getElementById("tabJornada");
-
-    tabHistorico =
-        document.getElementById("tabHistorico");
-
-    secaoJornada =
-        document.getElementById("secaoJornada");
-
-    secaoHistorico =
-        document.getElementById("secaoHistorico");
-
-    historicoLista =
-        document.getElementById("historicoLista");
-}
-
-
-/* =========================================================
-   SUPABASE
-   ========================================================= */
-
-function iniciarSupabase() {
-
-    if (
-        !window.supabase ||
-        typeof window.supabase.createClient !== "function"
-    ) {
-        console.error(
-            "Biblioteca do Supabase não carregada."
-        );
-
-        return false;
-    }
-
-    clienteSupabase =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_ANON_KEY
-        );
-
-    return true;
-}
-
-
-/* =========================================================
-   LOADING
-   ========================================================= */
-
-function esconderLoading() {
-
-    if (!loading) {
-        return;
-    }
-
-    loading.classList.add("oculto");
-}
+passaporteUsuario.textContent =
+    "Passaporte " + PASSAPORTE;
 
 
 /* =========================================================
    MENSAGEM
    ========================================================= */
 
-function mostrarMensagem(
-    mensagem,
-    tipo = "normal"
-) {
+function mensagem(texto, tipo) {
 
     const antiga =
         document.querySelector(
@@ -940,10 +919,11 @@ function mostrarMensagem(
         document.createElement("div");
 
     elemento.className =
-        "mensagem-temporaria " + tipo;
+        "mensagem-temporaria " +
+        (tipo || "");
 
     elemento.textContent =
-        mensagem;
+        texto;
 
     document.body.appendChild(
         elemento
@@ -951,96 +931,70 @@ function mostrarMensagem(
 
     setTimeout(() => {
 
-        elemento.classList.add(
-            "sumindo"
-        );
+        if (elemento.parentNode) {
+            elemento.remove();
+        }
 
-        setTimeout(() => {
-
-            if (elemento.parentNode) {
-                elemento.remove();
-            }
-
-        }, 300);
-
-    }, 2600);
+    }, 2800);
 }
 
 
 /* =========================================================
-   FORMATAÇÃO
+   DATA / HORA
    ========================================================= */
 
-function formatarHora(data) {
+function hora(valor) {
 
-    if (!data) {
+    if (!valor) {
         return "--:--";
     }
 
-    const objeto =
-        new Date(data);
+    const data =
+        new Date(valor);
 
     if (
         Number.isNaN(
-            objeto.getTime()
+            data.getTime()
         )
     ) {
         return "--:--";
     }
 
-    return objeto.toLocaleTimeString(
+    return data.toLocaleTimeString(
         "pt-BR",
         {
-            hour: "2-digit",
-            minute: "2-digit"
+            hour:"2-digit",
+            minute:"2-digit"
         }
     );
 }
 
 
-function formatarData(data) {
+function dataFormatada(valor) {
 
-    if (!data) {
+    if (!valor) {
         return "--/--/----";
     }
 
-    const objeto =
-        new Date(data);
+    const data =
+        new Date(valor);
 
     if (
         Number.isNaN(
-            objeto.getTime()
+            data.getTime()
         )
     ) {
         return "--/--/----";
     }
 
-    return objeto.toLocaleDateString(
+    return data.toLocaleDateString(
         "pt-BR",
         {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric"
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
         }
     );
-}
-
-
-function escaparHTML(valor) {
-
-    if (
-        valor === null ||
-        valor === undefined
-    ) {
-        return "";
-    }
-
-    return String(valor)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
 }
 
 
@@ -1048,7 +1002,7 @@ function escaparHTML(valor) {
    DURAÇÃO
    ========================================================= */
 
-function formatarDuracao(ms) {
+function duracaoFormatada(ms) {
 
     if (
         !ms ||
@@ -1062,29 +1016,35 @@ function formatarDuracao(ms) {
         Math.floor(ms / 1000);
 
     const horas =
-        Math.floor(segundos / 3600);
+        Math.floor(
+            segundos / 3600
+        );
 
-    segundos %= 3600;
+    segundos =
+        segundos % 3600;
 
     const minutos =
-        Math.floor(segundos / 60);
+        Math.floor(
+            segundos / 60
+        );
 
-    segundos %= 60;
+    segundos =
+        segundos % 60;
 
     return (
-        String(horas).padStart(2, "0") +
+        String(horas).padStart(2,"0") +
         ":" +
-        String(minutos).padStart(2, "0") +
+        String(minutos).padStart(2,"0") +
         ":" +
-        String(segundos).padStart(2, "0")
+        String(segundos).padStart(2,"0")
     );
 }
     <script>
 /* =========================================================
-   CALCULAR TEMPO DA JORNADA
+   CALCULAR JORNADA
    ========================================================= */
 
-function calcularTempoJornada(registro) {
+function calcularJornada(registro) {
 
     if (
         !registro ||
@@ -1094,11 +1054,15 @@ function calcularTempoJornada(registro) {
     }
 
     const entrada =
-        new Date(registro.entrada);
+        new Date(
+            registro.entrada
+        );
 
-    let fim =
+    const fim =
         registro.saida
-            ? new Date(registro.saida)
+            ? new Date(
+                registro.saida
+            )
             : new Date();
 
     let total =
@@ -1106,7 +1070,7 @@ function calcularTempoJornada(registro) {
         entrada.getTime();
 
     /*
-     * Desconta a pausa registrada.
+     * Desconta a pausa.
      */
 
     if (registro.pausa_inicio) {
@@ -1131,26 +1095,24 @@ function calcularTempoJornada(registro) {
 
             fimPausa =
                 new Date();
-
         }
 
         if (fimPausa) {
 
-            const pausa =
+            const tempoPausa =
                 fimPausa.getTime() -
                 inicioPausa.getTime();
 
-            if (pausa > 0) {
-                total -= pausa;
+            if (tempoPausa > 0) {
+                total -= tempoPausa;
             }
         }
     }
 
-    if (total < 0) {
-        total = 0;
-    }
-
-    return total;
+    return Math.max(
+        0,
+        total
+    );
 }
 
 
@@ -1160,21 +1122,13 @@ function calcularTempoJornada(registro) {
 
 function atualizarStatus() {
 
-    if (
-        !statusBadge ||
-        !statusTexto
-    ) {
-        return;
-    }
-
     statusBadge.classList.remove(
         "ativo",
         "pausado",
-        "encerrado",
         "inativo"
     );
 
-    if (!estado.registro) {
+    if (!registroAtual) {
 
         statusBadge.classList.add(
             "inativo"
@@ -1187,7 +1141,8 @@ function atualizarStatus() {
     }
 
     if (
-        estado.registro.status === "ativo"
+        registroAtual.status ===
+        "ativo"
     ) {
 
         statusBadge.classList.add(
@@ -1201,7 +1156,8 @@ function atualizarStatus() {
     }
 
     if (
-        estado.registro.status === "pausado"
+        registroAtual.status ===
+        "pausado"
     ) {
 
         statusBadge.classList.add(
@@ -1214,12 +1170,8 @@ function atualizarStatus() {
         return;
     }
 
-    statusBadge.classList.add(
-        "encerrado"
-    );
-
     statusTexto.textContent =
-        "Jornada encerrada";
+        "Fora de jornada";
 }
 
 
@@ -1229,94 +1181,71 @@ function atualizarStatus() {
 
 function atualizarInformacoes() {
 
-    if (!estado.registro) {
+    if (!registroAtual) {
 
-        if (tempoJornada) {
-            tempoJornada.textContent =
-                "00:00:00";
-        }
+        tempoJornada.textContent =
+            "00:00:00";
 
-        if (entradaInfo) {
-            entradaInfo.textContent =
-                "--:--";
-        }
+        entradaInfo.textContent =
+            "--:--";
 
-        if (pausaInfo) {
-            pausaInfo.textContent =
-                "Sem pausa";
-        }
+        pausaInfo.textContent =
+            "Sem pausa";
 
         return;
     }
 
-    if (tempoJornada) {
+    tempoJornada.textContent =
+        duracaoFormatada(
+            calcularJornada(
+                registroAtual
+            )
+        );
 
-        tempoJornada.textContent =
-            formatarDuracao(
-                calcularTempoJornada(
-                    estado.registro
-                )
+    entradaInfo.textContent =
+        hora(
+            registroAtual.entrada
+        );
+
+    if (
+        registroAtual.pausa_inicio &&
+        registroAtual.pausa_fim
+    ) {
+
+        pausaInfo.textContent =
+            hora(
+                registroAtual.pausa_inicio
+            ) +
+            " - " +
+            hora(
+                registroAtual.pausa_fim
             );
-    }
 
-    if (entradaInfo) {
+    } else if (
+        registroAtual.pausa_inicio
+    ) {
 
-        entradaInfo.textContent =
-            formatarHora(
-                estado.registro.entrada
-            );
-    }
+        pausaInfo.textContent =
+            hora(
+                registroAtual.pausa_inicio
+            ) +
+            " - em pausa";
 
-    if (pausaInfo) {
+    } else {
 
-        if (
-            estado.registro.pausa_inicio &&
-            estado.registro.pausa_fim
-        ) {
-
-            pausaInfo.textContent =
-                formatarHora(
-                    estado.registro.pausa_inicio
-                ) +
-                " - " +
-                formatarHora(
-                    estado.registro.pausa_fim
-                );
-
-        } else if (
-            estado.registro.pausa_inicio
-        ) {
-
-            pausaInfo.textContent =
-                formatarHora(
-                    estado.registro.pausa_inicio
-                ) +
-                " - em pausa";
-
-        } else {
-
-            pausaInfo.textContent =
-                "Sem pausa";
-        }
+        pausaInfo.textContent =
+            "Sem pausa";
     }
 }
 
 
 /* =========================================================
-   BOTÕES
+   ATUALIZAR BOTÕES
    ========================================================= */
 
 function atualizarBotoes() {
 
-    if (
-        !btnIniciar ||
-        !btnPausa ||
-        !btnEncerrar
-    ) {
-        return;
-    }
-
-    if (!estado.registro) {
+    if (!registroAtual) {
 
         btnIniciar.style.display =
             "flex";
@@ -1327,7 +1256,8 @@ function atualizarBotoes() {
         btnEncerrar.style.display =
             "none";
 
-        btnIniciar.disabled = false;
+        btnIniciar.disabled =
+            false;
 
         btnIniciar.textContent =
             "Iniciar Jornada";
@@ -1344,11 +1274,14 @@ function atualizarBotoes() {
     btnEncerrar.style.display =
         "flex";
 
-    btnPausa.disabled = false;
-    btnEncerrar.disabled = false;
+    btnPausa.disabled =
+        false;
+
+    btnEncerrar.disabled =
+        false;
 
     if (
-        estado.registro.status ===
+        registroAtual.status ===
         "pausado"
     ) {
 
@@ -1370,12 +1303,17 @@ function atualizarBotoes() {
 function atualizarTela() {
 
     atualizarStatus();
+
     atualizarInformacoes();
+
     atualizarBotoes();
 
-    if (estado.registro) {
+    if (registroAtual) {
+
         iniciarCronometro();
+
     } else {
+
         pararCronometro();
     }
 }
@@ -1389,41 +1327,39 @@ function iniciarCronometro() {
 
     pararCronometro();
 
-    estado.intervalo =
-        setInterval(() => {
-
-            atualizarInformacoes();
-
-        }, 1000);
+    intervaloCronometro =
+        setInterval(
+            atualizarInformacoes,
+            1000
+        );
 }
 
 
 function pararCronometro() {
 
-    if (estado.intervalo) {
+    if (
+        intervaloCronometro
+    ) {
 
         clearInterval(
-            estado.intervalo
+            intervaloCronometro
         );
 
-        estado.intervalo = null;
+        intervaloCronometro =
+            null;
     }
 }
 
 
 /* =========================================================
-   BUSCAR JORNADA ATUAL
+   CARREGAR JORNADA
    ========================================================= */
 
-async function carregarJornadaAtual() {
-
-    if (!clienteSupabase) {
-        return;
-    }
+async function carregarJornada() {
 
     try {
 
-        const resultado =
+        const resposta =
             await clienteSupabase
                 .from("pontos")
                 .select("*")
@@ -1433,7 +1369,10 @@ async function carregarJornadaAtual() {
                 )
                 .in(
                     "status",
-                    ["ativo", "pausado"]
+                    [
+                        "ativo",
+                        "pausado"
+                    ]
                 )
                 .is(
                     "saida",
@@ -1442,36 +1381,32 @@ async function carregarJornadaAtual() {
                 .order(
                     "criado_em",
                     {
-                        ascending: false
+                        ascending:false
                     }
                 )
                 .limit(1);
 
-        if (resultado.error) {
+        if (resposta.error) {
 
             console.error(
-                "Erro ao buscar jornada:",
-                resultado.error
+                resposta.error
             );
-
-            estado.registro = null;
-
-            atualizarTela();
 
             return;
         }
 
         if (
-            resultado.data &&
-            resultado.data.length > 0
+            resposta.data &&
+            resposta.data.length
         ) {
 
-            estado.registro =
-                resultado.data[0];
+            registroAtual =
+                resposta.data[0];
 
         } else {
 
-            estado.registro = null;
+            registroAtual =
+                null;
         }
 
         atualizarTela();
@@ -1479,13 +1414,8 @@ async function carregarJornadaAtual() {
     } catch (erro) {
 
         console.error(
-            "Erro ao carregar jornada:",
             erro
         );
-
-        estado.registro = null;
-
-        atualizarTela();
     }
     }
     <script>
@@ -1495,23 +1425,24 @@ async function carregarJornadaAtual() {
 
 async function iniciarJornada() {
 
-    if (estado.carregandoAcao) {
+    if (processando) {
         return;
     }
 
     if (!clienteSupabase) {
 
-        mostrarMensagem(
-            "Sistema indisponível no momento.",
+        mensagem(
+            "Sistema ainda não conectado.",
             "erro"
         );
 
         return;
     }
 
-    estado.carregandoAcao = true;
+    processando = true;
 
-    btnIniciar.disabled = true;
+    btnIniciar.disabled =
+        true;
 
     btnIniciar.textContent =
         "Iniciando...";
@@ -1521,36 +1452,50 @@ async function iniciarJornada() {
         const agora =
             new Date().toISOString();
 
-        const registro =
-        {
-            passaporte: PASSAPORTE,
-            entrada: agora,
-            pausa_inicio: null,
-            pausa_fim: null,
-            saida: null,
-            status: "ativo"
+        const novoPonto = {
+
+            passaporte:
+                PASSAPORTE,
+
+            entrada:
+                agora,
+
+            pausa_inicio:
+                null,
+
+            pausa_fim:
+                null,
+
+            saida:
+                null,
+
+            status:
+                "ativo"
         };
 
-        const resultado =
+        const resposta =
             await clienteSupabase
                 .from("pontos")
-                .insert([registro])
+                .insert(
+                    [novoPonto]
+                )
                 .select()
                 .single();
 
-        if (resultado.error) {
+        if (resposta.error) {
 
             console.error(
-                "Erro ao iniciar:",
-                resultado.error
+                "SUPABASE:",
+                resposta.error
             );
 
-            mostrarMensagem(
-                "Não foi possível iniciar a jornada.",
+            mensagem(
+                "Erro ao iniciar o ponto.",
                 "erro"
             );
 
-            btnIniciar.disabled = false;
+            btnIniciar.disabled =
+                false;
 
             btnIniciar.textContent =
                 "Iniciar Jornada";
@@ -1558,47 +1503,51 @@ async function iniciarJornada() {
             return;
         }
 
-        estado.registro =
-            resultado.data;
+        registroAtual =
+            resposta.data;
 
         atualizarTela();
 
-        mostrarMensagem(
-            "Jornada iniciada com sucesso!",
+        mensagem(
+            "Jornada iniciada!",
             "sucesso"
         );
 
         /*
-         * REDIRECIONAMENTO
+         * REDIRECIONA PARA EQUIPE
          */
 
-        setTimeout(() => {
+        setTimeout(
+            function(){
 
-            window.location.href =
-                "equipe.html";
+                window.location.href =
+                    "equipe.html";
 
-        }, 600);
+            },
+            500
+        );
 
     } catch (erro) {
 
         console.error(
-            "Erro inesperado:",
             erro
         );
 
-        mostrarMensagem(
-            "Erro de conexão com o sistema.",
+        mensagem(
+            "Erro de conexão.",
             "erro"
         );
 
-        btnIniciar.disabled = false;
+        btnIniciar.disabled =
+            false;
 
         btnIniciar.textContent =
             "Iniciar Jornada";
 
     } finally {
 
-        estado.carregandoAcao = false;
+        processando =
+            false;
     }
 }
 
@@ -1610,15 +1559,16 @@ async function iniciarJornada() {
 async function pausarOuRetomar() {
 
     if (
-        estado.carregandoAcao ||
-        !estado.registro
+        processando ||
+        !registroAtual
     ) {
         return;
     }
 
-    estado.carregandoAcao = true;
+    processando = true;
 
-    btnPausa.disabled = true;
+    btnPausa.disabled =
+        true;
 
     btnPausa.textContent =
         "Processando...";
@@ -1628,31 +1578,39 @@ async function pausarOuRetomar() {
         const agora =
             new Date().toISOString();
 
-        let atualizacao;
+        let alteracao = null;
 
         if (
-            estado.registro.status ===
+            registroAtual.status ===
             "ativo"
         ) {
 
-            atualizacao = {
-                status: "pausado",
-                pausa_inicio: agora
+            alteracao = {
+
+                status:
+                    "pausado",
+
+                pausa_inicio:
+                    agora
             };
 
         } else if (
-            estado.registro.status ===
+            registroAtual.status ===
             "pausado"
         ) {
 
-            atualizacao = {
-                status: "ativo",
-                pausa_fim: agora
+            alteracao = {
+
+                status:
+                    "ativo",
+
+                pausa_fim:
+                    agora
             };
 
         } else {
 
-            mostrarMensagem(
+            mensagem(
                 "Essa jornada já foi encerrada.",
                 "erro"
             );
@@ -1660,70 +1618,61 @@ async function pausarOuRetomar() {
             return;
         }
 
-        const resultado =
+        const resposta =
             await clienteSupabase
                 .from("pontos")
-                .update(atualizacao)
+                .update(
+                    alteracao
+                )
                 .eq(
                     "id",
-                    estado.registro.id
+                    registroAtual.id
                 )
                 .select()
                 .single();
 
-        if (resultado.error) {
+        if (resposta.error) {
 
             console.error(
-                "Erro ao atualizar:",
-                resultado.error
+                resposta.error
             );
 
-            mostrarMensagem(
-                "Não foi possível atualizar a jornada.",
+            mensagem(
+                "Não foi possível atualizar.",
                 "erro"
             );
 
             return;
         }
 
-        estado.registro =
-            resultado.data;
+        registroAtual =
+            resposta.data;
 
         atualizarTela();
 
-        if (
-            estado.registro.status ===
+        mensagem(
+            registroAtual.status ===
             "pausado"
-        ) {
-
-            mostrarMensagem(
-                "Jornada pausada.",
-                "sucesso"
-            );
-
-        } else {
-
-            mostrarMensagem(
-                "Jornada retomada.",
-                "sucesso"
-            );
-        }
+                ? "Jornada pausada."
+                : "Jornada retomada.",
+            "sucesso"
+        );
 
     } catch (erro) {
 
         console.error(
-            "Erro:",
             erro
         );
 
-        mostrarMensagem(
+        mensagem(
             "Erro de conexão.",
             "erro"
         );
 
     } finally {
 
-        estado.carregandoAcao = false;
+        processando =
+            false;
 
         atualizarBotoes();
     }
@@ -1731,14 +1680,14 @@ async function pausarOuRetomar() {
 
 
 /* =========================================================
-   ENCERRAR JORNADA
+   ENCERRAR
    ========================================================= */
 
 async function encerrarJornada() {
 
     if (
-        estado.carregandoAcao ||
-        !estado.registro
+        processando ||
+        !registroAtual
     ) {
         return;
     }
@@ -1752,9 +1701,10 @@ async function encerrarJornada() {
         return;
     }
 
-    estado.carregandoAcao = true;
+    processando = true;
 
-    btnEncerrar.disabled = true;
+    btnEncerrar.disabled =
+        true;
 
     btnEncerrar.textContent =
         "Encerrando...";
@@ -1764,56 +1714,62 @@ async function encerrarJornada() {
         const agora =
             new Date().toISOString();
 
-        const atualizacao = {
-            saida: agora,
-            status: "encerrado"
+        const alteracao = {
+
+            saida:
+                agora,
+
+            status:
+                "encerrado"
         };
 
         if (
-            estado.registro.status ===
+            registroAtual.status ===
             "pausado" &&
-            estado.registro.pausa_inicio &&
-            !estado.registro.pausa_fim
+            registroAtual.pausa_inicio &&
+            !registroAtual.pausa_fim
         ) {
 
-            atualizacao.pausa_fim =
+            alteracao.pausa_fim =
                 agora;
         }
 
-        const resultado =
+        const resposta =
             await clienteSupabase
                 .from("pontos")
-                .update(atualizacao)
+                .update(
+                    alteracao
+                )
                 .eq(
                     "id",
-                    estado.registro.id
+                    registroAtual.id
                 )
                 .select()
                 .single();
 
-        if (resultado.error) {
+        if (resposta.error) {
 
             console.error(
-                "Erro ao encerrar:",
-                resultado.error
+                resposta.error
             );
 
-            mostrarMensagem(
-                "Não foi possível encerrar a jornada.",
+            mensagem(
+                "Não foi possível encerrar.",
                 "erro"
             );
 
             return;
         }
 
-        estado.registro = null;
+        registroAtual =
+            null;
 
         pararCronometro();
 
         atualizarTela();
 
-        mostrarMensagem(
-            "Jornada encerrada com sucesso!",
+        mensagem(
+            "Jornada encerrada.",
             "sucesso"
         );
 
@@ -1822,18 +1778,18 @@ async function encerrarJornada() {
     } catch (erro) {
 
         console.error(
-            "Erro:",
             erro
         );
 
-        mostrarMensagem(
+        mensagem(
             "Erro de conexão.",
             "erro"
         );
 
     } finally {
 
-        estado.carregandoAcao = false;
+        processando =
+            false;
 
         atualizarBotoes();
     }
@@ -1846,21 +1802,13 @@ async function encerrarJornada() {
 
 async function carregarHistorico() {
 
-    if (
-        !historicoLista ||
-        !clienteSupabase
-    ) {
+    if (!historicoLista) {
         return;
     }
 
-    historicoLista.innerHTML =
-        `<div class="historico-carregando">
-            Carregando histórico...
-        </div>`;
-
     try {
 
-        const resultado =
+        const resposta =
             await clienteSupabase
                 .from("pontos")
                 .select("*")
@@ -1871,16 +1819,15 @@ async function carregarHistorico() {
                 .order(
                     "criado_em",
                     {
-                        ascending: false
+                        ascending:false
                     }
                 )
                 .limit(20);
 
-        if (resultado.error) {
+        if (resposta.error) {
 
             console.error(
-                "Erro no histórico:",
-                resultado.error
+                resposta.error
             );
 
             historicoLista.innerHTML =
@@ -1892,7 +1839,7 @@ async function carregarHistorico() {
         }
 
         const registros =
-            resultado.data || [];
+            resposta.data || [];
 
         if (!registros.length) {
 
@@ -1904,10 +1851,11 @@ async function carregarHistorico() {
             return;
         }
 
-        historicoLista.innerHTML = "";
+        historicoLista.innerHTML =
+            "";
 
         registros.forEach(
-            registro => {
+            function(registro){
 
                 const item =
                     document.createElement(
@@ -1924,50 +1872,42 @@ async function carregarHistorico() {
                     registro.status ===
                     "ativo"
                 ) {
-                    status = "Ativo";
+                    status =
+                        "Ativo";
                 }
 
                 if (
                     registro.status ===
                     "pausado"
                 ) {
-                    status = "Pausado";
+                    status =
+                        "Pausado";
                 }
-
-                const data =
-                    formatarData(
-                        registro.entrada ||
-                        registro.criado_em
-                    );
-
-                const entrada =
-                    formatarHora(
-                        registro.entrada
-                    );
-
-                const saida =
-                    formatarHora(
-                        registro.saida
-                    );
 
                 const duracao =
                     registro.saida
-                        ? formatarDuracao(
-                            calcularTempoJornada(
+                        ? duracaoFormatada(
+                            calcularJornada(
                                 registro
                             )
                         )
                         : "Em andamento";
 
                 item.innerHTML = `
+
                     <div class="historico-topo">
+
                         <strong>
-                            ${escaparHTML(data)}
+                            ${dataFormatada(
+                                registro.entrada ||
+                                registro.criado_em
+                            )}
                         </strong>
 
-                        <span class="historico-status ${escaparHTML(registro.status || "")}">
-                            ${escaparHTML(status)}
+                        <span class="historico-status ${registro.status || ""}">
+                            ${status}
                         </span>
+
                     </div>
 
                     <div class="historico-horarios">
@@ -1975,21 +1915,25 @@ async function carregarHistorico() {
                         <div>
                             <small>Entrada</small>
                             <span>
-                                ${escaparHTML(entrada)}
+                                ${hora(
+                                    registro.entrada
+                                )}
                             </span>
                         </div>
 
                         <div>
                             <small>Saída</small>
                             <span>
-                                ${escaparHTML(saida)}
+                                ${hora(
+                                    registro.saida
+                                )}
                             </span>
                         </div>
 
                         <div>
                             <small>Duração</small>
                             <span>
-                                ${escaparHTML(duracao)}
+                                ${duracao}
                             </span>
                         </div>
 
@@ -2005,7 +1949,6 @@ async function carregarHistorico() {
     } catch (erro) {
 
         console.error(
-            "Erro no histórico:",
             erro
         );
 
@@ -2014,165 +1957,139 @@ async function carregarHistorico() {
                 Erro ao carregar histórico.
             </div>`;
     }
-        }
+    }
     <script>
 /* =========================================================
    ABAS
    ========================================================= */
 
-function abrirJornada() {
+tabJornada.addEventListener(
+    "click",
+    function(){
 
-    tabJornada.classList.add(
-        "ativa"
-    );
+        tabJornada.classList.add(
+            "ativa"
+        );
 
-    tabHistorico.classList.remove(
-        "ativa"
-    );
+        tabHistorico.classList.remove(
+            "ativa"
+        );
 
-    secaoJornada.style.display =
-        "block";
+        secaoJornada.classList.remove(
+            "secao-escondida"
+        );
 
-    secaoHistorico.style.display =
-        "none";
-}
-
-
-function abrirHistorico() {
-
-    tabHistorico.classList.add(
-        "ativa"
-    );
-
-    tabJornada.classList.remove(
-        "ativa"
-    );
-
-    secaoHistorico.style.display =
-        "block";
-
-    secaoJornada.style.display =
-        "none";
-
-    carregarHistorico();
-}
-
-
-/* =========================================================
-   EVENTOS
-   ========================================================= */
-
-function configurarEventos() {
-
-    btnIniciar.addEventListener(
-        "click",
-        iniciarJornada
-    );
-
-    btnPausa.addEventListener(
-        "click",
-        pausarOuRetomar
-    );
-
-    btnEncerrar.addEventListener(
-        "click",
-        encerrarJornada
-    );
-
-    tabJornada.addEventListener(
-        "click",
-        abrirJornada
-    );
-
-    tabHistorico.addEventListener(
-        "click",
-        abrirHistorico
-    );
-}
-
-
-/* =========================================================
-   INICIALIZAÇÃO
-   ========================================================= */
-
-async function inicializar() {
-
-    if (estado.inicializado) {
-        return;
+        secaoHistorico.classList.add(
+            "secao-escondida"
+        );
     }
+);
 
-    estado.inicializado = true;
 
-    pegarElementos();
+tabHistorico.addEventListener(
+    "click",
+    function(){
+
+        tabHistorico.classList.add(
+            "ativa"
+        );
+
+        tabJornada.classList.remove(
+            "ativa"
+        );
+
+        secaoHistorico.classList.remove(
+            "secao-escondida"
+        );
+
+        secaoJornada.classList.add(
+            "secao-escondida"
+        );
+
+        carregarHistorico();
+    }
+);
+
+
+/* =========================================================
+   BOTÕES
+   ========================================================= */
+
+btnIniciar.addEventListener(
+    "click",
+    iniciarJornada
+);
+
+btnPausa.addEventListener(
+    "click",
+    pausarOuRetomar
+);
+
+btnEncerrar.addEventListener(
+    "click",
+    encerrarJornada
+);
+
+
+/* =========================================================
+   INICIAR SUPABASE
+   ========================================================= */
+
+function iniciarSistema() {
 
     /*
-     * Mostra os dados básicos imediatamente.
+     * A página já está visível.
+     * Se o CDN não carregar, nada fica
+     * cobrindo a tela.
      */
 
-    nomeUsuario.textContent =
-        NOME_USUARIO;
+    if (
+        !window.supabase ||
+        typeof window.supabase.createClient !==
+        "function"
+    ) {
 
-    passaporteUsuario.textContent =
-        "Passaporte " + PASSAPORTE;
+        console.error(
+            "Supabase JS não carregou."
+        );
 
-    /*
-     * Se o Supabase não carregar,
-     * não deixa a tela presa.
-     */
-
-    const supabaseOK =
-        iniciarSupabase();
-
-    if (!supabaseOK) {
-
-        esconderLoading();
-
-        mostrarMensagem(
-            "Não foi possível conectar ao sistema.",
+        mensagem(
+            "Biblioteca do sistema não carregou.",
             "erro"
         );
 
         return;
     }
 
-    configurarEventos();
+    try {
 
-    /*
-     * A página não fica presa no loading
-     * esperando indefinidamente o Supabase.
-     */
-
-    const carregamento =
-        Promise.all([
-            carregarJornadaAtual(),
-            carregarHistorico()
-        ]);
-
-    const limite =
-        new Promise(resolve => {
-
-            setTimeout(
-                resolve,
-                3000
+        clienteSupabase =
+            window.supabase.createClient(
+                SUPABASE_URL,
+                SUPABASE_ANON_KEY
             );
 
-        });
+        carregarJornada();
 
-    await Promise.race([
-        carregamento,
-        limite
-    ]);
+        carregarHistorico();
 
-    abrirJornada();
+    } catch (erro) {
 
-    atualizarTela();
+        console.error(
+            "Erro ao iniciar Supabase:",
+            erro
+        );
 
-    esconderLoading();
+        mensagem(
+            "Erro ao conectar ao sistema.",
+            "erro"
+        );
+    }
 }
 
 
 /* =========================================================
-   DOM READY
+   EXECUTAR
    ========================================================= */
 
 if (
@@ -2182,50 +2099,49 @@ if (
 
     document.addEventListener(
         "DOMContentLoaded",
-        inicializar,
+        iniciarSistema,
         {
-            once: true
+            once:true
         }
     );
 
 } else {
 
-    inicializar();
+    iniciarSistema();
 }
 
 
 /* =========================================================
-   GARANTIA EXTRA
+   SE A PÁGINA VOLTAR DO CACHE
    ========================================================= */
 
 window.addEventListener(
-    "load",
-    () => {
+    "pageshow",
+    function(){
 
         if (
-            !estado.inicializado
+            clienteSupabase &&
+            !registroAtual
         ) {
-            inicializar();
+            carregarJornada();
         }
-    },
-    {
-        once: true
     }
 );
 
 
 /* =========================================================
-   LIMPEZA
+   LIMPAR CRONÔMETRO
    ========================================================= */
 
 window.addEventListener(
     "beforeunload",
-    () => {
+    function(){
 
         pararCronometro();
 
     }
 );
+
 </script>
 
 </body>
