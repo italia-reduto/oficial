@@ -3,226 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0F172A">
-    <meta name="color-scheme" content="dark">
-    <!-- ✅ Garante recarregamento correto e sem cache antigo -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-    
-    <title>ITÁLIA · INÍCIO</title>
-    
+    <meta name="theme-color" content="#050508">
+    <title>ORGANIZAÇÃO ITÁLIA</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            /* Nenhum bloqueio de atualização */
-            user-select: auto;
-            -webkit-user-select: auto;
-        }
-
-        .tela-inicio {
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(180deg, #3B82F6 0%, #1E40AF 15%, #0F172A 40%, #020617 100%);
+        body {
+            min-height: 100vh;
+            background-color: #050508;
             position: relative;
-            overflow: hidden;
+            overflow-x: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            color: #fff;
         }
 
-        .particula {
+        /* Fundo: AZUL + FORMAS + BLUR FIXO */
+        .fundo {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            filter: blur(8px);
+        }
+
+        .forma-superior {
             position: absolute;
-            border-radius: 50%;
-            background: rgba(125, 190, 255, 0.35);
-            filter: blur(18px);
-            animation: quedaLenta linear infinite;
-            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 35%;
+            background: linear-gradient(135deg, #0284C7 0%, #38BDF8 50%, #7DD3FC 100%);
+            border-bottom-right-radius: 60% 90%;
+            opacity: 0.8;
         }
 
-        @keyframes quedaLenta {
-            0% {
-                transform: translateY(-120px) scale(0.8);
-                opacity: 0;
-            }
-            12% { opacity: 0.65; }
-            88% { opacity: 0.65; }
-            100% {
-                transform: translateY(115vh) scale(1);
-                opacity: 0;
-            }
-        }
-
-        .halo-central {
+        .forma-inferior {
             position: absolute;
-            width: 550px;
-            height: 550px;
-            background: radial-gradient(circle, rgba(96, 165, 250, 0.12) 0%, transparent 70%);
-            border-radius: 50%;
-            z-index: 2;
-            animation: pulsarSuave 6s ease-in-out infinite;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(135deg, #0284C7 0%, #38BDF8 50%, #7DD3FC 100%);
+            border-top-left-radius: 70% 100%;
+            opacity: 0.8;
         }
 
-        @keyframes pulsarSuave {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.15); opacity: 0.5; }
-        }
-
-        .marca-central {
+        /* Conteúdo NÍTIDO */
+        .conteudo {
             position: relative;
-            z-index: 10;
-            text-align: center;
-            pointer-events: none;
-            margin-top: -80px;
-            animation: flutuar 4s ease-in-out infinite;
+            z-index: 1;
+            width: 90%;
+            max-width: 450px;
+            padding: 40px 20px;
+            animation: surgir 0.8s ease-out;
         }
 
-        @keyframes flutuar {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
+        @keyframes surgir {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .marca-titulo {
-            font-family: 'Inter', sans-serif;
-            font-size: 56px;
-            font-weight: 900;
-            letter-spacing: 16px;
-            color: #F8FAFC;
-            text-transform: uppercase;
-            text-shadow: 0 0 40px rgba(96, 165, 250, 0.5);
+        .logo {
+            margin-bottom: 50px;
         }
 
-        .marca-subtitulo {
-            margin-top: 16px;
-            font-family: 'Inter', sans-serif;
-            font-size: 16px;
-            letter-spacing: 8px;
-            color: rgba(148, 163, 184, 0.9);
-            text-transform: uppercase;
-            animation: flutuarSecundario 4.5s ease-in-out infinite;
+        .icone {
+            font-size: 70px;
+            color: #7DD3FC;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.3));
         }
 
-        @keyframes flutuarSecundario {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-6px); }
-        }
-
-        .area-inferior {
-            position: absolute;
-            bottom: 12%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            text-align: center;
-        }
-
-        .texto-carregando {
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            letter-spacing: 3px;
-            color: rgba(148, 163, 184, 0.6);
-            animation: fadePiscar 2.5s ease-in-out infinite;
-            text-transform: uppercase;
-        }
-
-        @keyframes fadePiscar {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
-
-        .caixa-continuar {
-            display: none;
-            margin-top: 20px;
-            background: rgba(59, 130, 246, 0.45);
-            border-radius: 999px;
-            padding: 14px 36px;
-            backdrop-filter: blur(6px);
-            cursor: pointer;
-            transition: all 0.25s ease;
-            opacity: 0.95;
-            pointer-events: auto; /* Garante clique livre */
-        }
-
-        .caixa-continuar:hover {
-            background: rgba(59, 130, 246, 0.65);
-            opacity: 1;
-        }
-
-        .texto-continuar {
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            font-weight: 600;
-            letter-spacing: 2px;
+        h1 {
+            font-size: 32px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            margin-bottom: 10px;
             color: #FFFFFF;
-            text-transform: uppercase;
+        }
+
+        .subtitulo {
+            font-size: 15px;
+            color: #7DD3FC;
+            letter-spacing: 2px;
+        }
+
+        .descricao {
+            margin: 30px 0 50px;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #CBD5E1;
+        }
+
+        .botao {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
+            border: none;
+            border-radius: 999px;
+            color: white;
+            font-size: 17px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            box-shadow: 0 5px 25px rgba(56, 189, 248, 0.25);
+            transition: transform 0.2s;
+        }
+
+        .botao:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(56, 189, 248, 0.4);
+        }
+
+        .rodape {
+            margin-top: 60px;
+            font-size: 13px;
+            color: #64748B;
         }
     </style>
 </head>
 <body>
-    <div class="tela-inicio">
-        <div class="halo-central"></div>
+    <!-- Fundo com azul, formas e blur -->
+    <div class="fundo">
+        <div class="forma-superior"></div>
+        <div class="forma-inferior"></div>
+    </div>
 
-        <div class="marca-central">
-            <h1 class="marca-titulo">ITÁLIA</h1>
-            <p class="marca-subtitulo">SISTEMA REDUTO</p>
+    <div class="conteudo">
+        <div class="logo">
+            <i class="fas fa-shield-alt icone"></i>
+            <h1>ORGANIZAÇÃO ITÁLIA</h1>
+            <p class="subtitulo">SISTEMA DE GERENCIAMENTO</p>
         </div>
 
-        <div class="area-inferior">
-            <div class="texto-carregando" id="carregando">Carregando...</div>
-            
-            <div class="caixa-continuar" id="caixaContinuar">
-                <div class="texto-continuar">CLIQUE PARA CONTINUAR</div>
-            </div>
+        <p class="descricao">
+            Bem-vindo! Acesse sua conta para utilizar os serviços, registrar ponto e consultar sua equipe.
+        </p>
+
+        <button class="botao" onclick="window.location.href='login.html'">
+            <i class="fas fa-sign-in-alt" style="margin-right: 10px;"></i>
+            ÁREA DE ACESSO
+        </button>
+
+        <div class="rodape">
+            © 2026 Organização Itália · Todos os direitos reservados
         </div>
-
-        <script>
-            // Nenhum bloqueio de atualização ou contexto de arrasto
-            document.addEventListener('dragstart', e => e.stopPropagation(), {passive:true});
-            
-            const qtdParticulas = 18;
-            const container = document.querySelector('.tela-inicio');
-
-            for (let i = 0; i < qtdParticulas; i++) {
-                const p = document.createElement('div');
-                p.classList.add('particula');
-
-                const tam = Math.random() * 50 + 25;
-                const posX = Math.random() * 100;
-                const duracao = Math.random() * 18 + 14;
-                const atraso = Math.random() * 20;
-
-                p.style.width = tam + 'px';
-                p.style.height = tam + 'px';
-                p.style.left = posX + '%';
-                p.style.animationDuration = duracao + 's';
-                p.style.animationDelay = '-' + atraso + 's';
-
-                container.appendChild(p);
-            }
-
-            setTimeout(() => {
-                document.getElementById('carregando').style.display = 'none';
-                document.getElementById('caixaContinuar').style.display = 'block';
-            }, 5000);
-
-            document.getElementById('caixaContinuar').addEventListener('click', () => {
-                // alert('Prosseguindo...');
-                window.location.href = 'login.html'; // Altere para sua página
-            });
-        </script>
     </div>
 </body>
 </html>
