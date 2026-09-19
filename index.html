@@ -74,7 +74,7 @@
             font-weight: 800;
             letter-spacing: 4px;
             margin-bottom: 10px;
-            color: #FFF;
+            color: #FFFFFF;
         }
         .subtitulo {
             font-size: 15px;
@@ -87,7 +87,8 @@
             line-height: 1.6;
             color: #CBD5E1;
         }
-        .botao {
+        .botao-acesso {
+            display: block;
             width: 100%;
             padding: 18px;
             background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
@@ -97,11 +98,13 @@
             font-size: 17px;
             font-weight: 700;
             letter-spacing: 2px;
+            text-align: center;
+            text-decoration: none;
             cursor: pointer;
             box-shadow: 0 5px 25px rgba(56,189,248,0.25);
             transition: transform 0.2s;
         }
-        .botao:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(56,189,248,0.4); }
+        .botao-acesso:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(56,189,248,0.4); }
         .rodape { margin-top: 60px; font-size: 13px; color: #64748B; }
     </style>
 </head>
@@ -118,18 +121,19 @@
             <p class="subtitulo">SISTEMA DE GERENCIAMENTO</p>
         </div>
 
-        <p class="descricao">Bem-vindo! Acesse sua conta para utilizar os serviços.</p>
+        <p class="descricao">
+            Bem-vindo! Acesse sua conta para utilizar os serviços, registrar ponto e consultar sua equipe.
+        </p>
 
-        <!-- LINK DIRETO — SIMPLES E CONFIÁVEL -->
-        <a href="./login.html" style="text-decoration:none;">
-            <button class="botao">
-                <i class="fas fa-sign-in-alt" style="margin-right:10px;"></i>
-                ÁREA DE ACESSO
-            </button>
+        <!-- ✅ LINK DIRETO E AUTOMÁTICO PARA LOGIN.HTML -->
+        <a href="login.html" class="botao-acesso">
+            <i class="fas fa-sign-in-alt" style="margin-right: 10px;"></i>
+            ÁREA DE ACESSO
         </a>
 
-        <div class="rodape">© 2026 Organização Itália</div>
+        <div class="rodape">
+            © 2026 Organização Itália · Todos os direitos reservados
+        </div>
     </div>
 </body>
 </html>
-
