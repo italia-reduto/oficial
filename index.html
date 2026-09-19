@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0F172A">
     <meta name="color-scheme" content="dark">
+    <!-- ✅ Garante recarregamento correto e sem cache antigo -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
     <title>ITÁLIA · INÍCIO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,6 +28,9 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+            /* Nenhum bloqueio de atualização */
+            user-select: auto;
+            -webkit-user-select: auto;
         }
 
         .tela-inicio {
@@ -111,10 +120,9 @@
             50% { transform: translateY(-6px); }
         }
 
-        /* Posição ajustada: um pouco mais para baixo */
         .area-inferior {
             position: absolute;
-            bottom: 12%; /* Mais baixo que 18%, mais alto que borda */
+            bottom: 12%;
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
@@ -145,6 +153,7 @@
             cursor: pointer;
             transition: all 0.25s ease;
             opacity: 0.95;
+            pointer-events: auto; /* Garante clique livre */
         }
 
         .caixa-continuar:hover {
@@ -180,6 +189,9 @@
         </div>
 
         <script>
+            // Nenhum bloqueio de atualização ou contexto de arrasto
+            document.addEventListener('dragstart', e => e.stopPropagation(), {passive:true});
+            
             const qtdParticulas = 18;
             const container = document.querySelector('.tela-inicio');
 
@@ -207,8 +219,8 @@
             }, 5000);
 
             document.getElementById('caixaContinuar').addEventListener('click', () => {
-                alert('Prosseguindo...');
-                // window.location.href = 'login.html';
+                // alert('Prosseguindo...');
+                window.location.href = 'login.html'; // Altere para sua página
             });
         </script>
     </div>
