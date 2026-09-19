@@ -77,7 +77,7 @@
             z-index: 10;
             text-align: center;
             pointer-events: none;
-            margin-top: -60px;
+            margin-top: -80px;
             animation: flutuar 4s ease-in-out infinite;
         }
 
@@ -111,9 +111,10 @@
             50% { transform: translateY(-6px); }
         }
 
+        /* Posição ajustada: um pouco mais para baixo */
         .area-inferior {
             position: absolute;
-            bottom: 50px;
+            bottom: 12%; /* Mais baixo que 18%, mais alto que borda */
             left: 50%;
             transform: translateX(-50%);
             z-index: 10;
@@ -126,6 +127,7 @@
             letter-spacing: 3px;
             color: rgba(148, 163, 184, 0.6);
             animation: fadePiscar 2.5s ease-in-out infinite;
+            text-transform: uppercase;
         }
 
         @keyframes fadePiscar {
@@ -133,13 +135,12 @@
             50% { opacity: 1; }
         }
 
-        /* Caixa: AZUL MAIS VIVO, totalmente arredondada */
         .caixa-continuar {
             display: none;
-            margin-top: 15px;
-            background: rgba(59, 130, 246, 0.45); /* Azul bem vivo */
-            border-radius: 999px; /* Formato pílula redondo */
-            padding: 12px 32px;
+            margin-top: 20px;
+            background: rgba(59, 130, 246, 0.45);
+            border-radius: 999px;
+            padding: 14px 36px;
             backdrop-filter: blur(6px);
             cursor: pointer;
             transition: all 0.25s ease;
@@ -147,16 +148,17 @@
         }
 
         .caixa-continuar:hover {
-            background: rgba(59, 130, 246, 0.65); /* Mais forte ao passar o mouse */
+            background: rgba(59, 130, 246, 0.65);
             opacity: 1;
         }
 
         .texto-continuar {
             font-family: 'Inter', sans-serif;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             letter-spacing: 2px;
-            color: #FFFFFF; /* Texto branco nítido */
+            color: #FFFFFF;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -170,7 +172,7 @@
         </div>
 
         <div class="area-inferior">
-            <div class="texto-carregando" id="carregando">CARREGANDO...</div>
+            <div class="texto-carregando" id="carregando">Carregando...</div>
             
             <div class="caixa-continuar" id="caixaContinuar">
                 <div class="texto-continuar">CLIQUE PARA CONTINUAR</div>
@@ -206,10 +208,9 @@
 
             document.getElementById('caixaContinuar').addEventListener('click', () => {
                 alert('Prosseguindo...');
-                // window.location.href = 'painel.html';
+                // window.location.href = 'login.html';
             });
         </script>
     </div>
 </body>
 </html>
-
