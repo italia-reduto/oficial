@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0F172A">
+    <meta name="color-scheme" content="dark">
+    <title>ITÁLIA · INÍCIO</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .tela-inicio {
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(180deg, #3B82F6 0%, #1E40AF 15%, #0F172A 40%, #020617 100%);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .particula {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(125, 190, 255, 0.35);
+            filter: blur(18px);
+            animation: quedaLenta linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes quedaLenta {
+            0% {
+                transform: translateY(-120px) scale(0.8);
+                opacity: 0;
+            }
+            12% { opacity: 0.65; }
+            88% { opacity: 0.65; }
+            100% {
+                transform: translateY(115vh) scale(1);
+                opacity: 0;
+            }
+        }
+
+        .halo-central {
+            position: absolute;
+            width: 550px;
+            height: 550px;
+            background: radial-gradient(circle, rgba(96, 165, 250, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+            z-index: 2;
+            animation: pulsarSuave 6s ease-in-out infinite;
+        }
+
+        @keyframes pulsarSuave {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.15); opacity: 0.5; }
+        }
+
+        .marca-central {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            pointer-events: none;
+            margin-top: -60px;
+            animation: flutuar 4s ease-in-out infinite;
+        }
+
+        @keyframes flutuar {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .marca-titulo {
+            font-family: 'Inter', sans-serif;
+            font-size: 56px;
+            font-weight: 900;
+            letter-spacing: 16px;
+            color: #F8FAFC;
+            text-transform: uppercase;
+            text-shadow: 0 0 40px rgba(96, 165, 250, 0.5);
+        }
+
+        .marca-subtitulo {
+            margin-top: 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px;
+            letter-spacing: 8px;
+            color: rgba(148, 163, 184, 0.9);
+            text-transform: uppercase;
+            animation: flutuarSecundario 4.5s ease-in-out infinite;
+        }
+
+        @keyframes flutuarSecundario {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .area-inferior {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            text-align: center;
+        }
+
+        .texto-carregando {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            letter-spacing: 3px;
+            color: rgba(148, 163, 184, 0.6);
+            animation: fadePiscar 2.5s ease-in-out infinite;
+        }
+
+        @keyframes fadePiscar {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+
+        /* Caixa: AZUL MAIS VIVO, totalmente arredondada */
+        .caixa-continuar {
+            display: none;
+            margin-top: 15px;
+            background: rgba(59, 130, 246, 0.45); /* Azul bem vivo */
+            border-radius: 999px; /* Formato pílula redondo */
+            padding: 12px 32px;
+            backdrop-filter: blur(6px);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            opacity: 0.95;
+        }
+
+        .caixa-continuar:hover {
+            background: rgba(59, 130, 246, 0.65); /* Mais forte ao passar o mouse */
+            opacity: 1;
+        }
+
+        .texto-continuar {
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #FFFFFF; /* Texto branco nítido */
+        }
+    </style>
+</head>
+<body>
+    <div class="tela-inicio">
+        <div class="halo-central"></div>
+
+        <div class="marca-central">
+            <h1 class="marca-titulo">ITÁLIA</h1>
+            <p class="marca-subtitulo">SISTEMA REDUTO</p>
+        </div>
+
+        <div class="area-inferior">
+            <div class="texto-carregando" id="carregando">CARREGANDO...</div>
+            
+            <div class="caixa-continuar" id="caixaContinuar">
+                <div class="texto-continuar">CLIQUE PARA CONTINUAR</div>
+            </div>
+        </div>
+
+        <script>
+            const qtdParticulas = 18;
+            const container = document.querySelector('.tela-inicio');
+
+            for (let i = 0; i < qtdParticulas; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particula');
+
+                const tam = Math.random() * 50 + 25;
+                const posX = Math.random() * 100;
+                const duracao = Math.random() * 18 + 14;
+                const atraso = Math.random() * 20;
+
+                p.style.width = tam + 'px';
+                p.style.height = tam + 'px';
+                p.style.left = posX + '%';
+                p.style.animationDuration = duracao + 's';
+                p.style.animationDelay = '-' + atraso + 's';
+
+                container.appendChild(p);
+            }
+
+            setTimeout(() => {
+                document.getElementById('carregando').style.display = 'none';
+                document.getElementById('caixaContinuar').style.display = 'block';
+            }, 5000);
+
+            document.getElementById('caixaContinuar').addEventListener('click', () => {
+                alert('Prosseguindo...');
+                // window.location.href = 'painel.html';
+            });
+        </script>
+    </div>
+</body>
+</html>
+
