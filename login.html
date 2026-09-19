@@ -7,6 +7,13 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <!-- CONEXÃO SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
     <style>
         * {
             margin: 0;
@@ -25,7 +32,6 @@
             justify-content: center;
         }
 
-        /* Fundo com formas e blur */
         .fundo-desfocado {
             position: fixed;
             top: 0;
@@ -58,7 +64,6 @@
             opacity: 0.85;
         }
 
-        /* ✨ Estrelas de fundo: MOVIMENTO SUAVE (sobe/desce) + brilho */
         .luzes-fundo {
             position: fixed;
             top: 0;
@@ -90,21 +95,11 @@
         }
 
         @keyframes movimentoSuave {
-            0% {
-                opacity: 0.4;
-                transform: translateY(0px);
-            }
-            50% {
-                opacity: 1;
-                transform: translateY(-10px);
-            }
-            100% {
-                opacity: 0.4;
-                transform: translateY(0px);
-            }
+            0% { opacity: 0.4; transform: translateY(0px); }
+            50% { opacity: 1; transform: translateY(-10px); }
+            100% { opacity: 0.4; transform: translateY(0px); }
         }
 
-        /* Cartão de login */
         .login-card {
             position: relative;
             z-index: 4;
@@ -121,7 +116,7 @@
 
         .titulo {
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 20px;
         }
 
         .titulo h1 {
@@ -136,6 +131,52 @@
             color: #7DD3FC;
             font-size: 14px;
             letter-spacing: 2px;
+        }
+
+        /* NOTIFICAÇÃO COM ANIMAÇÃO DA ESQUERDA */
+        .notificacao {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            font-weight: 500;
+            display: none;
+            align-items: center;
+            justify-content: flex-start;
+            text-align: left;
+            gap: 14px;
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            animation: deslizaEsquerda 0.4s ease-out;
+        }
+
+        @keyframes deslizaEsquerda {
+            from { 
+                opacity: 0; 
+                transform: translateX(-25px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        .notificacao i {
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .erro { 
+            background-color: #171723; 
+            color: #fca5a5; 
+            border-left: 4px solid #ef4444;
+        }
+
+        .sucesso { 
+            background-color: #171723; 
+            color: #86efac; 
+            border-left: 4px solid #22c55e;
         }
 
         .input-grupo {
@@ -260,7 +301,6 @@
         <div class="forma-inferior"></div>
     </div>
 
-    <!-- Estrelas de fundo com movimento suave -->
     <div class="luzes-fundo"></div>
 
     <div class="login-card">
@@ -269,15 +309,17 @@
             <p>SISTEMA DE ACESSO</p>
         </div>
 
-        <form>
+        <div id="notificacao" class="notificacao"></div>
+
+        <form id="formLogin">
             <div class="input-grupo">
                 <div class="input-icone"><i class="fas fa-id-card"></i></div>
-                <input type="number" class="input-campo" placeholder="Passaporte" required>
+                <input type="number" id="passaporte" class="input-campo" placeholder="Passaporte" required>
             </div>
 
             <div class="input-grupo">
                 <div class="input-icone"><i class="fas fa-lock"></i></div>
-                <input type="password" id="campoSenha" class="input-campo" placeholder="Senha" required>
+                <input type="password" id="senha" class="input-campo" placeholder="Senha" required>
                 <button type="button" class="botao-senha" onclick="alternarSenha()">
                     <i id="iconeOlho" class="fas fa-eye"></i>
                 </button>
@@ -285,7 +327,7 @@
 
             <div class="opcoes">
                 <label class="lembrar">
-                    <input type="checkbox"> Lembrar-me
+                    <input type="checkbox" id="lembrarMe"> Lembrar-me
                 </label>
                 <a href="#" class="esqueceu">Esqueceu a senha?</a>
             </div>
@@ -300,7 +342,7 @@
 
     <script>
         function alternarSenha() {
-            const campo = document.getElementById('campoSenha');
+            const campo = document.getElementById('senha');
             const icone = document.getElementById('iconeOlho');
             if (campo.type === 'password') {
                 campo.type = 'text';
@@ -312,6 +354,77 @@
                 icone.classList.add('fa-eye');
             }
         }
+
+        const form = document.getElementById('formLogin');
+        const notificacao = document.getElementById('notificacao');
+        const passaporteInput = document.getElementById('passaporte');
+        const lembrarMeCheckbox = document.getElementById('lembrarMe');
+
+        // ✅ Carrega passaporte salvo ao abrir a página
+        window.addEventListener('load', () => {
+            const salvo = localStorage.getItem('lembrarPassaporte');
+            if (salvo) {
+                passaporteInput.value = salvo;
+                lembrarMeCheckbox.checked = true;
+            }
+        });
+
+        function mostrarNotificacao(texto, tipo) {
+            notificacao.innerHTML = `
+                <i class="fas ${tipo === 'erro' ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i>
+                <span>${texto}</span>
+            `;
+            
+            notificacao.className = `notificacao ${tipo}`;
+            notificacao.style.display = 'flex';
+            
+            clearTimeout(window.tempoNotificacao);
+            window.tempoNotificacao = setTimeout(() => {
+                notificacao.style.display = 'none';
+            }, 4000);
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const passaporte = passaporteInput.value;
+            const senha = document.getElementById('senha').value;
+            const lembrar = lembrarMeCheckbox.checked;
+
+            try {
+                const { data, error } = await supabase
+                    .from('membros')
+                    .select('*')
+                    .eq('passaporte', passaporte)
+                    .eq('senha_credencial', senha)
+                    .single();
+
+                if (error) throw error;
+
+                if (data) {
+                    // ✅ Lógica do "Lembrar-me"
+                    if (lembrar) {
+                        localStorage.setItem('lembrarPassaporte', passaporte);
+                    } else {
+                        localStorage.removeItem('lembrarPassaporte');
+                    }
+
+                    localStorage.setItem('usuario', JSON.stringify({
+                        id: data.id,
+                        nome: data.nome,
+                        passaporte: data.passaporte,
+                        cargo: data.cargo
+                    }));
+                    
+                    mostrarNotificacao(`Bem-vindo, ${data.nome}! Redirecionando...`, 'sucesso');
+                    setTimeout(() => {
+                        window.location.href = 'painel.html';
+                    }, 1200);
+                }
+            } catch (erro) {
+                mostrarNotificacao('Passaporte ou senha incorretos!', 'erro');
+            }
+        });
     </script>
 </body>
 </html>
+
