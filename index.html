@@ -9,13 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body {
             min-height: 100vh;
             background-color: #050508;
@@ -27,7 +21,6 @@
             text-align: center;
             color: #fff;
         }
-
         .fundo {
             position: fixed;
             top: 0;
@@ -37,7 +30,6 @@
             z-index: 0;
             filter: blur(8px);
         }
-
         .forma-superior {
             position: absolute;
             top: 0;
@@ -48,7 +40,6 @@
             border-bottom-right-radius: 60% 90%;
             opacity: 0.8;
         }
-
         .forma-inferior {
             position: absolute;
             bottom: 0;
@@ -59,7 +50,6 @@
             border-top-left-radius: 70% 100%;
             opacity: 0.8;
         }
-
         .conteudo {
             position: relative;
             z-index: 1;
@@ -68,44 +58,35 @@
             padding: 40px 20px;
             animation: surgir 0.8s ease-out;
         }
-
         @keyframes surgir {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .logo {
-            margin-bottom: 50px;
-        }
-
+        .logo { margin-bottom: 50px; }
         .icone {
             font-size: 70px;
             color: #7DD3FC;
             margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px rgba(56, 189, 248, 0.3));
+            filter: drop-shadow(0 0 15px rgba(56,189,248,0.3));
         }
-
         h1 {
             font-size: 32px;
             font-weight: 800;
             letter-spacing: 4px;
             margin-bottom: 10px;
-            color: #FFFFFF;
+            color: #FFF;
         }
-
         .subtitulo {
             font-size: 15px;
             color: #7DD3FC;
             letter-spacing: 2px;
         }
-
         .descricao {
             margin: 30px 0 50px;
             font-size: 15px;
             line-height: 1.6;
             color: #CBD5E1;
         }
-
         .botao {
             width: 100%;
             padding: 18px;
@@ -117,20 +98,11 @@
             font-weight: 700;
             letter-spacing: 2px;
             cursor: pointer;
-            box-shadow: 0 5px 25px rgba(56, 189, 248, 0.25);
+            box-shadow: 0 5px 25px rgba(56,189,248,0.25);
             transition: transform 0.2s;
         }
-
-        .botao:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 30px rgba(56, 189, 248, 0.4);
-        }
-
-        .rodape {
-            margin-top: 60px;
-            font-size: 13px;
-            color: #64748B;
-        }
+        .botao:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(56,189,248,0.4); }
+        .rodape { margin-top: 60px; font-size: 13px; color: #64748B; }
     </style>
 </head>
 <body>
@@ -146,36 +118,18 @@
             <p class="subtitulo">SISTEMA DE GERENCIAMENTO</p>
         </div>
 
-        <p class="descricao">
-            Bem-vindo! Acesse sua conta para utilizar os serviços, registrar ponto e consultar sua equipe.
-        </p>
+        <p class="descricao">Bem-vindo! Acesse sua conta para utilizar os serviços.</p>
 
-        <button class="botao" onclick="irParaLogin()">
-            <i class="fas fa-sign-in-alt" style="margin-right: 10px;"></i>
-            ÁREA DE ACESSO
-        </button>
+        <!-- LINK DIRETO — SIMPLES E CONFIÁVEL -->
+        <a href="./login.html" style="text-decoration:none;">
+            <button class="botao">
+                <i class="fas fa-sign-in-alt" style="margin-right:10px;"></i>
+                ÁREA DE ACESSO
+            </button>
+        </a>
 
-        <div class="rodape">
-            © 2026 Organização Itália · Todos os direitos reservados
-        </div>
+        <div class="rodape">© 2026 Organização Itália</div>
     </div>
-
-    <script>
-        function irParaLogin() {
-            // Tenta primeiro o caminho direto
-            fetch('login.html')
-                .then(resposta => {
-                    if (resposta.ok) {
-                        window.location.href = 'login.html';
-                    } else {
-                        alert('Arquivo não encontrado! Verifique se login.html está na mesma pasta.');
-                    }
-                })
-                .catch(() => {
-                    // Se houver erro de CORS ou caminho, tenta direto
-                    window.location.href = './login.html';
-                });
-        }
-    </script>
 </body>
 </html>
+
