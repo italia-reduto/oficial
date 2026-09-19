@@ -17,7 +17,7 @@
 
         body {
             min-height: 100vh;
-            background-color: #050508; /* Fundo preto */
+            background-color: #050508;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -25,7 +25,17 @@
             justify-content: center;
         }
 
-        /* Formas azuis claras (tom céu) */
+        /* Fundo com blur */
+        .fundo-desfocado {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            filter: blur(10px);
+        }
+
         .forma-superior {
             position: absolute;
             top: 0;
@@ -34,7 +44,6 @@
             height: 40%;
             background: linear-gradient(135deg, #0284C7 0%, #38BDF8 50%, #7DD3FC 100%);
             border-bottom-right-radius: 50% 80%;
-            z-index: 0;
             opacity: 0.85;
         }
 
@@ -46,16 +55,56 @@
             height: 35%;
             background: linear-gradient(135deg, #0284C7 0%, #38BDF8 50%, #7DD3FC 100%);
             border-top-left-radius: 60% 100%;
-            z-index: 0;
             opacity: 0.85;
         }
 
+        /* ❄️ NEVE ORIGINAL — FUNCIONA BEM E VISUALMENTE GOSTEI */
+        .neve {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, white, transparent),
+                radial-gradient(2px 2px at 40px 70px, white, transparent),
+                radial-gradient(1px 1px at 90px 40px, white, transparent),
+                radial-gradient(2px 2px at 160px 120px, white, transparent),
+                radial-gradient(1px 1px at 230px 80px, white, transparent),
+                radial-gradient(2px 2px at 300px 150px, white, transparent),
+                radial-gradient(1px 1px at 350px 200px, white, transparent),
+                radial-gradient(2px 2px at 420px 50px, white, transparent),
+                radial-gradient(2px 2px at 500px 180px, white, transparent),
+                radial-gradient(1px 1px at 580px 90px, white, transparent);
+            background-size: 600px 250px;
+            animation: queda 10s linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes queda {
+            0% {
+                background-position: 0 0;
+            }
+            100% {
+                background-position: 0 250px;
+            }
+        }
+
+        /* Cartão de login */
         .login-card {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             width: 90%;
             max-width: 420px;
             padding: 60px 30px;
+            animation: surgirSuave 0.8s ease-out;
+        }
+
+        @keyframes surgirSuave {
+            from { opacity: 0; transform: translateY(25px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         .titulo {
@@ -119,7 +168,6 @@
             border-color: #38BDF8;
         }
 
-        /* Botão do olho da senha */
         .botao-senha {
             position: absolute;
             right: 15px;
@@ -178,14 +226,13 @@
             transform: translateY(-2px);
         }
 
-        /* Link voltar EM BRANCO */
         .voltar {
             text-align: center;
             margin-top: 40px;
         }
 
         .voltar a {
-            color: #FFFFFF; /* Branco como pediu */
+            color: #FFFFFF;
             text-decoration: none;
             font-size: 14px;
         }
@@ -196,8 +243,13 @@
     </style>
 </head>
 <body>
-    <div class="forma-superior"></div>
-    <div class="forma-inferior"></div>
+    <div class="fundo-desfocado">
+        <div class="forma-superior"></div>
+        <div class="forma-inferior"></div>
+    </div>
+
+    <!-- ❄️ VOLTEI PARA A VERSÃO QUE VOCÊ PREFERIU -->
+    <div class="neve"></div>
 
     <div class="login-card">
         <div class="titulo">
@@ -206,13 +258,11 @@
         </div>
 
         <form>
-            <!-- Campo só PASSAPORTE (numérico) -->
             <div class="input-grupo">
                 <div class="input-icone"><i class="fas fa-id-card"></i></div>
                 <input type="number" class="input-campo" placeholder="Passaporte" required>
             </div>
 
-            <!-- Senha com olhinho -->
             <div class="input-grupo">
                 <div class="input-icone"><i class="fas fa-lock"></i></div>
                 <input type="password" id="campoSenha" class="input-campo" placeholder="Senha" required>
@@ -237,11 +287,9 @@
     </div>
 
     <script>
-        // Função do olhinho da senha
         function alternarSenha() {
             const campo = document.getElementById('campoSenha');
             const icone = document.getElementById('iconeOlho');
-            
             if (campo.type === 'password') {
                 campo.type = 'text';
                 icone.classList.remove('fa-eye');
