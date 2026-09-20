@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITÁLIA · ACESSO</title>
     
-    <!-- ✅ CONEXÃO SUPABASE ADICIONADA AQUI -->
+    <!-- ✅ CONEXÃO SUPABASE — CHAVES CORRETAS! -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
@@ -18,13 +18,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body {
             min-height: 100vh;
             background-color: #050508;
@@ -34,48 +28,35 @@
             align-items: center;
             justify-content: center;
         }
-
         .fundo-desfocado {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 0;
             filter: blur(10px);
         }
-
         .forma-superior {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 40%;
+            top: 0; left: 0;
+            width: 100%; height: 40%;
             background: linear-gradient(135deg, #0284C7 0%, #38BDF8 50%, #7DD3FC 100%);
             border-bottom-right-radius: 50% 80%;
             opacity: 0.85;
         }
-
         .forma-inferior {
             position: absolute;
-            bottom: 0;
-            right: 0;
-            width: 100%;
-            height: 35%;
+            bottom: 0; right: 0;
+            width: 100%; height: 35%;
             background: linear-gradient(135deg, #0284C7 0%, #38BDF8 50%, #7DD3FC 100%);
             border-top-left-radius: 60% 100%;
             opacity: 0.85;
         }
-
         .luzes-fundo {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             z-index: 1;
             pointer-events: none;
-            
             background-image: 
                 radial-gradient(3px 3px at 10% 15%, rgba(255,255,255,0.9), transparent),
                 radial-gradient(2px 2px at 25% 40%, rgba(125,211,252,0.8), transparent),
@@ -92,17 +73,14 @@
                 radial-gradient(2px 2px at 5% 50%, rgba(255,255,255,0.7), transparent),
                 radial-gradient(3px 3px at 20% 90%, rgba(125,211,252,0.8), transparent),
                 radial-gradient(2px 2px at 75% 90%, rgba(255,255,255,0.8), transparent);
-            
             background-size: 100% 100%;
             animation: movimentoSuave 6s ease-in-out infinite;
         }
-
         @keyframes movimentoSuave {
             0% { opacity: 0.4; transform: translateY(0px); }
             50% { opacity: 1; transform: translateY(-10px); }
             100% { opacity: 0.4; transform: translateY(0px); }
         }
-
         .login-card {
             position: relative;
             z-index: 4;
@@ -111,188 +89,78 @@
             padding: 60px 30px;
             animation: surgirSuave 0.8s ease-out;
         }
-
         @keyframes surgirSuave {
             from { opacity: 0; transform: translateY(25px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        .titulo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
+        .titulo { text-align: center; margin-bottom: 20px; }
         .titulo h1 {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: 3px;
-            margin-bottom: 8px;
-            color: #FFFFFF;
+            font-size: 28px; font-weight: 800;
+            letter-spacing: 3px; margin-bottom: 8px; color: #FFFFFF;
         }
-
-        .titulo p {
-            color: #7DD3FC;
-            font-size: 14px;
-            letter-spacing: 2px;
-        }
-
+        .titulo p { color: #7DD3FC; font-size: 14px; letter-spacing: 2px; }
         .notificacao {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            font-size: 14px;
-            font-weight: 500;
-            display: none;
-            align-items: center;
-            justify-content: flex-start;
-            text-align: left;
-            gap: 14px;
-            border: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 100%; padding: 16px 20px; border-radius: 12px;
+            margin-bottom: 25px; font-size: 14px; font-weight: 500;
+            display: none; align-items: center; justify-content: flex-start;
+            gap: 14px; border: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             animation: deslizaEsquerda 0.4s ease-out;
         }
-
         @keyframes deslizaEsquerda {
             from { opacity: 0; transform: translateX(-25px); }
             to { opacity: 1; transform: translateX(0); }
         }
-
-        .notificacao i {
-            font-size: 18px;
-            flex-shrink: 0;
-        }
-
-        .sucesso { 
-            background-color: #171723; 
-            color: #86efac; 
-            border-left: 4px solid #22c55e;
-        }
-        .erro { 
-            background-color: #1f1723; 
-            color: #fca5a5; 
-            border-left: 4px solid #ef4444;
-        }
-
-        .input-grupo {
-            margin-bottom: 22px;
-            position: relative;
-        }
-
+        .notificacao i { font-size: 18px; flex-shrink: 0; }
+        .sucesso { background-color: #171723; color: #86efac; border-left: 4px solid #22c55e; }
+        .erro { background-color: #1f1723; color: #fca5a5; border-left: 4px solid #ef4444; }
+        .input-grupo { margin-bottom: 22px; position: relative; }
         .input-icone {
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 50px;
-            height: 100%;
+            position: absolute; left: 0; top: 50%;
+            transform: translateY(-50%); width: 50px; height: 100%;
             background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
-            border-radius: 999px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 16px;
+            border-radius: 999px; display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 16px;
         }
-
         .input-campo {
-            width: 100%;
-            padding: 16px 60px 16px 65px;
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(96, 165, 250, 0.2);
+            width: 100%; padding: 16px 60px 16px 65px;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(96,165,250,0.2);
             border-radius: 999px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-            font-size: 15px;
-            color: #F1F5F9;
-            outline: none;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            font-size: 15px; color: #F1F5F9; outline: none;
             transition: border-color 0.3s;
         }
-
-        .input-campo::placeholder {
-            color: #94A3B8;
-        }
-
-        .input-campo:focus {
-            border-color: #38BDF8;
-        }
-
+        .input-campo::placeholder { color: #94A3B8; }
+        .input-campo:focus { border-color: #38BDF8; }
         .botao-senha {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
-            border: none;
-            color: #94A3B8;
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.2s;
+            position: absolute; right: 15px; top: 50%;
+            transform: translateY(-50%); background: transparent;
+            border: none; color: #94A3B8; font-size: 18px; cursor: pointer;
         }
-
-        .botao-senha:hover {
-            color: #7DD3FC;
-        }
-
+        .botao-senha:hover { color: #7DD3FC; }
         .opcoes {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 0 10px;
-            font-size: 14px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; padding: 0 10px; font-size: 14px;
         }
-
-        .lembrar {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: #CBD5E1;
-            cursor: pointer;
-        }
-
-        .esqueceu {
-            color: #7DD3FC;
-            text-decoration: none;
-        }
-
+        .lembrar { display: flex; align-items: center; gap: 8px; color: #CBD5E1; cursor: pointer; }
+        .esqueceu { color: #7DD3FC; text-decoration: none; }
         .botao-entrar {
-            width: 100%;
-            padding: 16px;
+            width: 100%; padding: 16px;
             background: linear-gradient(135deg, #0284C7 0%, #38BDF8 100%);
-            border: none;
-            border-radius: 999px;
-            color: white;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            cursor: pointer;
-            box-shadow: 0 4px 20px rgba(56, 189, 248, 0.25);
+            border: none; border-radius: 999px;
+            color: white; font-size: 16px; font-weight: 600;
+            letter-spacing: 2px; cursor: pointer;
+            box-shadow: 0 4px 20px rgba(56,189,248,0.25);
             transition: transform 0.2s;
         }
-
-        .botao-entrar:hover {
-            transform: translateY(-2px);
-        }
+        .botao-entrar:hover { transform: translateY(-2px); }
         .botao-entrar:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
+            opacity: 0.6; cursor: not-allowed; transform: none;
         }
-
-        .voltar {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .voltar a {
-            color: #FFFFFF;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .voltar a:hover {
-            text-decoration: underline;
-        }
+        .voltar { text-align: center; margin-top: 40px; }
+        .voltar a { color: #FFFFFF; text-decoration: none; font-size: 14px; }
+        .voltar a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -300,7 +168,6 @@
         <div class="forma-superior"></div>
         <div class="forma-inferior"></div>
     </div>
-
     <div class="luzes-fundo"></div>
 
     <div class="login-card">
@@ -376,7 +243,6 @@
             `;
             notificacao.className = `notificacao ${tipo}`;
             notificacao.style.display = 'flex';
-            
             clearTimeout(window.tempoNotificacao);
             window.tempoNotificacao = setTimeout(() => {
                 notificacao.style.display = 'none';
@@ -404,43 +270,64 @@
             botaoEntrar.textContent = 'VERIFICANDO...';
             notificacao.style.display = 'none';
 
-            // ✅ BUSCA NO BANCO SUPABASE
-            const { data, error } = await supabase
-                .from('membros')
-                .select('id, passaporte, nome, cargo, ativo, equipe_id')
-                .eq('passaporte', passaporte)
-                .eq('senha_credencial', senha)
-                .single();
+            try {
+                // ✅ BUSCA NO BANCO COM AS CHAVES CORRETAS
+                const { data, error } = await supabase
+                    .from('membros')
+                    .select('id, passaporte, nome, cargo, ativo, equipe_id')
+                    .eq('passaporte', passaporte)
+                    .eq('senha_credencial', senha)
+                    .single();
 
-            if (error || !data) {
-                mostrarNotificacao('Passaporte ou senha incorretos', 'erro');
+                if (error) {
+                    console.error('Erro Supabase:', error);
+                    if (error.code === 'PGRST116') {
+                        mostrarNotificacao('Passaporte ou senha incorretos', 'erro');
+                    } else {
+                        mostrarNotificacao('Erro: ' + error.message, 'erro');
+                    }
+                    botaoEntrar.disabled = false;
+                    botaoEntrar.textContent = 'ENTRAR';
+                    return;
+                }
+
+                if (!data) {
+                    mostrarNotificacao('Usuário não encontrado', 'erro');
+                    botaoEntrar.disabled = false;
+                    botaoEntrar.textContent = 'ENTRAR';
+                    return;
+                }
+
+                if (!data.ativo) {
+                    mostrarNotificacao('Conta desativada', 'erro');
+                    botaoEntrar.disabled = false;
+                    botaoEntrar.textContent = 'ENTRAR';
+                    return;
+                }
+
+                // ✅ SALVA TUDO PARA O PAINEL
+                localStorage.setItem('usuario', JSON.stringify({
+                    id: data.id,
+                    passaporte: data.passaporte,
+                    nome: data.nome,
+                    cargo: data.cargo,
+                    equipe_id: data.equipe_id
+                }));
+
+                mostrarNotificacao(`Bem-vindo, ${data.nome}! Redirecionando...`, 'sucesso');
+
+                setTimeout(() => {
+                    window.location.href = 'painel.html';
+                }, 1000);
+
+            } catch (erroGeral) {
+                console.error('Erro geral:', erroGeral);
+                mostrarNotificacao('Falha na conexão. Tente novamente.', 'erro');
                 botaoEntrar.disabled = false;
                 botaoEntrar.textContent = 'ENTRAR';
-                return;
             }
-
-            if (!data.ativo) {
-                mostrarNotificacao('Conta desativada', 'erro');
-                botaoEntrar.disabled = false;
-                botaoEntrar.textContent = 'ENTRAR';
-                return;
-            }
-
-            // ✅ SALVA TUDO PARA O PAINEL
-            localStorage.setItem('usuario', JSON.stringify({
-                id: data.id,
-                passaporte: data.passaporte,
-                nome: data.nome,
-                cargo: data.cargo,
-                equipe_id: data.equipe_id
-            }));
-
-            mostrarNotificacao(`Bem-vindo, ${data.nome}! Redirecionando...`, 'sucesso');
-
-            setTimeout(() => {
-                window.location.href = 'painel.html';
-            }, 1000);
         });
     </script>
 </body>
 </html>
+
