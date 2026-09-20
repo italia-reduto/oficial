@@ -7,6 +7,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <!-- CONEXÃO SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { height: 100%; }
@@ -27,7 +36,6 @@
             overflow: hidden;
             flex-shrink: 0;
             z-index: 1;
-            transition: filter 0.3s ease;
         }
         .banner-topo::before {
             content: "";
@@ -46,9 +54,24 @@
             flex-grow: 1;
             position: relative;
             z-index: 3;
-            padding: 0 16px;
-            transition: filter 0.3s ease;
+            padding: 24px 16px;
             overflow-y: auto;
+        }
+        .saudacao { margin-bottom: 32px; }
+        .saudacao h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+        .saudacao h2 span { color: #38bdf8; }
+        .saudacao p {
+            font-size: 14px;
+            color: #94a3b8;
+        }
+        .carregando {
+            color: #64748b;
+            font-style: italic;
         }
         .barra-menu-inferior {
             width: 100%;
@@ -60,6 +83,10 @@
             position: relative;
             z-index: 30;
             margin-bottom: 40px;
+            
+            /* ✅ Alinha conteúdo à direita */
+            display: flex;
+            justify-content: flex-end;
         }
         .menu-mais {
             display: flex;
@@ -67,47 +94,19 @@
             align-items: center;
             gap: 4px;
             color: #3b82f6;
-            text-decoration: none;
             font-size: 13px;
-            font-weight: 500;
-            transition: color 0.2s;
             cursor: pointer;
-            margin-left: auto;
-            max-width: fit-content;
-            position: relative;
-            z-index: 31;
-            
-            /* ✅ TIRA A CAIXA DE SELEÇÃO */
             outline: none;
             border: none;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
-        .menu-mais:focus,
-        .menu-mais:active {
+        .menu-mais:focus, .menu-mais:active {
             outline: none;
-            border: none;
             box-shadow: none;
         }
-        .menu-mais:hover { color: #60a5fa; }
-        .menu-mais i { font-size: 22px; transition: color 0.2s; }
-        .menu-mais .marcacao-topo {
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%) scaleX(0);
-            width: 22px;
-            height: 3px;
-            background-color: #3b82f6;
-            border-radius: 999px;
-            transition: transform 0.2s ease;
-            pointer-events: none;
-        }
-        .menu-mais.ativo .marcacao-topo { transform: translateX(-50%) scaleX(1); }
+        .menu-mais i { font-size: 22px; }
         .menu-mais.ativo { color: #93c5fd; }
-        .com-blur { filter: blur(4px); pointer-events: none; }
-
-        /* Gaveta lateral */
         .gaveta-lateral {
             position: fixed;
             top: 70px;
@@ -119,7 +118,7 @@
             border: 1px solid rgba(59,130,246,0.35);
             border-radius: 24px 0 0 24px;
             transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
             z-index: 20;
             padding: 28px 22px;
             overflow-y: auto;
@@ -134,30 +133,61 @@
     </style>
 </head>
 <body>
-    <div class="banner-topo" id="areaBanner"></div>
-    <div class="conteudo" id="areaConteudo"></div>
+    <div class="banner-topo"></div>
+    
+    <div class="conteudo">
+        <div class="saudacao">
+            <h2>Olá, <span id="nomeUsuario" class="carregando">carregando...</span> 👋</h2>
+            <p>Bem-vindo de volta à Organização Itália</p>
+        </div>
+    </div>
 
     <div class="gaveta-lateral" id="menuLateral"></div>
 
     <div class="barra-menu-inferior">
         <div class="menu-mais" id="botaoMais">
-            <span class="marcacao-topo"></span>
             <i class="fas fa-th"></i>
             <span>Mais</span>
         </div>
     </div>
 
     <script>
+        // ✅ BUSCA O NOME DIRETO DA TABELA membros
+        async function carregarNomeUsuario() {
+            const elementoNome = document.getElementById('nomeUsuario');
+            const dadosSalvos = localStorage.getItem('usuario');
+
+            if (!dadosSalvos) {
+                elementoNome.textContent = "Faça login";
+                return;
+            }
+
+            const usuario = JSON.parse(dadosSalvos);
+            const passaporte = usuario.passaporte;
+
+            const { data, error } = await supabase
+                .from('membros')
+                .select('nome')
+                .eq('passaporte', passaporte)
+                .single();
+
+            if (error || !data) {
+                elementoNome.textContent = usuario.nome || "Membro";
+                return;
+            }
+
+            elementoNome.textContent = data.nome;
+            usuario.nome = data.nome;
+            localStorage.setItem('usuario', JSON.stringify(usuario));
+        }
+
+        carregarNomeUsuario();
+
         const botao = document.getElementById('botaoMais');
         const gaveta = document.getElementById('menuLateral');
-        const banner = document.getElementById('areaBanner');
-        const conteudo = document.getElementById('areaConteudo');
-
         botao.addEventListener('click', () => {
             botao.classList.toggle('ativo');
             gaveta.classList.toggle('aberto');
-            banner.classList.toggle('com-blur');
-            conteudo.classList.toggle('com-blur');
         });
     </script>
 </body>
