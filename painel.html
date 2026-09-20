@@ -56,6 +56,9 @@
             flex-shrink: 0;
             position: relative;
             z-index: 30;
+            
+            /* ✅ SUBINDO A BARRA MAIS PRA CIMA */
+            margin-bottom: 20px;
         }
         .menu-mais {
             display: flex;
@@ -95,7 +98,7 @@
         .gaveta-lateral {
             position: fixed;
             top: 80px;
-            bottom: 72px;
+            bottom: 110px; /* ✅ SUBINDO A GAVETA TAMBÉM */
             right: 0;
             width: 260px;
             background: rgba(12,16,24,0.97);
@@ -112,8 +115,8 @@
 
         @media (max-width: 480px) {
             .banner-topo { height: 140px; }
-            .barra-menu-inferior { padding: 20px; }
-            .gaveta-lateral { top: 70px; width: 220px; bottom: 66px; }
+            .barra-menu-inferior { padding: 20px; margin-bottom: 15px; }
+            .gaveta-lateral { top: 70px; width: 220px; bottom: 100px; }
         }
     </style>
 </head>
