@@ -9,18 +9,20 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { height: 100%; }
         body {
-            min-height: 100vh;
+            min-height: 100%;
             font-family: 'Inter', sans-serif;
             color: #f1f5f9;
             background-color: #0b0b10;
             display: flex;
             flex-direction: column;
             position: relative;
+            overflow: hidden; /* ✅ Tira rolagem que sobra */
         }
         .banner-topo {
             width: 100%;
-            height: 160px;
+            height: 140px; /* ✅ Um pouco menor */
             position: relative;
             overflow: hidden;
             flex-shrink: 0;
@@ -46,25 +48,26 @@
             z-index: 3;
             padding: 0 16px;
             transition: filter 0.3s ease;
+            overflow-y: auto; /* Só o conteúdo rola */
         }
         .barra-menu-inferior {
             width: 100%;
             background: rgba(255,255,255,0.03);
             border-top: 1px solid rgba(255,255,255,0.06);
-            padding: 22px 24px;
+            padding: 14px 24px; /* ✅ Menos altura interna */
             backdrop-filter: blur(10px);
             flex-shrink: 0;
             position: relative;
             z-index: 30;
             
-            /* ✅ SUBINDO A BARRA MAIS PRA CIMA */
-            margin-bottom: 20px;
+            /* ✅ SUBINDO BEM MAIS */
+            margin-bottom: 40px;
         }
         .menu-mais {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             color: #3b82f6;
             text-decoration: none;
             font-size: 13px;
@@ -97,8 +100,8 @@
         /* Gaveta lateral */
         .gaveta-lateral {
             position: fixed;
-            top: 80px;
-            bottom: 110px; /* ✅ SUBINDO A GAVETA TAMBÉM */
+            top: 70px;
+            bottom: 130px; /* ✅ Sobe junto com a barra */
             right: 0;
             width: 260px;
             background: rgba(12,16,24,0.97);
@@ -114,9 +117,9 @@
         .gaveta-lateral.aberto { transform: translateX(0); }
 
         @media (max-width: 480px) {
-            .banner-topo { height: 140px; }
-            .barra-menu-inferior { padding: 20px; margin-bottom: 15px; }
-            .gaveta-lateral { top: 70px; width: 220px; bottom: 100px; }
+            .banner-topo { height: 120px; }
+            .barra-menu-inferior { padding: 12px 24px; margin-bottom: 35px; }
+            .gaveta-lateral { top: 60px; width: 220px; bottom: 115px; }
         }
     </style>
 </head>
