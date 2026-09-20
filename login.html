@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITÁLIA · ACESSO</title>
     
-    <!-- ✅ CONEXÃO SUPABASE -->
+    <!-- ✅ SUPABASE CARREGADO CORRETAMENTE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        
+        // ✅ CORRIGIDO — SEMPRE CRIA DIRETO
         const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
@@ -27,13 +29,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-        .fundo-desfocado {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 0;
-            filter: blur(10px);
         }
         .forma-superior {
             position: absolute;
@@ -165,10 +160,8 @@
     </style>
 </head>
 <body>
-    <div class="fundo-desfocado">
-        <div class="forma-superior"></div>
-        <div class="forma-inferior"></div>
-    </div>
+    <div class="forma-superior"></div>
+    <div class="forma-inferior"></div>
     <div class="luzes-fundo"></div>
 
     <div class="login-card">
@@ -212,15 +205,9 @@
         function alternarSenha() {
             const campo = document.getElementById('senha');
             const icone = document.getElementById('iconeOlho');
-            if (campo.type === 'password') {
-                campo.type = 'text';
-                icone.classList.remove('fa-eye');
-                icone.classList.add('fa-eye-slash');
-            } else {
-                campo.type = 'password';
-                icone.classList.remove('fa-eye-slash');
-                icone.classList.add('fa-eye');
-            }
+            campo.type = campo.type === 'password' ? 'text' : 'password';
+            icone.classList.toggle('fa-eye');
+            icone.classList.toggle('fa-eye-slash');
         }
 
         const form = document.getElementById('formLogin');
@@ -252,28 +239,23 @@
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+
             const passaporte = passaporteInput.value.trim();
             const senha = document.getElementById('senha').value;
-            const lembrar = lembrarMeCheckbox.checked;
 
             if (!passaporte || !senha) {
                 mostrarNotificacao('Preencha todos os campos', 'erro');
                 return;
             }
 
-            if (lembrar) {
-                localStorage.setItem('lembrarPassaporte', passaporte);
-            } else {
-                localStorage.removeItem('lembrarPassaporte');
-            }
+            localStorage.setItem('lembrarPassaporte', lembrarMeCheckbox.checked ? passaporte : '');
+            if (!lembrarMeCheckbox.checked) localStorage.removeItem('lembrarPassaporte');
 
             botaoEntrar.disabled = true;
             botaoEntrar.textContent = 'VERIFICANDO...';
             notificacao.style.display = 'none';
 
             try {
-                console.log('Conectando no Supabase...');
-                
                 const { data, error } = await supabase
                     .from('membros')
                     .select('id, passaporte, nome, cargo, ativo, equipe_id')
@@ -281,32 +263,15 @@
                     .eq('senha_credencial', senha)
                     .single();
 
-                console.log('Resposta recebida');
-
                 if (error) {
-                    console.error('Erro:', error);
                     if (error.code === 'PGRST116') {
-                        mostrarNotificacao('Passaporte ou senha incorretos', 'erro');
-                    } else {
-                        mostrarNotificacao('Erro: ' + error.message, 'erro');
+                        throw new Error('Passaporte ou senha incorretos');
                     }
-                    botaoEntrar.disabled = false;
-                    botaoEntrar.textContent = 'ENTRAR';
-                    return;
-                }
-
-                if (!data) {
-                    mostrarNotificacao('Usuário não encontrado', 'erro');
-                    botaoEntrar.disabled = false;
-                    botaoEntrar.textContent = 'ENTRAR';
-                    return;
+                    throw error;
                 }
 
                 if (!data.ativo) {
-                    mostrarNotificacao('Conta desativada', 'erro');
-                    botaoEntrar.disabled = false;
-                    botaoEntrar.textContent = 'ENTRAR';
-                    return;
+                    throw new Error('Conta desativada');
                 }
 
                 localStorage.setItem('usuario', JSON.stringify({
@@ -318,14 +283,10 @@
                 }));
 
                 mostrarNotificacao(`Bem-vindo, ${data.nome}! Redirecionando...`, 'sucesso');
+                setTimeout(() => window.location.href = 'painel.html', 1200);
 
-                setTimeout(() => {
-                    window.location.href = 'painel.html';
-                }, 1200);
-
-            } catch (erroGeral) {
-                console.error('Erro geral:', erroGeral);
-                mostrarNotificacao('Falha: ' + erroGeral.message, 'erro');
+            } catch (erro) {
+                mostrarNotificacao(erro.message, 'erro');
                 botaoEntrar.disabled = false;
                 botaoEntrar.textContent = 'ENTRAR';
             }
