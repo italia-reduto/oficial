@@ -300,7 +300,6 @@
         <form id="formLogin">
             <div class="input-grupo">
                 <div class="input-icone"><i class="fas fa-id-card"></i></div>
-                <!-- ✅ Teclado numérico mantido, interface original preservada -->
                 <input type="number" inputmode="numeric" id="passaporte" class="input-campo" placeholder="Passaporte" required>
             </div>
 
@@ -322,8 +321,9 @@
             <button type="submit" class="botao-entrar">ENTRAR</button>
         </form>
 
+        <!-- ✅ LINK CORRIGIDO: Agora aponta para index.html (padrão de sites) -->
         <div class="voltar">
-            <a href="inicio.html">← Voltar para tela inicial</a>
+            <a href="index.html">← Voltar para tela inicial</a>
         </div>
     </div>
 
@@ -347,7 +347,6 @@
         const passaporteInput = document.getElementById('passaporte');
         const lembrarMeCheckbox = document.getElementById('lembrarMe');
 
-        // Carrega passaporte salvo
         window.addEventListener('load', () => {
             const salvo = localStorage.getItem('lembrarPassaporte');
             if (salvo) {
@@ -371,20 +370,17 @@
             }, 4000);
         }
 
-        // Login LIVRE: aceita QUALQUER dado
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const passaporte = passaporteInput.value.trim();
             const lembrar = lembrarMeCheckbox.checked;
 
-            // Salva "Lembrar-me" normalmente
             if (lembrar) {
                 localStorage.setItem('lembrarPassaporte', passaporte);
             } else {
                 localStorage.removeItem('lembrarPassaporte');
             }
 
-            // Salva usuário fictício para o painel funcionar
             localStorage.setItem('usuario', JSON.stringify({
                 id: 'temp-' + Date.now(),
                 nome: 'Membro da Itália',
@@ -399,4 +395,5 @@
         });
     </script>
 </body>
-</html>
+                    </html>
+                    
