@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITÁLIA · ACESSO</title>
     
-    <!-- ✅ CONEXÃO SUPABASE — CHAVES CORRETAS! -->
+    <!-- ✅ CONEXÃO SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
@@ -106,6 +106,7 @@
             gap: 14px; border: none;
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
             animation: deslizaEsquerda 0.4s ease-out;
+            word-break: break-word;
         }
         @keyframes deslizaEsquerda {
             from { opacity: 0; transform: translateX(-25px); }
@@ -246,7 +247,7 @@
             clearTimeout(window.tempoNotificacao);
             window.tempoNotificacao = setTimeout(() => {
                 notificacao.style.display = 'none';
-            }, 4000);
+            }, 5000);
         }
 
         form.addEventListener('submit', async (e) => {
@@ -271,7 +272,8 @@
             notificacao.style.display = 'none';
 
             try {
-                // ✅ BUSCA NO BANCO COM AS CHAVES CORRETAS
+                console.log('Conectando no Supabase...');
+                
                 const { data, error } = await supabase
                     .from('membros')
                     .select('id, passaporte, nome, cargo, ativo, equipe_id')
@@ -279,8 +281,10 @@
                     .eq('senha_credencial', senha)
                     .single();
 
+                console.log('Resposta recebida');
+
                 if (error) {
-                    console.error('Erro Supabase:', error);
+                    console.error('Erro:', error);
                     if (error.code === 'PGRST116') {
                         mostrarNotificacao('Passaporte ou senha incorretos', 'erro');
                     } else {
@@ -305,7 +309,6 @@
                     return;
                 }
 
-                // ✅ SALVA TUDO PARA O PAINEL
                 localStorage.setItem('usuario', JSON.stringify({
                     id: data.id,
                     passaporte: data.passaporte,
@@ -318,11 +321,11 @@
 
                 setTimeout(() => {
                     window.location.href = 'painel.html';
-                }, 1000);
+                }, 1200);
 
             } catch (erroGeral) {
                 console.error('Erro geral:', erroGeral);
-                mostrarNotificacao('Falha na conexão. Tente novamente.', 'erro');
+                mostrarNotificacao('Falha: ' + erroGeral.message, 'erro');
                 botaoEntrar.disabled = false;
                 botaoEntrar.textContent = 'ENTRAR';
             }
@@ -330,4 +333,3 @@
     </script>
 </body>
 </html>
-
