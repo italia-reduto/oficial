@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITÁLIA · ACESSO</title>
+    
+    <!-- ✅ CONEXÃO SUPABASE ADICIONADA AQUI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
     <style>
         * {
             margin: 0;
@@ -25,7 +35,6 @@
             justify-content: center;
         }
 
-        /* ✅ FUNDO COM BLUR E FORMAS */
         .fundo-desfocado {
             position: fixed;
             top: 0;
@@ -145,14 +154,8 @@
         }
 
         @keyframes deslizaEsquerda {
-            from { 
-                opacity: 0; 
-                transform: translateX(-25px); 
-            }
-            to { 
-                opacity: 1; 
-                transform: translateX(0); 
-            }
+            from { opacity: 0; transform: translateX(-25px); }
+            to { opacity: 1; transform: translateX(0); }
         }
 
         .notificacao i {
@@ -164,6 +167,11 @@
             background-color: #171723; 
             color: #86efac; 
             border-left: 4px solid #22c55e;
+        }
+        .erro { 
+            background-color: #1f1723; 
+            color: #fca5a5; 
+            border-left: 4px solid #ef4444;
         }
 
         .input-grupo {
@@ -265,6 +273,11 @@
         .botao-entrar:hover {
             transform: translateY(-2px);
         }
+        .botao-entrar:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .voltar {
             text-align: center;
@@ -283,7 +296,6 @@
     </style>
 </head>
 <body>
-    <!-- ✅ FUNDO DESFOCADO COMPLETO -->
     <div class="fundo-desfocado">
         <div class="forma-superior"></div>
         <div class="forma-inferior"></div>
@@ -302,7 +314,7 @@
         <form id="formLogin">
             <div class="input-grupo">
                 <div class="input-icone"><i class="fas fa-id-card"></i></div>
-                <input type="number" inputmode="numeric" id="passaporte" class="input-campo" placeholder="Passaporte" required>
+                <input type="text" id="passaporte" class="input-campo" placeholder="Passaporte" required>
             </div>
 
             <div class="input-grupo">
@@ -320,7 +332,7 @@
                 <a href="#" class="esqueceu">Esqueceu a senha?</a>
             </div>
 
-            <button type="submit" class="botao-entrar">ENTRAR</button>
+            <button type="submit" class="botao-entrar" id="botaoEntrar">ENTRAR</button>
         </form>
 
         <div class="voltar">
@@ -347,6 +359,7 @@
         const notificacao = document.getElementById('notificacao');
         const passaporteInput = document.getElementById('passaporte');
         const lembrarMeCheckbox = document.getElementById('lembrarMe');
+        const botaoEntrar = document.getElementById('botaoEntrar');
 
         window.addEventListener('load', () => {
             const salvo = localStorage.getItem('lembrarPassaporte');
@@ -358,10 +371,9 @@
 
         function mostrarNotificacao(texto, tipo) {
             notificacao.innerHTML = `
-                <i class="fas fa-check-circle"></i>
+                <i class="fas ${tipo === 'sucesso' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
                 <span>${texto}</span>
             `;
-            
             notificacao.className = `notificacao ${tipo}`;
             notificacao.style.display = 'flex';
             
@@ -374,7 +386,13 @@
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
             const passaporte = passaporteInput.value.trim();
+            const senha = document.getElementById('senha').value;
             const lembrar = lembrarMeCheckbox.checked;
+
+            if (!passaporte || !senha) {
+                mostrarNotificacao('Preencha todos os campos', 'erro');
+                return;
+            }
 
             if (lembrar) {
                 localStorage.setItem('lembrarPassaporte', passaporte);
@@ -382,14 +400,43 @@
                 localStorage.removeItem('lembrarPassaporte');
             }
 
+            botaoEntrar.disabled = true;
+            botaoEntrar.textContent = 'VERIFICANDO...';
+            notificacao.style.display = 'none';
+
+            // ✅ BUSCA NO BANCO SUPABASE
+            const { data, error } = await supabase
+                .from('membros')
+                .select('id, passaporte, nome, cargo, ativo, equipe_id')
+                .eq('passaporte', passaporte)
+                .eq('senha_credencial', senha)
+                .single();
+
+            if (error || !data) {
+                mostrarNotificacao('Passaporte ou senha incorretos', 'erro');
+                botaoEntrar.disabled = false;
+                botaoEntrar.textContent = 'ENTRAR';
+                return;
+            }
+
+            if (!data.ativo) {
+                mostrarNotificacao('Conta desativada', 'erro');
+                botaoEntrar.disabled = false;
+                botaoEntrar.textContent = 'ENTRAR';
+                return;
+            }
+
+            // ✅ SALVA TUDO PARA O PAINEL
             localStorage.setItem('usuario', JSON.stringify({
-                id: 'temp-' + Date.now(),
-                nome: 'Membro da Itália',
-                passaporte: passaporte,
-                cargo: 'Membro'
+                id: data.id,
+                passaporte: data.passaporte,
+                nome: data.nome,
+                cargo: data.cargo,
+                equipe_id: data.equipe_id
             }));
-            
-            mostrarNotificacao(`Bem-vindo! Redirecionando...`, 'sucesso');
+
+            mostrarNotificacao(`Bem-vindo, ${data.nome}! Redirecionando...`, 'sucesso');
+
             setTimeout(() => {
                 window.location.href = 'painel.html';
             }, 1000);
@@ -397,4 +444,3 @@
     </script>
 </body>
 </html>
-
