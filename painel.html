@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITÁLIA · PAINEL</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #f1f5f9;
+            background-color: #0b0b10;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .banner-topo {
+            width: 100%;
+            height: 160px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            z-index: 1;
+            transition: filter 0.3s ease;
+        }
+        .banner-topo::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat;
+            opacity: 0.45;
+        }
+        .banner-topo::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(11,11,16,0) 0%, rgba(11,11,16,0.25) 55%, rgba(11,16,24,1) 100%);
+        }
+        .conteudo {
+            flex-grow: 1;
+            position: relative;
+            z-index: 3;
+            padding: 0 16px;
+            transition: filter 0.3s ease;
+        }
+        .barra-menu-inferior {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding: 22px 24px;
+            backdrop-filter: blur(10px);
+            flex-shrink: 0;
+            position: relative;
+            z-index: 30;
+        }
+        .menu-mais {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: #3b82f6;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+            transition: color 0.2s;
+            cursor: pointer;
+            margin-left: auto;
+            max-width: fit-content;
+            position: relative;
+            z-index: 31;
+        }
+        .menu-mais:hover { color: #60a5fa; }
+        .menu-mais i { font-size: 22px; transition: color 0.2s; }
+        .menu-mais .marcacao-topo {
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 22px;
+            height: 3px;
+            background-color: #3b82f6;
+            border-radius: 999px;
+            transition: transform 0.2s ease;
+            pointer-events: none;
+        }
+        .menu-mais.ativo .marcacao-topo { transform: translateX(-50%) scaleX(1); }
+        .menu-mais.ativo { color: #93c5fd; }
+        .com-blur { filter: blur(4px); pointer-events: none; }
+
+        /* Gaveta lateral */
+        .gaveta-lateral {
+            position: fixed;
+            top: 80px;
+            bottom: 72px;
+            right: 0;
+            width: 260px;
+            background: rgba(12,16,24,0.97);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59,130,246,0.35);
+            border-radius: 24px 0 0 24px;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 20;
+            padding: 28px 22px;
+            overflow-y: auto;
+        }
+        .gaveta-lateral.aberto { transform: translateX(0); }
+
+        @media (max-width: 480px) {
+            .banner-topo { height: 140px; }
+            .barra-menu-inferior { padding: 20px; }
+            .gaveta-lateral { top: 70px; width: 220px; bottom: 66px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="banner-topo" id="areaBanner"></div>
+    <div class="conteudo" id="areaConteudo"></div>
+
+    <div class="gaveta-lateral" id="menuLateral"></div>
+
+    <div class="barra-menu-inferior">
+        <div class="menu-mais" id="botaoMais">
+            <span class="marcacao-topo"></span>
+            <i class="fas fa-th"></i>
+            <span>Mais</span>
+        </div>
+    </div>
+
+    <script>
+        const botao = document.getElementById('botaoMais');
+        const gaveta = document.getElementById('menuLateral');
+        const banner = document.getElementById('areaBanner');
+        const conteudo = document.getElementById('areaConteudo');
+
+        botao.addEventListener('click', () => {
+            botao.classList.toggle('ativo');
+            gaveta.classList.toggle('aberto');
+            banner.classList.toggle('com-blur');
+            conteudo.classList.toggle('com-blur');
+        });
+    </script>
+</body>
+</html>
