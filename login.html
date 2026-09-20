@@ -7,13 +7,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- CONEXÃO SUPABASE -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    </script>
     <style>
         * {
             margin: 0;
@@ -133,7 +126,6 @@
             letter-spacing: 2px;
         }
 
-        /* NOTIFICAÇÃO COM ANIMAÇÃO DA ESQUERDA */
         .notificacao {
             width: 100%;
             padding: 16px 20px;
@@ -165,12 +157,6 @@
         .notificacao i {
             font-size: 18px;
             flex-shrink: 0;
-        }
-
-        .erro { 
-            background-color: #171723; 
-            color: #fca5a5; 
-            border-left: 4px solid #ef4444;
         }
 
         .sucesso { 
@@ -314,7 +300,8 @@
         <form id="formLogin">
             <div class="input-grupo">
                 <div class="input-icone"><i class="fas fa-id-card"></i></div>
-                <input type="number" id="passaporte" class="input-campo" placeholder="Passaporte" required>
+                <!-- ✅ Teclado numérico mantido, interface original preservada -->
+                <input type="number" inputmode="numeric" id="passaporte" class="input-campo" placeholder="Passaporte" required>
             </div>
 
             <div class="input-grupo">
@@ -360,7 +347,7 @@
         const passaporteInput = document.getElementById('passaporte');
         const lembrarMeCheckbox = document.getElementById('lembrarMe');
 
-        // ✅ Carrega passaporte salvo ao abrir a página
+        // Carrega passaporte salvo
         window.addEventListener('load', () => {
             const salvo = localStorage.getItem('lembrarPassaporte');
             if (salvo) {
@@ -371,7 +358,7 @@
 
         function mostrarNotificacao(texto, tipo) {
             notificacao.innerHTML = `
-                <i class="fas ${tipo === 'erro' ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i>
+                <i class="fas fa-check-circle"></i>
                 <span>${texto}</span>
             `;
             
@@ -384,47 +371,32 @@
             }, 4000);
         }
 
+        // Login LIVRE: aceita QUALQUER dado
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const passaporte = passaporteInput.value;
-            const senha = document.getElementById('senha').value;
+            const passaporte = passaporteInput.value.trim();
             const lembrar = lembrarMeCheckbox.checked;
 
-            try {
-                const { data, error } = await supabase
-                    .from('membros')
-                    .select('*')
-                    .eq('passaporte', passaporte)
-                    .eq('senha_credencial', senha)
-                    .single();
-
-                if (error) throw error;
-
-                if (data) {
-                    // ✅ Lógica do "Lembrar-me"
-                    if (lembrar) {
-                        localStorage.setItem('lembrarPassaporte', passaporte);
-                    } else {
-                        localStorage.removeItem('lembrarPassaporte');
-                    }
-
-                    localStorage.setItem('usuario', JSON.stringify({
-                        id: data.id,
-                        nome: data.nome,
-                        passaporte: data.passaporte,
-                        cargo: data.cargo
-                    }));
-                    
-                    mostrarNotificacao(`Bem-vindo, ${data.nome}! Redirecionando...`, 'sucesso');
-                    setTimeout(() => {
-                        window.location.href = 'painel.html';
-                    }, 1200);
-                }
-            } catch (erro) {
-                mostrarNotificacao('Passaporte ou senha incorretos!', 'erro');
+            // Salva "Lembrar-me" normalmente
+            if (lembrar) {
+                localStorage.setItem('lembrarPassaporte', passaporte);
+            } else {
+                localStorage.removeItem('lembrarPassaporte');
             }
+
+            // Salva usuário fictício para o painel funcionar
+            localStorage.setItem('usuario', JSON.stringify({
+                id: 'temp-' + Date.now(),
+                nome: 'Membro da Itália',
+                passaporte: passaporte,
+                cargo: 'Membro'
+            }));
+            
+            mostrarNotificacao(`Bem-vindo! Redirecionando...`, 'sucesso');
+            setTimeout(() => {
+                window.location.href = 'painel.html';
+            }, 1000);
         });
     </script>
 </body>
 </html>
-
