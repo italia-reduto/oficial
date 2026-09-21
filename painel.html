@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b0b10">
     <title>ITÁLIA · PAINEL</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -18,7 +19,11 @@
 
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { height: 100%; }
+        html { 
+            height: 100%; 
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
         body {
             min-height: 100%;
             font-family: 'Inter', sans-serif;
@@ -27,7 +32,6 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow: hidden;
         }
         .banner-topo {
             width: 100%;
@@ -55,7 +59,6 @@
             position: relative;
             z-index: 3;
             padding: 24px 16px;
-            overflow-y: auto;
         }
         .saudacao { margin-bottom: 32px; }
         .saudacao h2 {
@@ -160,26 +163,22 @@
             }
 
             const usuario = JSON.parse(dadosSalvos);
-            const passaporte = usuario.passaporte;
+            elementoNome.textContent = usuario.nome || "Membro";
 
             try {
                 const { data, error } = await sb
                     .from('membros')
                     .select('nome')
-                    .eq('passaporte', passaporte)
+                    .eq('passaporte', usuario.passaporte)
                     .single();
 
-                if (error || !data) {
-                    elementoNome.textContent = usuario.nome || "Membro";
-                    return;
+                if (!error && data) {
+                    elementoNome.textContent = data.nome;
+                    usuario.nome = data.nome;
+                    localStorage.setItem('usuario', JSON.stringify(usuario));
                 }
-
-                elementoNome.textContent = data.nome;
-                usuario.nome = data.nome;
-                localStorage.setItem('usuario', JSON.stringify(usuario));
-
             } catch (erro) {
-                elementoNome.textContent = usuario.nome || "Membro";
+                console.log("Usando dados salvos");
             }
         }
 
