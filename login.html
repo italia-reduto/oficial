@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#050508">
     <title>ITÁLIA · ACESSO</title>
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-        const clienteSupabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,11 +20,15 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        html {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
         body {
             min-height: 100vh;
             background-color: #050508;
             position: relative;
-            overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -319,7 +325,8 @@
         });
 
         function mostrarNotificacao(texto, tipo) {
-            notificacao.innerHTML = `<i class="fas ${tipo === 'sucesso' ? 'fa-check-circle' : 'fa-exclamation-triangle'}"></i><span>${texto}</span>`;
+            const icone = tipo === 'sucesso' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            notificacao.innerHTML = `<i class="fas ${icone}"></i><span>${texto}</span>`;
             notificacao.className = `notificacao ${tipo}`;
             notificacao.style.display = 'flex';
             clearTimeout(window.tempoNotificacao);
@@ -343,11 +350,11 @@
             if (!lembrarMeCheckbox.checked) localStorage.removeItem('lembrarPassaporte');
 
             botaoEntrar.disabled = true;
-            botaoEntrar.textContent = 'ENTRAR';
+            botaoEntrar.textContent = 'ENTRANDO...';
             notificacao.style.display = 'none';
 
             try {
-                const { data, error } = await clienteSupabase
+                const { data, error } = await sb
                     .from('membros')
                     .select('id, passaporte, nome, cargo, ativo, equipe_id')
                     .eq('passaporte', passaporte)
@@ -373,14 +380,12 @@
                     equipe_id: data.equipe_id
                 }));
 
-                mostrarNotificacao(`Bem-vindo, ${data.nome}! ✅ Acesso concedido`, 'sucesso');
+                mostrarNotificacao(`Bem-vindo, ${data.nome}! Acesso concedido`, 'sucesso');
                 setTimeout(() => window.location.href = 'painel.html', 900);
-
-                botaoEntrar.disabled = false;
-                botaoEntrar.textContent = 'ENTRAR';
 
             } catch (erro) {
                 mostrarNotificacao(erro.message, 'erro');
+            } finally {
                 botaoEntrar.disabled = false;
                 botaoEntrar.textContent = 'ENTRAR';
             }
