@@ -142,20 +142,18 @@
         .menu-mais.ativo { color: #93c5fd; }
         .gaveta-lateral {
             position: fixed;
-            top: auto;
-            bottom: 70px;
-            right: 16px;
-            width: 200px;
-            background: rgba(12,16,24,0.97);
+            top: 210px;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            background: rgba(12,16,24,0.98);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(59,130,246,0.35);
-            border-radius: 16px;
+            border-top: 1px solid rgba(59,130,246,0.35);
             transform: translateY(100%);
             transition: transform 0.3s ease;
             z-index: 40;
-            padding: 18px 14px;
+            padding: 22px 16px;
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.35);
         }
         .gaveta-lateral.aberto { transform: translateY(0); }
         .fundo-escuro {
@@ -176,7 +174,10 @@
         @media (max-width: 480px) {
             .banner-topo { height: 120px; }
             .barra-menu-inferior { padding: 12px 24px; margin-bottom: 35px; }
-            .gaveta-lateral { width: 180px; right: 12px; bottom: 60px; }
+            .gaveta-lateral {
+                top: 190px;
+                padding: 18px 14px;
+            }
         }
     </style>
 </head>
