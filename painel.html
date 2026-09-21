@@ -107,10 +107,9 @@
         }
         .barra-menu-inferior {
             width: 100%;
-            background: rgba(255,255,255,0.03);
-            border-top: 1px solid rgba(255,255,255,0.06);
+            background: #000000;
+            border-top: none;
             padding: 14px 24px;
-            backdrop-filter: blur(10px);
             flex-shrink: 0;
             position: relative;
             z-index: 30;
@@ -128,6 +127,7 @@
             cursor: pointer;
             outline: none;
             border: none;
+            background: transparent;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
         }
@@ -205,12 +205,12 @@
 
             const usuario = JSON.parse(dadosSalvos);
             
-            // Preenche na hora com dados salvos
+            // Sempre mostra os dados salvos primeiro — funciona ao atualizar
             document.getElementById('nomeUsuario').textContent = usuario.nome || "Membro";
             document.getElementById('passaporteUsuario').textContent = usuario.passaporte || "—";
             document.getElementById('cargoUsuario').textContent = usuario.cargo || "Membro";
 
-            // Atualiza do Supabase
+            // Atualiza do Supabase em segundo plano
             try {
                 const { data, error } = await sb
                     .from('membros')
