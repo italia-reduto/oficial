@@ -8,12 +8,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <!-- CONEXÃO SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
     <style>
@@ -83,8 +83,6 @@
             position: relative;
             z-index: 30;
             margin-bottom: 40px;
-            
-            /* ✅ Alinha conteúdo à direita */
             display: flex;
             justify-content: flex-end;
         }
@@ -152,33 +150,37 @@
     </div>
 
     <script>
-        // ✅ BUSCA O NOME DIRETO DA TABELA membros
         async function carregarNomeUsuario() {
             const elementoNome = document.getElementById('nomeUsuario');
             const dadosSalvos = localStorage.getItem('usuario');
 
             if (!dadosSalvos) {
-                elementoNome.textContent = "Faça login";
+                window.location.href = 'login.html';
                 return;
             }
 
             const usuario = JSON.parse(dadosSalvos);
             const passaporte = usuario.passaporte;
 
-            const { data, error } = await supabase
-                .from('membros')
-                .select('nome')
-                .eq('passaporte', passaporte)
-                .single();
+            try {
+                const { data, error } = await sb
+                    .from('membros')
+                    .select('nome')
+                    .eq('passaporte', passaporte)
+                    .single();
 
-            if (error || !data) {
+                if (error || !data) {
+                    elementoNome.textContent = usuario.nome || "Membro";
+                    return;
+                }
+
+                elementoNome.textContent = data.nome;
+                usuario.nome = data.nome;
+                localStorage.setItem('usuario', JSON.stringify(usuario));
+
+            } catch (erro) {
                 elementoNome.textContent = usuario.nome || "Membro";
-                return;
             }
-
-            elementoNome.textContent = data.nome;
-            usuario.nome = data.nome;
-            localStorage.setItem('usuario', JSON.stringify(usuario));
         }
 
         carregarNomeUsuario();
