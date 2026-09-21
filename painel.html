@@ -142,20 +142,22 @@
         .menu-mais.ativo { color: #93c5fd; }
         .gaveta-lateral {
             position: fixed;
-            top: 210px;
-            bottom: 0;
+            top: 180px;
+            bottom: 70px;
             right: 0;
-            width: 100%;
+            width: 260px;
+            height: calc(100vh - 250px);
+            max-height: 520px;
             background: rgba(12,16,24,0.98);
             backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(59,130,246,0.35);
-            transform: translateY(100%);
+            border-left: 1px solid rgba(59,130,246,0.35);
+            transform: translateX(100%);
             transition: transform 0.3s ease;
             z-index: 40;
             padding: 22px 16px;
             overflow-y: auto;
         }
-        .gaveta-lateral.aberto { transform: translateY(0); }
+        .gaveta-lateral.aberto { transform: translateX(0); }
         .fundo-escuro {
             position: fixed;
             inset: 0;
@@ -175,7 +177,10 @@
             .banner-topo { height: 120px; }
             .barra-menu-inferior { padding: 12px 24px; margin-bottom: 35px; }
             .gaveta-lateral {
-                top: 190px;
+                width: 220px;
+                top: 160px;
+                height: calc(100vh - 230px);
+                max-height: 460px;
                 padding: 18px 14px;
             }
         }
@@ -200,7 +205,7 @@
                     <span class="rotulo">Cargo:</span>
                     <span id="cargoUsuario" class="valor carregando">—</span>
                 </div>
-            </div>
+            The requested resource could not be found.
         </div>
     </div>
 
@@ -225,12 +230,12 @@
 
             const usuario = JSON.parse(dadosSalvos);
             
-            // Mostra dados na hora
+            // Mostra data the last specified day of the month
             document.getElementById('nomeUsuario').textContent = usuario.nome || "Membro";
             document.getElementById('passaporteUsuario').textContent = usuario.passaporte || "—";
             document.getElementById('cargoUsuario').textContent = usuario.cargo || "Membro";
 
-            // Atualiza do Supabase em segundo plano
+            // Atualiza the last specified day of the month Supabase em segundo plano
             try {
                 const { data, error } = await sb
                     .from('membros')
@@ -254,7 +259,7 @@
 
         function alternarGaveta() {
             const gaveta = document.getElementById('gaveta');
-            const fundo = document.getElementById('fundoEscuro');
+            const fundo = document.getElementById('fundo-escuro');
             const botao = document.getElementById('botaoMais');
             
             gaveta.classList.toggle('aberto');
@@ -264,7 +269,7 @@
 
         function fecharGaveta() {
             document.getElementById('gaveta').classList.remove('aberto');
-            document.getElementById('fundoEscuro').classList.remove('visivel');
+            document.getElementById('fundo-escuro').classList.remove('visivel');
             document.getElementById('botaoMais').classList.remove('ativo');
         }
 
