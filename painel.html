@@ -99,7 +99,7 @@
         }
         .linha-info .valor {
             color: #ffffff;
-            font-weight: 400;
+            font-weight: 700;
         }
         .carregando {
             color: #64748b;
@@ -205,12 +205,10 @@
 
             const usuario = JSON.parse(dadosSalvos);
             
-            // Sempre mostra os dados salvos primeiro — funciona ao atualizar
             document.getElementById('nomeUsuario').textContent = usuario.nome || "Membro";
             document.getElementById('passaporteUsuario').textContent = usuario.passaporte || "—";
             document.getElementById('cargoUsuario').textContent = usuario.cargo || "Membro";
 
-            // Atualiza do Supabase em segundo plano
             try {
                 const { data, error } = await sb
                     .from('membros')
