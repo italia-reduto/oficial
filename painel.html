@@ -183,6 +183,7 @@
             background: transparent;
             -webkit-tap-highlight-color: transparent;
             user-select: none;
+            transition: color 0.2s ease;
         }
         .menu-painel:focus, .menu-painel:active,
         .menu-mais:focus, .menu-mais:active {
@@ -222,7 +223,7 @@
     
     <div class="banner-topo"></div>
     
-    <div class="conteudo">
+    <div class="conteudo" id="areaPainel">
         <div class="saudacao">
             <h2>Olá, <span id="nomeUsuario" class="carregando">carregando...</span></h2>
             <p>Bem-vindo de volta à Organização Itália</p>
@@ -315,10 +316,11 @@
         carregarDadosUsuario();
 
         const botaoMais = document.getElementById('botaoMais');
+        const botaoPainel = document.getElementById('botaoPainel');
         const gaveta = document.getElementById('menuLateral');
         const fundoBlur = document.getElementById('fundoBlur');
-        const botaoPainel = document.getElementById('botaoPainel');
 
+        // Abre/fecha o Mais — desativa Painel
         botaoMais.addEventListener('click', () => {
             botaoMais.classList.toggle('ativo');
             botaoPainel.classList.remove('ativo');
@@ -326,6 +328,15 @@
             fundoBlur.classList.toggle('ativo');
         });
 
+        // Clica no Painel — fecha tudo, volta ao normal
+        botaoPainel.addEventListener('click', () => {
+            botaoPainel.classList.add('ativo');
+            botaoMais.classList.remove('ativo');
+            gaveta.classList.remove('aberto');
+            fundoBlur.classList.remove('ativo');
+        });
+
+        // Clica fora — volta ao Painel
         fundoBlur.addEventListener('click', () => {
             botaoMais.classList.remove('ativo');
             botaoPainel.classList.add('ativo');
@@ -334,4 +345,5 @@
         });
     </script>
 </body>
-</html>
+    </html>
+    
