@@ -166,8 +166,30 @@
             position: relative;
             z-index: 30;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .menu-painel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #ffffff;
+            font-size: 13px;
+            cursor: pointer;
+            outline: none;
+            border: none;
+            background: transparent;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        .menu-painel:focus, .menu-painel:active {
+            outline: none;
+            box-shadow: none;
+        }
+        .menu-painel i { font-size: 22px; color: #38bdf8; }
+
         .menu-mais {
             display: flex;
             flex-direction: column;
@@ -188,6 +210,7 @@
         }
         .menu-mais i { font-size: 22px; }
         .menu-mais.ativo { color: #93c5fd; }
+
         .gaveta-lateral {
             position: fixed;
             top: 70px;
@@ -251,6 +274,13 @@
     <div class="gaveta-lateral" id="menuLateral"></div>
 
     <div class="barra-menu-inferior">
+        <!-- ✅ MENU PAINEL — LADO ESQUERDO -->
+        <div class="menu-painel" id="botaoPainel">
+            <i class="fas fa-home"></i>
+            <span>Painel</span>
+        </div>
+
+        <!-- ✅ MENU MAIS — LADO DIREITO -->
         <div class="menu-mais" id="botaoMais">
             <i class="fas fa-th"></i>
             <span>Mais</span>
