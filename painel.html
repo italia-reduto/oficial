@@ -2,12 +2,8 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- ✅ Barra preta -->
-    <meta name="theme-color" content="#08090d">
-    <meta name="color-scheme" content="dark">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ITÁLIA · PAINEL</title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -15,275 +11,275 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXdJg9FyC9bL0oA9eXU5Y5lqR";
+        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { height: 100%; }
+        body {
+            min-height: 100%;
             font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        :root {
-            --preto: #08090d;
-            --azul: #60a5fa;
-            --branco: #ffffff;
-            --cinza: #94a3b8;
-        }
-
-        html, body {
-            min-height: 100vh;
-            background: var(--preto);
-            color: var(--branco);
-            overflow-x: hidden;
-            /* ✅ Permite puxar e atualizar */
-            overscroll-behavior: contain;
-        }
-
-        .fundo-img {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 280px;
-            background: linear-gradient(to bottom, rgba(8,9,13,0) 0%, var(--preto) 100%), 
-                        url('https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.6;
-            z-index: 0;
-        }
-
-        .conteudo {
-            position: relative;
-            z-index: 1;
-            padding: 40px 24px 120px;
-        }
-
-        .saudacao {
-            margin-top: 140px;
-            margin-bottom: 32px;
-        }
-
-        .saudacao h1 {
-            font-size: 32px;
-            font-weight: 700;
-            line-height: 1.2;
-        }
-
-        .saudacao h1 span {
-            color: var(--azul);
-        }
-
-        .saudacao p {
-            color: var(--cinza);
-            font-size: 15px;
-            margin-top: 6px;
-        }
-
-        .info-card {
+            color: #f1f5f9;
+            background-color: #0b0b10;
             display: flex;
             flex-direction: column;
-            gap: 18px;
+            position: relative;
+            overflow: hidden;
         }
-
-        .info-item {
+        /* Blur de fundo quando gaveta aberta */
+        .fundo-blur {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 15;
+        }
+        .fundo-blur.ativo {
+            opacity: 1;
+            visibility: visible;
+        }
+        .banner-topo {
+            width: 100%;
+            height: 140px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+        .banner-topo::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat;
+            opacity: 0.45;
+        }
+        .banner-topo::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(11,11,16,0) 0%, rgba(11,11,16,0.25) 55%, rgba(11,16,24,1) 100%);
+        }
+        .conteudo {
+            flex-grow: 1;
+            position: relative;
+            z-index: 3;
+            padding: 24px 16px;
+            overflow-y: auto;
+        }
+        .saudacao { margin-bottom: 32px; }
+        .saudacao h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 4px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 18px;
+            gap: 8px;
         }
-
-        .info-item i {
-            color: var(--azul);
+        .saudacao h2 span { color: #38bdf8; }
+        .saudacao .mao {
+            color: #fbbf24;
             font-size: 20px;
-            width: 24px;
+        }
+        .saudacao p {
+            font-size: 14px;
+            color: #94a3b8;
+            margin-bottom: 16px;
+        }
+        .info-usuario {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .linha-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 15px;
+        }
+        .linha-info i {
+            color: #38bdf8;
+            font-size: 18px;
+            width: 22px;
             text-align: center;
         }
-
-        .info-item span.label {
-            color: var(--cinza);
+        .linha-info .rotulo {
+            color: #94a3b8;
         }
-
-        .info-item span.valor {
+        .linha-info .valor {
+            color: #ffffff;
             font-weight: 700;
-            color: var(--branco);
         }
-
-        /* ✅ Botão de atualizar */
-        .btn-atualizar {
-            position: fixed;
-            top: 12px;
-            right: 16px;
-            background: rgba(59, 130, 246, 0.25);
-            border: none;
-            color: var(--azul);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            cursor: pointer;
+        .carregando {
+            color: #64748b;
+            font-style: normal;
         }
-
-        /* Barra inferior — IGUAL ESTAVA */
-        .barra-inferior {
-            position: fixed;
-            bottom: 0;
-            left: 0;
+        /* Barra preta fixa */
+        .barra-menu-inferior {
             width: 100%;
-            background: rgba(8,9,13,0.95);
-            backdrop-filter: blur(12px);
-            padding: 14px 24px 30px;
+            background: #000000;
+            border: none;
+            border-top: 1px solid rgba(59,130,246,0.15);
+            padding: 14px 24px;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 30;
             display: flex;
             justify-content: flex-end;
-            border-top: 1px solid rgba(255,255,255,0.06);
-            z-index: 10;
         }
-
-        .botao-mais {
+        .menu-mais {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 4px;
-            background: transparent;
-            border: none;
-            color: var(--azul);
+            color: #3b82f6;
+            font-size: 13px;
             cursor: pointer;
+            outline: none;
+            border: none;
+            background: transparent;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
-
-        .botao-mais i {
-            font-size: 22px;
+        .menu-mais:focus, .menu-mais:active {
+            outline: none;
+            box-shadow: none;
         }
-
-        .botao-mais span {
-            font-size: 12px;
-        }
-
-        /* Gaveta + Blur — IGUAL ESTAVA */
-        .fundo-desfoque {
+        .menu-mais i { font-size: 22px; }
+        .menu-mais.ativo { color: #93c5fd; }
+        .gaveta-lateral {
             position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(5px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-            z-index: 15;
-        }
-
-        .fundo-desfoque.ativo {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .gaveta {
-            position: fixed;
-            top: 0;
+            top: 70px;
+            bottom: 130px;
             right: 0;
-            width: 75%;
-            max-width: 300px;
-            height: 100%;
-            background: #0f172a;
+            width: 260px;
+            background: rgba(12,16,24,0.97);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59,130,246,0.35);
+            border-radius: 24px 0 0 24px;
             transform: translateX(100%);
             transition: transform 0.3s ease;
             z-index: 20;
-            padding: 60px 24px 24px;
+            padding: 28px 22px;
+            overflow-y: auto;
         }
+        .gaveta-lateral.aberto { transform: translateX(0); }
 
-        .gaveta.ativa {
-            transform: translateX(0);
-        }
-
-        .gaveta-fechar {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: none;
-            border: none;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
+        @media (max-width: 480px) {
+            .banner-topo { height: 120px; }
+            .barra-menu-inferior { padding: 12px 24px; }
+            .gaveta-lateral { top: 60px; width: 220px; bottom: 115px; }
         }
     </style>
 </head>
 <body>
-
-    <div class="fundo-img"></div>
-
-    <!-- Botão de atualizar -->
-    <button class="btn-atualizar" onclick="location.reload()">
-        <i class="fas fa-sync-alt"></i>
-    </button>
-
+    <!-- Camada de blur no fundo -->
+    <div class="fundo-blur" id="fundoBlur"></div>
+    
+    <div class="banner-topo"></div>
+    
     <div class="conteudo">
         <div class="saudacao">
-            <h1>Olá, <span id="nome-usuario">—</span></h1>
+            <h2>Olá, <span id="nomeUsuario" class="carregando">carregando...</span> <i class="fas fa-hand-wave mao"></i></h2>
             <p>Bem-vindo de volta à Organização Itália</p>
-        </div>
-
-        <div class="info-card">
-            <div class="info-item">
-                <i class="fas fa-id-card"></i>
-                <span class="label">Passaporte:</span>
-                <span class="valor" id="passaporte">—</span>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-shield-alt"></i>
-                <span class="label">Cargo:</span>
-                <span class="valor" id="cargo">—</span>
+            
+            <div class="info-usuario">
+                <div class="linha-info">
+                    <i class="fas fa-id-card"></i>
+                    <span class="rotulo">Passaporte:</span>
+                    <span id="passaporteUsuario" class="valor carregando">—</span>
+                </div>
+                <div class="linha-info">
+                    <i class="fas fa-shield-alt"></i>
+                    <span class="rotulo">Cargo:</span>
+                    <span id="cargoUsuario" class="valor carregando">—</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <div class="barra-inferior">
-        <button class="botao-mais" id="botao-mais">
-            <i class="fas fa-th-large"></i>
+    <div class="gaveta-lateral" id="menuLateral"></div>
+
+    <div class="barra-menu-inferior">
+        <div class="menu-mais" id="botaoMais">
+            <i class="fas fa-th"></i>
             <span>Mais</span>
-        </button>
-    </div>
-
-    <div class="fundo-desfoque" id="fundo-desfoque" onclick="fecharGaveta()"></div>
-    <div class="gaveta" id="gaveta">
-        <button class="gaveta-fechar" onclick="fecharGaveta()">
-            <i class="fas fa-times"></i>
-        </button>
+        </div>
     </div>
 
     <script>
-        const dadosUsuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+        // Atalho para atualizar a página — puxe para baixo ou use botão
+        let toqueInicio = 0;
+        document.addEventListener('touchstart', e => {
+            toqueInicio = e.touches[0].clientY;
+        });
+        document.addEventListener('touchend', e => {
+            const toqueFim = e.changedTouches[0].clientY;
+            if (toqueFim - toqueInicio > 100 && window.scrollY <= 0) {
+                window.location.reload();
+            }
+        });
 
-        if (dadosUsuario.nome) {
-            document.getElementById('nome-usuario').textContent = dadosUsuario.nome;
-            document.getElementById('passaporte').textContent = dadosUsuario.passaporte;
-            document.getElementById('cargo').textContent = dadosUsuario.cargo;
-        } else {
-            window.location.href = 'login.html';
+        async function carregarDadosUsuario() {
+            const dadosSalvos = localStorage.getItem('usuario');
+
+            if (!dadosSalvos) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const usuario = JSON.parse(dadosSalvos);
+            
+            document.getElementById('nomeUsuario').textContent = usuario.nome || "Membro";
+            document.getElementById('passaporteUsuario').textContent = usuario.passaporte || "—";
+            document.getElementById('cargoUsuario').textContent = usuario.cargo || "Membro";
+
+            try {
+                const { data, error } = await sb
+                    .from('membros')
+                    .select('nome, passaporte, cargo')
+                    .eq('passaporte', usuario.passaporte)
+                    .single();
+
+                if (!error && data) {
+                    document.getElementById('nomeUsuario').textContent = data.nome;
+                    document.getElementById('passaporteUsuario').textContent = data.passaporte;
+                    document.getElementById('cargoUsuario').textContent = data.cargo;
+                    
+                    usuario.nome = data.nome;
+                    usuario.cargo = data.cargo;
+                    localStorage.setItem('usuario', JSON.stringify(usuario));
+                }
+            } catch (erro) {
+                console.log("Usando dados salvos");
+            }
         }
 
-        const botaoMais = document.getElementById('botao-mais');
-        const gaveta = document.getElementById('gaveta');
-        const fundoDesfoque = document.getElementById('fundo-desfoque');
+        carregarDadosUsuario();
 
-        function abrirGaveta() {
-            gaveta.classList.add('ativa');
-            fundoDesfoque.classList.add('ativo');
-        }
+        const botao = document.getElementById('botaoMais');
+        const gaveta = document.getElementById('menuLateral');
+        const fundoBlur = document.getElementById('fundoBlur');
 
-        function fecharGaveta() {
-            gaveta.classList.remove('ativa');
-            fundoDesfoque.classList.remove('ativo');
-        }
+        botao.addEventListener('click', () => {
+            botao.classList.toggle('ativo');
+            gaveta.classList.toggle('aberto');
+            fundoBlur.classList.toggle('ativo');
+        });
 
-        botaoMais.addEventListener('click', abrirGaveta);
+        // Clica no blur = fecha a gaveta também
+        fundoBlur.addEventListener('click', () => {
+            botao.classList.remove('ativo');
+            gaveta.classList.remove('aberto');
+            fundoBlur.classList.remove('ativo');
+        });
     </script>
-
 </body>
 </html>
