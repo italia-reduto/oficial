@@ -57,8 +57,7 @@
         }
         .banner-topo::before {
             content: "";
-            position: absolute;
-            inset: 0;
+            position: absolute, inset: 0;
             background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat;
             opacity: 0.45;
         }
@@ -119,38 +118,44 @@
             gap: 14px;
             margin-bottom: 24px;
         }
+
         .card {
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
             border: 1px solid rgba(59, 130, 246, 0.15);
             border-radius: 16px;
-            padding: 16px 14px;
+            padding: 12px 10px;
             cursor: pointer;
             transition: all 0.25s ease;
         }
+
         .card:active {
             transform: scale(0.97);
             border-color: rgba(59, 130, 246, 0.4);
         }
+
         .card-cabecalho {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
+
         .card-icone {
-            font-size: 18px;
+            font-size: 16px;
             color: #38bdf8;
             opacity: 0.85;
         }
+
         .card-numero {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 800;
             color: #ffffff;
             line-height: 1;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
         }
+
         .card-titulo {
-            font-size: 12px;
+            font-size: 11px;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
