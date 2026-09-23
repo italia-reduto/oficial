@@ -32,7 +32,6 @@
             position: relative;
             overflow-x: hidden;
         }
-        /* Blur de fundo da gaveta */
         .fundo-blur {
             position: fixed;
             inset: 0;
@@ -114,7 +113,6 @@
         }
         .carregando { color: #64748b; font-style: normal; }
 
-        /* ✅ CARD TICKETS ABERTOS — Nosso estilo exclusivo */
         .grid-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -125,7 +123,7 @@
             background: linear-gradient(135deg, rgba(30, 41, 59, 0.6) 0%, rgba(15, 23, 42, 0.8) 100%);
             border: 1px solid rgba(59, 130, 246, 0.15);
             border-radius: 16px;
-            padding: 20px 16px;
+            padding: 16px 14px;
             cursor: pointer;
             transition: all 0.25s ease;
         }
@@ -137,21 +135,22 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .card-icone {
-            font-size: 20px;
+            font-size: 18px;
             color: #38bdf8;
             opacity: 0.85;
         }
         .card-numero {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
             color: #ffffff;
             line-height: 1;
+            margin-bottom: 4px;
         }
         .card-titulo {
-            font-size: 13px;
+            font-size: 12px;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -238,7 +237,6 @@
             </div>
         </div>
 
-        <!-- ✅ APENAS O PRIMEIRO CARD ADICIONADO -->
         <div class="grid-cards">
             <div class="card" id="cardTickets">
                 <div class="card-cabecalho">
@@ -247,7 +245,6 @@
                 <div class="card-numero" id="numTickets">0</div>
                 <div class="card-titulo">Tickets Abertos</div>
             </div>
-            <!-- Os próximos cards vão aqui depois -->
         </div>
     </div>
 
@@ -261,7 +258,6 @@
     </div>
 
     <script>
-        // Atalho atualizar — puxar pra baixo
         let toqueInicio = 0;
         document.addEventListener('touchstart', e => {
             toqueInicio = e.touches[0].clientY;
@@ -304,8 +300,6 @@
                 console.log("Usando dados salvos");
             }
 
-            // ✅ Contagem de tickets — depois conectamos a tabela real
-            // Por enquanto mostra 0, vamos ajustar a fonte depois
             document.getElementById('numTickets').textContent = "0";
         }
 
@@ -329,4 +323,3 @@
     </script>
 </body>
 </html>
-
