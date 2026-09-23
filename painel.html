@@ -189,11 +189,6 @@
             transition: all 0.25s ease;
             position: relative;
         }
-        .menu-painel:focus, .menu-painel:active,
-        .menu-mais:focus, .menu-mais:active {
-            outline: none;
-            box-shadow: none;
-        }
         .menu-painel i, .menu-mais i { font-size: 22px; }
         .menu-painel.ativo, .menu-mais.ativo { 
             color: #bfdbfe;
@@ -226,7 +221,7 @@
             transform: translateX(100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 20;
-            padding: 28px 24px;
+            padding: 28px 20px;
             overflow-y: auto;
         }
         .gaveta-lateral.aberto { transform: translateX(0); }
@@ -241,29 +236,43 @@
             padding-bottom: 12px;
             border-bottom: 1px solid rgba(96, 165, 250, 0.12);
         }
+
+        .grupo-itens {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
         .item-menu {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding: 15px 14px;
+            padding: 16px 14px;
             color: #cbd5e1;
             font-size: 15px;
-            border-radius: 14px;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.25s ease;
-            margin-bottom: 6px;
-            position: relative;
+            background: rgba(30, 64, 100, 0.25);
+            border: 1px solid rgba(96, 165, 250, 0.12);
         }
         .item-menu:hover, .item-menu:active {
-            background: rgba(96, 165, 250, 0.08);
+            background: rgba(96, 165, 250, 0.12);
+            border-color: rgba(96, 165, 250, 0.25);
             color: #e0e7ff;
         }
         .item-menu.sair {
-            color: #f87171;
-            margin-top: 12px;
-            padding-top: 18px;
-            border-top: 1px solid rgba(96, 165, 250, 0.1);
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.2);
+            color: #fca5a5;
+            margin-top: 8px;
+        }
+        .item-menu.sair:hover, .item-menu.sair:active {
+            background: rgba(239, 68, 68, 0.18);
+            border-color: rgba(239, 68, 68, 0.35);
+            color: #fecaca;
         }
         .item-menu-esq {
             display: flex;
@@ -338,63 +347,66 @@
     <div class="gaveta-lateral" id="menuLateral">
         <h3 class="titulo-gaveta">Navegação</h3>
         
-        <div class="item-menu" id="itemAvisos">
-            <div class="item-menu-esq">
-                <i class="fas fa-bullhorn"></i>
-                <span>Avisos</span>
+        <div class="grupo-itens">
+            <div class="item-menu" id="itemAvisos">
+                <div class="item-menu-esq">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Avisos</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="bolinha-notif" id="notifAvisos"></div>
+                    <i class="fas fa-chevron-right seta"></i>
+                </div>
             </div>
-            <div class="bolinha-notif" id="notifAvisos"></div>
-        </div>
 
-        <div class="item-menu">
-            <div class="item-menu-esq">
-                <i class="fas fa-calendar-check"></i>
-                <span>Convocações</span>
+            <div class="item-menu">
+                <div class="item-menu-esq">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Convocações</span>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
             </div>
-            <i class="fas fa-chevron-right seta"></i>
-        </div>
 
-        <div class="item-menu">
-            <div class="item-menu-esq">
-                <i class="fas fa-calendar-alt"></i>
-                <span>Ausências</span>
+            <div class="item-menu">
+                <div class="item-menu-esq">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Ausências</span>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
             </div>
-            <i class="fas fa-chevron-right seta"></i>
-        </div>
 
-        <div class="item-menu">
-            <div class="item-menu-esq">
-                <i class="fas fa-chart-line"></i>
-                <span>Promoções</span>
+            <div class="item-menu">
+                <div class="item-menu-esq">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Promoções</span>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
             </div>
-            <i class="fas fa-chevron-right seta"></i>
-        </div>
 
-        <div class="item-menu">
-            <div class="item-menu-esq">
-                <i class="fas fa-address-card"></i>
-                <span>Ficha</span>
+            <div class="item-menu">
+                <div class="item-menu-esq">
+                    <i class="fas fa-address-card"></i>
+                    <span>Ficha</span>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
             </div>
-            <i class="fas fa-chevron-right seta"></i>
-        </div>
 
-        <div class="item-menu">
-            <div class="item-menu-esq">
-                <i class="fas fa-bell"></i>
-                <span>Notificações</span>
+            <div class="item-menu">
+                <div class="item-menu-esq">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificações</span>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
             </div>
-            <i class="fas fa-chevron-right seta"></i>
-        </div>
 
-        <div class="item-menu">
-            <div class="item-menu-esq">
-                <i class="fas fa-key"></i>
-                <span>Minha Segurança</span>
+            <div class="item-menu">
+                <div class="item-menu-esq">
+                    <i class="fas fa-key"></i>
+                    <span>Minha Segurança</span>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
             </div>
-            <i class="fas fa-chevron-right seta"></i>
         </div>
-
-        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(96,165,250,0.1);"></div>
 
         <div class="item-menu sair" id="itemSair">
             <div class="item-menu-esq">
@@ -464,10 +476,6 @@
         }
 
         carregarDadosUsuario();
-
-        // Para mostrar bolinha de novidade:
-        // document.getElementById('notifAvisos').classList.add('tem-novidade');
-        // Para esconder: remover a classe
 
         const botaoMais = document.getElementById('botaoMais');
         const botaoPainel = document.getElementById('botaoPainel');
