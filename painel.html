@@ -208,7 +208,7 @@
             background: #f97316;
             border-radius: 50%;
             box-shadow: 0 0 6px rgba(249, 115, 22, 0.6);
-            display: none; /* só aparece quando tiver novidade */
+            display: none;
         }
         .notif-bolinha.visivel { display: block; }
 
@@ -289,7 +289,7 @@
             background: #f97316;
             border-radius: 50%;
             box-shadow: 0 0 4px rgba(249, 115, 22, 0.5);
-            display: none; /* oculta por padrão */
+            display: none;
         }
         .bolinha-notif.tem-novidade { display: block; }
 
@@ -348,22 +348,6 @@
 
         <div class="item-menu">
             <div class="item-menu-esq">
-                <i class="fas fa-envelope"></i>
-                <span>E-mails</span>
-            </div>
-            <i class="fas fa-chevron-right seta"></i>
-        </div>
-
-        <div class="item-menu">
-            <div class="item-menu-esq">
-                <i class="fas fa-paper-plane"></i>
-                <span>Mensagens</span>
-            </div>
-            <i class="fas fa-chevron-right seta"></i>
-        </div>
-
-        <div class="item-menu">
-            <div class="item-menu-esq">
                 <i class="fas fa-calendar-check"></i>
                 <span>Convocações</span>
             </div>
@@ -380,19 +364,37 @@
 
         <div class="item-menu">
             <div class="item-menu-esq">
-                <i class="fas fa-graduation-cap"></i>
-                <span>Treinos</span>
+                <i class="fas fa-chart-line"></i>
+                <span>Promoções</span>
             </div>
             <i class="fas fa-chevron-right seta"></i>
         </div>
 
         <div class="item-menu">
             <div class="item-menu-esq">
-                <i class="fas fa-chart-line"></i>
-                <span>Promoções</span>
+                <i class="fas fa-address-card"></i>
+                <span>Ficha</span>
             </div>
             <i class="fas fa-chevron-right seta"></i>
         </div>
+
+        <div class="item-menu">
+            <div class="item-menu-esq">
+                <i class="fas fa-bell"></i>
+                <span>Notificações</span>
+            </div>
+            <i class="fas fa-chevron-right seta"></i>
+        </div>
+
+        <div class="item-menu">
+            <div class="item-menu-esq">
+                <i class="fas fa-key"></i>
+                <span>Minha Segurança</span>
+            </div>
+            <i class="fas fa-chevron-right seta"></i>
+        </div>
+
+        <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid rgba(96,165,250,0.1);"></div>
 
         <div class="item-menu sair" id="itemSair">
             <div class="item-menu-esq">
@@ -463,8 +465,7 @@
 
         carregarDadosUsuario();
 
-        // === COMO MOSTRAR A BOLINHA QUANDO TIVER NOVIDADE ===
-        // Basta adicionar a classe "tem-novidade" ao elemento, exemplo:
+        // Para mostrar bolinha de novidade:
         // document.getElementById('notifAvisos').classList.add('tem-novidade');
         // Para esconder: remover a classe
 
