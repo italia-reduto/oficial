@@ -211,6 +211,37 @@
         }
         .gaveta-lateral.aberto { transform: translateX(0); }
 
+        .titulo-gaveta {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(59,130,246,0.15);
+        }
+        .item-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 12px;
+            color: #cbd5e1;
+            font-size: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-bottom: 8px;
+        }
+        .item-menu:hover, .item-menu:active {
+            background: rgba(59,130,246,0.1);
+            color: #93c5fd;
+        }
+        .item-menu i {
+            color: #38bdf8;
+            font-size: 18px;
+            width: 20px;
+            text-align: center;
+        }
+
         @media (max-width: 480px) {
             .banner-topo { height: 120px; }
             .barra-menu-inferior { padding: 12px 24px; }
@@ -253,7 +284,13 @@
         </div>
     </div>
 
-    <div class="gaveta-lateral" id="menuLateral"></div>
+    <div class="gaveta-lateral" id="menuLateral">
+        <h3 class="titulo-gaveta">Navegação</h3>
+        <div class="item-menu" id="itemAvisos">
+            <i class="fas fa-bullhorn"></i>
+            <span>Avisos</span>
+        </div>
+    </div>
 
     <div class="barra-menu-inferior">
         <div class="menu-painel ativo" id="botaoPainel">
@@ -320,7 +357,6 @@
         const gaveta = document.getElementById('menuLateral');
         const fundoBlur = document.getElementById('fundoBlur');
 
-        // Abre/fecha o Mais — desativa Painel
         botaoMais.addEventListener('click', () => {
             botaoMais.classList.toggle('ativo');
             botaoPainel.classList.remove('ativo');
@@ -328,7 +364,6 @@
             fundoBlur.classList.toggle('ativo');
         });
 
-        // Clica no Painel — fecha tudo, volta ao normal
         botaoPainel.addEventListener('click', () => {
             botaoPainel.classList.add('ativo');
             botaoMais.classList.remove('ativo');
@@ -336,7 +371,6 @@
             fundoBlur.classList.remove('ativo');
         });
 
-        // Clica fora — volta ao Painel
         fundoBlur.addEventListener('click', () => {
             botaoMais.classList.remove('ativo');
             botaoPainel.classList.add('ativo');
@@ -345,5 +379,5 @@
         });
     </script>
 </body>
-    </html>
-    
+</html>
+
