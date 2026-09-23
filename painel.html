@@ -2,8 +2,12 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <!-- ✅ ISSO AQUI DEIXA A BARRA PRETA -->
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
     <title>ITÁLIA · PAINEL</title>
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -29,7 +33,7 @@
             position: relative;
             overflow: hidden;
         }
-        /* Blur de fundo quando gaveta aberta */
+        /* Blur de fundo */
         .fundo-blur {
             position: fixed;
             inset: 0;
@@ -121,7 +125,6 @@
             color: #64748b;
             font-style: normal;
         }
-        /* Barra preta fixa */
         .barra-menu-inferior {
             width: 100%;
             background: #000000;
@@ -180,7 +183,6 @@
     </style>
 </head>
 <body>
-    <!-- Camada de blur no fundo -->
     <div class="fundo-blur" id="fundoBlur"></div>
     
     <div class="banner-topo"></div>
@@ -215,7 +217,7 @@
     </div>
 
     <script>
-        // Atalho para atualizar a página — puxe para baixo ou use botão
+        // Atalho atualizar — puxar pra baixo
         let toqueInicio = 0;
         document.addEventListener('touchstart', e => {
             toqueInicio = e.touches[0].clientY;
@@ -229,12 +231,10 @@
 
         async function carregarDadosUsuario() {
             const dadosSalvos = localStorage.getItem('usuario');
-
             if (!dadosSalvos) {
                 window.location.href = 'login.html';
                 return;
             }
-
             const usuario = JSON.parse(dadosSalvos);
             
             document.getElementById('nomeUsuario').textContent = usuario.nome || "Membro";
@@ -252,7 +252,6 @@
                     document.getElementById('nomeUsuario').textContent = data.nome;
                     document.getElementById('passaporteUsuario').textContent = data.passaporte;
                     document.getElementById('cargoUsuario').textContent = data.cargo;
-                    
                     usuario.nome = data.nome;
                     usuario.cargo = data.cargo;
                     localStorage.setItem('usuario', JSON.stringify(usuario));
@@ -274,7 +273,6 @@
             fundoBlur.classList.toggle('ativo');
         });
 
-        // Clica no blur = fecha a gaveta também
         fundoBlur.addEventListener('click', () => {
             botao.classList.remove('ativo');
             gaveta.classList.remove('aberto');
