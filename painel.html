@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <!-- ✅ BARRA PRETA -->
+    <!-- ✅ Barra preta -->
     <meta name="theme-color" content="#08090d">
     <meta name="color-scheme" content="dark">
     <title>ITÁLIA · PAINEL</title>
@@ -32,7 +32,6 @@
         :root {
             --preto: #08090d;
             --azul: #60a5fa;
-            --azul-escuro: #3b82f6;
             --branco: #ffffff;
             --cinza: #94a3b8;
         }
@@ -42,7 +41,7 @@
             background: var(--preto);
             color: var(--branco);
             overflow-x: hidden;
-            /* ✅ PERMITE PUXAR E ATUALIZAR no celular */
+            /* ✅ Permite puxar e atualizar */
             overscroll-behavior: contain;
         }
 
@@ -116,7 +115,7 @@
             color: var(--branco);
         }
 
-        /* ✅ BOTÃO DE ATUALIZAR VISÍVEL */
+        /* ✅ Botão de atualizar */
         .btn-atualizar {
             position: fixed;
             top: 12px;
@@ -132,14 +131,9 @@
             justify-content: center;
             z-index: 100;
             cursor: pointer;
-            transition: transform 0.2s;
         }
 
-        .btn-atualizar:active {
-            transform: scale(0.92);
-        }
-
-        /* BARRA INFERIOR */
+        /* Barra inferior — IGUAL ESTAVA */
         .barra-inferior {
             position: fixed;
             bottom: 0;
@@ -173,7 +167,7 @@
             font-size: 12px;
         }
 
-        /* GAVETA + BLUR */
+        /* Gaveta + Blur — IGUAL ESTAVA */
         .fundo-desfoque {
             position: fixed;
             inset: 0;
@@ -197,7 +191,7 @@
             width: 75%;
             max-width: 300px;
             height: 100%;
-            background: linear-gradient(180deg, #0f172a 0%, #08090d 100%);
+            background: #0f172a;
             transform: translateX(100%);
             transition: transform 0.3s ease;
             z-index: 20;
@@ -224,7 +218,7 @@
 
     <div class="fundo-img"></div>
 
-    <!-- ✅ BOTÃO DE ATUALIZAR -->
+    <!-- Botão de atualizar -->
     <button class="btn-atualizar" onclick="location.reload()">
         <i class="fas fa-sync-alt"></i>
     </button>
@@ -264,7 +258,6 @@
     </div>
 
     <script>
-        // Carrega dados do usuário
         const dadosUsuario = JSON.parse(localStorage.getItem('usuario') || '{}');
 
         if (dadosUsuario.nome) {
@@ -275,7 +268,6 @@
             window.location.href = 'login.html';
         }
 
-        // Gaveta com blur
         const botaoMais = document.getElementById('botao-mais');
         const gaveta = document.getElementById('gaveta');
         const fundoDesfoque = document.getElementById('fundo-desfoque');
@@ -295,4 +287,3 @@
 
 </body>
 </html>
-
