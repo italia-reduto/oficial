@@ -49,7 +49,7 @@
         }
         .banner-topo {
             width: 100%;
-            height: 180px;
+            height: 200px;
             position: relative;
             overflow: hidden;
             flex-shrink: 0;
@@ -66,43 +66,43 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: linear-gradient(to bottom, rgba(11,11,16,0) 0%, rgba(11,11,16,0.6) 60%, #0b0b10 100%);
+            background: linear-gradient(to bottom, rgba(11,11,16,0) 0%, rgba(11,11,16,0.5) 60%, #0b0b10 100%);
         }
         .conteudo {
             flex-grow: 1;
             position: relative;
             z-index: 3;
-            padding: 20px 22px 30px;
-            margin-top: -20px;
+            padding: 0 24px;
+            margin-top: -30px;
         }
-        .saudacao { margin-bottom: 28px; }
+        .saudacao { margin-bottom: 36px; }
         .saudacao h2 {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 800;
             color: #ffffff;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .saudacao h2 span { color: #60a5fa; }
         .saudacao p {
-            font-size: 14px;
+            font-size: 15px;
             color: #94a3b8;
         }
         .info-linhas {
             display: flex;
             flex-direction: column;
-            gap: 18px;
-            margin-bottom: 32px;
+            gap: 20px;
+            margin-bottom: 36px;
         }
         .linha {
             display: flex;
             align-items: center;
-            gap: 12px;
-            font-size: 16px;
+            gap: 14px;
+            font-size: 17px;
         }
         .linha i {
             color: #60a5fa;
-            font-size: 20px;
-            width: 24px;
+            font-size: 22px;
+            width: 26px;
             text-align: center;
         }
         .linha .rotulo { color: #94a3b8; font-weight: 500; }
@@ -115,14 +115,14 @@
         .grid-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 18px;
-            margin-bottom: 24px;
+            gap: 20px;
+            margin-bottom: 30px;
         }
         .card {
             background: linear-gradient(135deg, rgba(30, 64, 100, 0.35) 0%, rgba(15, 23, 42, 0.8) 100%);
             border: 1px solid rgba(96, 165, 250, 0.18);
             border-radius: 20px;
-            padding: 20px 16px;
+            padding: 22px 16px;
             transition: all 0.3s ease;
         }
         .card:active {
@@ -133,25 +133,25 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
         }
         .card-icone {
-            font-size: 20px;
+            font-size: 22px;
             color: #60a5fa;
         }
         .card-numero {
-            font-size: 32px;
+            font-size: 34px;
             font-weight: 800;
             color: #ffffff;
             line-height: 1;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .card-titulo {
             font-size: 12px;
             color: #94a3b8;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            line-height: 1.3;
+            line-height: 1.4;
         }
 
         .barra-menu-inferior {
@@ -159,7 +159,7 @@
             background: #000000;
             border: none;
             border-top: 1px solid rgba(96, 165, 250, 0.12);
-            padding: 12px 40px 18px;
+            padding: 14px 40px 20px;
             flex-shrink: 0;
             position: relative;
             z-index: 30;
@@ -170,10 +170,11 @@
 
         .menu-painel, .menu-mais {
             display: flex;
+            flex-direction: column;
             align-items: center;
             gap: 4px;
             color: #60a5fa;
-            font-size: 12px;
+            font-size: 13px;
             cursor: pointer;
             outline: none;
             border: none;
@@ -183,7 +184,7 @@
             transition: all 0.25s ease;
             position: relative;
         }
-        .menu-painel i, .menu-mais i { font-size: 22px; }
+        .menu-painel i, .menu-mais i { font-size: 24px; }
         .menu-painel.ativo, .menu-mais.ativo { color: #bfdbfe; }
         .notif-bolinha {
             position: absolute;
@@ -209,7 +210,7 @@
             transform: translateX(100%);
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 100;
-            padding: 60px 20px 30px;
+            padding: 60px 24px 30px;
             overflow-y: auto;
         }
         .gaveta-lateral.aberto { transform: translateX(0); }
@@ -220,16 +221,16 @@
             color: #60a5fa;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 14px;
             border-bottom: 1px solid rgba(96, 165, 250, 0.12);
         }
 
         .grupo-itens {
             display: flex;
             flex-direction: column;
-            gap: 8px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
         .item-menu {
@@ -237,10 +238,10 @@
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            padding: 14px 14px;
+            padding: 16px;
             color: #cbd5e1;
-            font-size: 14px;
-            border-radius: 14px;
+            font-size: 15px;
+            border-radius: 16px;
             cursor: pointer;
             transition: all 0.25s ease;
             background: rgba(30, 64, 100, 0.2);
@@ -255,7 +256,7 @@
             background: rgba(239, 68, 68, 0.08);
             border-color: rgba(239, 68, 68, 0.18);
             color: #fca5a5;
-            margin-top: 8px;
+            margin-top: 10px;
         }
         .item-menu.sair:active {
             background: rgba(239, 68, 68, 0.15);
@@ -263,12 +264,12 @@
         .item-menu-esq {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
         }
         .item-menu i:first-child {
             color: #60a5fa;
-            font-size: 18px;
-            width: 22px;
+            font-size: 19px;
+            width: 24px;
             text-align: center;
         }
         .item-menu.sair i:first-child { color: #f87171; }
@@ -286,9 +287,9 @@
         .bolinha-notif.tem-novidade { display: block; }
 
         @media (max-width: 480px) {
-            .conteudo { padding: 18px 20px 24px; }
+            .conteudo { padding: 0 20px; margin-top: -25px; }
             .grid-cards { gap: 16px; }
-            .card { padding: 18px 14px; border-radius: 18px; }
+            .card { padding: 20px 14px; border-radius: 18px; }
             .gaveta-lateral { width: 280px; }
         }
     </style>
@@ -503,5 +504,4 @@
         });
     </script>
 </body>
-    </html>
-
+</html>
