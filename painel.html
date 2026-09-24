@@ -8,500 +8,475 @@
     <title>ITÁLIA · PAINEL</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://oesqxkszqdcdquoxdvms.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXCSdW-tuUMevZA_Zs0C7Usl";
-        const { createClient } = supabase;
-        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const SUPABASE_ANON_KEY = "sb_publishable_DXzmPUIRXJ5YcmQ9CnqYhA_tQcFzXKf";
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        let usuarioNome = "";
+        let usuarioPassaporte = "";
+        let usuarioCargo = "";
+        
+        async function verificarSessao() {
+            const sessao = localStorage.getItem("sessao_italia");
+            if (!sessao) {
+                window.location.href = "login.html";
+                return;
+            }
+            const dados = JSON.parse(sessao);
+            usuarioNome = dados.nome || "Membro";
+            usuarioPassaporte = dados.passaporte || "—";
+            usuarioCargo = dados.cargo || "Membro";
+            preencherDados();
+        }
+        
+        function preencherDados() {
+            document.getElementById("nome-usuario").textContent = usuarioNome;
+            document.getElementById("passaporte-usuario").textContent = usuarioPassaporte;
+            document.getElementById("cargo-usuario").textContent = usuarioCargo;
+        }
+        
+        function sair() {
+            localStorage.removeItem("sessao_italia");
+            window.location.href = "login.html";
+        }
     </script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { height: 100%; }
-        body {
-            min-height: 100%;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
             font-family: 'Inter', sans-serif;
-            color: #f1f5f9;
-            background-color: #0b0b10;
-            display: flex;
-            flex-direction: column;
-            position: relative;
+        }
+        
+        :root {
+            --preto: #000000;
+            --fundo: #08090d;
+            --azul-claro: #a4d0ff;
+            --azul-meio: #4a90e2;
+            --azul-escuro: #1e3a5f;
+            --branco: #ffffff;
+            --cinza: #9ca3af;
+            --card: rgba(20, 25, 35, 0.85);
+            --borda: rgba(74, 144, 226, 0.2);
+            --barra-altura: 70px;
+        }
+        
+        html, body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
+            color: var(--branco);
             overflow-x: hidden;
         }
+        
         .fundo-blur {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             opacity: 0;
             visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-            z-index: 15;
+            transition: all 0.3s ease;
+            z-index: 9;
         }
+        
         .fundo-blur.ativo {
             opacity: 1;
             visibility: visible;
         }
-        .banner-topo {
-            width: 100%;
-            height: 200px;
-            position: relative;
-            overflow: hidden;
-            flex-shrink: 0;
-            z-index: 1;
+        
+        main {
+            padding: 2rem 1.5rem calc(var(--barra-altura) + 1.5rem);
+            max-width: 640px;
+            margin: 0 auto;
+            min-height: 100vh;
         }
-        .banner-topo::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat;
-            opacity: 0.5;
+        
+        .cabecalho {
+            margin-bottom: 2.5rem;
         }
-        .banner-topo::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(11,11,16,0) 0%, rgba(11,11,16,0.5) 60%, #0b0b10 100%);
+        
+        .saudacao {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
         }
-        .conteudo {
-            flex-grow: 1;
-            position: relative;
-            z-index: 3;
-            padding: 0 24px;
-            margin-top: -30px;
+        
+        .sub-saudacao {
+            color: var(--cinza);
+            font-size: 0.95rem;
         }
-        .saudacao { margin-bottom: 36px; }
-        .saudacao h2 {
-            font-size: 30px;
-            font-weight: 800;
-            color: #ffffff;
-            margin-bottom: 6px;
-        }
-        .saudacao h2 span { color: #60a5fa; }
-        .saudacao p {
-            font-size: 15px;
-            color: #94a3b8;
-        }
-        .info-linhas {
+        
+        .dados-pessoais {
+            background: var(--card);
+            border: 1px solid var(--borda);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            margin-bottom: 2rem;
             display: flex;
-            flex-direction: column;
-            gap: 20px;
-            margin-bottom: 36px;
+            gap: 1rem;
+            align-items: center;
+            backdrop-filter: blur(10px);
         }
-        .linha {
+        
+        .icone-perfil {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--azul-meio), var(--azul-escuro));
             display: flex;
             align-items: center;
-            gap: 14px;
-            font-size: 17px;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
         }
-        .linha i {
-            color: #60a5fa;
-            font-size: 22px;
-            width: 26px;
-            text-align: center;
+        
+        .info-linha {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            margin: 0.25rem 0;
+            font-size: 0.9rem;
         }
-        .linha .rotulo { color: #94a3b8; font-weight: 500; }
-        .linha .valor {
-            color: #ffffff;
+        
+        .info-linha strong {
             font-weight: 700;
+            color: var(--azul-claro);
         }
-        .carregando { color: #64748b; font-style: normal; }
-
+        
         .grid-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
+        
         .card {
-            background: linear-gradient(135deg, rgba(30, 64, 100, 0.35) 0%, rgba(15, 23, 42, 0.8) 100%);
-            border: 1px solid rgba(96, 165, 250, 0.18);
-            border-radius: 20px;
-            padding: 22px 16px;
-            transition: all 0.3s ease;
+            background: var(--card);
+            border: 1px solid var(--borda);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+            transition: transform 0.2s ease;
         }
+        
         .card:active {
             transform: scale(0.97);
-            border-color: rgba(96, 165, 250, 0.4);
         }
-        .card-cabecalho {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        .card-icone {
-            font-size: 22px;
-            color: #60a5fa;
-        }
-        .card-numero {
-            font-size: 34px;
-            font-weight: 800;
-            color: #ffffff;
-            line-height: 1;
-            margin-bottom: 6px;
-        }
+        
         .card-titulo {
-            font-size: 12px;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            line-height: 1.4;
+            font-size: 0.85rem;
+            color: var(--cinza);
+            margin-bottom: 0.5rem;
         }
-
-        .barra-menu-inferior {
-            width: 100%;
-            background: #000000;
-            border: none;
-            border-top: 1px solid rgba(96, 165, 250, 0.12);
-            padding: 14px 40px 20px;
-            flex-shrink: 0;
-            position: relative;
-            z-index: 30;
+        
+        .card-valor {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .barra-navegacao {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--barra-altura);
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            z-index: 200; /* Fica por cima de tudo */
         }
-
-        .menu-painel, .menu-mais {
+        
+        .botao-nav {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #60a5fa;
-            font-size: 13px;
-            cursor: pointer;
-            outline: none;
-            border: none;
+            gap: 0.2rem;
             background: transparent;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-            transition: all 0.25s ease;
-            position: relative;
+            border: none;
+            color: var(--cinza);
+            cursor: pointer;
+            transition: color 0.2s ease;
         }
-        .menu-painel i, .menu-mais i { font-size: 24px; }
-        .menu-painel.ativo, .menu-mais.ativo { color: #bfdbfe; }
-        .notif-bolinha {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            width: 10px;
-            height: 10px;
-            background: #f97316;
+        
+        .botao-nav.ativo, .botao-nav:hover {
+            color: var(--azul-claro);
+        }
+        
+        .botao-nav i {
+            font-size: 1.25rem;
+        }
+        
+        .botao-nav span {
+            font-size: 0.7rem;
+        }
+        
+        .botao-mais {
+            background: linear-gradient(135deg, var(--azul-meio), var(--azul-escuro));
+            width: 52px;
+            height: 52px;
             border-radius: 50%;
-            display: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+            transition: transform 0.2s ease;
         }
-        .notif-bolinha.visivel { display: block; }
-
-        .gaveta-lateral {
+        
+        .botao-mais:active {
+            transform: scale(0.9);
+        }
+        
+        .gaveta {
             position: fixed;
             top: 0;
-            bottom: 0;
             right: 0;
-            width: 300px;
-            background: linear-gradient(180deg, rgba(15, 23, 42, 0.98) 0%, rgba(15, 23, 42, 0.99) 100%);
+            width: 80%;
+            max-width: 340px;
+            height: calc(100vh - var(--barra-altura)); /* Para antes da barra */
+            background: rgba(8, 9, 13, 0.95);
             backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(96, 165, 250, 0.15);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--borda);
             transform: translateX(100%);
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.3s ease;
             z-index: 100;
-            padding: 60px 24px 30px;
+            padding: 2rem 1.5rem;
             overflow-y: auto;
         }
-        .gaveta-lateral.aberto { transform: translateX(0); }
-
-        .titulo-gaveta {
-            font-size: 12px;
-            font-weight: 700;
-            color: #60a5fa;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin-bottom: 24px;
-            padding-bottom: 14px;
-            border-bottom: 1px solid rgba(96, 165, 250, 0.12);
+        
+        .gaveta.aberta {
+            transform: translateX(0);
         }
-
-        .grupo-itens {
+        
+        .gaveta-cabecalho {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .item-menu {
-            display: flex;
-            align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            padding: 16px;
-            color: #cbd5e1;
-            font-size: 15px;
-            border-radius: 16px;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .gaveta-titulo {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .botao-fechar {
+            background: transparent;
+            border: none;
+            color: var(--cinza);
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: all 0.25s ease;
-            background: rgba(30, 64, 100, 0.2);
-            border: 1px solid rgba(96, 165, 250, 0.1);
         }
-        .item-menu:hover, .item-menu:active {
-            background: rgba(96, 165, 250, 0.1);
-            border-color: rgba(96, 165, 250, 0.2);
-            color: #e0e7ff;
+        
+        .grupo-itens {
+            background: rgba(30, 58, 95, 0.2);
+            border-radius: 0.8rem;
+            border: 1px solid var(--borda);
+            padding: 0.5rem;
+            margin-bottom: 1rem;
         }
-        .item-menu.sair {
-            background: rgba(239, 68, 68, 0.08);
-            border-color: rgba(239, 68, 68, 0.18);
-            color: #fca5a5;
-            margin-top: 10px;
+        
+        .item-gaveta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.9rem 1rem;
+            color: var(--branco);
+            text-decoration: none;
+            border-radius: 0.6rem;
+            transition: background 0.2s ease;
         }
-        .item-menu.sair:active {
-            background: rgba(239, 68, 68, 0.15);
+        
+        .item-gaveta:hover {
+            background: rgba(74, 144, 226, 0.15);
         }
-        .item-menu-esq {
+        
+        .item-esquerda {
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 0.9rem;
         }
-        .item-menu i:first-child {
-            color: #60a5fa;
-            font-size: 19px;
-            width: 24px;
+        
+        .item-esquerda i {
+            color: var(--azul-meio);
+            font-size: 1.1rem;
+            width: 20px;
             text-align: center;
         }
-        .item-menu.sair i:first-child { color: #f87171; }
-        .seta {
-            color: #475569;
-            font-size: 11px;
+        
+        .item-seta {
+            color: var(--cinza);
+            font-size: 0.85rem;
         }
-        .bolinha-notif {
-            width: 8px;
-            height: 8px;
-            background: #f97316;
-            border-radius: 50%;
-            display: none;
+        
+        .item-sair {
+            color: #ff7b7b;
         }
-        .bolinha-notif.tem-novidade { display: block; }
-
-        @media (max-width: 480px) {
-            .conteudo { padding: 0 20px; margin-top: -25px; }
-            .grid-cards { gap: 16px; }
-            .card { padding: 20px 14px; border-radius: 18px; }
-            .gaveta-lateral { width: 280px; }
+        
+        .item-sair i {
+            color: #ff7b7b;
         }
     </style>
 </head>
-<body>
-    <div class="fundo-blur" id="fundoBlur"></div>
-    
-    <div class="banner-topo"></div>
-    
-    <div class="conteudo" id="areaPainel">
-        <div class="saudacao">
-            <h2>Olá, <span id="nomeUsuario" class="carregando">carregando...</span></h2>
-            <p>Bem-vindo de volta à Organização Itália</p>
+<body onload="verificarSessao()">
+
+    <div class="fundo-blur" id="fundoBlur" onclick="fecharGaveta()"></div>
+
+    <main>
+        <div class="cabecalho">
+            <h1 class="saudacao">Olá, <span id="nome-usuario">Membro</span> 👋</h1>
+            <p class="sub-saudacao">Seja bem-vindo à Organização Itália</p>
         </div>
 
-        <div class="info-linhas">
-            <div class="linha">
-                <i class="fas fa-id-card"></i>
-                <span class="rotulo">Passaporte:</span>
-                <span id="passaporteUsuario" class="valor carregando">—</span>
+        <div class="dados-pessoais">
+            <div class="icone-perfil">
+                <i class="fas fa-user"></i>
             </div>
-            <div class="linha">
-                <i class="fas fa-shield-alt"></i>
-                <span class="rotulo">Cargo:</span>
-                <span id="cargoUsuario" class="valor carregando">—</span>
+            <div>
+                <div class="info-linha">
+                    <i class="fas fa-id-card" style="color: var(--azul-meio);"></i>
+                    <span>Passaporte:</span>
+                    <strong id="passaporte-usuario">—</strong>
+                </div>
+                <div class="info-linha">
+                    <i class="fas fa-shield-alt" style="color: var(--azul-meio);"></i>
+                    <span>Cargo:</span>
+                    <strong id="cargo-usuario">—</strong>
+                </div>
             </div>
         </div>
 
         <div class="grid-cards">
             <div class="card">
-                <div class="card-cabecalho">
-                    <i class="fas fa-envelope-open-text card-icone"></i>
-                </div>
-                <div class="card-numero" id="numTickets">0</div>
-                <div class="card-titulo">Tickets Abertos</div>
+                <p class="card-titulo">Tickets Abertos</p>
+                <p class="card-valor">0</p>
             </div>
-
             <div class="card">
-                <div class="card-cabecalho">
-                    <i class="fas fa-calendar-alt card-icone"></i>
-                </div>
-                <div class="card-numero" id="numAusencias">0</div>
-                <div class="card-titulo">Ausências Pendentes</div>
+                <p class="card-titulo">Ausências Pendentes</p>
+                <p class="card-valor">0</p>
             </div>
         </div>
-    </div>
+    </main>
 
-    <div class="gaveta-lateral" id="menuLateral">
-        <h3 class="titulo-gaveta">Navegação</h3>
-        
+    <!-- GAVETA -->
+    <div class="gaveta" id="gaveta">
+        <div class="gaveta-cabecalho">
+            <h2 class="gaveta-titulo">Mais Opções</h2>
+            <button class="botao-fechar" onclick="fecharGaveta()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
         <div class="grupo-itens">
-            <div class="item-menu" id="itemAvisos">
-                <div class="item-menu-esq">
-                    <i class="fas fa-bullhorn"></i>
+            <a href="#" class="item-gaveta">
+                <div class="item-esquerda">
+                    <i class="fas fa-bell"></i>
                     <span>Avisos</span>
                 </div>
-                <div style="display:flex; align-items:center; gap:8px;">
-                    <div class="bolinha-notif" id="notifAvisos"></div>
-                    <i class="fas fa-chevron-right seta"></i>
-                </div>
-            </div>
-
-            <div class="item-menu">
-                <div class="item-menu-esq">
+                <i class="fas fa-chevron-right item-seta"></i>
+            </a>
+            <a href="#" class="item-gaveta">
+                <div class="item-esquerda">
                     <i class="fas fa-calendar-check"></i>
-                    <span>Convocações</span>
+                    <span>Convocação</span>
                 </div>
-                <i class="fas fa-chevron-right seta"></i>
-            </div>
-
-            <div class="item-menu">
-                <div class="item-menu-esq">
-                    <i class="fas fa-calendar-alt"></i>
+                <i class="fas fa-chevron-right item-seta"></i>
+            </a>
+            <a href="#" class="item-gaveta">
+                <div class="item-esquerda">
+                    <i class="fas fa-calendar-times"></i>
                     <span>Ausências</span>
                 </div>
-                <i class="fas fa-chevron-right seta"></i>
-            </div>
-
-            <div class="item-menu">
-                <div class="item-menu-esq">
+                <i class="fas fa-chevron-right item-seta"></i>
+            </a>
+            <a href="#" class="item-gaveta">
+                <div class="item-esquerda">
                     <i class="fas fa-chart-line"></i>
                     <span>Promoções</span>
                 </div>
-                <i class="fas fa-chevron-right seta"></i>
-            </div>
-
-            <div class="item-menu">
-                <div class="item-menu-esq">
-                    <i class="fas fa-address-card"></i>
+                <i class="fas fa-chevron-right item-seta"></i>
+            </a>
+            <a href="#" class="item-gaveta">
+                <div class="item-esquerda">
+                    <i class="fas fa-id-card"></i>
                     <span>Ficha</span>
                 </div>
-                <i class="fas fa-chevron-right seta"></i>
-            </div>
-
-            <div class="item-menu">
-                <div class="item-menu-esq">
+                <i class="fas fa-chevron-right item-seta"></i>
+            </a>
+            <a href="#" class="item-gaveta">
+                <div class="item-esquerda">
                     <i class="fas fa-bell"></i>
                     <span>Notificações</span>
                 </div>
-                <i class="fas fa-chevron-right seta"></i>
-            </div>
-
-            <div class="item-menu">
-                <div class="item-menu-esq">
-                    <i class="fas fa-key"></i>
+                <i class="fas fa-chevron-right item-seta"></i>
+            </a>
+            <a href="#" class="item-gaveta">
+                <div class="item-esquerda">
+                    <i class="fas fa-lock"></i>
                     <span>Minha Segurança</span>
                 </div>
-                <i class="fas fa-chevron-right seta"></i>
-            </div>
+                <i class="fas fa-chevron-right item-seta"></i>
+            </a>
         </div>
 
-        <div class="item-menu sair" id="itemSair">
-            <div class="item-menu-esq">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Sair da conta</span>
-            </div>
+        <div class="grupo-itens">
+            <button class="item-gaveta item-sair" onclick="sair()">
+                <div class="item-esquerda">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Sair da conta</span>
+                </div>
+                <i class="fas fa-chevron-right item-seta"></i>
+            </button>
         </div>
     </div>
 
-    <div class="barra-menu-inferior">
-        <div class="menu-painel ativo" id="botaoPainel">
+    <!-- BARRA DE NAVEGAÇÃO -->
+    <nav class="barra-navegacao">
+        <button class="botao-nav ativo">
             <i class="fas fa-home"></i>
             <span>Painel</span>
-        </div>
-
-        <div class="menu-mais" id="botaoMais">
-            <i class="fas fa-th"></i>
-            <span>Mais</span>
-            <div class="notif-bolinha" id="notifMais"></div>
-        </div>
-    </div>
+        </button>
+        <button class="botao-mais" onclick="abrirGaveta()">
+            <i class="fas fa-plus"></i>
+        </button>
+        <button class="botao-nav" onclick="sair()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Sair</span>
+        </button>
+    </nav>
 
     <script>
-        let toqueInicio = 0;
-        document.addEventListener('touchstart', e => {
-            toqueInicio = e.touches[0].clientY;
-        });
-        document.addEventListener('touchend', e => {
-            const toqueFim = e.changedTouches[0].clientY;
-            if (toqueFim - toqueInicio > 100 && window.scrollY <= 0) {
-                window.location.reload();
-            }
-        });
+        const gaveta = document.getElementById('gaveta');
+        const fundoBlur = document.getElementById('fundoBlur');
 
-        async function carregarDadosUsuario() {
-            const dadosSalvos = localStorage.getItem('usuario');
-            if (!dadosSalvos) {
-                window.location.href = 'login.html';
-                return;
-            }
-            const usuario = JSON.parse(dadosSalvos);
-            
-            document.getElementById('nomeUsuario').textContent = usuario.nome || "Membro";
-            document.getElementById('passaporteUsuario').textContent = usuario.passaporte || "—";
-            document.getElementById('cargoUsuario').textContent = usuario.cargo || "Membro";
-
-            try {
-                const { data, error } = await sb
-                    .from('membros')
-                    .select('nome, passaporte, cargo')
-                    .eq('passaporte', usuario.passaporte)
-                    .single();
-
-                if (!error && data) {
-                    document.getElementById('nomeUsuario').textContent = data.nome;
-                    document.getElementById('passaporteUsuario').textContent = data.passaporte;
-                    document.getElementById('cargoUsuario').textContent = data.cargo;
-                    usuario.nome = data.nome;
-                    usuario.cargo = data.cargo;
-                    localStorage.setItem('usuario', JSON.stringify(usuario));
-                }
-            } catch (erro) {
-                console.log("Usando dados salvos");
-            }
-
-            document.getElementById('numTickets').textContent = "0";
-            document.getElementById('numAusencias').textContent = "0";
+        function abrirGaveta() {
+            gaveta.classList.add('aberta');
+            fundoBlur.classList.add('ativo');
+            document.body.style.overflow = 'hidden';
         }
 
-        carregarDadosUsuario();
-
-        const botaoMais = document.getElementById('botaoMais');
-        const botaoPainel = document.getElementById('botaoPainel');
-        const gaveta = document.getElementById('menuLateral');
-        const fundoBlur = document.getElementById('fundoBlur');
-        const itemSair = document.getElementById('itemSair');
-
-        botaoMais.addEventListener('click', () => {
-            botaoMais.classList.toggle('ativo');
-            botaoPainel.classList.remove('ativo');
-            gaveta.classList.toggle('aberto');
-            fundoBlur.classList.toggle('ativo');
-        });
-
-        botaoPainel.addEventListener('click', () => {
-            botaoPainel.classList.add('ativo');
-            botaoMais.classList.remove('ativo');
-            gaveta.classList.remove('aberto');
+        function fecharGaveta() {
+            gaveta.classList.remove('aberta');
             fundoBlur.classList.remove('ativo');
-        });
-
-        fundoBlur.addEventListener('click', () => {
-            botaoMais.classList.remove('ativo');
-            botaoPainel.classList.add('ativo');
-            gaveta.classList.remove('aberto');
-            fundoBlur.classList.remove('ativo');
-        });
-
-        itemSair.addEventListener('click', () => {
-            localStorage.removeItem('usuario');
-            window.location.href = 'login.html';
-        });
+            document.body.style.overflow = '';
+        }
     </script>
 </body>
-</html>
+    </html>
+    
