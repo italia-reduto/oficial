@@ -64,7 +64,6 @@
             --cinza: #9ca3af;
             --card: rgba(20, 25, 35, 0.85);
             --borda: rgba(74, 144, 226, 0.2);
-            --barra-altura: 70px;
         }
         
         html, body {
@@ -92,7 +91,7 @@
         }
         
         main {
-            padding: 2rem 1.5rem calc(var(--barra-altura) + 1.5rem);
+            padding: 2rem 1.5rem 6rem;
             max-width: 640px;
             margin: 0 auto;
             min-height: 100vh;
@@ -163,11 +162,6 @@
             border-radius: 1rem;
             padding: 1.25rem;
             backdrop-filter: blur(10px);
-            transition: transform 0.2s ease;
-        }
-        
-        .card:active {
-            transform: scale(0.97);
         }
         
         .card-titulo {
@@ -186,7 +180,7 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: var(--barra-altura);
+            height: 70px;
             background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -195,7 +189,7 @@
             align-items: center;
             padding: 0 1.5rem;
             border-top: 1px solid rgba(255,255,255,0.08);
-            z-index: 200; /* Fica por cima de tudo */
+            z-index: 200;
         }
         
         .botao-nav {
@@ -207,10 +201,9 @@
             border: none;
             color: var(--cinza);
             cursor: pointer;
-            transition: color 0.2s ease;
         }
         
-        .botao-nav.ativo, .botao-nav:hover {
+        .botao-nav.ativo {
             color: var(--azul-claro);
         }
         
@@ -234,12 +227,6 @@
             color: white;
             font-size: 1.3rem;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
-            transition: transform 0.2s ease;
-        }
-        
-        .botao-mais:active {
-            transform: scale(0.9);
         }
         
         .gaveta {
@@ -248,7 +235,7 @@
             right: 0;
             width: 80%;
             max-width: 340px;
-            height: calc(100vh - var(--barra-altura)); /* Para antes da barra */
+            height: calc(100vh - 70px);
             background: rgba(8, 9, 13, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
@@ -300,11 +287,6 @@
             color: var(--branco);
             text-decoration: none;
             border-radius: 0.6rem;
-            transition: background 0.2s ease;
-        }
-        
-        .item-gaveta:hover {
-            background: rgba(74, 144, 226, 0.15);
         }
         
         .item-esquerda {
@@ -316,13 +298,10 @@
         .item-esquerda i {
             color: var(--azul-meio);
             font-size: 1.1rem;
-            width: 20px;
-            text-align: center;
         }
         
         .item-seta {
             color: var(--cinza);
-            font-size: 0.85rem;
         }
         
         .item-sair {
@@ -340,7 +319,7 @@
 
     <main>
         <div class="cabecalho">
-            <h1 class="saudacao">Olá, <span id="nome-usuario">Membro</span> 👋</h1>
+            <h1 class="saudacao">Olá, <span id="nome-usuario">Membro</span></h1>
             <p class="sub-saudacao">Seja bem-vindo à Organização Itália</p>
         </div>
 
@@ -374,7 +353,6 @@
         </div>
     </main>
 
-    <!-- GAVETA -->
     <div class="gaveta" id="gaveta">
         <div class="gaveta-cabecalho">
             <h2 class="gaveta-titulo">Mais Opções</h2>
@@ -446,7 +424,6 @@
         </div>
     </div>
 
-    <!-- BARRA DE NAVEGAÇÃO -->
     <nav class="barra-navegacao">
         <button class="botao-nav ativo">
             <i class="fas fa-home"></i>
@@ -478,5 +455,5 @@
         }
     </script>
 </body>
-    </html>
-    
+                    </html>
+                    
