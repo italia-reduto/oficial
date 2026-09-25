@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
+    <title>ITÁLIA · PONTO</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            padding-bottom: 80px;
+        }
+
+        /* ===== FUNDO ===== */
+        .fundo-pagina {
+            position: fixed;
+            inset: 0;
+            background: 
+                linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
+            z-index: -2;
+        }
+
+        .fundo-imagem {
+            position: fixed;
+            inset: 0;
+            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
+            opacity: 0.18;
+            z-index: -1;
+        }
+
+        .fundo-degrade {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(to bottom, 
+                rgba(0,0,0,0.4) 0%, 
+                rgba(0,0,0,0.85) 60%,
+                rgba(0,0,0,1) 100%);
+            z-index: -1;
+        }
+
+        .conteudo {
+            position: relative;
+            z-index: 1;
+            padding: 24px;
+        }
+
+        .titulo-pagina {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .subtitulo {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 32px;
+        }
+
+        /* ===== MENU INFERIOR ===== */
+        .barra-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid rgba(96, 165, 250, 0.15);
+            z-index: 100;
+        }
+        
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        
+        .menu-item.ativo { color: #60a5fa; }
+        .menu-item i { font-size: 20px; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <!-- FUNDOS -->
+    <div class="fundo-pagina"></div>
+    <div class="fundo-imagem"></div>
+    <div class="fundo-degrade"></div>
+
+    <!-- CONTEÚDO -->
+    <div class="conteudo">
+        <h1 class="titulo-pagina">Controle de Ponto</h1>
+        <p class="subtitulo">Registro de jornada · Organização Itália</p>
+
+        <!-- Aqui vamos adicionar os botões depois -->
+    </div>
+
+    <!-- MENU -->
+    <nav class="barra-menu">
+        <a href="painel.html" class="menu-item">
+            <i class="fas fa-home"></i><span>Painel</span>
+        </a>
+        <a href="bate-ponto.html" class="menu-item ativo">
+            <i class="fas fa-clock"></i><span>Ponto</span>
+        </a>
+        <a href="equipe.html" class="menu-item">
+            <i class="fas fa-clipboard-list"></i><span>Equipe</span>
+        </a>
+        <a href="tickets.html" class="menu-item">
+            <i class="fas fa-file-alt"></i><span>Tickets</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-ellipsis-h"></i><span>Mais</span>
+        </a>
+    </nav>
+
+</body>
+</html>
