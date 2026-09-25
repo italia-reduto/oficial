@@ -11,12 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <!-- ✅ CONEXÃO SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
     
     <style>
@@ -27,7 +27,6 @@
             background: linear-gradient(180deg, #000000 0%, #0f172a 100%);
             color: #ffffff;
             font-family: 'Inter', sans-serif;
-            -webkit-font-smoothing: antialiased;
             padding-bottom: 80px;
         }
         
@@ -45,7 +44,6 @@
             background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat;
             opacity: 0.45;
             transform: scale(1.05);
-            transition: transform 20s linear infinite;
         }
         
         .banner-topo::after {
@@ -85,7 +83,6 @@
         .botao-sair:hover {
             background: rgba(248, 113, 113, 0.12);
             border-color: rgba(248, 113, 113, 0.35);
-            transform: translateY(-1px);
         }
         
         .conteudo {
@@ -98,19 +95,10 @@
         
         .conteudo.desfocado { filter: blur(6px); }
         
-        .linha-principal {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-bottom: 6px;
-        }
-        
         .saudacao {
             font-size: 28px;
             font-weight: 700;
-            letter-spacing: -0.3px;
+            margin-bottom: 12px;
         }
         
         .saudacao span { color: #60a5fa; }
@@ -119,7 +107,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         
         .linha-info i {
@@ -159,13 +147,6 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            transition: all 0.3s ease;
-        }
-        
-        .card:hover {
-            border-color: rgba(96, 165, 250, 0.25);
-            background: rgba(15, 23, 42, 0.7);
-            transform: translateY(-2px);
         }
         
         .card-titulo {
@@ -185,14 +166,8 @@
             background: rgba(15, 23, 42, 0.55);
             border: 1px solid rgba(96, 165, 250, 0.12);
             border-radius: 14px;
-            padding: 12px 20px;
+            padding: 20px;
             grid-column: 1 / -1;
-            transition: all 0.3s ease;
-        }
-        
-        .card-aviso:hover {
-            border-color: rgba(96, 165, 250, 0.25);
-            background: rgba(15, 23, 42, 0.7);
         }
         
         .barra-menu {
@@ -205,9 +180,8 @@
             display: flex;
             align-items: center;
             justify-content: space-around;
-            padding: 0 8px;
-            z-index: 100;
             border-top: 1px solid rgba(96, 165, 250, 0.15);
+            z-index: 100;
         }
         
         .menu-item {
@@ -218,14 +192,11 @@
             color: #94a3b8;
             text-decoration: none;
             font-size: 11px;
-            transition: color 0.25s ease;
-            padding: 8px 6px;
             cursor: pointer;
         }
         
         .menu-item.ativo { color: #60a5fa; }
-        .menu-item:hover { color: #cbd5e1; }
-        .menu-item i { font-size: 20px; }
+        .menu-item i { font-size: 20px; margin-bottom: 2px; }
         
         .sombra-fundo {
             position: fixed;
@@ -237,27 +208,22 @@
             transition: all 0.35s ease;
         }
         
-        .sombra-fundo.visivel {
-            opacity: 1;
-            visibility: visible;
-        }
+        .sombra-fundo.visivel { opacity: 1; visibility: visible; }
         
         .gaveta {
             position: fixed;
             bottom: 70px;
             right: 0;
             width: 260px;
-            max-width: 80vw;
-            height: auto;
             background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
             border-left: 1px solid rgba(96, 165, 250, 0.15);
             border-top-left-radius: 16px;
             z-index: 98;
             transform: translateY(100%);
-            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-            padding: 20px 18px 20px;
-            overflow-y: auto;
+            transition: transform 0.35s ease;
+            padding: 20px 18px;
             max-height: calc(80vh - 70px);
+            overflow-y: auto;
         }
         
         .gaveta.aberta { transform: translateY(0); }
@@ -266,14 +232,9 @@
             font-size: 17px;
             font-weight: 700;
             margin-bottom: 14px;
-            color: #fff;
         }
         
-        .gaveta-lista {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+        .gaveta-lista { display: flex; flex-direction: column; gap: 8px; }
         
         .gaveta-item {
             display: flex;
@@ -285,33 +246,16 @@
             border-radius: 10px;
             color: #e2e8f0;
             text-decoration: none;
-            transition: all 0.25s ease;
         }
         
         .gaveta-item:hover {
             background: rgba(96, 165, 250, 0.15);
-            border-color: rgba(96, 165, 250, 0.3);
             transform: translateX(-4px);
         }
         
-        .gaveta-item-esq {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .gaveta-item-esq i {
-            color: #60a5fa;
-            font-size: 16px;
-            width: 20px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-        
-        .gaveta-item-dir {
-            color: #64748b;
-            font-size: 14px;
-        }
+        .gaveta-item-esq { display: flex; align-items: center; gap: 10px; }
+        .gaveta-item-esq i { color: #60a5fa; font-size: 16px; }
+        .gaveta-item-dir { color: #64748b; font-size: 14px; }
         
         .botao-fechar {
             position: absolute;
@@ -322,16 +266,13 @@
             color: #94a3b8;
             font-size: 18px;
             cursor: pointer;
-            transition: color 0.2s ease;
         }
-        
-        .botao-fechar:hover { color: #fff; }
         
         .fundo-modal {
             position: fixed;
             inset: 0;
             background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(12px) saturate(140%);
+            backdrop-filter: blur(12px);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -340,98 +281,72 @@
             visibility: hidden;
             transition: all 0.35s ease;
             padding: 24px;
-            padding-bottom: 100px;
         }
         
-        .fundo-modal.aberto {
-            opacity: 1;
-            visibility: visible;
-        }
+        .fundo-modal.aberto { opacity: 1; visibility: visible; }
         
         .caixa-modal {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
             border: 1px solid rgba(96, 165, 250, 0.2);
             border-radius: 24px;
-            padding: 40px 32px 32px;
+            padding: 32px;
             max-width: 400px;
             width: 100%;
-            transform: translateY(24px) scale(0.96);
-            transition: all 0.4s ease;
-        }
-        
-        .fundo-modal.aberto .caixa-modal {
-            transform: translateY(0) scale(1);
         }
         
         .icone-modal {
             width: 64px;
             height: 64px;
             border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(248, 113, 113, 0.18), rgba(248, 113, 113, 0.06));
+            background: rgba(248, 113, 113, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 24px;
+            margin: 0 auto 20px;
         }
         
         .icone-modal i { font-size: 26px; color: #f87171; }
-        .titulo-modal { font-size: 22px; font-weight: 700; text-align: center; margin-bottom: 10px; }
-        .texto-modal { font-size: 15px; color: #94a3b8; text-align: center; margin-bottom: 32px; line-height: 1.6; }
+        .titulo-modal { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 10px; }
+        .texto-modal { font-size: 15px; color: #94a3b8; text-align: center; margin-bottom: 24px; }
         
-        .botoes-modal { display: flex; gap: 14px; }
+        .botoes-modal { display: flex; gap: 12px; }
         
         .botao-cancelar {
             flex: 1;
-            padding: 14px 20px;
-            border-radius: 14px;
+            padding: 14px;
+            border-radius: 12px;
             background: rgba(30, 41, 59, 0.5);
             border: 1px solid rgba(96, 165, 250, 0.18);
             color: #cbd5e1;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s ease;
-        }
-        
-        .botao-cancelar:hover {
-            background: rgba(51, 65, 85, 0.6);
-            border-color: rgba(96, 165, 250, 0.35);
         }
         
         .botao-confirmar {
             flex: 1;
-            padding: 14px 20px;
-            border-radius: 14px;
+            padding: 14px;
+            border-radius: 12px;
             background: linear-gradient(135deg, #ef4444, #b91c1c);
             border: none;
             color: #fff;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s ease;
         }
-        
-        .botao-confirmar:hover { transform: translateY(-2px); }
-        .botao-confirmar:active { transform: translateY(0); }
-        
-        .carregando { color: #94a3b8; font-style: italic; }
     </style>
 </head>
 <body>
-
     <div class="banner-topo"></div>
     
     <div class="cabecalho-superior">
         <button class="botao-sair" onclick="abrirModal()">
-            <i class="fas fa-sign-out-alt"></i>
-            Sair
+            <i class="fas fa-sign-out-alt"></i> Sair
         </button>
     </div>
 
     <div class="conteudo" id="conteudoPrincipal">
-        <div class="linha-principal">
-            <h1 class="saudacao">Olá, <span id="nomeUsuario" class="carregando">Carregando...</span></h1>
-        </div>
+        <h1 class="saudacao">Olá, <span id="nomeUsuario">Membro</span></h1>
         
         <div class="linha-info">
             <i class="fas fa-id-card"></i>
@@ -442,7 +357,7 @@
         <div class="linha-info">
             <i class="fas fa-shield-alt"></i>
             <span class="info-texto">Cargo:</span>
-            <span class="info-valor" id="cargoUsuario">-</span>
+            <span class="info-valor" id="cargoUsuario">—</span>
         </div>
         
         <div class="bloco-tempo">
@@ -459,95 +374,74 @@
         <div class="grade-cards">
             <div class="card">
                 <div class="card-titulo">Tickets Abertos <i class="fas fa-ticket-alt"></i></div>
-                <div class="card-valor"><span id="qtdTickets">0</span></div>
+                <div class="card-valor">0</div>
             </div>
             <div class="card">
                 <div class="card-titulo">Ausências Pendentes <i class="fas fa-calendar-times"></i></div>
-                <div class="card-valor"><span id="qtdAusencias">0</span></div>
+                <div class="card-valor">0</div>
             </div>
             <div class="card">
                 <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
-                <div class="card-valor"><span id="qtdMembros">0</span></div>
+                <div class="card-valor">0</div>
             </div>
             <div class="card">
                 <div class="card-titulo">Pontos Hoje <i class="fas fa-clipboard-check"></i></div>
-                <div class="card-valor"><span id="qtdPontos">0</span></div>
+                <div class="card-valor">0</div>
             </div>
             <div class="card-aviso">
                 <div class="card-titulo">Aviso Recente <i class="fas fa-bell"></i></div>
-                <div class="card-valor" id="avisoRecente">Nenhum aviso recente no momento.</div>
+                <div class="card-valor" style="font-size: 20px;">Nenhum aviso recente no momento.</div>
             </div>
         </div>
     </div>
         <div class="sombra-fundo" id="sombraFundo" onclick="fecharGaveta()"></div>
 
     <div class="gaveta" id="gaveta">
-        <button class="botao-fechar" onclick="fecharGaveta()">
-            <i class="fas fa-times"></i>
-        </button>
+        <button class="botao-fechar" onclick="fecharGaveta()"><i class="fas fa-times"></i></button>
         <h3 class="gaveta-titulo">Mais Opções</h3>
         <div class="gaveta-lista">
             <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq">
-                    <i class="fas fa-bell"></i>
-                    <span>Avisos</span>
-                </div>
+                <div class="gaveta-item-esq"><i class="fas fa-bell"></i><span>Avisos</span></div>
                 <i class="fas fa-chevron-right gaveta-item-dir"></i>
             </a>
             <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Ficha</span>
-                </div>
+                <div class="gaveta-item-esq"><i class="fas fa-file-alt"></i><span>Ficha</span></div>
                 <i class="fas fa-chevron-right gaveta-item-dir"></i>
             </a>
             <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq">
-                    <i class="fas fa-bell"></i>
-                    <span>Notificações</span>
-                </div>
+                <div class="gaveta-item-esq"><i class="fas fa-bell"></i><span>Notificações</span></div>
                 <i class="fas fa-chevron-right gaveta-item-dir"></i>
             </a>
             <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Minha Segurança</span>
-                </div>
+                <div class="gaveta-item-esq"><i class="fas fa-shield-alt"></i><span>Minha Segurança</span></div>
                 <i class="fas fa-chevron-right gaveta-item-dir"></i>
             </a>
         </div>
     </div>
 
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item" id="menu-painel">
-            <i class="fas fa-home"></i>
-            <span>Painel</span>
+        <a href="painel.html" class="menu-item ativo">
+            <i class="fas fa-home"></i><span>Painel</span>
         </a>
-        <a href="bate-ponto.html" class="menu-item" id="menu-ponto">
-            <i class="fas fa-clock"></i>
-            <span>Ponto</span>
+        <a href="bate-ponto.html" class="menu-item">
+            <i class="fas fa-clock"></i><span>Ponto</span>
         </a>
-        <a href="equipe.html" class="menu-item" id="menu-equipe">
-            <i class="fas fa-clipboard-list"></i>
-            <span>Equipe</span>
+        <a href="equipe.html" class="menu-item">
+            <i class="fas fa-clipboard-list"></i><span>Equipe</span>
         </a>
-        <a href="tickets.html" class="menu-item" id="menu-tickets">
-            <i class="fas fa-file-alt"></i>
-            <span>Tickets</span>
+        <a href="tickets.html" class="menu-item">
+            <i class="fas fa-file-alt"></i><span>Tickets</span>
         </a>
-        <a href="#" class="menu-item" id="menu-mais" onclick="alternarGaveta(event)">
-            <i class="fas fa-ellipsis-h"></i>
-            <span>Mais</span>
+        <a href="#" class="menu-item" onclick="alternarGaveta(event)">
+            <i class="fas fa-ellipsis-h"></i><span>Mais</span>
         </a>
     </nav>
 
     <div class="fundo-modal" id="modalSair">
         <div class="caixa-modal">
-            <div class="icone-modal">
-                <i class="fas fa-right-from-bracket"></i>
-            </div>
+            <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
             <h3 class="titulo-modal">Deseja sair?</h3>
-            <p class="texto-modal">Você retornará para a tela de acesso.</p>
+            <p class="texto-modal">Você voltará para a tela de acesso.</p>
             <div class="botoes-modal">
                 <button class="botao-cancelar" onclick="fecharModal()">Cancelar</button>
                 <button class="botao-confirmar" onclick="confirmarSaida()">Sair</button>
@@ -556,21 +450,21 @@
     </div>
 
     <script>
-        // ========== MENU ATIVO ==========
-        function marcarMenuAtivo() {
-            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('ativo'));
-            const pagina = window.location.pathname.split('/').pop() || 'painel.html';
-            if (pagina === 'painel.html' || pagina === '' || pagina === 'index.html') {
-                document.getElementById('menu-painel').classList.add('ativo');
-            } else if (pagina === 'bate-ponto.html') {
-                document.getElementById('menu-ponto').classList.add('ativo');
-            } else if (pagina === 'equipe.html') {
-                document.getElementById('menu-equipe').classList.add('ativo');
-            } else if (pagina === 'tickets.html') {
-                document.getElementById('menu-tickets').classList.add('ativo');
-            }
+        // ========== RELÓGIO ==========
+        function atualizarRelogio() {
+            const agora = new Date();
+            const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+            const dia = String(brasilia.getDate()).padStart(2, '0');
+            const mes = String(brasilia.getMonth() + 1).padStart(2, '0');
+            const ano = brasilia.getFullYear();
+            const h = String(brasilia.getHours()).padStart(2, '0');
+            const m = String(brasilia.getMinutes()).padStart(2, '0');
+            const s = String(brasilia.getSeconds()).padStart(2, '0');
+            document.getElementById('horaAtual').textContent = `${h}:${m}:${s}`;
+            document.getElementById('dataAtual').textContent = `${dia}/${mes}/${ano}`;
         }
-        marcarMenuAtivo();
+        atualizarRelogio();
+        setInterval(atualizarRelogio, 1000);
 
         // ========== GAVETA ==========
         const gaveta = document.getElementById('gaveta');
@@ -591,67 +485,52 @@
             conteudoPrincipal.classList.remove('desfocado');
         }
 
-        // ========== RELÓGIO ==========
-        function atualizarRelogio() {
-            const agora = new Date();
-            const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-            const dia = String(brasilia.getDate()).padStart(2, '0');
-            const mes = String(brasilia.getMonth() + 1).padStart(2, '0');
-            const ano = brasilia.getFullYear();
-            const h = String(brasilia.getHours()).padStart(2, '0');
-            const m = String(brasilia.getMinutes()).padStart(2, '0');
-            const s = String(brasilia.getSeconds()).padStart(2, '0');
-            document.getElementById('horaAtual').textContent = `${h}:${m}:${s}`;
-            document.getElementById('dataAtual').textContent = `${dia}/${mes}/${ano}`;
-        }
-        atualizarRelogio();
-        setInterval(atualizarRelogio, 1000);
-
         // ========== MODAL SAIR ==========
         function abrirModal() { modal.classList.add('aberto'); }
         function fecharModal() { modal.classList.remove('aberto'); }
         function confirmarSaida() {
             localStorage.removeItem('passaporte');
+            localStorage.removeItem('usuario');
             window.location.href = 'login.html';
         }
 
-        // ========== BUSCAR DADOS DO USUÁRIO NO SUPABASE ==========
+        // ========== BUSCAR DADOS — SEM FILTRO DE ATIVO ✅ ==========
         async function carregarDadosUsuario() {
             const passaporteSalvo = localStorage.getItem('passaporte');
             
             if (!passaporteSalvo) {
-                document.getElementById('nomeUsuario').textContent = 'Faça login';
-                document.getElementById('nomeUsuario').classList.remove('carregando');
+                window.location.href = 'login.html';
                 return;
             }
 
             try {
-                const { data, error } = await supabase
+                // ✅ TIREI O .eq('ativo', true) — busca direto pelo passaporte!
+                const { data, error } = await sb
                     .from('membros')
                     .select('nome, passaporte, cargo')
                     .eq('passaporte', passaporteSalvo)
-                    .eq('ativo', true)
                     .single();
 
                 if (error) throw error;
 
                 if (data) {
                     document.getElementById('nomeUsuario').textContent = data.nome || 'Membro';
-                    document.getElementById('nomeUsuario').classList.remove('carregando');
                     document.getElementById('passaporteUsuario').textContent = data.passaporte || '-';
-                    document.getElementById('cargoUsuario').textContent = data.cargo || '-';
+                    document.getElementById('cargoUsuario').textContent = data.cargo || '—';
                 }
             } catch (erro) {
-                console.log('Erro ao buscar dados:', erro);
-                document.getElementById('nomeUsuario').textContent = 'Membro';
-                document.getElementById('nomeUsuario').classList.remove('carregando');
-                document.getElementById('passaporteUsuario').textContent = passaporteSalvo;
-                document.getElementById('cargoUsuario').textContent = '—';
+                console.log('Erro ao buscar:', erro);
+                // Se der erro, mostra o que já tem salvo
+                const salvo = localStorage.getItem('usuario');
+                if (salvo) {
+                    const usuario = JSON.parse(salvo);
+                    document.getElementById('nomeUsuario').textContent = usuario.nome || 'Membro';
+                    document.getElementById('cargoUsuario').textContent = usuario.cargo || '—';
+                }
             }
         }
 
         carregarDadosUsuario();
     </script>
-
 </body>
 </html>
