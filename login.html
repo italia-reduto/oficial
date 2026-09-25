@@ -300,8 +300,7 @@
             <a href="index.html">← Voltar para tela inicial</a>
         </div>
     </div>
-
-    <script>
+        <script>
         function alternarSenha() {
             const campo = document.getElementById('senha');
             const icone = document.getElementById('iconeOlho');
@@ -372,6 +371,8 @@
                     throw new Error('Conta desativada');
                 }
 
+                // ✅ SALVA DOS DOIS JEITOS — O PAINEL VAI ENCONTRAR!
+                localStorage.setItem('passaporte', data.passaporte); // ← linha mágica!
                 localStorage.setItem('usuario', JSON.stringify({
                     id: data.id,
                     passaporte: data.passaporte,
