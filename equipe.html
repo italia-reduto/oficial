@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <meta name="color-scheme" content="dark">
+    <title>ITÁLIA · EQUIPE</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        *:focus, *:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        html, body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+
+        .fundo-pagina {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
+            z-index: -3;
+        }
+        .fundo-imagem {
+            position: fixed; inset: 0;
+            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
+            opacity: 0.08; z-index: -1;
+        }
+        .fundo-degrade {
+            position: fixed; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
+            z-index: 0;
+        }
+
+        .conteudo {
+            position: relative; z-index: 1;
+            padding: 24px;
+        }
+
+        .cabecalho-pagina {
+            margin-bottom: 28px;
+        }
+        .titulo-pagina {
+            font-size: 22px; font-weight: 700; color: #fff;
+            display: flex; align-items: center; gap: 10px;
+            margin-bottom: 6px;
+        }
+        .titulo-pagina i {
+            font-size: 20px; color: #60a5fa;
+        }
+        .subtitulo-pagina {
+            font-size: 14px; color: #94a3b8;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(8px);
+        }
+
+        .status-linha {
+            display: flex; align-items: center; gap: 8px;
+            font-size: 13px; color: #86efac; margin-bottom: 10px; font-weight: 500;
+        }
+        .status-linha i { font-size: 10px; }
+
+        .card-titulo {
+            font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px;
+        }
+        .card-texto {
+            font-size: 14px; color: #94a3b8; line-height: 1.6;
+        }
+
+        .card-bloqueio {
+            text-align: center;
+            padding: 36px 24px;
+        }
+        .icone-principal {
+            width: 64px; height: 64px; border-radius: 16px;
+            background: rgba(96, 165, 250, 0.12);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .icone-principal i { font-size: 26px; color: #60a5fa; }
+
+        .botao-acao {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff; border: none; border-radius: 12px;
+            padding: 14px 32px; font-size: 15px; font-weight: 600;
+            cursor: pointer; text-decoration: none; transition: all 0.25s ease;
+        }
+        .botao-acao:hover { transform: translateY(-2px); }
+
+        .barra-menu {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: #000; display: flex; align-items: center; justify-content: space-around;
+            border-top: 1px solid rgba(96,165,250,0.15); z-index: 100;
+        }
+        .menu-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #94a3b8; text-decoration: none; font-size: 11px;
+            cursor: pointer; transition: color 0.2s ease; user-select: none;
+        }
+        .menu-item.ativo { color: #60a5fa; }
+        .menu-item i { font-size: 20px; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <div class="fundo-pagina"></div>
+    <div class="fundo-imagem"></div>
+    <div class="fundo-degrade"></div>
+
+    <div class="conteudo">
+        <div class="cabecalho-pagina">
+            <h1 class="titulo-pagina">
+                <i class="fas fa-users"></i>
+                Minha Equipe
+            </h1>
+            <p class="subtitulo-pagina">Alocação e informações do grupo</p>
+        </div>
+
+        <!-- CARD 1: INFORMAÇÃO -->
+        <div class="card">
+            <p class="status-linha">
+                <i class="fas fa-circle"></i> Sistema Ativo
+            </p>
+            <h2 class="card-titulo">Acesso à Equipe</h2>
+            <p class="card-texto">
+                Para visualizar os membros, escalas e todas as informações da sua equipe, é necessário registrar sua entrada primeiro.
+            </p>
+        </div>
+
+        <!-- CARD 2: BLOQUEIO -->
+        <div class="card card-bloqueio">
+            <div class="icone-principal">
+                <i class="fas fa-user-clock"></i>
+            </div>
+            <h2 class="card-titulo">Ponto Não Registrado</h2>
+            <p class="card-texto" style="margin-bottom: 24px;">
+                Inicie sua jornada para ter acesso completo aos dados da equipe.
+            </p>
+            <a href="bate-ponto.html" class="botao-acao">
+                <i class="fas fa-clock"></i> Registrar Ponto
+            </a>
+        </div>
+    </div>
+
+    <nav class="barra-menu">
+        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
+        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="menu-item ativo"><i class="fas fa-clipboard-list"></i><span>Equipe</span></a>
+        <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
+        <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
+    </nav>
+
+</body>
+  </html>
+  
