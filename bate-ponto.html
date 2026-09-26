@@ -31,7 +31,6 @@
             overflow-x: hidden;
         }
 
-        /* ========== FUNDO LIMPO SEM PARTÍCULAS ========== */
         .fundo-pagina {
             position: fixed; inset: 0;
             background: linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
@@ -54,8 +53,8 @@
             margin-bottom: 24px;
         }
         .titulo-grupo { flex: 1; }
-        .titulo-pagina { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
-        .descricao { font-size: 14px; color: #94a3b8; }
+        .rotulo { font-size: 13px; color: #94a3b8; }
+        .valor { font-size: 18px; color: #fff; font-weight: 600; margin-bottom: 12px; }
         .botao-sair {
             display: flex; align-items: center; gap: 6px;
             background: rgba(239, 68, 68, 0.15);
@@ -69,10 +68,6 @@
             border-color: rgba(239, 68, 68, 0.5);
             transform: translateY(-1px);
         }
-        .linha-dado { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .linha-dado i { font-size: 16px; color: #60a5fa; width: 20px; text-align: center; }
-        .rotulo { font-size: 14px; color: #94a3b8; }
-        .valor { font-size: 15px; color: #fff; font-weight: 600; }
         .grade-cards {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 14px; margin-top: 24px;
@@ -90,11 +85,8 @@
         .card-titulo i { font-size: 14px; color: #60a5fa; }
         .card-valor { 
             font-size: 20px; font-weight: 700; margin-top: 8px;
-            transition: color 0.3s ease;
+            color: #ffffff;
         }
-        .card-valor.fora-servico { color: #ff2222 !important; }
-        .card-valor.em-jornada { color: #4ade80 !important; }
-        .card-valor.em-pausa { color: #facc15 !important; }
         .card-abas {
             background: rgba(15, 23, 42, 0.55);
             border: 1px solid rgba(96, 165, 250, 0.12);
@@ -154,8 +146,8 @@
         }
         .item-historico:last-child { border-bottom: none; padding-bottom: 0; }
         .item-esquerda { display: flex; flex-direction: column; gap: 2px; }
-        .item-titulo { font-size: 14px; font-weight: 600; color: #fff; }
-        .item-sub { font-size: 12px; color: #94a3b8; }
+        .item-data { font-size: 14px; font-weight: 600; color: #fff; }
+        .item-detalhe { font-size: 12px; color: #94a3b8; }
         .item-direita { font-size: 14px; font-weight: 600; color: #60a5fa; }
         .vazio { text-align: center; padding: 40px 20px; color: #64748b; font-size: 14px; }
         .fundo-modal {
@@ -217,47 +209,38 @@
     <div class="conteudo">
         <div class="cabecalho">
             <div class="titulo-grupo">
-                <h1 class="titulo-pagina">Controle de Ponto</h1>
-                <p class="descricao">Registro e acompanhamento de jornada · Organização Itália</p>
+                <p class="rotulo">Nome</p>
+                <p class="valor" id="exibeNome">—</p>
+                <p class="rotulo">Passaporte</p>
+                <p class="valor" id="exibePassaporte">—</p>
             </div>
             <button class="botao-sair" id="botaoSair">
                 <i class="fas fa-sign-out-alt"></i> Sair
             </button>
         </div>
 
-        <div class="linha-dado">
-            <i class="fas fa-user"></i>
-            <span class="rotulo">Nome:</span>
-            <span class="valor" id="exibeNome">—</span>
-        </div>
-        <div class="linha-dado">
-            <i class="fas fa-id-card"></i>
-            <span class="rotulo">Passaporte:</span>
-            <span class="valor" id="exibePassaporte">—</span>
-        </div>
-
         <div class="grade-cards">
             <div class="card">
-                <div class="card-titulo">Situação Atual <i class="fas fa-clock"></i></div>
-                <div class="card-valor fora-servico" id="exibeSituacao">Fora de Serviço</div>
+                <p class="card-titulo">Situação Atual <i class="fas fa-clock"></i></p>
+                <p class="card-valor" id="exibeSituacao">Fora de Serviço</p>
             </div>
             <div class="card">
-                <div class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></div>
-                <div class="card-valor" id="exibeHoje">0h00</div>
+                <p class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></p>
+                <p class="card-valor" id="exibeHoje">0m</p>
             </div>
             <div class="card">
-                <div class="card-titulo">Pausas Hoje <i class="fas fa-coffee"></i></div>
-                <div class="card-valor" id="exibePausas">0</div>
+                <p class="card-titulo">Pausas Hoje <i class="fas fa-coffee"></i></p>
+                <p class="card-valor" id="exibePausas">0</p>
             </div>
             <div class="card">
-                <div class="card-titulo">Horas Semana <i class="fas fa-calendar-week"></i></div>
-                <div class="card-valor" id="exibeSemana">0h00</div>
+                <p class="card-titulo">Horas Semana <i class="fas fa-calendar-week"></i></p>
+                <p class="card-valor" id="exibeSemana">0m</p>
             </div>
         </div>
 
         <div class="card-abas">
             <div class="navegacao-abas">
-                <div class="aba ativa" data-aba="meu-ponto">Meu ponto</div>
+                <div class="aba ativa" data-aba="meu-ponto">Meu Ponto</div>
                 <div class="aba-separador"></div>
                 <div class="aba" data-aba="historico">Histórico</div>
             </div>
@@ -265,9 +248,8 @@
             <div class="conteudo-aba visivel" id="conteudo-meu-ponto">
                 <div class="cronometro-bloco">
                     <div class="tempo-central" id="tempo">00:00:00</div>
-                    <div class="legenda-tempo">Tempo trabalhado hoje</div>
+                    <p class="legenda-tempo">Tempo trabalhado hoje</p>
                     <div class="botoes-cronometro" id="areaBotoes">
-                        <!-- Botão vai funcionar na Parte 2 -->
                         <button class="botao-acao iniciar" id="btnIniciar">
                             <i class="fas fa-play"></i> Iniciar Jornada
                         </button>
@@ -283,9 +265,9 @@
 
     <div class="fundo-modal" id="modalSair">
         <div class="caixa-modal">
-            <div class="icone-modal"><i class="fas fa-question"></i></div>
-            <h3 class="titulo-modal">Deseja mesmo sair?</h3>
-            <p class="texto-modal">Você será redirecionado para o painel da Organização Itália.</p>
+            <div class="icone-modal"><i class="fas fa-question-circle"></i></div>
+            <h3 class="titulo-modal">Sair da conta?</h3>
+            <p class="texto-modal">Tem certeza que deseja encerrar sua sessão?</p>
             <div class="botoes-modal">
                 <button class="botao-cancelar" id="botaoCancelar">Cancelar</button>
                 <button class="botao-confirmar" id="botaoConfirmarSaida">Sair</button>
@@ -300,8 +282,6 @@
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
         <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
     </nav>
-
-    <!-- PARTE 2 — Código de funcionamento em seguida -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
@@ -325,9 +305,14 @@
             const s = Math.floor(segundos % 60);
             return `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
         }
+
         function formatarHoras(segundos) {
             const h = Math.floor(segundos / 3600);
             const m = Math.floor((segundos % 3600) / 60);
+            
+            if (h === 0) {
+                return `${m}m`;
+            }
             return `${h}h${m.toString().padStart(2,'0')}`;
         }
 
@@ -350,6 +335,7 @@
                 historico: estado.historico
             }));
         }
+
         function carregarEstado() {
             const salvo = localStorage.getItem('ponto_estado');
             if (salvo) {
@@ -383,11 +369,13 @@
             salvarEstado();
             atualizarInterface();
         }
+
         function pausarJornada() {
             estado.inicioPausa = new Date();
             salvarEstado();
             atualizarInterface();
         }
+
         function retomarJornada() {
             if (estado.inicioPausa) {
                 estado.tempoPausado += Math.floor((Date.now() - estado.inicioPausa.getTime()) / 1000);
@@ -396,6 +384,7 @@
             salvarEstado();
             atualizarInterface();
         }
+
         function encerrarJornada() {
             const duracao = tempoTranscorrido();
             if (duracao > 0) {
@@ -420,9 +409,8 @@
             if (!estado.emJornada) {
                 areaBotoes.innerHTML = `<button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>`;
                 exibeSituacao.textContent = 'Fora de Serviço';
-                exibeSituacao.className = 'card-valor fora-servico';
                 tempoEl.textContent = '00:00:00';
-                exibeHoje.textContent = '0h00';
+                exibeHoje.textContent = '0m';
                 exibePausas.textContent = '0';
                 document.getElementById('btnIniciar').addEventListener('click', iniciarJornada);
             } else if (!estado.inicioPausa) {
@@ -431,8 +419,10 @@
                     <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
                 exibeSituacao.textContent = 'Em Jornada';
-                exibeSituacao.className = 'card-valor em-jornada';
-                document.getElementById('btnPausar').addEventListener('click', () => { estado.totalPausas++; pausarJornada(); });
+                document.getElementById('btnPausar').addEventListener('click', () => {
+                    estado.totalPausas++;
+                    pausarJornada();
+                });
                 document.getElementById('btnEncerrar').addEventListener('click', encerrarJornada);
             } else {
                 areaBotoes.innerHTML = `
@@ -440,10 +430,10 @@
                     <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
                 exibeSituacao.textContent = 'Em Pausa';
-                exibeSituacao.className = 'card-valor em-pausa';
                 document.getElementById('btnRetomar').addEventListener('click', retomarJornada);
                 document.getElementById('btnEncerrar').addEventListener('click', encerrarJornada);
             }
+            exibePausas.textContent = estado.totalPausas;
         }
 
         function renderizarHistorico() {
@@ -454,10 +444,10 @@
             listaHistorico.innerHTML = estado.historico.map(item => `
                 <div class="item-historico">
                     <div class="item-esquerda">
-                        <span class="item-titulo">${item.data}</span>
-                        <span class="item-sub">Entrada: ${item.entrada} · Saída: ${item.saida} · Pausas: ${item.pausas}</span>
+                        <p class="item-data">${item.data}</p>
+                        <p class="item-detalhe">Entrada: ${item.entrada} · Saída: ${item.saida} · Pausas: ${item.pausas}</p>
                     </div>
-                    <div class="item-direita">${formatarHoras(item.duracao)}</div>
+                    <p class="item-direita">${formatarHoras(item.duracao)}</p>
                 </div>
             `).join('');
         }
@@ -505,8 +495,9 @@
 
         setInterval(() => {
             if (estado.emJornada && !estado.inicioPausa) {
-                tempoEl.textContent = formatarTempo(tempoTranscorrido());
-                exibeHoje.textContent = formatarHoras(tempoTranscorrido());
+                const decorrido = tempoTranscorrido();
+                tempoEl.textContent = formatarTempo(decorrido);
+                exibeHoje.textContent = formatarHoras(decorrido);
             }
         }, 1000);
 
