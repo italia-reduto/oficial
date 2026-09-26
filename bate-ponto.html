@@ -48,13 +48,32 @@
         }
 
         .conteudo { position: relative; z-index: 1; padding: 24px; }
+        
         .cabecalho {
             display: flex; align-items: flex-start; justify-content: space-between;
-            margin-bottom: 24px;
+            margin-bottom: 28px;
         }
-        .titulo-grupo { flex: 1; }
-        .rotulo { font-size: 13px; color: #94a3b8; }
-        .valor { font-size: 18px; color: #fff; font-weight: 600; margin-bottom: 12px; }
+        .titulo-secao {
+            margin-bottom: 4px;
+        }
+        .titulo-secao h1 {
+            font-size: 22px; font-weight: 700; color: #fff;
+        }
+        .titulo-secao p {
+            font-size: 13px; color: #94a3b8; margin-bottom: 16px;
+        }
+        .linha-dado {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+        }
+        .linha-dado i {
+            color: #60a5fa; font-size: 16px; width: 20px; text-align: center;
+        }
+        .linha-dado .rotulo {
+            font-size: 14px; color: #94a3b8;
+        }
+        .linha-dado .valor {
+            font-size: 16px; font-weight: 600; color: #fff;
+        }
         .botao-sair {
             display: flex; align-items: center; gap: 6px;
             background: rgba(239, 68, 68, 0.15);
@@ -68,9 +87,10 @@
             border-color: rgba(239, 68, 68, 0.5);
             transform: translateY(-1px);
         }
+
         .grade-cards {
             display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 14px; margin-top: 24px;
+            gap: 14px; margin-bottom: 24px;
         }
         .card {
             background: rgba(15, 23, 42, 0.55);
@@ -81,49 +101,48 @@
         .card-titulo {
             font-size: 13px; color: #94a3b8; font-weight: 500;
             display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 8px;
         }
         .card-titulo i { font-size: 14px; color: #60a5fa; }
         .card-valor { 
-            font-size: 20px; font-weight: 700; margin-top: 8px;
-            color: #ffffff;
+            font-size: 20px; font-weight: 700; color: #ffffff;
         }
+
         .card-abas {
             background: rgba(15, 23, 42, 0.55);
             border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px; padding: 15px 18px;
-            margin-top: 24px; width: 100%;
+            border-radius: 14px; padding: 18px;
             backdrop-filter: blur(8px);
         }
         .navegacao-abas {
-            display: flex; align-items: center; justify-content: space-between;
-            margin-bottom: 12px;
+            display: flex; gap: 10px; margin-bottom: 20px;
         }
         .aba {
-            flex: 1; text-align: center; padding: 8px 0;
+            flex: 1; text-align: center; padding: 10px 0;
             font-size: 15px; font-weight: 500; color: #94a3b8;
-            cursor: pointer; border-radius: 8px; transition: all 0.25s ease;
+            cursor: pointer; border-radius: 10px; transition: all 0.25s ease;
             user-select: none;
         }
         .aba.ativa {
             color: #fff; background: rgba(96, 165, 250, 0.15);
             font-weight: 600;
         }
-        .aba-separador {
-            width: 1px; height: 18px;
-            background: rgba(96, 165, 250, 0.15);
-        }
         .conteudo-aba {
-            display: none; padding: 10px 5px 5px; min-height: 200px;
+            display: none; min-height: 220px;
         }
         .conteudo-aba.visivel { display: block; }
-        .cronometro-bloco { text-align: center; padding: 10px 5px 20px; }
+
+        .cronometro-bloco { text-align: center; padding: 20px 10px; }
         .tempo-central {
-            font-size: 40px; font-weight: 700; color: #fff;
-            margin-bottom: 10px; letter-spacing: 2px;
+            font-size: 48px; font-weight: 700; color: #fff;
+            margin-bottom: 8px; letter-spacing: 1px;
             font-variant-numeric: tabular-nums;
         }
-        .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 20px; }
-        .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; }
+        .tempo-central .milessimos {
+            font-size: 28px; color: #94a3b8;
+        }
+        .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+        .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
         .botao-acao {
             width: 100%; padding: 15px; border: none; border-radius: 12px;
             font-size: 16px; font-weight: 700; cursor: pointer;
@@ -136,20 +155,19 @@
         .botao-acao.retomar { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .botao-acao.encerrar { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
         .botao-acao:hover { transform: translateY(-2px); }
-        .botao-acao.iniciar:hover { box-shadow: 0 8px 24px rgba(59,130,246,0.3); }
-        .botao-acao.pausar:hover { box-shadow: 0 8px 24px rgba(245,158,11,0.3); }
-        .botao-acao.retomar:hover { box-shadow: 0 8px 24px rgba(16,185,129,0.3); }
-        .botao-acao.encerrar:hover { box-shadow: 0 8px 24px rgba(239,68,68,0.3); }
+
         .item-historico {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 12px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
+            padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
         }
         .item-historico:last-child { border-bottom: none; padding-bottom: 0; }
-        .item-esquerda { display: flex; flex-direction: column; gap: 2px; }
-        .item-data { font-size: 14px; font-weight: 600; color: #fff; }
-        .item-detalhe { font-size: 12px; color: #94a3b8; }
-        .item-direita { font-size: 14px; font-weight: 600; color: #60a5fa; }
+        .item-cabecalho {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+        }
+        .item-data { font-size: 15px; font-weight: 600; color: #fff; }
+        .item-duracao { font-size: 15px; font-weight: 700; color: #60a5fa; }
+        .item-detalhe { font-size: 13px; color: #94a3b8; line-height: 1.5; }
         .vazio { text-align: center; padding: 40px 20px; color: #64748b; font-size: 14px; }
+
         .fundo-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.75);
             backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center;
@@ -185,7 +203,8 @@
             color: #fff; border-radius: 12px; font-size: 15px; font-weight: 600;
             cursor: pointer; transition: all 0.25s ease; user-select: none;
         }
-        .botao-confirmar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(239,68,68,0.3); }
+        .botao-confirmar:hover { transform: translateY(-1px); }
+
         .barra-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
             background: #000; display: flex; align-items: center; justify-content: space-around;
@@ -208,11 +227,21 @@
 
     <div class="conteudo">
         <div class="cabecalho">
-            <div class="titulo-grupo">
-                <p class="rotulo">Nome</p>
-                <p class="valor" id="exibeNome">—</p>
-                <p class="rotulo">Passaporte</p>
-                <p class="valor" id="exibePassaporte">—</p>
+            <div>
+                <div class="titulo-secao">
+                    <h1>Controle de Ponto</h1>
+                    <p>Acompanhe sua jornada e seu histórico</p>
+                </div>
+                <div class="linha-dado">
+                    <i class="fas fa-user"></i>
+                    <span class="rotulo">Nome:</span>
+                    <span class="valor" id="exibeNome">—</span>
+                </div>
+                <div class="linha-dado">
+                    <i class="fas fa-id-card"></i>
+                    <span class="rotulo">Passaporte:</span>
+                    <span class="valor" id="exibePassaporte">—</span>
+                </div>
             </div>
             <button class="botao-sair" id="botaoSair">
                 <i class="fas fa-sign-out-alt"></i> Sair
@@ -221,7 +250,7 @@
 
         <div class="grade-cards">
             <div class="card">
-                <p class="card-titulo">Situação Atual <i class="fas fa-clock"></i></p>
+                <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
                 <p class="card-valor" id="exibeSituacao">Fora de Serviço</p>
             </div>
             <div class="card">
@@ -229,11 +258,11 @@
                 <p class="card-valor" id="exibeHoje">0m</p>
             </div>
             <div class="card">
-                <p class="card-titulo">Pausas Hoje <i class="fas fa-coffee"></i></p>
+                <p class="card-titulo">Pausas <i class="fas fa-coffee"></i></p>
                 <p class="card-valor" id="exibePausas">0</p>
             </div>
             <div class="card">
-                <p class="card-titulo">Horas Semana <i class="fas fa-calendar-week"></i></p>
+                <p class="card-titulo">Semana <i class="fas fa-calendar-week"></i></p>
                 <p class="card-valor" id="exibeSemana">0m</p>
             </div>
         </div>
@@ -241,14 +270,16 @@
         <div class="card-abas">
             <div class="navegacao-abas">
                 <div class="aba ativa" data-aba="meu-ponto">Meu Ponto</div>
-                <div class="aba-separador"></div>
                 <div class="aba" data-aba="historico">Histórico</div>
             </div>
 
             <div class="conteudo-aba visivel" id="conteudo-meu-ponto">
                 <div class="cronometro-bloco">
-                    <div class="tempo-central" id="tempo">00:00:00</div>
-                    <p class="legenda-tempo">Tempo trabalhado hoje</p>
+                    <div class="tempo-central">
+                        <span id="tempoPrincipal">00:00:00</span>
+                        <span class="milessimos" id="tempoMilesimos">.00</span>
+                    </div>
+                    <p class="legenda-tempo">Tempo de jornada</p>
                     <div class="botoes-cronometro" id="areaBotoes">
                         <button class="botao-acao iniciar" id="btnIniciar">
                             <i class="fas fa-play"></i> Iniciar Jornada
@@ -294,33 +325,41 @@
         const exibeSituacao = document.getElementById('exibeSituacao');
         const exibeHoje = document.getElementById('exibeHoje');
         const exibePausas = document.getElementById('exibePausas');
-        const tempoEl = document.getElementById('tempo');
+        const tempoPrincipal = document.getElementById('tempoPrincipal');
+        const tempoMilesimos = document.getElementById('tempoMilesimos');
         const areaBotoes = document.getElementById('areaBotoes');
         const listaHistorico = document.getElementById('listaHistorico');
         const modalSair = document.getElementById('modalSair');
 
-        function formatarTempo(segundos) {
+        function formatarTempoComMilesimos(segundosTotais) {
+            const h = Math.floor(segundosTotais / 3600);
+            const m = Math.floor((segundosTotais % 3600) / 60);
+            const s = Math.floor(segundosTotais % 60);
+            const ms = Math.floor((segundosTotais % 1) * 100);
+            return {
+                principal: `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0'),
+                milesimos: '.' + `${ms}`.padStart(2,'0')
+            };
+        }
+
+        function formatarDuracao(segundos) {
             const h = Math.floor(segundos / 3600);
             const m = Math.floor((segundos % 3600) / 60);
             const s = Math.floor(segundos % 60);
-            return `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
-        }
-
-        function formatarHoras(segundos) {
-            const h = Math.floor(segundos / 3600);
-            const m = Math.floor((segundos % 3600) / 60);
-            
-            if (h === 0) {
-                return `${m}m`;
+            if (h > 0) {
+                return `${h}h${m.toString().padStart(2,'0')}m${s.toString().padStart(2,'0')}s`;
+            } else if (m > 0) {
+                return `${m}m${s.toString().padStart(2,'0')}s`;
+            } else {
+                return `${s}s`;
             }
-            return `${h}h${m.toString().padStart(2,'0')}`;
         }
 
         let estado = {
             emJornada: false,
             inicioJornada: null,
             inicioPausa: null,
-            tempoPausado: 0,
+            tempoPausadoTotal: 0,
             totalPausas: 0,
             historico: []
         };
@@ -330,7 +369,7 @@
                 emJornada: estado.emJornada,
                 inicioJornada: estado.inicioJornada?.toISOString() || null,
                 inicioPausa: estado.inicioPausa?.toISOString() || null,
-                tempoPausado: estado.tempoPausado,
+                tempoPausadoTotal: estado.tempoPausadoTotal,
                 totalPausas: estado.totalPausas,
                 historico: estado.historico
             }));
@@ -343,19 +382,19 @@
                 estado.emJornada = s.emJornada;
                 estado.inicioJornada = s.inicioJornada ? new Date(s.inicioJornada) : null;
                 estado.inicioPausa = s.inicioPausa ? new Date(s.inicioPausa) : null;
-                estado.tempoPausado = s.tempoPausado || 0;
+                estado.tempoPausadoTotal = s.tempoPausadoTotal || 0;
                 estado.totalPausas = s.totalPausas || 0;
                 estado.historico = s.historico || [];
             }
         }
 
-        function tempoTranscorrido() {
+        function tempoAtualDecimais() {
             if (!estado.emJornada || !estado.inicioJornada) return 0;
-            let decorrido = Math.floor((Date.now() - estado.inicioJornada.getTime()) / 1000);
+            let decorrido = (Date.now() - estado.inicioJornada.getTime()) / 1000;
             if (estado.inicioPausa) {
-                decorrido -= Math.floor((Date.now() - estado.inicioPausa.getTime()) / 1000);
+                decorrido -= (Date.now() - estado.inicioPausa.getTime()) / 1000;
             } else {
-                decorrido -= estado.tempoPausado;
+                decorrido -= estado.tempoPausadoTotal;
             }
             return Math.max(0, decorrido);
         }
@@ -363,7 +402,7 @@
         function iniciarJornada() {
             estado.emJornada = true;
             estado.inicioJornada = new Date();
-            estado.tempoPausado = 0;
+            estado.tempoPausadoTotal = 0;
             estado.totalPausas = 0;
             estado.inicioPausa = null;
             salvarEstado();
@@ -372,13 +411,14 @@
 
         function pausarJornada() {
             estado.inicioPausa = new Date();
+            estado.totalPausas++;
             salvarEstado();
             atualizarInterface();
         }
 
         function retomarJornada() {
             if (estado.inicioPausa) {
-                estado.tempoPausado += Math.floor((Date.now() - estado.inicioPausa.getTime()) / 1000);
+                estado.tempoPausadoTotal += (Date.now() - estado.inicioPausa.getTime()) / 1000;
                 estado.inicioPausa = null;
             }
             salvarEstado();
@@ -386,12 +426,13 @@
         }
 
         function encerrarJornada() {
-            const duracao = tempoTranscorrido();
+            const duracao = tempoAtualDecimais();
             if (duracao > 0) {
                 estado.historico.unshift({
-                    data: new Date().toLocaleDateString('pt-BR'),
-                    entrada: estado.inicioJornada.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                    saida: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                    data: new Date().toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit', year: '2-digit' }).toUpperCase(),
+                    dataSimples: new Date().toLocaleDateString('pt-BR'),
+                    entrada: estado.inicioJornada.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+                    saida: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
                     duracao: duracao,
                     pausas: estado.totalPausas
                 });
@@ -399,7 +440,7 @@
             estado.emJornada = false;
             estado.inicioJornada = null;
             estado.inicioPausa = null;
-            estado.tempoPausado = 0;
+            estado.tempoPausadoTotal = 0;
             salvarEstado();
             atualizarInterface();
             renderizarHistorico();
@@ -409,9 +450,9 @@
             if (!estado.emJornada) {
                 areaBotoes.innerHTML = `<button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>`;
                 exibeSituacao.textContent = 'Fora de Serviço';
-                tempoEl.textContent = '00:00:00';
+                tempoPrincipal.textContent = '00:00:00';
+                tempoMilesimos.textContent = '.00';
                 exibeHoje.textContent = '0m';
-                exibePausas.textContent = '0';
                 document.getElementById('btnIniciar').addEventListener('click', iniciarJornada);
             } else if (!estado.inicioPausa) {
                 areaBotoes.innerHTML = `
@@ -419,10 +460,7 @@
                     <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
                 exibeSituacao.textContent = 'Em Jornada';
-                document.getElementById('btnPausar').addEventListener('click', () => {
-                    estado.totalPausas++;
-                    pausarJornada();
-                });
+                document.getElementById('btnPausar').addEventListener('click', pausarJornada);
                 document.getElementById('btnEncerrar').addEventListener('click', encerrarJornada);
             } else {
                 areaBotoes.innerHTML = `
@@ -438,16 +476,18 @@
 
         function renderizarHistorico() {
             if (estado.historico.length === 0) {
-                listaHistorico.innerHTML = `<div class="vazio">Nenhum registro ainda</div>`;
+                listaHistorico.innerHTML = `<div class="vazio">Nenhum registro de jornada ainda</div>`;
                 return;
             }
             listaHistorico.innerHTML = estado.historico.map(item => `
                 <div class="item-historico">
-                    <div class="item-esquerda">
-                        <p class="item-data">${item.data}</p>
-                        <p class="item-detalhe">Entrada: ${item.entrada} · Saída: ${item.saida} · Pausas: ${item.pausas}</p>
+                    <div class="item-cabecalho">
+                        <span class="item-data">${item.data}</span>
+                        <span class="item-duracao">${formatarDuracao(item.duracao)}</span>
                     </div>
-                    <p class="item-direita">${formatarHoras(item.duracao)}</p>
+                    <div class="item-detalhe">
+                        Entrada: ${item.entrada} · Saída: ${item.saida} · Pausas: ${item.pausas}
+                    </div>
                 </div>
             `).join('');
         }
@@ -495,11 +535,13 @@
 
         setInterval(() => {
             if (estado.emJornada && !estado.inicioPausa) {
-                const decorrido = tempoTranscorrido();
-                tempoEl.textContent = formatarTempo(decorrido);
-                exibeHoje.textContent = formatarHoras(decorrido);
+                const decorrido = tempoAtualDecimais();
+                const tempoFormatado = formatarTempoComMilesimos(decorrido);
+                tempoPrincipal.textContent = tempoFormatado.principal;
+                tempoMilesimos.textContent = tempoFormatado.milesimos;
+                exibeHoje.textContent = formatarDuracao(decorrido);
             }
-        }, 1000);
+        }, 50);
 
         carregarEstado();
         atualizarInterface();
