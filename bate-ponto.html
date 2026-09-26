@@ -12,123 +12,514 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
+        *:focus, *:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
         html, body {
             min-height: 100vh;
             font-family: 'Inter', sans-serif;
             color: #ffffff;
             padding-bottom: 80px;
         }
-
-        /* ===== FUNDO ===== */
         .fundo-pagina {
-            position: fixed;
-            inset: 0;
-            background: 
-                linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
             z-index: -2;
         }
-
         .fundo-imagem {
-            position: fixed;
-            inset: 0;
+            position: fixed; inset: 0;
             background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.18;
-            z-index: -1;
+            opacity: 0.18; z-index: -1;
         }
-
         .fundo-degrade {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(to bottom, 
-                rgba(0,0,0,0.4) 0%, 
-                rgba(0,0,0,0.85) 60%,
-                rgba(0,0,0,1) 100%);
+            position: fixed; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
             z-index: -1;
         }
-
-        .conteudo {
-            position: relative;
-            z-index: 1;
-            padding: 24px;
+        .conteudo { position: relative; z-index: 1; padding: 24px; }
+        .cabecalho {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            margin-bottom: 24px;
         }
-
-        .titulo-pagina {
-            font-size: 26px;
-            font-weight: 700;
-            margin-bottom: 8px;
+        .titulo-grupo { flex: 1; }
+        .titulo-pagina { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
+        .descricao { font-size: 14px; color: #94a3b8; }
+        .botao-sair {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5; padding: 10px 14px; border-radius: 10px;
+            font-size: 14px; font-weight: 500; cursor: pointer;
+            transition: all 0.25s ease; white-space: nowrap; user-select: none;
         }
-
-        .subtitulo {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 32px;
+        .botao-sair:hover, .botao-sair:active {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: translateY(-1px);
         }
-
-        /* ===== MENU INFERIOR ===== */
+        .linha-dado { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+        .linha-dado:last-child { margin-bottom: 0; }
+        .linha-dado i { font-size: 16px; color: #60a5fa; width: 20px; text-align: center; }
+        .rotulo { font-size: 14px; color: #94a3b8; }
+        .valor { font-size: 15px; color: #fff; font-weight: 600; }
+        .grade-cards {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 14px; margin-top: 24px;
+        }
+        .card {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 14px; padding: 18px 16px;
+        }
+        .card-titulo {
+            font-size: 13px; color: #94a3b8; font-weight: 500;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-titulo i { font-size: 14px; color: #60a5fa; }
+        .card-valor { font-size: 20px; font-weight: 700; color: #fff; margin-top: 8px; }
+        .card-abas {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 14px; padding: 15px 18px;
+            margin-top: 24px; width: 100%;
+        }
+        .navegacao-abas {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .aba {
+            flex: 1; text-align: center; padding: 8px 0;
+            font-size: 15px; font-weight: 500; color: #94a3b8;
+            cursor: pointer; border-radius: 8px; transition: all 0.25s ease;
+            user-select: none;
+        }
+        .aba.ativa {
+            color: #fff; background: rgba(96, 165, 250, 0.15);
+            font-weight: 600;
+        }
+        .aba-separador {
+            width: 1px; height: 18px;
+            background: rgba(96, 165, 250, 0.15);
+        }
+        .conteudo-aba {
+            display: none; padding: 10px 5px 5px; min-height: 200px;
+        }
+        .conteudo-aba.visivel { display: block; }
+        .cronometro-bloco { text-align: center; padding: 10px 5px 20px; }
+        .tempo-central {
+            font-size: 40px; font-weight: 700; color: #fff;
+            margin-bottom: 10px; letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+        .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+        .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; }
+        .botao-acao {
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; transition: all 0.3s ease; color: #fff;
+            user-select: none;
+        }
+        .botao-acao.iniciar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .botao-acao.pausar { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .botao-acao.retomar { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .botao-acao.encerrar { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .botao-acao:hover { transform: translateY(-2px); }
+        .botao-acao.iniciar:hover { box-shadow: 0 8px 24px rgba(59,130,246,0.3); }
+        .botao-acao.pausar:hover { box-shadow: 0 8px 24px rgba(245,158,11,0.3); }
+        .botao-acao.retomar:hover { box-shadow: 0 8px 24px rgba(16,185,129,0.3); }
+        .botao-acao.encerrar:hover { box-shadow: 0 8px 24px rgba(239,68,68,0.3); }
+        .linha-botoes { display: flex; gap: 10px; }
+        .linha-botoes .botao-acao { flex: 1; }
+        .item-historico {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
+        }
+        .item-historico:last-child { border-bottom: none; padding-bottom: 0; }
+        .item-esquerda { display: flex; flex-direction: column; gap: 2px; }
+        .item-titulo { font-size: 14px; font-weight: 600; color: #fff; }
+        .item-sub { font-size: 12px; color: #94a3b8; }
+        .item-direita { font-size: 14px; font-weight: 600; color: #60a5fa; }
+        .vazio { text-align: center; padding: 40px 20px; color: #64748b; font-size: 14px; }
+        .fundo-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center;
+            z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px;
+        }
+        .fundo-modal.visivel { opacity: 1; visibility: visible; }
+        .caixa-modal {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid rgba(96,165,250,0.2); border-radius: 18px;
+            padding: 32px 28px; max-width: 360px; width: 100%; text-align: center;
+            transform: translateY(10px); transition: transform 0.3s ease;
+        }
+        .fundo-modal.visivel .caixa-modal { transform: translateY(0); }
+        .icone-modal {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: rgba(239,68,68,0.15); display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .icone-modal i { font-size: 24px; color: #f87171; }
+        .titulo-modal { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .texto-modal { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.5; }
+        .botoes-modal { display: flex; gap: 12px; }
+        .botao-cancelar {
+            flex: 1; padding: 14px; border: 1px solid rgba(96,165,250,0.2);
+            background: transparent; color: #94a3b8; border-radius: 12px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: all 0.25s ease; user-select: none;
+        }
+        .botao-cancelar:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .botao-confirmar {
+            flex: 1; padding: 14px; border: none;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: #fff; border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all 0.25s ease; user-select: none;
+        }
+        .botao-confirmar:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(239,68,68,0.3); }
         .barra-menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid rgba(96, 165, 250, 0.15);
-            z-index: 100;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: #000; display: flex; align-items: center; justify-content: space-around;
+            border-top: 1px solid rgba(96,165,250,0.15); z-index: 100;
         }
-        
         .menu-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 11px;
-            cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #94a3b8; text-decoration: none; font-size: 11px;
+            cursor: pointer; transition: color 0.2s ease; user-select: none;
         }
-        
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
     </style>
 </head>
 <body>
-
-    <!-- FUNDOS -->
-    <div class="fundo-pagina"></div>
+        <div class="fundo-pagina"></div>
     <div class="fundo-imagem"></div>
     <div class="fundo-degrade"></div>
 
-    <!-- CONTEÚDO -->
     <div class="conteudo">
-        <h1 class="titulo-pagina">Controle de Ponto</h1>
-        <p class="subtitulo">Registro de jornada · Organização Itália</p>
+        <div class="cabecalho">
+            <div class="titulo-grupo">
+                <h1 class="titulo-pagina">Controle de Ponto</h1>
+                <p class="descricao">Registro e acompanhamento de jornada · Organização Itália</p>
+            </div>
+            <button class="botao-sair" id="botaoSair">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
+        </div>
 
-        <!-- Aqui vamos adicionar os botões depois -->
+        <div class="linha-dado">
+            <i class="fas fa-user"></i>
+            <span class="rotulo">Nome:</span>
+            <span class="valor" id="exibeNome">—</span>
+        </div>
+        <div class="linha-dado">
+            <i class="fas fa-id-card"></i>
+            <span class="rotulo">Passaporte:</span>
+            <span class="valor" id="exibePassaporte">—</span>
+        </div>
+
+        <div class="grade-cards">
+            <div class="card">
+                <div class="card-titulo">Situação Atual <i class="fas fa-clock"></i></div>
+                <div class="card-valor" id="exibeSituacao">Fora de Serviço</div>
+            </div>
+            <div class="card">
+                <div class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></div>
+                <div class="card-valor" id="exibeHoje">0h00</div>
+            </div>
+            <div class="card">
+                <div class="card-titulo">Pausas Hoje <i class="fas fa-coffee"></i></div>
+                <div class="card-valor" id="exibePausas">0</div>
+            </div>
+            <div class="card">
+                <div class="card-titulo">Horas Semana <i class="fas fa-calendar-week"></i></div>
+                <div class="card-valor" id="exibeSemana">0h00</div>
+            </div>
+        </div>
+
+        <div class="card-abas">
+            <div class="navegacao-abas">
+                <div class="aba ativa" data-aba="meu-ponto">Meu ponto</div>
+                <div class="aba-separador"></div>
+                <div class="aba" data-aba="historico">Histórico</div>
+            </div>
+
+            <div class="conteudo-aba visivel" id="conteudo-meu-ponto">
+                <div class="cronometro-bloco">
+                    <div class="tempo-central" id="tempo">00:00:00</div>
+                    <div class="legenda-tempo">Tempo trabalhado hoje</div>
+                    <div class="botoes-cronometro" id="areaBotoes">
+                        <button class="botao-acao iniciar" id="btnIniciar">
+                            <i class="fas fa-play"></i> Iniciar Jornada
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="conteudo-aba" id="conteudo-historico">
+                <div id="listaHistorico"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- MENU -->
-    <nav class="barra-menu">
-        <a href="painel.html" class="menu-item">
-            <i class="fas fa-home"></i><span>Painel</span>
-        </a>
-        <a href="bate-ponto.html" class="menu-item ativo">
-            <i class="fas fa-clock"></i><span>Ponto</span>
-        </a>
-        <a href="equipe.html" class="menu-item">
-            <i class="fas fa-clipboard-list"></i><span>Equipe</span>
-        </a>
-        <a href="tickets.html" class="menu-item">
-            <i class="fas fa-file-alt"></i><span>Tickets</span>
-        </a>
-        <a href="#" class="menu-item">
-            <i class="fas fa-ellipsis-h"></i><span>Mais</span>
-        </a>
-    </nav>
+    <div class="fundo-modal" id="modalSair">
+        <div class="caixa-modal">
+            <div class="icone-modal"><i class="fas fa-question"></i></div>
+            <h3 class="titulo-modal">Deseja mesmo sair?</h3>
+            <p class="texto-modal">Você será redirecionado para o painel da Organização Itália.</p>
+            <div class="botoes-modal">
+                <button class="botao-cancelar" id="botaoCancelar">Cancelar</button>
+                <button class="botao-confirmar" id="botaoConfirmarSaida">Sair</button>
+            </div>
+        </div>
+    </div>
 
+    <nav class="barra-menu">
+        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
+        <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="menu-item"><i class="fas fa-clipboard-list"></i><span>Equipe</span></a>
+        <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
+        <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
+    </nav>
+        <script>
+        // ========== CONEXÃO SUPABASE ==========
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ========== ELEMENTOS ==========
+        const exibeNome = document.getElementById('exibeNome');
+        const exibePassaporte = document.getElementById('exibePassaporte');
+        const exibeSituacao = document.getElementById('exibeSituacao');
+        const exibeHoje = document.getElementById('exibeHoje');
+        const exibePausas = document.getElementById('exibePausas');
+        const exibeSemana = document.getElementById('exibeSemana');
+        const tempo = document.getElementById('tempo');
+        const areaBotoes = document.getElementById('areaBotoes');
+        const listaHistorico = document.getElementById('listaHistorico');
+        
+        // ========== MODAL SAIR ==========
+        const modalSair = document.getElementById('modalSair');
+        document.getElementById('botaoSair').onclick = () => modalSair.classList.add('aberto');
+        document.getElementById('botaoCancelar').onclick = () => modalSair.classList.remove('aberto');
+        document.getElementById('botaoConfirmarSaida').onclick = () => {
+            window.location.href = 'painel.html';
+        };
+
+        // ========== ABA NAVEGAÇÃO ==========
+        document.querySelectorAll('.aba').forEach(aba => {
+            aba.onclick = () => {
+                document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+                document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('visivel'));
+                aba.classList.add('ativa');
+                document.getElementById(`conteudo-${aba.dataset.aba}`).classList.add('visivel');
+            };
+        });
+
+        // ========== FORMATAÇÃO DE TEMPO ==========
+        function formatarTempo(segundos) {
+            const h = Math.floor(segundos / 3600);
+            const m = Math.floor((segundos % 3600) / 60);
+            const s = Math.floor(segundos % 60);
+            return `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
+        }
+
+        function formatarHoras(segundos) {
+            const h = Math.floor(segundos / 3600);
+            const m = Math.floor((segundos % 3600) / 60);
+            return `${h}h${m.toString().padStart(2,'0')}`;
+        }
+
+        // ========== DADOS DO USUÁRIO ==========
+        async function carregarDadosUsuario() {
+            const passaporteSalvo = localStorage.getItem('passaporte');
+            if (!passaporteSalvo) {
+                exibeNome.textContent = 'Não identificado';
+                exibePassaporte.textContent = '—';
+                return;
+            }
+
+            const { data, error } = await sb
+                .from('membros')
+                .select('nome, passaporte, cargo')
+                .eq('passaporte', passaporteSalvo)
+                .single();
+
+            if (data && !error) {
+                exibeNome.textContent = data.nome;
+                exibePassaporte.textContent = data.passaporte;
+            } else {
+                exibeNome.textContent = 'Membro';
+                exibePassaporte.textContent = passaporteSalvo;
+            }
+        }
+
+        // ========== SISTEMA DE PONTO COM PERSISTÊNCIA ==========
+        let estado = {
+            emJornada: false,
+            inicioJornada: null,
+            inicioPausa: null,
+            totalPausas: 0,
+            tempoPausado: 0,
+            historico: []
+        };
+
+        function carregarEstado() {
+            const salvo = localStorage.getItem('ponto_estado');
+            if (salvo) {
+                const parseado = JSON.parse(salvo);
+                estado = { ...estado, ...parseado };
+                if (estado.inicioJornada) estado.inicioJornada = new Date(estado.inicioJornada);
+                if (estado.inicioPausa) estado.inicioPausa = new Date(estado.inicioPausa);
+            }
+            renderizar();
+            carregarHistorico();
+        }
+
+        function salvarEstado() {
+            localStorage.setItem('ponto_estado', JSON.stringify({
+                ...estado,
+                ultimoAtualizacao: new Date().toISOString()
+            }));
+        }
+
+        function hoje() {
+            return new Date().toISOString().split('T')[0];
+        }
+
+        function tempoHoje() {
+            if (!estado.emJornada || !estado.inicioJornada) return 0;
+            let decorrido = Math.floor((Date.now() - estado.inicioJornada.getTime()) / 1000);
+            decorrido -= estado.tempoPausado;
+            return Math.max(0, decorrido);
+        }
+
+        function iniciarJornada() {
+            estado.emJornada = true;
+            estado.inicioJornada = new Date();
+            estado.tempoPausado = 0;
+            estado.totalPausas = 0;
+            estado.inicioPausa = null;
+            salvarEstado();
+            montarBotoes('rodando');
+        }
+
+        function pausarJornada() {
+            estado.inicioPausa = new Date();
+            salvarEstado();
+            montarBotoes('pausado');
+        }
+
+        function retomarJornada() {
+            if (estado.inicioPausa) {
+                estado.tempoPausado += Math.floor((Date.now() - estado.inicioPausa.getTime()) / 1000);
+                estado.totalPausas++;
+                estado.inicioPausa = null;
+            }
+            salvarEstado();
+            montarBotoes('rodando');
+        }
+
+        function finalizarJornada() {
+            const duracao = tempoHoje();
+            const registro = {
+                data: new Date().toLocaleDateString('pt-BR'),
+                entrada: estado.inicioJornada.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                saida: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                duracao: duracao,
+                pausas: estado.totalPausas
+            };
+            
+            estado.historico.unshift(registro);
+            if (estado.historico.length > 30) estado.historico.pop();
+            
+            estado.emJornada = false;
+            estado.inicioJornada = null;
+            estado.inicioPausa = null;
+            salvarEstado();
+            montarBotoes('parado');
+            carregarHistorico();
+        }
+
+        function montarBotoes(modo) {
+            if (modo === 'parado') {
+                areaBotoes.innerHTML = `<button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>`;
+                document.getElementById('btnIniciar').onclick = iniciarJornada;
+                exibeSituacao.textContent = 'Fora de Serviço';
+                exibeSituacao.style.color = '#f87171';
+            } else if (modo === 'rodando') {
+                areaBotoes.innerHTML = `
+                    <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
+                    <button class="botao-acao finalizar" id="btnFinalizar"><i class="fas fa-stop"></i> Encerrar</button>
+                `;
+                document.getElementById('btnPausar').onclick = pausarJornada;
+                document.getElementById('btnFinalizar').onclick = finalizarJornada;
+                exibeSituacao.textContent = 'Em Jornada';
+                exibeSituacao.style.color = '#4ade80';
+            } else if (modo === 'pausado') {
+                areaBotoes.innerHTML = `
+                    <button class="botao-acao retomar" id="btnRetomar"><i class="fas fa-play"></i> Retomar</button>
+                    <button class="botao-acao finalizar" id="btnFinalizar"><i class="fas fa-stop"></i> Encerrar</button>
+                `;
+                document.getElementById('btnRetomar').onclick = retomarJornada;
+                document.getElementById('btnFinalizar').onclick = finalizarJornada;
+                exibeSituacao.textContent = 'Em Pausa';
+                exibeSituacao.style.color = '#facc15';
+            }
+        }
+
+        function renderizar() {
+            if (estado.emJornada) {
+                montarBotoes(estado.inicioPausa ? 'pausado' : 'rodando');
+            } else {
+                montarBotoes('parado');
+            }
+        }
+
+        function carregarHistorico() {
+            listaHistorico.innerHTML = '';
+            if (estado.historico.length === 0) {
+                listaHistorico.innerHTML = `<p class="sem-registro">Nenhum registro de jornada encontrado.</p>`;
+                return;
+            }
+            estado.historico.forEach(reg => {
+                listaHistorico.innerHTML += `
+                    <div class="item-historico">
+                        <div class="info-principal">
+                            <span class="data-registro"><i class="fas fa-calendar"></i> ${reg.data}</span>
+                            <span class="horas-registro">${formatarHoras(reg.duracao)}</span>
+                        </div>
+                        <div class="info-detalhes">
+                            <span><i class="fas fa-sign-in-alt"></i> ${reg.entrada}</span>
+                            <span><i class="fas fa-sign-out-alt"></i> ${reg.saida}</span>
+                            <span><i class="fas fa-coffee"></i> ${reg.pausas} pausa(s)</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // ========== ATUALIZAÇÃO EM TEMPO REAL ==========
+        setInterval(() => {
+            if (estado.emJornada && !estado.inicioPausa) {
+                tempo.textContent = formatarTempo(tempoHoje());
+                exibeHoje.textContent = formatarHoras(tempoHoje());
+                exibePausas.textContent = estado.totalPausas;
+            }
+        }, 1000);
+
+        // ========== INICIALIZAÇÃO ==========
+        carregarEstado();
+        carregarDadosUsuario();
+    </script>
 </body>
 </html>
