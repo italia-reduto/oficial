@@ -319,8 +319,9 @@
         let passaporteUsuario = localStorage.getItem('passaporte') || null;
         let nomeUsuario = null;
         let registroAtivo = null;
-        let contagemPausas = 0;
-        let tempoPausadoTotal = 0;
+        let totalPausas = 0;
+        let tempoPausadoAcumulado = 0;
+        let momentoInicioPausa = null;
 
         function formatarTempoComMilesimos(segundosTotais) {
             const h = Math.floor(segundosTotais / 3600);
@@ -343,9 +344,9 @@
             return `${s}s`;
         }
 
-        function calcularSegundosEntre(data1, data2) {
+        function calcularSegundos(data1, data2) {
             if (!data1 || !data2) return 0;
-            return (new Date(data2) - new Date(data1)) / 1000;
+            return Math.max(0, (new Date(data2) - new Date(data1)) / 1000);
         }
 
         async function carregarDadosUsuario() {
@@ -381,6 +382,21 @@
                 .maybeSingle();
             if (error) console.error('Erro ao buscar registro ativo:', error);
             registroAtivo = data;
+            
+            if (registroAtivo) {
+                totalPausas = 0;
+                tempoPausadoAcumulado = 0;
+                momentoInicioPausa = null;
+                
+                if (registroAtivo.pausa_inicio && registroAtivo.pausa_fim) {
+                    tempoPausadoAcumulado += calcularSegundos(registroAtivo.pausa_inicio, registroAtivo.pausa_fim);
+                    totalPausas = 1;
+                }
+                else if (registroAtivo.pausa_inicio && !registroAtivo.pausa_fim) {
+                    momentoInicioPausa = new Date(registroAtivo.pausa_inicio);
+                    totalPausas = 1;
+                }
+            }
             return data;
         }
 
@@ -399,18 +415,20 @@
             return data || [];
         }
 
-        function calcularTempoJornada(registro) {
+        function calcularTempoLiquido(registro) {
             if (!registro) return 0;
-            let total = 0;
             const entrada = new Date(registro.entrada);
-            const saida = registro.saida ? new Date(registro.saida) : new Date();
-            total = (saida - entrada) / 1000;
+            const agoraOuSaida = registro.saida ? new Date(registro.saida) : new Date();
+            let totalBruto = (agoraOuSaida - entrada) / 1000;
+            
             if (registro.pausa_inicio && registro.pausa_fim) {
-                total -= calcularSegundosEntre(registro.pausa_inicio, registro.pausa_fim);
-            } else if (registro.pausa_inicio && !registro.pausa_fim) {
-                total -= calcularSegundosEntre(registro.pausa_inicio, new Date());
+                totalBruto -= calcularSegundos(registro.pausa_inicio, registro.pausa_fim);
             }
-            return Math.max(0, total);
+            else if (registro.pausa_inicio && !registro.pausa_fim) {
+                totalBruto -= calcularSegundos(registro.pausa_inicio, agoraOuSaida);
+            }
+            
+            return Math.max(0, totalBruto);
         }
 
         async function iniciarJornada() {
@@ -420,6 +438,7 @@
                 .select('nome, equipe_id')
                 .eq('passaporte', passaporteUsuario)
                 .single();
+            
             const { data, error } = await sb.from('pontos').insert([{
                 passaporte: passaporteUsuario,
                 nome: membro?.nome || nomeUsuario || 'Membro',
@@ -427,31 +446,37 @@
                 status: 'ativo',
                 equipe_id: membro?.equipe_id || null
             }]).select().single();
+            
             if (error) return console.error('Erro ao iniciar:', error);
             registroAtivo = data;
-            contagemPausas = 0;
-            tempoPausadoTotal = 0;
+            totalPausas = 0;
+            tempoPausadoAcumulado = 0;
+            momentoInicioPausa = null;
             atualizarInterface();
         }
 
         async function pausarJornada() {
             if (!registroAtivo) return;
+            momentoInicioPausa = new Date();
             const { data, error } = await sb.from('pontos')
-                .update({ pausa_inicio: new Date().toISOString() })
+                .update({ pausa_inicio: momentoInicioPausa.toISOString() })
                 .eq('id', registroAtivo.id)
                 .select()
                 .single();
             if (error) return console.error('Erro ao pausar:', error);
             registroAtivo = data;
-            contagemPausas++;
+            totalPausas++;
             atualizarInterface();
         }
 
         async function retomarJornada() {
-            if (!registroAtivo || !registroAtivo.pausa_inicio) return;
-            tempoPausadoTotal += calcularSegundosEntre(registroAtivo.pausa_inicio, new Date());
+            if (!registroAtivo || !momentoInicioPausa) return;
+            const fimPausa = new Date();
+            tempoPausadoAcumulado += calcularSegundos(momentoInicioPausa, fimPausa);
+            momentoInicioPausa = null;
+            
             const { data, error } = await sb.from('pontos')
-                .update({ pausa_fim: new Date().toISOString() })
+                .update({ pausa_fim: fimPausa.toISOString() })
                 .eq('id', registroAtivo.id)
                 .select()
                 .single();
@@ -462,6 +487,11 @@
 
         async function encerrarJornada() {
             if (!registroAtivo) return;
+            if (momentoInicioPausa) {
+                tempoPausadoAcumulado += calcularSegundos(momentoInicioPausa, new Date());
+                momentoInicioPausa = null;
+            }
+            
             const { data, error } = await sb.from('pontos')
                 .update({ saida: new Date().toISOString(), status: 'encerrado' })
                 .eq('id', registroAtivo.id)
@@ -469,10 +499,10 @@
                 .single();
             if (error) return console.error('Erro ao encerrar:', error);
             registroAtivo = null;
-            contagemPausas = 0;
-            tempoPausadoTotal = 0;
+            totalPausas = 0;
+            tempoPausadoAcumulado = 0;
             atualizarInterface();
-            renderizarHistorico();
+            await renderizarHistorico();
         }
 
         function atualizarInterface() {
@@ -487,7 +517,8 @@
                 if (btnIniciar) btnIniciar.addEventListener('click', iniciarJornada);
                 return;
             }
-            if (!registroAtivo.pausa_inicio) {
+            
+            if (!momentoInicioPausa) {
                 areaBotoes.innerHTML = `
                     <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
                     <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
@@ -497,7 +528,7 @@
                 const btnEncerrar = document.getElementById('btnEncerrar');
                 if (btnPausar) btnPausar.addEventListener('click', pausarJornada);
                 if (btnEncerrar) btnEncerrar.addEventListener('click', encerrarJornada);
-            } else if (!registroAtivo.pausa_fim) {
+            } else {
                 areaBotoes.innerHTML = `
                     <button class="botao-acao retomar" id="btnRetomar"><i class="fas fa-play"></i> Retomar</button>
                     <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
@@ -507,18 +538,8 @@
                 const btnEncerrar2 = document.getElementById('btnEncerrar');
                 if (btnRetomar) btnRetomar.addEventListener('click', retomarJornada);
                 if (btnEncerrar2) btnEncerrar2.addEventListener('click', encerrarJornada);
-            } else {
-                areaBotoes.innerHTML = `
-                    <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
-                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
-                `;
-                exibeSituacao.textContent = 'Em Jornada';
-                const btnPausar2 = document.getElementById('btnPausar');
-                const btnEncerrar3 = document.getElementById('btnEncerrar');
-                if (btnPausar2) btnPausar2.addEventListener('click', pausarJornada);
-                if (btnEncerrar3) btnEncerrar3.addEventListener('click', encerrarJornada);
             }
-            exibePausas.textContent = contagemPausas;
+            exibePausas.textContent = totalPausas;
         }
 
         async function renderizarHistorico() {
@@ -531,14 +552,17 @@
             const hoje = new Date().toLocaleDateString('pt-BR');
             const umaSemanaAtras = new Date();
             umaSemanaAtras.setDate(umaSemanaAtras.getDate() - 7);
+            
             listaHistorico.innerHTML = historico.map(item => {
-                const duracao = calcularTempoJornada(item);
+                const duracao = calcularTempoLiquido(item);
                 const dataItem = new Date(item.entrada).toLocaleDateString('pt-BR');
                 if (dataItem === hoje) totalHoje += duracao;
                 if (new Date(item.entrada) >= umaSemanaAtras) totalSemana += duracao;
+                
                 const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }).toUpperCase();
                 const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
                 const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+                
                 return `
                     <div class="item-historico">
                         <div class="item-cabecalho">
@@ -551,6 +575,7 @@
                     </div>
                 `;
             }).join('');
+            
             exibeHoje.textContent = formatarDuracao(totalHoje);
             exibeSemana.textContent = formatarDuracao(totalSemana);
         }
@@ -577,29 +602,23 @@
         });
 
         setInterval(() => {
-            if (registroAtivo && !registroAtivo.pausa_inicio) {
-                const decorrido = calcularTempoJornada({
-                    entrada: registroAtivo.entrada,
-                    pausa_inicio: null,
-                    pausa_fim: null,
-                    saida: null
-                }) - tempoPausadoTotal;
-                const tempoFormatado = formatarTempoComMilesimos(Math.max(0, decorrido));
-                tempoPrincipal.textContent = tempoFormatado.principal;
-                tempoMilesimos.textContent = tempoFormatado.milesimos;
-                exibeHoje.textContent = formatarDuracao(Math.max(0, decorrido));
-            } else if (registroAtivo && registroAtivo.pausa_inicio && !registroAtivo.pausa_fim) {
-                const decorrido = calcularTempoJornada({
-                    entrada: registroAtivo.entrada,
-                    pausa_inicio: registroAtivo.pausa_inicio,
-                    pausa_fim: new Date(),
-                    saida: null
-                });
-                const tempoFormatado = formatarTempoComMilesimos(Math.max(0, decorrido));
-                tempoPrincipal.textContent = tempoFormatado.principal;
-                tempoMilesimos.textContent = tempoFormatado.milesimos;
-                exibeHoje.textContent = formatarDuracao(Math.max(0, decorrido));
+            if (!registroAtivo) return;
+            
+            let tempoDecorrido;
+            if (!momentoInicioPausa) {
+                const entrada = new Date(registroAtivo.entrada);
+                tempoDecorrido = (Date.now() - entrada.getTime()) / 1000 - tempoPausadoAcumulado;
+            } else {
+                tempoDecorrido = (Date.now() - new Date(registroAtivo.entrada).getTime()) / 1000 
+                    - tempoPausadoAcumulado 
+                    - (Date.now() - momentoInicioPausa.getTime()) / 1000;
             }
+            
+            tempoDecorrido = Math.max(0, tempoDecorrido);
+            const tempoFormatado = formatarTempoComMilesimos(tempoDecorrido);
+            tempoPrincipal.textContent = tempoFormatado.principal;
+            tempoMilesimos.textContent = tempoFormatado.milesimos;
+            exibeHoje.textContent = formatarDuracao(tempoDecorrido);
         }, 50);
 
         async function inicializar() {
