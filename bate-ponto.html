@@ -28,22 +28,26 @@
             font-family: 'Inter', sans-serif;
             color: #ffffff;
             padding-bottom: 80px;
+            overflow-x: hidden;
         }
+
+        /* ========== FUNDO LIMPO SEM PARTÍCULAS ========== */
         .fundo-pagina {
             position: fixed; inset: 0;
             background: linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
-            z-index: -2;
+            z-index: -3;
         }
         .fundo-imagem {
             position: fixed; inset: 0;
             background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.18; z-index: -1;
+            opacity: 0.08; z-index: -1;
         }
         .fundo-degrade {
             position: fixed; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
-            z-index: -1;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
+            z-index: 0;
         }
+
         .conteudo { position: relative; z-index: 1; padding: 24px; }
         .cabecalho {
             display: flex; align-items: flex-start; justify-content: space-between;
@@ -60,13 +64,12 @@
             font-size: 14px; font-weight: 500; cursor: pointer;
             transition: all 0.25s ease; white-space: nowrap; user-select: none;
         }
-        .botao-sair:hover, .botao-sair:active {
+        .botao-sair:hover {
             background: rgba(239, 68, 68, 0.25);
             border-color: rgba(239, 68, 68, 0.5);
             transform: translateY(-1px);
         }
         .linha-dado { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .linha-dado:last-child { margin-bottom: 0; }
         .linha-dado i { font-size: 16px; color: #60a5fa; width: 20px; text-align: center; }
         .rotulo { font-size: 14px; color: #94a3b8; }
         .valor { font-size: 15px; color: #fff; font-weight: 600; }
@@ -78,18 +81,26 @@
             background: rgba(15, 23, 42, 0.55);
             border: 1px solid rgba(96, 165, 250, 0.12);
             border-radius: 14px; padding: 18px 16px;
+            backdrop-filter: blur(8px);
         }
         .card-titulo {
             font-size: 13px; color: #94a3b8; font-weight: 500;
             display: flex; align-items: center; justify-content: space-between;
         }
         .card-titulo i { font-size: 14px; color: #60a5fa; }
-        .card-valor { font-size: 20px; font-weight: 700; color: #fff; margin-top: 8px; }
+        .card-valor { 
+            font-size: 20px; font-weight: 700; margin-top: 8px;
+            transition: color 0.3s ease;
+        }
+        .card-valor.fora-servico { color: #ff2222 !important; }
+        .card-valor.em-jornada { color: #4ade80 !important; }
+        .card-valor.em-pausa { color: #facc15 !important; }
         .card-abas {
             background: rgba(15, 23, 42, 0.55);
             border: 1px solid rgba(96, 165, 250, 0.12);
             border-radius: 14px; padding: 15px 18px;
             margin-top: 24px; width: 100%;
+            backdrop-filter: blur(8px);
         }
         .navegacao-abas {
             display: flex; align-items: center; justify-content: space-between;
@@ -137,8 +148,6 @@
         .botao-acao.pausar:hover { box-shadow: 0 8px 24px rgba(245,158,11,0.3); }
         .botao-acao.retomar:hover { box-shadow: 0 8px 24px rgba(16,185,129,0.3); }
         .botao-acao.encerrar:hover { box-shadow: 0 8px 24px rgba(239,68,68,0.3); }
-        .linha-botoes { display: flex; gap: 10px; }
-        .linha-botoes .botao-acao { flex: 1; }
         .item-historico {
             display: flex; align-items: center; justify-content: space-between;
             padding: 12px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
@@ -154,14 +163,14 @@
             backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center;
             z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px;
         }
-        .fundo-modal.visivel { opacity: 1; visibility: visible; }
+        .fundo-modal.aberto { opacity: 1; visibility: visible; }
         .caixa-modal {
             background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             border: 1px solid rgba(96,165,250,0.2); border-radius: 18px;
             padding: 32px 28px; max-width: 360px; width: 100%; text-align: center;
             transform: translateY(10px); transition: transform 0.3s ease;
         }
-        .fundo-modal.visivel .caixa-modal { transform: translateY(0); }
+        .fundo-modal.aberto .caixa-modal { transform: translateY(0); }
         .icone-modal {
             width: 56px; height: 56px; border-radius: 50%;
             background: rgba(239,68,68,0.15); display: flex; align-items: center; justify-content: center;
@@ -200,7 +209,8 @@
     </style>
 </head>
 <body>
-        <div class="fundo-pagina"></div>
+
+    <div class="fundo-pagina"></div>
     <div class="fundo-imagem"></div>
     <div class="fundo-degrade"></div>
 
@@ -229,7 +239,7 @@
         <div class="grade-cards">
             <div class="card">
                 <div class="card-titulo">Situação Atual <i class="fas fa-clock"></i></div>
-                <div class="card-valor" id="exibeSituacao">Fora de Serviço</div>
+                <div class="card-valor fora-servico" id="exibeSituacao">Fora de Serviço</div>
             </div>
             <div class="card">
                 <div class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></div>
@@ -257,6 +267,7 @@
                     <div class="tempo-central" id="tempo">00:00:00</div>
                     <div class="legenda-tempo">Tempo trabalhado hoje</div>
                     <div class="botoes-cronometro" id="areaBotoes">
+                        <!-- Botão vai funcionar na Parte 2 -->
                         <button class="botao-acao iniciar" id="btnIniciar">
                             <i class="fas fa-play"></i> Iniciar Jornada
                         </button>
@@ -289,117 +300,77 @@
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
         <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
     </nav>
-        <script>
-        // ========== CONEXÃO SUPABASE ==========
+
+    <!-- PARTE 2 — Código de funcionamento em seguida -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ========== ELEMENTOS ==========
         const exibeNome = document.getElementById('exibeNome');
         const exibePassaporte = document.getElementById('exibePassaporte');
         const exibeSituacao = document.getElementById('exibeSituacao');
         const exibeHoje = document.getElementById('exibeHoje');
         const exibePausas = document.getElementById('exibePausas');
-        const exibeSemana = document.getElementById('exibeSemana');
-        const tempo = document.getElementById('tempo');
+        const tempoEl = document.getElementById('tempo');
         const areaBotoes = document.getElementById('areaBotoes');
         const listaHistorico = document.getElementById('listaHistorico');
-        
-        // ========== MODAL SAIR ==========
         const modalSair = document.getElementById('modalSair');
-        document.getElementById('botaoSair').onclick = () => modalSair.classList.add('aberto');
-        document.getElementById('botaoCancelar').onclick = () => modalSair.classList.remove('aberto');
-        document.getElementById('botaoConfirmarSaida').onclick = () => {
-            window.location.href = 'painel.html';
-        };
 
-        // ========== ABA NAVEGAÇÃO ==========
-        document.querySelectorAll('.aba').forEach(aba => {
-            aba.onclick = () => {
-                document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
-                document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('visivel'));
-                aba.classList.add('ativa');
-                document.getElementById(`conteudo-${aba.dataset.aba}`).classList.add('visivel');
-            };
-        });
-
-        // ========== FORMATAÇÃO DE TEMPO ==========
         function formatarTempo(segundos) {
             const h = Math.floor(segundos / 3600);
             const m = Math.floor((segundos % 3600) / 60);
             const s = Math.floor(segundos % 60);
             return `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
         }
-
         function formatarHoras(segundos) {
             const h = Math.floor(segundos / 3600);
             const m = Math.floor((segundos % 3600) / 60);
             return `${h}h${m.toString().padStart(2,'0')}`;
         }
 
-        // ========== DADOS DO USUÁRIO ==========
-        async function carregarDadosUsuario() {
-            const passaporteSalvo = localStorage.getItem('passaporte');
-            if (!passaporteSalvo) {
-                exibeNome.textContent = 'Não identificado';
-                exibePassaporte.textContent = '—';
-                return;
-            }
-
-            const { data, error } = await sb
-                .from('membros')
-                .select('nome, passaporte, cargo')
-                .eq('passaporte', passaporteSalvo)
-                .single();
-
-            if (data && !error) {
-                exibeNome.textContent = data.nome;
-                exibePassaporte.textContent = data.passaporte;
-            } else {
-                exibeNome.textContent = 'Membro';
-                exibePassaporte.textContent = passaporteSalvo;
-            }
-        }
-
-        // ========== SISTEMA DE PONTO COM PERSISTÊNCIA ==========
         let estado = {
             emJornada: false,
             inicioJornada: null,
             inicioPausa: null,
-            totalPausas: 0,
             tempoPausado: 0,
+            totalPausas: 0,
             historico: []
         };
 
+        function salvarEstado() {
+            localStorage.setItem('ponto_estado', JSON.stringify({
+                emJornada: estado.emJornada,
+                inicioJornada: estado.inicioJornada?.toISOString() || null,
+                inicioPausa: estado.inicioPausa?.toISOString() || null,
+                tempoPausado: estado.tempoPausado,
+                totalPausas: estado.totalPausas,
+                historico: estado.historico
+            }));
+        }
         function carregarEstado() {
             const salvo = localStorage.getItem('ponto_estado');
             if (salvo) {
-                const parseado = JSON.parse(salvo);
-                estado = { ...estado, ...parseado };
-                if (estado.inicioJornada) estado.inicioJornada = new Date(estado.inicioJornada);
-                if (estado.inicioPausa) estado.inicioPausa = new Date(estado.inicioPausa);
+                const s = JSON.parse(salvo);
+                estado.emJornada = s.emJornada;
+                estado.inicioJornada = s.inicioJornada ? new Date(s.inicioJornada) : null;
+                estado.inicioPausa = s.inicioPausa ? new Date(s.inicioPausa) : null;
+                estado.tempoPausado = s.tempoPausado || 0;
+                estado.totalPausas = s.totalPausas || 0;
+                estado.historico = s.historico || [];
             }
-            renderizar();
-            carregarHistorico();
         }
 
-        function salvarEstado() {
-            localStorage.setItem('ponto_estado', JSON.stringify({
-                ...estado,
-                ultimoAtualizacao: new Date().toISOString()
-            }));
-        }
-
-        function hoje() {
-            return new Date().toISOString().split('T')[0];
-        }
-
-        function tempoHoje() {
+        function tempoTranscorrido() {
             if (!estado.emJornada || !estado.inicioJornada) return 0;
             let decorrido = Math.floor((Date.now() - estado.inicioJornada.getTime()) / 1000);
-            decorrido -= estado.tempoPausado;
+            if (estado.inicioPausa) {
+                decorrido -= Math.floor((Date.now() - estado.inicioPausa.getTime()) / 1000);
+            } else {
+                decorrido -= estado.tempoPausado;
+            }
             return Math.max(0, decorrido);
         }
 
@@ -410,115 +381,138 @@
             estado.totalPausas = 0;
             estado.inicioPausa = null;
             salvarEstado();
-            montarBotoes('rodando');
+            atualizarInterface();
         }
-
         function pausarJornada() {
             estado.inicioPausa = new Date();
             salvarEstado();
-            montarBotoes('pausado');
+            atualizarInterface();
         }
-
         function retomarJornada() {
             if (estado.inicioPausa) {
                 estado.tempoPausado += Math.floor((Date.now() - estado.inicioPausa.getTime()) / 1000);
-                estado.totalPausas++;
                 estado.inicioPausa = null;
             }
             salvarEstado();
-            montarBotoes('rodando');
+            atualizarInterface();
         }
-
-        function finalizarJornada() {
-            const duracao = tempoHoje();
-            const registro = {
-                data: new Date().toLocaleDateString('pt-BR'),
-                entrada: estado.inicioJornada.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                saida: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
-                duracao: duracao,
-                pausas: estado.totalPausas
-            };
-            
-            estado.historico.unshift(registro);
-            if (estado.historico.length > 30) estado.historico.pop();
-            
+        function encerrarJornada() {
+            const duracao = tempoTranscorrido();
+            if (duracao > 0) {
+                estado.historico.unshift({
+                    data: new Date().toLocaleDateString('pt-BR'),
+                    entrada: estado.inicioJornada.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                    saida: new Date().toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'}),
+                    duracao: duracao,
+                    pausas: estado.totalPausas
+                });
+            }
             estado.emJornada = false;
             estado.inicioJornada = null;
             estado.inicioPausa = null;
+            estado.tempoPausado = 0;
             salvarEstado();
-            montarBotoes('parado');
-            carregarHistorico();
+            atualizarInterface();
+            renderizarHistorico();
         }
 
-        function montarBotoes(modo) {
-            if (modo === 'parado') {
+        function atualizarInterface() {
+            if (!estado.emJornada) {
                 areaBotoes.innerHTML = `<button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>`;
-                document.getElementById('btnIniciar').onclick = iniciarJornada;
                 exibeSituacao.textContent = 'Fora de Serviço';
-                exibeSituacao.style.color = '#f87171';
-            } else if (modo === 'rodando') {
+                exibeSituacao.className = 'card-valor fora-servico';
+                tempoEl.textContent = '00:00:00';
+                exibeHoje.textContent = '0h00';
+                exibePausas.textContent = '0';
+                document.getElementById('btnIniciar').addEventListener('click', iniciarJornada);
+            } else if (!estado.inicioPausa) {
                 areaBotoes.innerHTML = `
                     <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
-                    <button class="botao-acao finalizar" id="btnFinalizar"><i class="fas fa-stop"></i> Encerrar</button>
+                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
-                document.getElementById('btnPausar').onclick = pausarJornada;
-                document.getElementById('btnFinalizar').onclick = finalizarJornada;
                 exibeSituacao.textContent = 'Em Jornada';
-                exibeSituacao.style.color = '#4ade80';
-            } else if (modo === 'pausado') {
+                exibeSituacao.className = 'card-valor em-jornada';
+                document.getElementById('btnPausar').addEventListener('click', () => { estado.totalPausas++; pausarJornada(); });
+                document.getElementById('btnEncerrar').addEventListener('click', encerrarJornada);
+            } else {
                 areaBotoes.innerHTML = `
                     <button class="botao-acao retomar" id="btnRetomar"><i class="fas fa-play"></i> Retomar</button>
-                    <button class="botao-acao finalizar" id="btnFinalizar"><i class="fas fa-stop"></i> Encerrar</button>
+                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
-                document.getElementById('btnRetomar').onclick = retomarJornada;
-                document.getElementById('btnFinalizar').onclick = finalizarJornada;
                 exibeSituacao.textContent = 'Em Pausa';
-                exibeSituacao.style.color = '#facc15';
+                exibeSituacao.className = 'card-valor em-pausa';
+                document.getElementById('btnRetomar').addEventListener('click', retomarJornada);
+                document.getElementById('btnEncerrar').addEventListener('click', encerrarJornada);
             }
         }
 
-        function renderizar() {
-            if (estado.emJornada) {
-                montarBotoes(estado.inicioPausa ? 'pausado' : 'rodando');
-            } else {
-                montarBotoes('parado');
-            }
-        }
-
-        function carregarHistorico() {
-            listaHistorico.innerHTML = '';
+        function renderizarHistorico() {
             if (estado.historico.length === 0) {
-                listaHistorico.innerHTML = `<p class="sem-registro">Nenhum registro de jornada encontrado.</p>`;
+                listaHistorico.innerHTML = `<div class="vazio">Nenhum registro ainda</div>`;
                 return;
             }
-            estado.historico.forEach(reg => {
-                listaHistorico.innerHTML += `
-                    <div class="item-historico">
-                        <div class="info-principal">
-                            <span class="data-registro"><i class="fas fa-calendar"></i> ${reg.data}</span>
-                            <span class="horas-registro">${formatarHoras(reg.duracao)}</span>
-                        </div>
-                        <div class="info-detalhes">
-                            <span><i class="fas fa-sign-in-alt"></i> ${reg.entrada}</span>
-                            <span><i class="fas fa-sign-out-alt"></i> ${reg.saida}</span>
-                            <span><i class="fas fa-coffee"></i> ${reg.pausas} pausa(s)</span>
-                        </div>
+            listaHistorico.innerHTML = estado.historico.map(item => `
+                <div class="item-historico">
+                    <div class="item-esquerda">
+                        <span class="item-titulo">${item.data}</span>
+                        <span class="item-sub">Entrada: ${item.entrada} · Saída: ${item.saida} · Pausas: ${item.pausas}</span>
                     </div>
-                `;
-            });
+                    <div class="item-direita">${formatarHoras(item.duracao)}</div>
+                </div>
+            `).join('');
         }
 
-        // ========== ATUALIZAÇÃO EM TEMPO REAL ==========
+        document.querySelectorAll('.aba').forEach(aba => {
+            aba.addEventListener('click', () => {
+                document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+                document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('visivel'));
+                aba.classList.add('ativa');
+                document.getElementById(`conteudo-${aba.dataset.aba}`).classList.add('visivel');
+                if (aba.dataset.aba === 'historico') renderizarHistorico();
+            });
+        });
+
+        document.getElementById('botaoSair').addEventListener('click', () => {
+            modalSair.classList.add('aberto');
+        });
+        document.getElementById('botaoCancelar').addEventListener('click', () => {
+            modalSair.classList.remove('aberto');
+        });
+        document.getElementById('botaoConfirmarSaida').addEventListener('click', () => {
+            window.location.href = 'painel.html';
+        });
+
+        async function carregarDadosUsuario() {
+            const passaporteSalvo = localStorage.getItem('passaporte');
+            if (!passaporteSalvo) {
+                exibeNome.textContent = 'Não identificado';
+                exibePassaporte.textContent = '—';
+                return;
+            }
+            const { data, error } = await sb
+                .from('membros')
+                .select('nome, passaporte')
+                .eq('passaporte', passaporteSalvo)
+                .single();
+            if (data && !error) {
+                exibeNome.textContent = data.nome;
+                exibePassaporte.textContent = data.passaporte;
+            } else {
+                exibeNome.textContent = 'Membro';
+                exibePassaporte.textContent = passaporteSalvo;
+            }
+        }
+
         setInterval(() => {
             if (estado.emJornada && !estado.inicioPausa) {
-                tempo.textContent = formatarTempo(tempoHoje());
-                exibeHoje.textContent = formatarHoras(tempoHoje());
-                exibePausas.textContent = estado.totalPausas;
+                tempoEl.textContent = formatarTempo(tempoTranscorrido());
+                exibeHoje.textContent = formatarHoras(tempoTranscorrido());
             }
         }, 1000);
 
-        // ========== INICIALIZAÇÃO ==========
         carregarEstado();
+        atualizarInterface();
+        renderizarHistorico();
         carregarDadosUsuario();
     </script>
 </body>
