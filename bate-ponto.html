@@ -53,27 +53,17 @@
             display: flex; align-items: flex-start; justify-content: space-between;
             margin-bottom: 28px;
         }
-        .titulo-secao {
-            margin-bottom: 4px;
-        }
-        .titulo-secao h1 {
-            font-size: 22px; font-weight: 700; color: #fff;
-        }
-        .titulo-secao p {
-            font-size: 13px; color: #94a3b8; margin-bottom: 16px;
-        }
+        .titulo-secao { margin-bottom: 16px; }
+        .titulo-secao h1 { font-size: 22px; font-weight: 700; color: #fff; }
+        .titulo-secao p { font-size: 13px; color: #94a3b8; }
+        
         .linha-dado {
             display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
         }
-        .linha-dado i {
-            color: #60a5fa; font-size: 16px; width: 20px; text-align: center;
-        }
-        .linha-dado .rotulo {
-            font-size: 14px; color: #94a3b8;
-        }
-        .linha-dado .valor {
-            font-size: 16px; font-weight: 600; color: #fff;
-        }
+        .linha-dado i { color: #60a5fa; font-size: 16px; width: 20px; text-align: center; }
+        .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
+        .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
+        
         .botao-sair {
             display: flex; align-items: center; gap: 6px;
             background: rgba(239, 68, 68, 0.15);
@@ -104,9 +94,7 @@
             margin-bottom: 8px;
         }
         .card-titulo i { font-size: 14px; color: #60a5fa; }
-        .card-valor { 
-            font-size: 20px; font-weight: 700; color: #ffffff;
-        }
+        .card-valor { font-size: 20px; font-weight: 700; color: #ffffff; }
 
         .card-abas {
             background: rgba(15, 23, 42, 0.55);
@@ -114,9 +102,7 @@
             border-radius: 14px; padding: 18px;
             backdrop-filter: blur(8px);
         }
-        .navegacao-abas {
-            display: flex; gap: 10px; margin-bottom: 20px;
-        }
+        .navegacao-abas { display: flex; gap: 10px; margin-bottom: 20px; }
         .aba {
             flex: 1; text-align: center; padding: 10px 0;
             font-size: 15px; font-weight: 500; color: #94a3b8;
@@ -127,9 +113,7 @@
             color: #fff; background: rgba(96, 165, 250, 0.15);
             font-weight: 600;
         }
-        .conteudo-aba {
-            display: none; min-height: 220px;
-        }
+        .conteudo-aba { display: none; min-height: 220px; }
         .conteudo-aba.visivel { display: block; }
 
         .cronometro-bloco { text-align: center; padding: 20px 10px; }
@@ -251,7 +235,7 @@
         <div class="grade-cards">
             <div class="card">
                 <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
-                <p class="card-valor" id="exibeSituacao">Fora de Serviço</p>
+                <p class="card-valor" id="exibeSituacao">Carregando...</p>
             </div>
             <div class="card">
                 <p class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></p>
@@ -325,11 +309,18 @@
         const exibeSituacao = document.getElementById('exibeSituacao');
         const exibeHoje = document.getElementById('exibeHoje');
         const exibePausas = document.getElementById('exibePausas');
+        const exibeSemana = document.getElementById('exibeSemana');
         const tempoPrincipal = document.getElementById('tempoPrincipal');
         const tempoMilesimos = document.getElementById('tempoMilesimos');
         const areaBotoes = document.getElementById('areaBotoes');
         const listaHistorico = document.getElementById('listaHistorico');
         const modalSair = document.getElementById('modalSair');
+
+        let passaporteUsuario = localStorage.getItem('passaporte') || null;
+        let nomeUsuario = null;
+        let registroAtivo = null;
+        let contagemPausas = 0;
+        let tempoPausadoTotal = 0;
 
         function formatarTempoComMilesimos(segundosTotais) {
             const h = Math.floor(segundosTotais / 3600);
@@ -343,162 +334,234 @@
         }
 
         function formatarDuracao(segundos) {
+            if (!segundos || segundos <= 0) return '0m';
             const h = Math.floor(segundos / 3600);
             const m = Math.floor((segundos % 3600) / 60);
             const s = Math.floor(segundos % 60);
-            if (h > 0) {
-                return `${h}h${m.toString().padStart(2,'0')}m${s.toString().padStart(2,'0')}s`;
-            } else if (m > 0) {
-                return `${m}m${s.toString().padStart(2,'0')}s`;
+            if (h > 0) return `${h}h${m.toString().padStart(2,'0')}m`;
+            if (m > 0) return `${m}m${s.toString().padStart(2,'0')}s`;
+            return `${s}s`;
+        }
+
+        function calcularSegundosEntre(data1, data2) {
+            if (!data1 || !data2) return 0;
+            return (new Date(data2) - new Date(data1)) / 1000;
+        }
+
+        async function carregarDadosUsuario() {
+            if (!passaporteUsuario) {
+                exibeNome.textContent = 'Não identificado';
+                exibePassaporte.textContent = '—';
+                return;
+            }
+            const { data, error } = await sb
+                .from('membros')
+                .select('nome, passaporte')
+                .eq('passaporte', passaporteUsuario)
+                .single();
+            if (data && !error) {
+                nomeUsuario = data.nome;
+                exibeNome.textContent = data.nome;
+                exibePassaporte.textContent = data.passaporte;
             } else {
-                return `${s}s`;
+                exibeNome.textContent = 'Membro';
+                exibePassaporte.textContent = passaporteUsuario;
             }
         }
 
-        let estado = {
-            emJornada: false,
-            inicioJornada: null,
-            inicioPausa: null,
-            tempoPausadoTotal: 0,
-            totalPausas: 0,
-            historico: []
-        };
-
-        function salvarEstado() {
-            localStorage.setItem('ponto_estado', JSON.stringify({
-                emJornada: estado.emJornada,
-                inicioJornada: estado.inicioJornada?.toISOString() || null,
-                inicioPausa: estado.inicioPausa?.toISOString() || null,
-                tempoPausadoTotal: estado.tempoPausadoTotal,
-                totalPausas: estado.totalPausas,
-                historico: estado.historico
-            }));
+        async function verificarRegistroAtivo() {
+            if (!passaporteUsuario) return null;
+            const { data, error } = await sb
+                .from('pontos')
+                .select('*')
+                .eq('passaporte', passaporteUsuario)
+                .eq('status', 'ativo')
+                .order('criado_em', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+            if (error) console.error('Erro ao buscar registro ativo:', error);
+            registroAtivo = data;
+            return data;
         }
 
-        function carregarEstado() {
-            const salvo = localStorage.getItem('ponto_estado');
-            if (salvo) {
-                const s = JSON.parse(salvo);
-                estado.emJornada = s.emJornada;
-                estado.inicioJornada = s.inicioJornada ? new Date(s.inicioJornada) : null;
-                estado.inicioPausa = s.inicioPausa ? new Date(s.inicioPausa) : null;
-                estado.tempoPausadoTotal = s.tempoPausadoTotal || 0;
-                estado.totalPausas = s.totalPausas || 0;
-                estado.historico = s.historico || [];
+        async function carregarHistorico() {
+            if (!passaporteUsuario) return [];
+            const { data, error } = await sb
+                .from('pontos')
+                .select('*')
+                .eq('passaporte', passaporteUsuario)
+                .eq('status', 'encerrado')
+                .order('criado_em', { ascending: false });
+            if (error) {
+                console.error('Erro ao carregar histórico:', error);
+                return [];
             }
+            return data || [];
         }
 
-        function tempoAtualDecimais() {
-            if (!estado.emJornada || !estado.inicioJornada) return 0;
-            let decorrido = (Date.now() - estado.inicioJornada.getTime()) / 1000;
-            if (estado.inicioPausa) {
-                decorrido -= (Date.now() - estado.inicioPausa.getTime()) / 1000;
-            } else {
-                decorrido -= estado.tempoPausadoTotal;
+        function calcularTempoJornada(registro) {
+            if (!registro) return 0;
+            let total = 0;
+            const entrada = new Date(registro.entrada);
+            const saida = registro.saida ? new Date(registro.saida) : new Date();
+            total = (saida - entrada) / 1000;
+            if (registro.pausa_inicio && registro.pausa_fim) {
+                total -= calcularSegundosEntre(registro.pausa_inicio, registro.pausa_fim);
+            } else if (registro.pausa_inicio && !registro.pausa_fim) {
+                total -= calcularSegundosEntre(registro.pausa_inicio, new Date());
             }
-            return Math.max(0, decorrido);
+            return Math.max(0, total);
         }
 
-        function iniciarJornada() {
-            estado.emJornada = true;
-            estado.inicioJornada = new Date();
-            estado.tempoPausadoTotal = 0;
-            estado.totalPausas = 0;
-            estado.inicioPausa = null;
-            salvarEstado();
+        async function iniciarJornada() {
+            if (!passaporteUsuario) return alert('Passaporte não identificado!');
+            const { data: membro } = await sb
+                .from('membros')
+                .select('nome, equipe_id')
+                .eq('passaporte', passaporteUsuario)
+                .single();
+            const { data, error } = await sb.from('pontos').insert([{
+                passaporte: passaporteUsuario,
+                nome: membro?.nome || nomeUsuario || 'Membro',
+                entrada: new Date().toISOString(),
+                status: 'ativo',
+                equipe_id: membro?.equipe_id || null
+            }]).select().single();
+            if (error) return console.error('Erro ao iniciar:', error);
+            registroAtivo = data;
+            contagemPausas = 0;
+            tempoPausadoTotal = 0;
             atualizarInterface();
         }
 
-        function pausarJornada() {
-            estado.inicioPausa = new Date();
-            estado.totalPausas++;
-            salvarEstado();
+        async function pausarJornada() {
+            if (!registroAtivo) return;
+            const { data, error } = await sb.from('pontos')
+                .update({ pausa_inicio: new Date().toISOString() })
+                .eq('id', registroAtivo.id)
+                .select()
+                .single();
+            if (error) return console.error('Erro ao pausar:', error);
+            registroAtivo = data;
+            contagemPausas++;
             atualizarInterface();
         }
 
-        function retomarJornada() {
-            if (estado.inicioPausa) {
-                estado.tempoPausadoTotal += (Date.now() - estado.inicioPausa.getTime()) / 1000;
-                estado.inicioPausa = null;
-            }
-            salvarEstado();
+        async function retomarJornada() {
+            if (!registroAtivo || !registroAtivo.pausa_inicio) return;
+            tempoPausadoTotal += calcularSegundosEntre(registroAtivo.pausa_inicio, new Date());
+            const { data, error } = await sb.from('pontos')
+                .update({ pausa_fim: new Date().toISOString() })
+                .eq('id', registroAtivo.id)
+                .select()
+                .single();
+            if (error) return console.error('Erro ao retomar:', error);
+            registroAtivo = data;
             atualizarInterface();
         }
 
-        function encerrarJornada() {
-            const duracao = tempoAtualDecimais();
-            if (duracao > 0) {
-                estado.historico.unshift({
-                    data: new Date().toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit', year: '2-digit' }).toUpperCase(),
-                    dataSimples: new Date().toLocaleDateString('pt-BR'),
-                    entrada: estado.inicioJornada.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-                    saida: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-                    duracao: duracao,
-                    pausas: estado.totalPausas
-                });
-            }
-            estado.emJornada = false;
-            estado.inicioJornada = null;
-            estado.inicioPausa = null;
-            estado.tempoPausadoTotal = 0;
-            salvarEstado();
+        async function encerrarJornada() {
+            if (!registroAtivo) return;
+            const { data, error } = await sb.from('pontos')
+                .update({ saida: new Date().toISOString(), status: 'encerrado' })
+                .eq('id', registroAtivo.id)
+                .select()
+                .single();
+            if (error) return console.error('Erro ao encerrar:', error);
+            registroAtivo = null;
+            contagemPausas = 0;
+            tempoPausadoTotal = 0;
             atualizarInterface();
             renderizarHistorico();
         }
 
         function atualizarInterface() {
-            if (!estado.emJornada) {
+            if (!registroAtivo) {
                 areaBotoes.innerHTML = `<button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>`;
                 exibeSituacao.textContent = 'Fora de Serviço';
                 tempoPrincipal.textContent = '00:00:00';
                 tempoMilesimos.textContent = '.00';
                 exibeHoje.textContent = '0m';
-                document.getElementById('btnIniciar').addEventListener('click', iniciarJornada);
-            } else if (!estado.inicioPausa) {
+                exibePausas.textContent = '0';
+                const btnIniciar = document.getElementById('btnIniciar');
+                if (btnIniciar) btnIniciar.addEventListener('click', iniciarJornada);
+                return;
+            }
+            if (!registroAtivo.pausa_inicio) {
                 areaBotoes.innerHTML = `
                     <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
                     <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
                 exibeSituacao.textContent = 'Em Jornada';
-                document.getElementById('btnPausar').addEventListener('click', pausarJornada);
-                document.getElementById('btnEncerrar').addEventListener('click', encerrarJornada);
-            } else {
+                const btnPausar = document.getElementById('btnPausar');
+                const btnEncerrar = document.getElementById('btnEncerrar');
+                if (btnPausar) btnPausar.addEventListener('click', pausarJornada);
+                if (btnEncerrar) btnEncerrar.addEventListener('click', encerrarJornada);
+            } else if (!registroAtivo.pausa_fim) {
                 areaBotoes.innerHTML = `
                     <button class="botao-acao retomar" id="btnRetomar"><i class="fas fa-play"></i> Retomar</button>
                     <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
                 exibeSituacao.textContent = 'Em Pausa';
-                document.getElementById('btnRetomar').addEventListener('click', retomarJornada);
-                document.getElementById('btnEncerrar').addEventListener('click', encerrarJornada);
+                const btnRetomar = document.getElementById('btnRetomar');
+                const btnEncerrar2 = document.getElementById('btnEncerrar');
+                if (btnRetomar) btnRetomar.addEventListener('click', retomarJornada);
+                if (btnEncerrar2) btnEncerrar2.addEventListener('click', encerrarJornada);
+            } else {
+                areaBotoes.innerHTML = `
+                    <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
+                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
+                `;
+                exibeSituacao.textContent = 'Em Jornada';
+                const btnPausar2 = document.getElementById('btnPausar');
+                const btnEncerrar3 = document.getElementById('btnEncerrar');
+                if (btnPausar2) btnPausar2.addEventListener('click', pausarJornada);
+                if (btnEncerrar3) btnEncerrar3.addEventListener('click', encerrarJornada);
             }
-            exibePausas.textContent = estado.totalPausas;
+            exibePausas.textContent = contagemPausas;
         }
 
-        function renderizarHistorico() {
-            if (estado.historico.length === 0) {
+        async function renderizarHistorico() {
+            const historico = await carregarHistorico();
+            if (historico.length === 0) {
                 listaHistorico.innerHTML = `<div class="vazio">Nenhum registro de jornada ainda</div>`;
                 return;
             }
-            listaHistorico.innerHTML = estado.historico.map(item => `
-                <div class="item-historico">
-                    <div class="item-cabecalho">
-                        <span class="item-data">${item.data}</span>
-                        <span class="item-duracao">${formatarDuracao(item.duracao)}</span>
+            let totalHoje = 0, totalSemana = 0;
+            const hoje = new Date().toLocaleDateString('pt-BR');
+            const umaSemanaAtras = new Date();
+            umaSemanaAtras.setDate(umaSemanaAtras.getDate() - 7);
+            listaHistorico.innerHTML = historico.map(item => {
+                const duracao = calcularTempoJornada(item);
+                const dataItem = new Date(item.entrada).toLocaleDateString('pt-BR');
+                if (dataItem === hoje) totalHoje += duracao;
+                if (new Date(item.entrada) >= umaSemanaAtras) totalSemana += duracao;
+                const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }).toUpperCase();
+                const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+                return `
+                    <div class="item-historico">
+                        <div class="item-cabecalho">
+                            <span class="item-data">${dataFormatada}</span>
+                            <span class="item-duracao">${formatarDuracao(duracao)}</span>
+                        </div>
+                        <div class="item-detalhe">
+                            Entrada: ${entrada} · Saída: ${saida}
+                        </div>
                     </div>
-                    <div class="item-detalhe">
-                        Entrada: ${item.entrada} · Saída: ${item.saida} · Pausas: ${item.pausas}
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
+            exibeHoje.textContent = formatarDuracao(totalHoje);
+            exibeSemana.textContent = formatarDuracao(totalSemana);
         }
 
         document.querySelectorAll('.aba').forEach(aba => {
-            aba.addEventListener('click', () => {
+            aba.addEventListener('click', async () => {
                 document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
                 document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('visivel'));
                 aba.classList.add('ativa');
                 document.getElementById(`conteudo-${aba.dataset.aba}`).classList.add('visivel');
-                if (aba.dataset.aba === 'historico') renderizarHistorico();
+                if (aba.dataset.aba === 'historico') await renderizarHistorico();
             });
         });
 
@@ -509,44 +572,43 @@
             modalSair.classList.remove('aberto');
         });
         document.getElementById('botaoConfirmarSaida').addEventListener('click', () => {
-            window.location.href = 'painel.html';
+            localStorage.removeItem('passaporte');
+            window.location.href = 'login.html';
         });
 
-        async function carregarDadosUsuario() {
-            const passaporteSalvo = localStorage.getItem('passaporte');
-            if (!passaporteSalvo) {
-                exibeNome.textContent = 'Não identificado';
-                exibePassaporte.textContent = '—';
-                return;
-            }
-            const { data, error } = await sb
-                .from('membros')
-                .select('nome, passaporte')
-                .eq('passaporte', passaporteSalvo)
-                .single();
-            if (data && !error) {
-                exibeNome.textContent = data.nome;
-                exibePassaporte.textContent = data.passaporte;
-            } else {
-                exibeNome.textContent = 'Membro';
-                exibePassaporte.textContent = passaporteSalvo;
-            }
-        }
-
         setInterval(() => {
-            if (estado.emJornada && !estado.inicioPausa) {
-                const decorrido = tempoAtualDecimais();
-                const tempoFormatado = formatarTempoComMilesimos(decorrido);
+            if (registroAtivo && !registroAtivo.pausa_inicio) {
+                const decorrido = calcularTempoJornada({
+                    entrada: registroAtivo.entrada,
+                    pausa_inicio: null,
+                    pausa_fim: null,
+                    saida: null
+                }) - tempoPausadoTotal;
+                const tempoFormatado = formatarTempoComMilesimos(Math.max(0, decorrido));
                 tempoPrincipal.textContent = tempoFormatado.principal;
                 tempoMilesimos.textContent = tempoFormatado.milesimos;
-                exibeHoje.textContent = formatarDuracao(decorrido);
+                exibeHoje.textContent = formatarDuracao(Math.max(0, decorrido));
+            } else if (registroAtivo && registroAtivo.pausa_inicio && !registroAtivo.pausa_fim) {
+                const decorrido = calcularTempoJornada({
+                    entrada: registroAtivo.entrada,
+                    pausa_inicio: registroAtivo.pausa_inicio,
+                    pausa_fim: new Date(),
+                    saida: null
+                });
+                const tempoFormatado = formatarTempoComMilesimos(Math.max(0, decorrido));
+                tempoPrincipal.textContent = tempoFormatado.principal;
+                tempoMilesimos.textContent = tempoFormatado.milesimos;
+                exibeHoje.textContent = formatarDuracao(Math.max(0, decorrido));
             }
         }, 50);
 
-        carregarEstado();
-        atualizarInterface();
-        renderizarHistorico();
-        carregarDadosUsuario();
+        async function inicializar() {
+            await carregarDadosUsuario();
+            await verificarRegistroAtivo();
+            atualizarInterface();
+            await renderizarHistorico();
+        }
+        inicializar();
     </script>
 </body>
 </html>
