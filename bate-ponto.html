@@ -17,7 +17,7 @@
             padding: 0; 
             box-sizing: border-box; 
             -webkit-tap-highlight-color: transparent;
-            outline: none;
+            outline: none !important;
         }
         *:focus, *:focus-visible {
             outline: none !important;
@@ -49,7 +49,10 @@
 
         .conteudo { position: relative; z-index: 1; padding: 24px; }
         
-        .cabecalho { margin-bottom: 28px; }
+        .cabecalho {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            margin-bottom: 28px;
+        }
         .titulo-secao { margin-bottom: 16px; }
         .titulo-secao h1 { font-size: 22px; font-weight: 700; color: #fff; }
         .titulo-secao p { font-size: 13px; color: #94a3b8; }
@@ -61,6 +64,20 @@
         .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
         .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
         
+        .botao-sair {
+            display: flex; align-items: center; gap: 6px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5; padding: 10px 14px; border-radius: 10px;
+            font-size: 14px; font-weight: 500; cursor: pointer;
+            transition: all 0.25s ease; white-space: nowrap; user-select: none;
+        }
+        .botao-sair:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: translateY(-1px);
+        }
+
         .grade-cards {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 14px; margin-bottom: 24px;
@@ -105,7 +122,9 @@
             margin-bottom: 8px; letter-spacing: 1px;
             font-variant-numeric: tabular-nums;
         }
-        .tempo-central .milessimos { font-size: 28px; color: #94a3b8; }
+        .tempo-central .milessimos {
+            font-size: 28px; color: #94a3b8;
+        }
         .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 24px; }
         .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
         .botao-acao {
@@ -241,8 +260,12 @@
                     <span class="valor" id="exibePassaporte">—</span>
                 </div>
             </div>
+            <button class="botao-sair" id="botaoSair">
+                <i class="fas fa-sign-out-alt"></i> Sair
+            </button>
         </div>
-                <div class="grade-cards">
+
+        <div class="grade-cards">
             <div class="card">
                 <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
                 <p class="card-valor" id="exibeSituacao">Carregando...</p>
@@ -288,6 +311,20 @@
         </div>
     </div>
 
+    <div class="fundo-modal" id="modalSair">
+        <div class="caixa-modal">
+            <div class="icone-modal" style="background: rgba(239,68,68,0.15);">
+                <i class="fas fa-question-circle" style="color: #f87171;"></i>
+            </div>
+            <h3 class="titulo-modal">Encerrar sessão?</h3>
+            <p class="texto-modal">Tem certeza que deseja sair da sua conta?</p>
+            <div class="botoes-modal">
+                <button class="botao-cancelar" id="botaoCancelarSair">Cancelar</button>
+                <button class="botao-confirmar" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" id="botaoConfirmarSair">Sair</button>
+            </div>
+        </div>
+    </div>
+
     <div class="fundo-modal" id="modalEncerrar">
         <div class="caixa-modal">
             <div class="icone-modal" style="background: rgba(96, 165, 250, 0.15);">
@@ -310,18 +347,18 @@
     <nav class="barra-menu">
         <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
         <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item"><i class="fas fa-clipboard-list"></i><span>Equipe</span></a>
+        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
         <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
     </nav>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        const exibeNome = document.getElementById('exibeNome');
+               const exibeNome = document.getElementById('exibeNome');
         const exibePassaporte = document.getElementById('exibePassaporte');
         const exibeSituacao = document.getElementById('exibeSituacao');
         const exibeHoje = document.getElementById('exibeHoje');
@@ -331,6 +368,7 @@
         const tempoMilesimos = document.getElementById('tempoMilesimos');
         const areaBotoes = document.getElementById('areaBotoes');
         const listaHistorico = document.getElementById('listaHistorico');
+        const modalSair = document.getElementById('modalSair');
         const modalEncerrar = document.getElementById('modalEncerrar');
         const avisoEspera = document.getElementById('avisoEspera');
         const contadorRegressivo = document.getElementById('contadorRegressivo');
@@ -457,7 +495,8 @@
             
             return Math.max(0, totalBruto);
         }
-                async function iniciarJornada() {
+
+        async function iniciarJornada() {
             if (Date.now() < bloqueadoAte) return;
             if (!passaporteUsuario) return alert('Passaporte não identificado!');
             
@@ -481,9 +520,6 @@
             tempoPausadoAcumulado = 0;
             momentoInicioPausa = null;
             atualizarInterface();
-
-            // ✅ INICIOU → VAI DIRETO PARA EQUIPE.HTML
-            window.location.href = 'equipe.html';
         }
 
         async function pausarJornada() {
@@ -521,6 +557,7 @@
         }
 
         function fecharModais() {
+            modalSair.classList.remove('aberto');
             modalEncerrar.classList.remove('aberto');
         }
 
@@ -553,10 +590,13 @@
 
         function iniciarContagemRegressiva() {
             avisoEspera.style.display = 'block';
+            
             if (intervaloContagem) clearInterval(intervaloContagem);
+            
             intervaloContagem = setInterval(() => {
                 const agora = Date.now();
                 const restante = Math.max(0, Math.ceil((bloqueadoAte - agora) / 1000));
+                
                 if (restante <= 0) {
                     clearInterval(intervaloContagem);
                     avisoEspera.style.display = 'none';
@@ -567,8 +607,9 @@
                 }
                 atualizarInterface();
             }, 1000);
-                }
-                function atualizarInterface() {
+        }
+
+        function atualizarInterface() {
             const estaBloqueado = Date.now() < bloqueadoAte;
             
             if (!registroAtivo) {
@@ -630,20 +671,9 @@
                 if (dataItem === hoje) totalHoje += duracao;
                 if (new Date(item.entrada) >= umaSemanaAtras) totalSemana += duracao;
                 
-                // ✅ ANO VISÍVEL AGORA!
-                const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { 
-                    weekday: 'short', 
-                    day: '2-digit', 
-                    month: '2-digit',
-                    year: 'numeric'
-                }).toUpperCase();
-                
-                const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { 
-                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
-                });
-                const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { 
-                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
-                }) : '—';
+                const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }).toUpperCase();
+                const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
                 
                 return `
                     <div class="item-historico">
@@ -672,6 +702,15 @@
             });
         });
 
+        document.getElementById('botaoSair').addEventListener('click', () => {
+            modalSair.classList.add('aberto');
+        });
+        document.getElementById('botaoCancelarSair').addEventListener('click', fecharModais);
+        document.getElementById('botaoConfirmarSair').addEventListener('click', () => {
+            localStorage.removeItem('passaporte');
+            localStorage.removeItem('bloqueadoAte');
+            window.location.href = 'login.html';
+        });
         document.getElementById('botaoCancelarEncerrar').addEventListener('click', fecharModais);
         document.getElementById('botaoConfirmarEncerrar').addEventListener('click', confirmarEncerramento);
 
