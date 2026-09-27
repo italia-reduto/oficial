@@ -82,7 +82,6 @@
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 16px;
-            backdrop-filter: blur(8px);
         }
         .status-linha {
             display: flex; align-items: center; gap: 8px;
@@ -125,7 +124,6 @@
             border: 1px solid rgba(96, 165, 250, 0.12);
             border-radius: 16px;
             padding: 20px; margin-bottom: 16px;
-            backdrop-filter: blur(8px);
         }
         .icone-membro {
             width: 48px; height: 48px; border-radius: 12px;
@@ -152,7 +150,6 @@
             border: 1px solid rgba(96, 165, 250, 0.12);
             border-radius: 16px;
             padding: 22px; margin-bottom: 16px;
-            backdrop-filter: blur(8px);
         }
         .etiqueta-escala {
             font-size: 12px; color: #60a5fa; text-transform: uppercase;
@@ -213,7 +210,7 @@
         .menu-item {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             color: #94a3b8; text-decoration: none; font-size: 11px;
-            cursor: pointer; transition: color 0.2s ease; user-select: none;
+            cursor: pointer; transition: color 0.2s ease;
         }
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
@@ -234,9 +231,7 @@
             <p class="subtitulo-pagina">Alocação e informações do grupo</p>
         </div>
 
-        <!-- ====================================== -->
-        <!-- TELA 1: SEM JORNADA INICIADA -->
-        <!-- ====================================== -->
+        <!-- TELA 1: SEM JORNADA -->
         <div id="telaBloqueio">
             <div class="card">
                 <p class="status-linha">
@@ -262,12 +257,9 @@
             </div>
         </div>
 
-        <!-- ====================================== -->
         <!-- TELA 2: COM JORNADA ATIVA -->
-        <!-- ====================================== -->
         <div id="telaDados" class="tela-dados">
             
-            <!-- Cabeçalho do membro -->
             <div class="cabecalho-membro">
                 <div class="icone-membro">
                     <i class="fas fa-shield-alt"></i>
@@ -281,7 +273,6 @@
                 </div>
             </div>
 
-            <!-- Dados da Equipe -->
             <div class="card-equipe">
                 <p class="etiqueta-escala">Escala Ativa</p>
                 <h2 class="nome-equipe" id="nomeEquipe">ITÁLIA</h2>
@@ -292,27 +283,22 @@
                         <p class="dado-titulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
                         <p class="dado-valor" id="areaEquipe">A definir</p>
                     </div>
-
                     <div class="bloco-dado">
                         <p class="dado-titulo">Minha Posição</p>
                         <p class="dado-valor destaque" id="posicaoMembro">—</p>
                     </div>
-
                     <div class="bloco-dado">
                         <p class="dado-titulo">Função / Cargo</p>
                         <p class="dado-valor" id="cargoMembro">—</p>
                     </div>
-
                     <div class="bloco-dado">
                         <p class="dado-titulo">Veículo</p>
                         <p class="dado-valor" id="veiculoMembro">—</p>
                     </div>
-
                     <div class="bloco-dado">
                         <p class="dado-titulo">Atividade</p>
                         <p class="dado-valor" id="atividadeMembro">—</p>
                     </div>
-
                     <div class="bloco-dado largo">
                         <p class="dado-titulo">Minha Entrada</p>
                         <p class="dado-valor" id="horaEntrada">—</p>
@@ -320,12 +306,11 @@
                 </div>
             </div>
 
-            <!-- Quem está comigo -->
             <div class="card-equipe">
                 <p class="etiqueta-escala">Quem está comigo</p>
                 <p style="font-size: 12px; color: #94a3b8; margin: 4px 0 12px 0;" id="totalMembros">Carregando...</p>
                 <div class="lista-membros" id="listaMembros">
-                    <p style="color: #94a3b8; font-size: 14px;">Aguarde...</p>
+                    <p style="color: #94a3b8;">Aguarde...</p>
                 </div>
             </div>
         </div>
@@ -345,63 +330,69 @@
         const telaDados = document.getElementById('telaDados');
 
         async function carregarDados() {
+            console.log('🔍 Verificando jornada... Passaporte:', passaporteUsuario);
+
             if (!passaporteUsuario) {
                 telaBloqueio.style.display = 'block';
                 telaDados.classList.remove('ativa');
                 return;
             }
 
-            // 1. Busca jornada ativa do usuário
-            const { data: ponto } = await sb
+            // Busca direta — SEM filtro de status primeiro pra ver se encontra
+            const { data: todosPontos, error: erroBusca } = await sb
                 .from('pontos')
-                .select('equipe_id, entrada, membros(nome, cargo)')
+                .select('*, membros(nome, cargo)')
                 .eq('passaporte', passaporteUsuario)
-                .eq('status', 'ativo')
-                .order('criado_em', { ascending: false })
-                .limit(1)
-                .maybeSingle();
+                .order('criado_em', { ascending: false });
 
-            if (!ponto) {
+            console.log('📋 Todos os pontos encontrados:', todosPontos);
+            console.log('❌ Erro (se houver):', erroBusca);
+
+            // Filtra o que tem status = 'ativo'
+            const registroAtivo = todosPontos?.find(p => p.status === 'ativo');
+            console.log('✅ Registro ativo:', registroAtivo);
+
+            if (!registroAtivo) {
                 telaBloqueio.style.display = 'block';
                 telaDados.classList.remove('ativa');
                 return;
             }
 
-            // ✅ Tem jornada — mostra tela de dados
+            // ✅ TEM JORNADA — MOSTRA TELA DE DADOS
             telaBloqueio.style.display = 'none';
             telaDados.classList.add('ativa');
 
             // Dados do usuário
-            document.getElementById('nomeMembro').textContent = ponto.membros?.nome || 'Membro';
+            document.getElementById('nomeMembro').textContent = registroAtivo.membros?.nome || 'Membro';
             document.getElementById('passaporteMembro').textContent = passaporteUsuario;
-            document.getElementById('cargoMembro').textContent = ponto.membros?.cargo || '—';
+            document.getElementById('cargoMembro').textContent = registroAtivo.membros?.cargo || '—';
 
-            if (ponto.entrada) {
-                const dataEntrada = new Date(ponto.entrada);
+            if (registroAtivo.entrada) {
+                const dataEntrada = new Date(registroAtivo.entrada);
                 document.getElementById('horaEntrada').textContent = 
                     dataEntrada.toLocaleDateString('pt-BR') + ' · ' +
                     dataEntrada.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             }
 
-            // 2. Busca dados da equipe
-            if (ponto.equipe_id) {
+            // Dados da equipe
+            if (registroAtivo.equipe_id) {
                 const { data: equipe } = await sb
                     .from('equipes')
                     .select('*')
-                    .eq('id', ponto.equipe_id)
+                    .eq('id', registroAtivo.equipe_id)
                     .maybeSingle();
 
                 if (equipe) {
-                    document.getElementById('nomeEquipe').textContent = equipe.nome || '—';
+                    document.getElementById('nomeEquipe').textContent = equipe.nome || 'ITÁLIA';
                     document.getElementById('funcaoEquipe').textContent = equipe.funcao || '—';
                     document.getElementById('areaEquipe').textContent = equipe.area || '—';
                 }
 
-                // 3. Busca todos os membros da equipe
+                // Lista de membros
                 const { data: lista } = await sb
                     .from('equipe_membros')
                     .select('*')
-                    .eq('equipe_id', ponto.equipe_id)
+                    .eq('equipe_id', registroAtivo.equipe_id)
                     .eq('status', 'ativo')
                     .order('nome', { ascending: true });
 
@@ -414,7 +405,6 @@
                     lista.forEach((membro, indice) => {
                         const souEu = membro.passaporte === passaporteUsuario;
                         
-                        // Preenche dados do usuário logado
                         if (souEu) {
                             document.getElementById('posicaoMembro').textContent = membro.posicao || '—';
                             document.getElementById('veiculoMembro').textContent = membro.veiculo || '—';
