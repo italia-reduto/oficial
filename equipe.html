@@ -57,11 +57,17 @@
             background: rgba(15,23,42,0.6); border: 1px solid rgba(96,165,250,0.15);
             border-radius: 20px; padding: 24px; margin-bottom: 16px;
             backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease;
         }
-        .card:hover { transform: translateY(-2px); border-color: rgba(96,165,250,0.3); }
 
-        /* === TELA SEM JORNADA === */
+        .diagnostico {
+            background: rgba(30,41,59,0.8); border: 1px solid #facc15;
+            border-radius: 12px; padding: 16px; margin-bottom: 16px;
+            font-size: 13px; line-height: 1.8;
+        }
+        .diagnostico strong { color: #facc15; }
+        .diagnostico .ok { color: #4ade80; }
+        .diagnostico .erro { color: #f87171; }
+
         .tela-bloqueio { display: block; }
         .tela-dados { display: none; }
         .com-jornada .tela-bloqueio { display: none; }
@@ -81,7 +87,6 @@
             cursor: pointer; text-decoration: none;
         }
 
-        /* === DADOS DA EQUIPE === */
         .cabecalho-membro { display: flex; align-items: center; gap: 16px; }
         .avatar {
             width: 56px; height: 56px; border-radius: 16px;
@@ -162,6 +167,12 @@
             <p class="subtitulo-pagina">Alocação e informações do grupo operacional</p>
         </div>
 
+        <!-- 🔍 CAIXA DE DIAGNÓSTICO — VAMOS VER O QUE ESTÁ ACONTECENDO -->
+        <div class="diagnostico" id="caixaDiagnostico">
+            <strong>🔍 DIAGNÓSTICO:</strong><br>
+            Buscando dados...
+        </div>
+
         <!-- TELA 1 — SEM JORNADA -->
         <div class="tela-bloqueio">
             <div class="card">
@@ -190,8 +201,8 @@
             <div class="card cabecalho-membro">
                 <div class="avatar"><i class="fas fa-shield-alt"></i></div>
                 <div class="info-principal">
-                    <h2 id="nomeUsuario">Falcão</h2>
-                    <p>Passaporte · <span id="passaporteUsuario">17274</span></p>
+                    <h2 id="nomeUsuario">—</h2>
+                    <p>Passaporte · <span id="passaporteUsuario">—</span></p>
                 </div>
                 <div class="status-tag">
                     <i class="fas fa-circle"></i> Em Serviço
@@ -213,7 +224,7 @@
                     </div>
                     <div class="bloco">
                         <p class="rotulo">Função / Cargo</p>
-                        <p class="valor">—</p>
+                        <p class="valor" id="cargoUsuario">—</p>
                     </div>
                     <div class="bloco">
                         <p class="rotulo">Veículo</p>
@@ -232,13 +243,13 @@
 
             <div class="card">
                 <p class="etiqueta">Equipe em Campo</p>
-                <p class="membro-titulo" id="totalMembros">1 membro ativo</p>
-                <div class="lista-membros" id="listaMembros">
+                <p class="membro-titulo">1 membro ativo</p>
+                <div class="lista-membros">
                     <div class="membro-item">
                         <div class="membro-posicao">1</div>
                         <div>
-                            <div class="membro-nome" id="nomeLinha">Falcão</div>
-                            <div class="membro-cargo" id="cargoLinha">— · Matrícula 17274</div>
+                            <div class="membro-nome" id="nomeLinha">—</div>
+                            <div class="membro-cargo" id="cargoLinha">—</div>
                         </div>
                         <span class="membro-voce">VOCÊ</span>
                     </div>
@@ -258,32 +269,80 @@
     <script>
         const passaporte = localStorage.getItem('passaporte');
         const pagina = document.getElementById('pagina');
+        const caixa = document.getElementById('caixaDiagnostico');
 
         async function verificarJornada() {
-            if (!passaporte) return;
+            let log = '';
+            
+            if (!passaporte) {
+                log += '<span class="erro">❌ Passaporte NÃO está salvo no navegador</span><br>';
+                log += 'Vá no bate-ponto, inicie a jornada e volte aqui.';
+                caixa.innerHTML = log;
+                return;
+            }
+            
+            log += `<span class="ok">✅ Passaporte encontrado: ${passaporte}</span><br>`;
+            caixa.innerHTML = log + 'Buscando no banco...';
 
-            const { data: pontos } = await sb
+            const { data: pontos, error } = await sb
                 .from('pontos')
                 .select('*, membros(nome, cargo)')
                 .eq('passaporte', passaporte)
                 .order('criado_em', { ascending: false });
 
-            const ativo = pontos?.find(p => p.status === 'ativo');
+            if (error) {
+                log += `<span class="erro">❌ Erro no banco: ${error.message}</span>`;
+                caixa.innerHTML = log;
+                return;
+            }
+
+            if (!pontos || pontos.length === 0) {
+                log += '<span class="erro">❌ Nenhum registro encontrado no banco para esse passaporte</span>';
+                caixa.innerHTML = log;
+                return;
+            }
+
+            log += `<span class="ok">✅ ${pontos.length} registro(s) encontrado(s)</span><br>`;
             
-            if (ativo) {
-                pagina.classList.add('com-jornada');
-                // Preenche dados
-                document.getElementById('nomeUsuario').textContent = ativo.membros?.nome || 'Membro';
-                document.getElementById('passaporteUsuario').textContent = passaporte;
-                document.getElementById('nomeLinha').textContent = ativo.membros?.nome || 'Membro';
-                document.getElementById('cargoLinha').textContent = `${ativo.membros?.cargo || '—'} · Matrícula ${passaporte}`;
-                
-                if (ativo.entrada) {
-                    const d = new Date(ativo.entrada);
-                    document.getElementById('horaEntrada').textContent = 
-                        d.toLocaleDateString('pt-BR') + ' · ' +
-                        d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                }
+            // MOSTRA TODOS OS STATUS ENCONTRADOS — SEM ESCONDER NADA
+            pontos.forEach((p, i) => {
+                log += `Registro ${i+1} → status = "<strong>${p.status}</strong>"<br>`;
+            });
+
+            // TENTA ENCONTRAR DE QUALQUER JEITO
+            const ativo = pontos.find(p => 
+                p.status === 'ativo' || 
+                p.status === 'ATIVO' || 
+                p.status === 'Ativo' ||
+                p.status === true ||
+                p.status === 'em_jornada' ||
+                p.status === 'aberta'
+            );
+
+            if (!ativo) {
+                log += '<span class="erro">❌ Nenhum registro com status ativo encontrado</span><br>';
+                log += '<strong>Veja acima qual valor aparece ao lado de "status = "</strong> e me diz!';
+                caixa.innerHTML = log;
+                return;
+            }
+
+            log += '<span class="ok">✅ Jornada ativa encontrada!</span>';
+            caixa.innerHTML = log;
+
+            // MOSTRA A TELA COMPLETA
+            pagina.classList.add('com-jornada');
+            
+            document.getElementById('nomeUsuario').textContent = ativo.membros?.nome || 'Membro';
+            document.getElementById('passaporteUsuario').textContent = passaporte;
+            document.getElementById('cargoUsuario').textContent = ativo.membros?.cargo || '—';
+            document.getElementById('nomeLinha').textContent = ativo.membros?.nome || 'Membro';
+            document.getElementById('cargoLinha').textContent = `${ativo.membros?.cargo || '—'} · Matrícula ${passaporte}`;
+            
+            if (ativo.entrada) {
+                const d = new Date(ativo.entrada);
+                document.getElementById('horaEntrada').textContent = 
+                    d.toLocaleDateString('pt-BR') + ' · ' +
+                    d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             }
         }
 
@@ -291,5 +350,4 @@
     </script>
 
 </body>
-                            </html>
-                            
+</html>
