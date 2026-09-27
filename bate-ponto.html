@@ -242,7 +242,7 @@
                 </div>
             </div>
         </div>
-              <div class="grade-cards">
+                <div class="grade-cards">
             <div class="card">
                 <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
                 <p class="card-valor" id="exibeSituacao">Carregando...</p>
@@ -284,20 +284,6 @@
 
             <div class="conteudo-aba" id="conteudo-historico">
                 <div id="listaHistorico"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="fundo-modal" id="modalSair">
-        <div class="caixa-modal">
-            <div class="icone-modal" style="background: rgba(239,68,68,0.15);">
-                <i class="fas fa-question-circle" style="color: #f87171;"></i>
-            </div>
-            <h3 class="titulo-modal">Encerrar sessão?</h3>
-            <p class="texto-modal">Tem certeza que deseja sair da sua conta?</p>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" id="botaoCancelarSair">Cancelar</button>
-                <button class="botao-confirmar" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" id="botaoConfirmarSair">Sair</button>
             </div>
         </div>
     </div>
@@ -345,7 +331,6 @@
         const tempoMilesimos = document.getElementById('tempoMilesimos');
         const areaBotoes = document.getElementById('areaBotoes');
         const listaHistorico = document.getElementById('listaHistorico');
-        const modalSair = document.getElementById('modalSair');
         const modalEncerrar = document.getElementById('modalEncerrar');
         const avisoEspera = document.getElementById('avisoEspera');
         const contadorRegressivo = document.getElementById('contadorRegressivo');
@@ -497,7 +482,7 @@
             momentoInicioPausa = null;
             atualizarInterface();
 
-            // ✅ VAI DIRETO PRO EQUIPE.HTML
+            // ✅ INICIOU → VAI DIRETO PARA EQUIPE.HTML
             window.location.href = 'equipe.html';
         }
 
@@ -536,7 +521,6 @@
         }
 
         function fecharModais() {
-            modalSair.classList.remove('aberto');
             modalEncerrar.classList.remove('aberto');
         }
 
@@ -583,7 +567,7 @@
                 }
                 atualizarInterface();
             }, 1000);
-        }
+                }
                 function atualizarInterface() {
             const estaBloqueado = Date.now() < bloqueadoAte;
             
@@ -646,9 +630,20 @@
                 if (dataItem === hoje) totalHoje += duracao;
                 if (new Date(item.entrada) >= umaSemanaAtras) totalSemana += duracao;
                 
-                const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }).toUpperCase();
-                const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-                const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+                // ✅ ANO VISÍVEL AGORA!
+                const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { 
+                    weekday: 'short', 
+                    day: '2-digit', 
+                    month: '2-digit',
+                    year: 'numeric'
+                }).toUpperCase();
+                
+                const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
+                });
+                const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { 
+                    hour: '2-digit', minute: '2-digit', second: '2-digit' 
+                }) : '—';
                 
                 return `
                     <div class="item-historico">
@@ -677,12 +672,6 @@
             });
         });
 
-        document.getElementById('botaoCancelarSair').addEventListener('click', fecharModais);
-        document.getElementById('botaoConfirmarSair').addEventListener('click', () => {
-            localStorage.removeItem('passaporte');
-            localStorage.removeItem('bloqueadoAte');
-            window.location.href = 'login.html';
-        });
         document.getElementById('botaoCancelarEncerrar').addEventListener('click', fecharModais);
         document.getElementById('botaoConfirmarEncerrar').addEventListener('click', confirmarEncerramento);
 
