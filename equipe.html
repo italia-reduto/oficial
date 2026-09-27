@@ -11,6 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
     <style>
         * { 
             margin: 0; 
@@ -110,6 +118,18 @@
         }
         .botao-acao:hover { transform: translateY(-2px); }
 
+        /* Área que aparece quando tem jornada ativa */
+        .area-dados-equipe { display: none; }
+        .area-dados-equipe.visivel { display: block; }
+        .dado-linha {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
+        }
+        .dado-linha:last-child { border-bottom: none; padding-bottom: 0; }
+        .dado-rotulo { font-size: 14px; color: #94a3b8; }
+        .dado-valor { font-size: 15px; font-weight: 600; color: #fff; }
+        .status-ativo { color: #22c55e; font-weight: 600; }
+
         .barra-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
             background: #000; display: flex; align-items: center; justify-content: space-around;
@@ -139,27 +159,64 @@
             <p class="subtitulo-pagina">Alocação e informações do grupo</p>
         </div>
 
-        <div class="card">
-            <p class="status-linha">
-                <i class="fas fa-circle"></i> Sistema Ativo
-            </p>
-            <h2 class="card-titulo">Acesso à Equipe</h2>
-            <p class="card-texto">
-                Para visualizar os membros, escalas e todas as informações da sua equipe, é necessário registrar sua entrada primeiro.
-            </p>
+        <!-- ✅ TELA QUANDO NÃO TEM PONTO REGISTRADO -->
+        <div id="semPonto">
+            <div class="card">
+                <p class="status-linha">
+                    <i class="fas fa-circle"></i> Sistema Ativo
+                </p>
+                <h2 class="card-titulo">Acesso à Equipe</h2>
+                <p class="card-texto">
+                    Para visualizar os membros, escalas e todas as informações da sua equipe, é necessário registrar sua entrada primeiro.
+                </p>
+            </div>
+
+            <div class="card card-bloqueio">
+                <div class="icone-principal">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <h2 class="card-titulo">Ponto Não Registrado</h2>
+                <p class="card-texto" style="margin-bottom: 24px;">
+                    Inicie sua jornada para ter acesso completo aos dados da equipe.
+                </p>
+                <a href="bate-ponto.html" class="botao-acao">
+                    <i class="fas fa-clock"></i> Registrar Ponto
+                </a>
+            </div>
         </div>
 
-        <div class="card card-bloqueio">
-            <div class="icone-principal">
-                <i class="fas fa-user-clock"></i>
+        <!-- ✅ ÁREA QUE APARECE QUANDO TEM JORNADA ATIVA -->
+        <div class="area-dados-equipe" id="comPonto">
+            <div class="card">
+                <p class="status-linha" style="color: #22c55e;">
+                    <i class="fas fa-circle"></i> Jornada Ativa
+                </p>
+                <h2 class="card-titulo">Dados da Equipe</h2>
+                <p class="card-texto" style="margin-bottom: 16px;">
+                    Bem-vindo! Aqui estão suas informações e da sua equipe.
+                </p>
+
+                <div class="dado-linha">
+                    <span class="dado-rotulo">Nome</span>
+                    <span class="dado-valor" id="exibeNome">—</span>
+                </div>
+                <div class="dado-linha">
+                    <span class="dado-rotulo">Passaporte</span>
+                    <span class="dado-valor" id="exibePassaporte">—</span>
+                </div>
+                <div class="dado-linha">
+                    <span class="dado-rotulo">Entrada</span>
+                    <span class="dado-valor" id="exibeEntrada">—</span>
+                </div>
+                <div class="dado-linha">
+                    <span class="dado-rotulo">Status</span>
+                    <span class="dado-valor status-ativo">Em Jornada ✅</span>
+                </div>
+                <div class="dado-linha">
+                    <span class="dado-rotulo">Equipe</span>
+                    <span class="dado-valor" id="exibeEquipe">A definir</span>
+                </div>
             </div>
-            <h2 class="card-titulo">Ponto Não Registrado</h2>
-            <p class="card-texto" style="margin-bottom: 24px;">
-                Inicie sua jornada para ter acesso completo aos dados da equipe.
-            </p>
-            <a href="bate-ponto.html" class="botao-acao">
-                <i class="fas fa-clock"></i> Registrar Ponto
-            </a>
         </div>
     </div>
 
@@ -170,6 +227,57 @@
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
         <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
     </nav>
+
+    <script>
+        const passaporteUsuario = localStorage.getItem('passaporte') || null;
+        const semPontoDiv = document.getElementById('semPonto');
+        const comPontoDiv = document.getElementById('comPonto');
+        const exibeNome = document.getElementById('exibeNome');
+        const exibePassaporte = document.getElementById('exibePassaporte');
+        const exibeEntrada = document.getElementById('exibeEntrada');
+
+        async function verificarJornada() {
+            if (!passaporteUsuario) {
+                semPontoDiv.style.display = 'block';
+                comPontoDiv.classList.remove('visivel');
+                return;
+            }
+
+            // Busca jornada ativa
+            const { data: registro, error } = await sb
+                .from('pontos')
+                .select('*, membros(nome)')
+                .eq('passaporte', passaporteUsuario)
+                .eq('status', 'ativo')
+                .order('criado_em', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (error) console.error('Erro na verificação:', error);
+
+            if (registro) {
+                // ✅ TEM JORNADA → MOSTRA DADOS
+                semPontoDiv.style.display = 'none';
+                comPontoDiv.classList.add('visivel');
+
+                exibeNome.textContent = registro.membros?.nome || 'Membro';
+                exibePassaporte.textContent = passaporteUsuario;
+                
+                const dataEntrada = new Date(registro.entrada);
+                exibeEntrada.textContent = dataEntrada.toLocaleDateString('pt-BR', {
+                    day: '2-digit', month: '2-digit', year: 'numeric'
+                }) + ' · ' + dataEntrada.toLocaleTimeString('pt-BR', {
+                    hour: '2-digit', minute: '2-digit'
+                });
+            } else {
+                // ❌ SEM JORNADA → MOSTRA AVISO
+                semPontoDiv.style.display = 'block';
+                comPontoDiv.classList.remove('visivel');
+            }
+        }
+
+        verificarJornada();
+    </script>
 
 </body>
 </html>
