@@ -57,16 +57,9 @@
             background: rgba(15,23,42,0.6); border: 1px solid rgba(96,165,250,0.15);
             border-radius: 20px; padding: 24px; margin-bottom: 16px;
             backdrop-filter: blur(12px);
+            transition: transform 0.3s ease, border-color 0.3s ease;
         }
-
-        .diagnostico {
-            background: rgba(30,41,59,0.8); border: 1px solid #facc15;
-            border-radius: 12px; padding: 16px; margin-bottom: 16px;
-            font-size: 13px; line-height: 1.8;
-        }
-        .diagnostico strong { color: #facc15; }
-        .diagnostico .ok { color: #4ade80; }
-        .diagnostico .erro { color: #f87171; }
+        .card:hover { transform: translateY(-2px); border-color: rgba(96,165,250,0.3); }
 
         .tela-bloqueio { display: block; }
         .tela-dados { display: none; }
@@ -167,12 +160,6 @@
             <p class="subtitulo-pagina">Alocação e informações do grupo operacional</p>
         </div>
 
-        <!-- 🔍 CAIXA DE DIAGNÓSTICO — SEMPRE VISÍVEL -->
-        <div class="diagnostico" id="caixaDiagnostico">
-            <strong>🔍 DIAGNÓSTICO:</strong><br>
-            Buscando dados...
-        </div>
-
         <!-- TELA 1 — SEM JORNADA -->
         <div class="tela-bloqueio">
             <div class="card">
@@ -269,94 +256,50 @@
     <script>
         const passaporte = localStorage.getItem('passaporte');
         const pagina = document.getElementById('pagina');
-        const caixa = document.getElementById('caixaDiagnostico');
 
-        async function verificarJornada() {
-            let log = '';
-            
-            if (!passaporte) {
-                log += '<span class="erro">❌ Passaporte NÃO está salvo no navegador</span><br>';
-                log += 'Vá no bate-ponto, inicie a jornada e volte aqui.';
-                caixa.innerHTML = log;
-                return;
-            }
-            
-            log += `<span class="ok">✅ Passaporte encontrado: ${passaporte}</span><br>`;
-            caixa.innerHTML = log + 'Buscando ponto...';
+        async function carregarDados() {
+            if (!passaporte) return;
 
-            // 🔍 BUSCA 1: Tabela PONTOS separada
-            const { data: pontos, error: erroPonto } = await sb
+            // Busca pontos
+            const { data: pontos } = await sb
                 .from('pontos')
                 .select('*')
                 .eq('passaporte', passaporte)
                 .order('criado_em', { ascending: false });
 
-            if (erroPonto) {
-                log += `<span class="erro">❌ Erro na tabela pontos: ${erroPonto.message}</span>`;
-                caixa.innerHTML = log;
-                return;
-            }
+            if (!pontos) return;
 
-            if (!pontos || pontos.length === 0) {
-                log += '<span class="erro">❌ Nenhum registro de ponto encontrado</span>';
-                caixa.innerHTML = log;
-                return;
-            }
-
-            log += `<span class="ok">✅ ${pontos.length} registro(s) de ponto encontrado(s)</span><br>`;
-            
-            // Mostra todos os status
-            pontos.forEach((p, i) => {
-                log += `Registro ${i+1} → status = "<strong>${p.status}</strong>"<br>`;
-            });
-
-            // Tenta encontrar jornada ativa
             const ativo = pontos.find(p => 
                 p.status === 'ativo' || p.status === 'ATIVO' || 
                 p.status === 'Ativo' || p.status === true ||
                 p.status === 'em_jornada' || p.status === 'aberta'
             );
 
-            if (!ativo) {
-                log += '<span class="erro">❌ Nenhuma jornada ativa</span><br>';
-                log += 'Inicie a jornada no bate-ponto e atualize.';
-                caixa.innerHTML = log;
-                return;
-            }
+            if (!ativo) return;
 
-            log += '<span class="ok">✅ Jornada ativa encontrada!</span><br>';
-            caixa.innerHTML = log + 'Buscando dados do membro...';
-
-            // 🔍 BUSCA 2: Tabela MEMBROS separada
-            const { data: membro, error: erroMembro } = await sb
+            // Busca dados do membro
+            const { data: membro } = await sb
                 .from('membros')
                 .select('nome, cargo')
                 .eq('passaporte', passaporte)
                 .single();
 
-            if (erroMembro) {
-                log += `<span class="erro">⚠️ Ponto ok, mas dados do membro: ${erroMembro.message}</span><br>`;
-                log += 'Mostrando apenas dados do ponto...';
-                caixa.innerHTML = log;
-                // Mostra tela mesmo sem dados do membro
-                pagina.classList.add('com-jornada');
-                document.getElementById('nomeUsuario').textContent = 'Membro';
-                document.getElementById('passaporteUsuario').textContent = passaporte;
-                document.getElementById('nomeLinha').textContent = 'Membro';
-                document.getElementById('cargoLinha').textContent = `— · Matrícula ${passaporte}`;
-            } else {
-                log += '<span class="ok">✅ Dados do membro carregados!</span>';
-                caixa.innerHTML = log;
-                // Preenche tudo
-                pagina.classList.add('com-jornada');
+            // Mostra tudo
+            pagina.classList.add('com-jornada');
+            
+            if (membro) {
                 document.getElementById('nomeUsuario').textContent = membro.nome;
-                document.getElementById('passaporteUsuario').textContent = passaporte;
                 document.getElementById('cargoUsuario').textContent = membro.cargo || '—';
                 document.getElementById('nomeLinha').textContent = membro.nome;
                 document.getElementById('cargoLinha').textContent = `${membro.cargo || '—'} · Matrícula ${passaporte}`;
+            } else {
+                document.getElementById('nomeUsuario').textContent = 'Membro';
+                document.getElementById('nomeLinha').textContent = 'Membro';
+                document.getElementById('cargoLinha').textContent = `— · Matrícula ${passaporte}`;
             }
 
-            // Horário de entrada
+            document.getElementById('passaporteUsuario').textContent = passaporte;
+            
             if (ativo.entrada) {
                 const d = new Date(ativo.entrada);
                 document.getElementById('horaEntrada').textContent = 
@@ -365,7 +308,7 @@
             }
         }
 
-        verificarJornada();
+        carregarDados();
     </script>
 
 </body>
