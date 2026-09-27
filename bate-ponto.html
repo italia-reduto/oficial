@@ -49,10 +49,7 @@
 
         .conteudo { position: relative; z-index: 1; padding: 24px; }
         
-        .cabecalho {
-            display: flex; align-items: flex-start; justify-content: space-between;
-            margin-bottom: 28px;
-        }
+        .cabecalho { margin-bottom: 28px; }
         .titulo-secao { margin-bottom: 16px; }
         .titulo-secao h1 { font-size: 22px; font-weight: 700; color: #fff; }
         .titulo-secao p { font-size: 13px; color: #94a3b8; }
@@ -64,20 +61,6 @@
         .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
         .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
         
-        .botao-sair {
-            display: flex; align-items: center; gap: 6px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5; padding: 10px 14px; border-radius: 10px;
-            font-size: 14px; font-weight: 500; cursor: pointer;
-            transition: all 0.25s ease; white-space: nowrap; user-select: none;
-        }
-        .botao-sair:hover {
-            background: rgba(239, 68, 68, 0.25);
-            border-color: rgba(239, 68, 68, 0.5);
-            transform: translateY(-1px);
-        }
-
         .grade-cards {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 14px; margin-bottom: 24px;
@@ -122,9 +105,7 @@
             margin-bottom: 8px; letter-spacing: 1px;
             font-variant-numeric: tabular-nums;
         }
-        .tempo-central .milessimos {
-            font-size: 28px; color: #94a3b8;
-        }
+        .tempo-central .milessimos { font-size: 28px; color: #94a3b8; }
         .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 24px; }
         .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
         .botao-acao {
@@ -230,7 +211,6 @@
     <div class="fundo-imagem"></div>
     <div class="fundo-degrade"></div>
 
-    <!-- AVISO DE TEMPO DE ESPERA FIXO NO TOPO -->
     <div class="aviso-espera" id="avisoEspera">
         <div class="aviso-espera-conteudo">
             <i class="fas fa-clock"></i>
@@ -261,12 +241,8 @@
                     <span class="valor" id="exibePassaporte">—</span>
                 </div>
             </div>
-            <button class="botao-sair" id="botaoSair">
-                <i class="fas fa-sign-out-alt"></i> Sair
-            </button>
         </div>
-
-        <div class="grade-cards">
+              <div class="grade-cards">
             <div class="card">
                 <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
                 <p class="card-valor" id="exibeSituacao">Carregando...</p>
@@ -312,7 +288,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE SAIR -->
     <div class="fundo-modal" id="modalSair">
         <div class="caixa-modal">
             <div class="icone-modal" style="background: rgba(239,68,68,0.15);">
@@ -327,7 +302,6 @@
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMAÇÃO DE ENCERRAMENTO -->
     <div class="fundo-modal" id="modalEncerrar">
         <div class="caixa-modal">
             <div class="icone-modal" style="background: rgba(96, 165, 250, 0.15);">
@@ -353,8 +327,8 @@
         <a href="equipe.html" class="menu-item"><i class="fas fa-clipboard-list"></i><span>Equipe</span></a>
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
         <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
-                                                     </nav>
-                                                         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    </nav>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
@@ -498,8 +472,7 @@
             
             return Math.max(0, totalBruto);
         }
-
-        async function iniciarJornada() {
+                async function iniciarJornada() {
             if (Date.now() < bloqueadoAte) return;
             if (!passaporteUsuario) return alert('Passaporte não identificado!');
             
@@ -523,6 +496,9 @@
             tempoPausadoAcumulado = 0;
             momentoInicioPausa = null;
             atualizarInterface();
+
+            // ✅ VAI DIRETO PRO EQUIPE.HTML
+            window.location.href = 'equipe.html';
         }
 
         async function pausarJornada() {
@@ -584,7 +560,6 @@
             totalPausas = 0;
             tempoPausadoAcumulado = 0;
             
-            // BLOQUEIA POR 1 MINUTO
             bloqueadoAte = Date.now() + 60 * 1000;
             localStorage.setItem('bloqueadoAte', bloqueadoAte);
             atualizarInterface();
@@ -594,13 +569,10 @@
 
         function iniciarContagemRegressiva() {
             avisoEspera.style.display = 'block';
-            
             if (intervaloContagem) clearInterval(intervaloContagem);
-            
             intervaloContagem = setInterval(() => {
                 const agora = Date.now();
                 const restante = Math.max(0, Math.ceil((bloqueadoAte - agora) / 1000));
-                
                 if (restante <= 0) {
                     clearInterval(intervaloContagem);
                     avisoEspera.style.display = 'none';
@@ -612,8 +584,7 @@
                 atualizarInterface();
             }, 1000);
         }
-
-        function atualizarInterface() {
+                function atualizarInterface() {
             const estaBloqueado = Date.now() < bloqueadoAte;
             
             if (!registroAtivo) {
@@ -706,9 +677,6 @@
             });
         });
 
-        document.getElementById('botaoSair').addEventListener('click', () => {
-            modalSair.classList.add('aberto');
-        });
         document.getElementById('botaoCancelarSair').addEventListener('click', fecharModais);
         document.getElementById('botaoConfirmarSair').addEventListener('click', () => {
             localStorage.removeItem('passaporte');
