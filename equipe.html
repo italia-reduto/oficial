@@ -167,7 +167,7 @@
             <p class="subtitulo-pagina">Alocação e informações do grupo operacional</p>
         </div>
 
-        <!-- 🔍 CAIXA DE DIAGNÓSTICO — VAMOS VER O QUE ESTÁ ACONTECENDO -->
+        <!-- 🔍 CAIXA DE DIAGNÓSTICO — SEMPRE VISÍVEL -->
         <div class="diagnostico" id="caixaDiagnostico">
             <strong>🔍 DIAGNÓSTICO:</strong><br>
             Buscando dados...
@@ -282,62 +282,81 @@
             }
             
             log += `<span class="ok">✅ Passaporte encontrado: ${passaporte}</span><br>`;
-            caixa.innerHTML = log + 'Buscando no banco...';
+            caixa.innerHTML = log + 'Buscando ponto...';
 
-            const { data: pontos, error } = await sb
+            // 🔍 BUSCA 1: Tabela PONTOS separada
+            const { data: pontos, error: erroPonto } = await sb
                 .from('pontos')
-                .select('*, membros(nome, cargo)')
+                .select('*')
                 .eq('passaporte', passaporte)
                 .order('criado_em', { ascending: false });
 
-            if (error) {
-                log += `<span class="erro">❌ Erro no banco: ${error.message}</span>`;
+            if (erroPonto) {
+                log += `<span class="erro">❌ Erro na tabela pontos: ${erroPonto.message}</span>`;
                 caixa.innerHTML = log;
                 return;
             }
 
             if (!pontos || pontos.length === 0) {
-                log += '<span class="erro">❌ Nenhum registro encontrado no banco para esse passaporte</span>';
+                log += '<span class="erro">❌ Nenhum registro de ponto encontrado</span>';
                 caixa.innerHTML = log;
                 return;
             }
 
-            log += `<span class="ok">✅ ${pontos.length} registro(s) encontrado(s)</span><br>`;
+            log += `<span class="ok">✅ ${pontos.length} registro(s) de ponto encontrado(s)</span><br>`;
             
-            // MOSTRA TODOS OS STATUS ENCONTRADOS — SEM ESCONDER NADA
+            // Mostra todos os status
             pontos.forEach((p, i) => {
                 log += `Registro ${i+1} → status = "<strong>${p.status}</strong>"<br>`;
             });
 
-            // TENTA ENCONTRAR DE QUALQUER JEITO
+            // Tenta encontrar jornada ativa
             const ativo = pontos.find(p => 
-                p.status === 'ativo' || 
-                p.status === 'ATIVO' || 
-                p.status === 'Ativo' ||
-                p.status === true ||
-                p.status === 'em_jornada' ||
-                p.status === 'aberta'
+                p.status === 'ativo' || p.status === 'ATIVO' || 
+                p.status === 'Ativo' || p.status === true ||
+                p.status === 'em_jornada' || p.status === 'aberta'
             );
 
             if (!ativo) {
-                log += '<span class="erro">❌ Nenhum registro com status ativo encontrado</span><br>';
-                log += '<strong>Veja acima qual valor aparece ao lado de "status = "</strong> e me diz!';
+                log += '<span class="erro">❌ Nenhuma jornada ativa</span><br>';
+                log += 'Inicie a jornada no bate-ponto e atualize.';
                 caixa.innerHTML = log;
                 return;
             }
 
-            log += '<span class="ok">✅ Jornada ativa encontrada!</span>';
-            caixa.innerHTML = log;
+            log += '<span class="ok">✅ Jornada ativa encontrada!</span><br>';
+            caixa.innerHTML = log + 'Buscando dados do membro...';
 
-            // MOSTRA A TELA COMPLETA
-            pagina.classList.add('com-jornada');
-            
-            document.getElementById('nomeUsuario').textContent = ativo.membros?.nome || 'Membro';
-            document.getElementById('passaporteUsuario').textContent = passaporte;
-            document.getElementById('cargoUsuario').textContent = ativo.membros?.cargo || '—';
-            document.getElementById('nomeLinha').textContent = ativo.membros?.nome || 'Membro';
-            document.getElementById('cargoLinha').textContent = `${ativo.membros?.cargo || '—'} · Matrícula ${passaporte}`;
-            
+            // 🔍 BUSCA 2: Tabela MEMBROS separada
+            const { data: membro, error: erroMembro } = await sb
+                .from('membros')
+                .select('nome, cargo')
+                .eq('passaporte', passaporte)
+                .single();
+
+            if (erroMembro) {
+                log += `<span class="erro">⚠️ Ponto ok, mas dados do membro: ${erroMembro.message}</span><br>`;
+                log += 'Mostrando apenas dados do ponto...';
+                caixa.innerHTML = log;
+                // Mostra tela mesmo sem dados do membro
+                pagina.classList.add('com-jornada');
+                document.getElementById('nomeUsuario').textContent = 'Membro';
+                document.getElementById('passaporteUsuario').textContent = passaporte;
+                document.getElementById('nomeLinha').textContent = 'Membro';
+                document.getElementById('cargoLinha').textContent = `— · Matrícula ${passaporte}`;
+            } else {
+                log += '<span class="ok">✅ Dados do membro carregados!</span>';
+                caixa.innerHTML = log;
+                // Preenche tudo
+                pagina.classList.add('com-jornada');
+                document.getElementById('nomeUsuario').textContent = membro.nome;
+                document.getElementById('passaporteUsuario').textContent = passaporte;
+                document.getElementById('cargoUsuario').textContent = membro.cargo || '—';
+                document.getElementById('nomeLinha').textContent = membro.nome;
+                document.getElementById('cargoLinha').textContent = `${membro.cargo || '—'} · Matrícula ${passaporte}`;
+            }
+
+            // Horário de entrada
             if (ativo.entrada) {
                 const d = new Date(ativo.entrada);
                 document.getElementById('horaEntrada').textContent = 
