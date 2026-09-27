@@ -358,7 +358,7 @@
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-               const exibeNome = document.getElementById('exibeNome');
+                const exibeNome = document.getElementById('exibeNome');
         const exibePassaporte = document.getElementById('exibePassaporte');
         const exibeSituacao = document.getElementById('exibeSituacao');
         const exibeHoje = document.getElementById('exibeHoje');
@@ -520,6 +520,9 @@
             tempoPausadoAcumulado = 0;
             momentoInicioPausa = null;
             atualizarInterface();
+            
+            // ✅ REDIRECIONA PARA EQUIPE APÓS INICIAR JORNADA
+            window.location.href = 'equipe.html';
         }
 
         async function pausarJornada() {
