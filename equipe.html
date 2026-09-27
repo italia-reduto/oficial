@@ -75,6 +75,7 @@
             font-size: 14px; color: #94a3b8;
         }
 
+        /* === TELA SEM JORNADA === */
         .card {
             background: rgba(15, 23, 42, 0.55);
             border: 1px solid rgba(96, 165, 250, 0.12);
@@ -83,20 +84,17 @@
             margin-bottom: 16px;
             backdrop-filter: blur(8px);
         }
-
         .status-linha {
             display: flex; align-items: center; gap: 8px;
             font-size: 13px; color: #86efac; margin-bottom: 10px; font-weight: 500;
         }
         .status-linha i { font-size: 10px; }
-
         .card-titulo {
             font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px;
         }
         .card-texto {
             font-size: 14px; color: #94a3b8; line-height: 1.6;
         }
-
         .card-bloqueio {
             text-align: center;
             padding: 36px 24px;
@@ -108,7 +106,6 @@
             margin: 0 auto 20px;
         }
         .icone-principal i { font-size: 26px; color: #60a5fa; }
-
         .botao-acao {
             display: inline-flex; align-items: center; gap: 8px;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
@@ -118,17 +115,74 @@
         }
         .botao-acao:hover { transform: translateY(-2px); }
 
-        /* Área que aparece quando tem jornada ativa */
-        .area-dados-equipe { display: none; }
-        .area-dados-equipe.visivel { display: block; }
-        .dado-linha {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
+        /* === TELA COM JORNADA ATIVA === */
+        .tela-dados { display: none; }
+        .tela-dados.ativa { display: block; }
+
+        .cabecalho-membro {
+            display: flex; align-items: center; gap: 14px;
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 16px;
+            padding: 20px; margin-bottom: 16px;
+            backdrop-filter: blur(8px);
         }
-        .dado-linha:last-child { border-bottom: none; padding-bottom: 0; }
-        .dado-rotulo { font-size: 14px; color: #94a3b8; }
-        .dado-valor { font-size: 15px; font-weight: 600; color: #fff; }
-        .status-ativo { color: #22c55e; font-weight: 600; }
+        .icone-membro {
+            width: 48px; height: 48px; border-radius: 12px;
+            background: rgba(96, 165, 250, 0.15);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .icone-membro i { font-size: 22px; color: #60a5fa; }
+        .info-membro h2 {
+            font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 2px;
+        }
+        .info-membro p {
+            font-size: 13px; color: #94a3b8;
+        }
+        .status-bolinha {
+            margin-left: auto;
+            display: flex; align-items: center; gap: 6px;
+            font-size: 13px; font-weight: 600; color: #22c55e;
+        }
+        .status-bolinha i { font-size: 10px; }
+
+        .card-equipe {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 16px;
+            padding: 22px; margin-bottom: 16px;
+            backdrop-filter: blur(8px);
+        }
+        .etiqueta-escala {
+            font-size: 12px; color: #60a5fa; text-transform: uppercase;
+            letter-spacing: 1px; margin-bottom: 6px; font-weight: 600;
+        }
+        .nome-equipe {
+            font-size: 32px; font-weight: 800; color: #fff; margin-bottom: 4px;
+        }
+        .sub-equipe {
+            font-size: 14px; color: #94a3b8; margin-bottom: 20px;
+        }
+
+        .grade-dados {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+            margin-bottom: 16px;
+        }
+        .bloco-dado {
+            background: rgba(96, 165, 250, 0.06);
+            border-radius: 12px; padding: 14px;
+        }
+        .bloco-dado.largo { grid-column: 1 / -1; }
+        .dado-titulo {
+            font-size: 12px; color: #94a3b8; margin-bottom: 6px; font-weight: 500;
+        }
+        .dado-valor {
+            font-size: 15px; font-weight: 600; color: #fff;
+        }
+        .dado-valor.destaque {
+            font-size: 20px; font-weight: 800; color: #3b82f6;
+        }
 
         .barra-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
@@ -159,15 +213,17 @@
             <p class="subtitulo-pagina">Alocação e informações do grupo</p>
         </div>
 
-        <!-- ✅ TELA QUANDO NÃO TEM PONTO REGISTRADO -->
-        <div id="semPonto">
+        <!-- ====================================== -->
+        <!-- TELA 1: SEM JORNADA INICIADA -->
+        <!-- ====================================== -->
+        <div id="telaBloqueio">
             <div class="card">
                 <p class="status-linha">
                     <i class="fas fa-circle"></i> Sistema Ativo
                 </p>
                 <h2 class="card-titulo">Acesso à Equipe</h2>
                 <p class="card-texto">
-                    Para visualizar os membros, escalas e todas as informações da sua equipe, é necessário registrar sua entrada primeiro.
+                    Veja sua alocação depois de iniciar o ponto. Suas informações e da equipe aparecerão aqui.
                 </p>
             </div>
 
@@ -185,37 +241,70 @@
             </div>
         </div>
 
-        <!-- ✅ ÁREA QUE APARECE QUANDO TEM JORNADA ATIVA -->
-        <div class="area-dados-equipe" id="comPonto">
-            <div class="card">
-                <p class="status-linha" style="color: #22c55e;">
-                    <i class="fas fa-circle"></i> Jornada Ativa
-                </p>
-                <h2 class="card-titulo">Dados da Equipe</h2>
-                <p class="card-texto" style="margin-bottom: 16px;">
-                    Bem-vindo! Aqui estão suas informações e da sua equipe.
-                </p>
+        <!-- ====================================== -->
+        <!-- TELA 2: COM JORNADA ATIVA -->
+        <!-- ====================================== -->
+        <div id="telaDados" class="tela-dados">
+            
+            <!-- Cabeçalho do membro -->
+            <div class="cabecalho-membro">
+                <div class="icone-membro">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div class="info-membro">
+                    <h2 id="nomeMembro">—</h2>
+                    <p>Passaporte · <span id="passaporteMembro">—</span></p>
+                </div>
+                <div class="status-bolinha">
+                    <i class="fas fa-circle"></i> Em Serviço
+                </div>
+            </div>
 
-                <div class="dado-linha">
-                    <span class="dado-rotulo">Nome</span>
-                    <span class="dado-valor" id="exibeNome">—</span>
+            <!-- Dados da Equipe -->
+            <div class="card-equipe">
+                <p class="etiqueta-escala">Escala Ativa</p>
+                <h2 class="nome-equipe" id="nomeEquipe">ITÁLIA</h2>
+                <p class="sub-equipe" id="subEquipe">Aguardando alocação...</p>
+
+                <div class="grade-dados">
+                    <div class="bloco-dado largo">
+                        <p class="dado-titulo"><i class="fas fa-map-marker-alt"></i> Missão / Área</p>
+                        <p class="dado-valor">A definir</p>
+                    </div>
+
+                    <div class="bloco-dado">
+                        <p class="dado-titulo">Minha Posição</p>
+                        <p class="dado-valor destaque">—</p>
+                    </div>
+
+                    <div class="bloco-dado">
+                        <p class="dado-titulo">Turno</p>
+                        <p class="dado-valor">—</p>
+                    </div>
+
+                    <div class="bloco-dado">
+                        <p class="dado-titulo">Posto / Função</p>
+                        <p class="dado-valor">—</p>
+                    </div>
+
+                    <div class="bloco-dado">
+                        <p class="dado-titulo">Responsável</p>
+                        <p class="dado-valor">—</p>
+                    </div>
+
+                    <div class="bloco-dado largo">
+                        <p class="dado-titulo">Minha Entrada</p>
+                        <p class="dado-valor" id="horaEntrada">—</p>
+                    </div>
                 </div>
-                <div class="dado-linha">
-                    <span class="dado-rotulo">Passaporte</span>
-                    <span class="dado-valor" id="exibePassaporte">—</span>
-                </div>
-                <div class="dado-linha">
-                    <span class="dado-rotulo">Entrada</span>
-                    <span class="dado-valor" id="exibeEntrada">—</span>
-                </div>
-                <div class="dado-linha">
-                    <span class="dado-rotulo">Status</span>
-                    <span class="dado-valor status-ativo">Em Jornada ✅</span>
-                </div>
-                <div class="dado-linha">
-                    <span class="dado-rotulo">Equipe</span>
-                    <span class="dado-valor" id="exibeEquipe">A definir</span>
-                </div>
+            </div>
+
+            <!-- Quem está comigo (depois adicionamos) -->
+            <div class="card-equipe" style="opacity: 0.6;">
+                <p class="etiqueta-escala">Quem está comigo</p>
+                <p class="card-texto" style="margin-top: 8px;">
+                    Lista de membros da equipe em desenvolvimento...
+                </p>
             </div>
         </div>
     </div>
@@ -223,23 +312,20 @@
     <nav class="barra-menu">
         <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
         <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item ativo"><i class="fas fa-clipboard-list"></i><span>Equipe</span></a>
+        <a href="equipe.html" class="menu-item ativo"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
         <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
     </nav>
 
     <script>
-        const passaporteUsuario = localStorage.getItem('passaporte') || null;
-        const semPontoDiv = document.getElementById('semPonto');
-        const comPontoDiv = document.getElementById('comPonto');
-        const exibeNome = document.getElementById('exibeNome');
-        const exibePassaporte = document.getElementById('exibePassaporte');
-        const exibeEntrada = document.getElementById('exibeEntrada');
+        const passaporteUsuario = localStorage.getItem('passaporte');
+        const telaBloqueio = document.getElementById('telaBloqueio');
+        const telaDados = document.getElementById('telaDados');
 
         async function verificarJornada() {
             if (!passaporteUsuario) {
-                semPontoDiv.style.display = 'block';
-                comPontoDiv.classList.remove('visivel');
+                telaBloqueio.style.display = 'block';
+                telaDados.classList.remove('ativa');
                 return;
             }
 
@@ -253,26 +339,25 @@
                 .limit(1)
                 .maybeSingle();
 
-            if (error) console.error('Erro na verificação:', error);
+            if (error) console.error('Erro:', error);
 
             if (registro) {
-                // ✅ TEM JORNADA → MOSTRA DADOS
-                semPontoDiv.style.display = 'none';
-                comPontoDiv.classList.add('visivel');
+                // ✅ TEM JORNADA → MOSTRA TELA DE DADOS
+                telaBloqueio.style.display = 'none';
+                telaDados.classList.add('ativa');
 
-                exibeNome.textContent = registro.membros?.nome || 'Membro';
-                exibePassaporte.textContent = passaporteUsuario;
-                
-                const dataEntrada = new Date(registro.entrada);
-                exibeEntrada.textContent = dataEntrada.toLocaleDateString('pt-BR', {
-                    day: '2-digit', month: '2-digit', year: 'numeric'
-                }) + ' · ' + dataEntrada.toLocaleTimeString('pt-BR', {
-                    hour: '2-digit', minute: '2-digit'
-                });
+                // Preenche os dados
+                document.getElementById('nomeMembro').textContent = registro.membros?.nome || 'Membro';
+                document.getElementById('passaporteMembro').textContent = passaporteUsuario;
+
+                const entrada = new Date(registro.entrada);
+                document.getElementById('horaEntrada').textContent = 
+                    entrada.toLocaleDateString('pt-BR') + ' · ' +
+                    entrada.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             } else {
-                // ❌ SEM JORNADA → MOSTRA AVISO
-                semPontoDiv.style.display = 'block';
-                comPontoDiv.classList.remove('visivel');
+                // ❌ SEM JORNADA → MOSTRA BLOQUEIO
+                telaBloqueio.style.display = 'block';
+                telaDados.classList.remove('ativa');
             }
         }
 
