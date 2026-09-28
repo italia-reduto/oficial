@@ -8,7 +8,7 @@
     <title>ITÁLIA · EQUIPE</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -18,298 +18,403 @@
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
-
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         html, body {
-            min-height: 100vh; font-family: 'Inter', sans-serif; color: #fff;
-            padding-bottom: 85px; overflow-x: hidden;
+            min-height: 100vh;
+            background: linear-gradient(180deg, #000000 0%, #0f172a 100%);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 90px;
         }
-
-        .fundo-pagina {
-            position: fixed; inset: 0;
-            background: linear-gradient(145deg, #000 0%, #0c1929 45%, #112240 100%);
-            z-index: -3;
+        
+        .cabecalho {
+            padding: 30px 24px 20px;
         }
-        .fundo-imagem {
-            position: fixed; inset: 0;
-            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.06; z-index: -1;
-        }
-        .fundo-degrade {
-            position: fixed; inset: 0;
-            background: 
-                radial-gradient(circle at top right, rgba(59,130,246,0.08) 0%, transparent 50%),
-                linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.92) 100%);
-            z-index: 0;
-        }
-
-        .conteudo { position: relative; z-index: 1; padding: 20px; }
-        .cabecalho-pagina { margin: 8px 0 28px; }
+        
         .titulo-pagina {
-            font-size: 26px; font-weight: 800; display: flex; align-items: center; gap: 12px;
-            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
         }
-        .titulo-pagina i { font-size: 22px; color: #60a5fa; filter: drop-shadow(0 0 8px rgba(96,165,250,0.4)); }
-        .subtitulo-pagina { font-size: 14px; color: #7c8db0; margin-top: 4px; }
-
-        .card {
-            background: rgba(15,23,42,0.6); border: 1px solid rgba(96,165,250,0.15);
-            border-radius: 20px; padding: 24px; margin-bottom: 16px;
-            backdrop-filter: blur(12px);
-            transition: transform 0.3s ease, border-color 0.3s ease;
+        
+        .titulo-pagina i {
+            color: #60a5fa;
         }
-        .card:hover { transform: translateY(-2px); border-color: rgba(96,165,250,0.3); }
-
-        .tela-bloqueio { display: block; }
-        .tela-dados { display: none; }
-        .com-jornada .tela-bloqueio { display: none; }
-        .com-jornada .tela-dados { display: block; }
-
-        .icone-bloqueio {
-            width: 72px; height: 72px; border-radius: 18px;
-            background: rgba(96,165,250,0.12); display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 20px;
+        
+        .subtitulo {
+            color: #94a3b8;
+            font-size: 14px;
         }
-        .icone-bloqueio i { font-size: 28px; color: #60a5fa; }
-        .botao-acao {
-            display: inline-flex; align-items: center; gap: 8px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: #fff; border: none; border-radius: 12px;
-            padding: 14px 32px; font-size: 15px; font-weight: 600;
-            cursor: pointer; text-decoration: none;
+        
+        .conteudo {
+            padding: 0 20px;
         }
-
-        .cabecalho-membro { display: flex; align-items: center; gap: 16px; }
-        .avatar {
-            width: 56px; height: 56px; border-radius: 16px;
-            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(59,130,246,0.25);
+        
+        .card-membro {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
         }
-        .avatar i { font-size: 24px; color: #fff; }
-        .info-principal h2 { font-size: 18px; font-weight: 700; }
-        .info-principal p { font-size: 13px; color: #7c8db0; margin-top: 2px; }
-        .status-tag {
-            margin-left: auto; display: flex; align-items: center; gap: 6px;
-            background: rgba(34,197,94,0.1); color: #4ade80;
-            padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 600;
+        
+        .icone-perfil {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #fff;
+            flex-shrink: 0;
         }
-        .status-tag i { font-size: 9px; animation: pulse 2s infinite; }
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
-
+        
+        .info-membro {
+            flex: 1;
+        }
+        
+        .nome-membro {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 2px;
+        }
+        
+        .passaporte-membro {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .status-ativo {
+            background: rgba(34, 197, 94, 0.12);
+            color: #4ade80;
+        }
+        
+        .status-inativo {
+            background: rgba(239, 68, 68, 0.12);
+            color: #f87171;
+        }
+        
+        .status-badge::before {
+            content: "";
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+        
+        .card-equipe {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            border-radius: 20px;
+            padding: 24px;
+        }
+        
         .etiqueta {
-            font-size: 12px; color: #60a5fa; text-transform: uppercase;
-            letter-spacing: 1.5px; margin-bottom: 8px; font-weight: 600;
+            font-size: 13px;
+            color: #60a5fa;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
-        .nome-equipe { font-size: 34px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 4px; }
-        .sub-equipe { font-size: 14px; color: #7c8db0; margin-bottom: 24px; }
-
-        .grade { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .bloco {
-            background: rgba(96,165,250,0.06); border-radius: 14px; padding: 16px;
-            border: 1px solid rgba(96,165,250,0.08);
+        
+        .nome-equipe {
+            font-size: 42px;
+            font-weight: 800;
+            margin-bottom: 8px;
         }
-        .bloco.largo { grid-column: 1 / -1; }
-        .rotulo { font-size: 12px; color: #7c8db0; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
-        .valor { font-size: 15px; font-weight: 600; color: #e2e8f0; }
-        .valor.destaque { font-size: 20px; font-weight: 800; color: #60a5fa; }
-
-        .lista-membros { margin-top: 16px; }
-        .membro-titulo { font-size: 13px; color: #7c8db0; margin-bottom: 12px; }
-        .membro-item {
-            display: flex; align-items: center; gap: 14px; padding: 14px 12px;
-            border-radius: 12px; margin-bottom: 8px; background: rgba(255,255,255,0.02);
+        
+        .desc-equipe {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 24px;
         }
-        .membro-posicao {
-            width: 38px; height: 38px; border-radius: 10px;
-            background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(96,165,250,0.1));
-            color: #60a5fa; display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 14px; flex-shrink: 0;
+        
+        .grade-dados {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 12px;
         }
-        .membro-nome { font-size: 15px; font-weight: 600; color: #f1f5f9; }
-        .membro-cargo { font-size: 12px; color: #7c8db0; margin-top: 2px; }
-        .membro-voce {
-            font-size: 11px; color: #60a5fa; font-weight: 700;
-            background: rgba(59,130,246,0.12); padding: 5px 10px; border-radius: 8px;
+        
+        .grade-dados.coluna-1 {
+            grid-column: 1 / -1;
         }
-
+        
+        .bloco-dado {
+            background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px;
+            padding: 16px;
+        }
+        
+        .bloco-dado.coluna-1 {
+            grid-column: 1 / -1;
+        }
+        
+        .rotulo {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 6px;
+        }
+        
+        .valor {
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .valor.vazio {
+            color: #475569;
+            border-bottom: 2px solid #334155;
+            display: inline-block;
+            min-width: 60px;
+        }
+        
         .barra-menu {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
-            background: rgba(0,0,0,0.9); backdrop-filter: blur(16px);
-            display: flex; align-items: center; justify-content: space-around;
-            border-top: 1px solid rgba(96,165,250,0.12); z-index: 100;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid rgba(96, 165, 250, 0.15);
+            z-index: 100;
         }
+        
         .menu-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #64748b; text-decoration: none; font-size: 11px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 11px;
         }
+        
         .menu-item.ativo { color: #60a5fa; }
-        .menu-item i { font-size: 21px; margin-bottom: 2px; }
+        .menu-item i { font-size: 20px; }
+        
+        .carregando {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+        
+        .erro-mensagem {
+            text-align: center;
+            padding: 40px 20px;
+            color: #f87171;
+        }
+        
+        .botao-voltar {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+        }
     </style>
 </head>
-<body id="pagina">
-
-    <div class="fundo-pagina"></div>
-    <div class="fundo-imagem"></div>
-    <div class="fundo-degrade"></div>
-
-    <div class="conteudo">
-        <div class="cabecalho-pagina">
-            <h1 class="titulo-pagina"><i class="fas fa-users"></i>Minha Equipe</h1>
-            <p class="subtitulo-pagina">Alocação e informações do grupo operacional</p>
-        </div>
-
-        <!-- TELA 1 — SEM JORNADA -->
-        <div class="tela-bloqueio">
-            <div class="card">
-                <p style="font-size:13px; color:#86efac; display:flex; align-items:center; gap:6px; margin-bottom:10px;">
-                    <i class="fas fa-circle" style="font-size:10px;"></i> Sistema Ativo
-                </p>
-                <h2 style="font-size:20px; font-weight:700; margin-bottom:8px;">Acesso à Equipe</h2>
-                <p style="font-size:14px; color:#94a3b8; line-height:1.6;">
-                    Inicie sua jornada no ponto para visualizar dados da equipe.
-                </p>
-            </div>
-            <div class="card" style="text-align:center; padding:36px 24px;">
-                <div class="icone-bloqueio"><i class="fas fa-user-clock"></i></div>
-                <h2 style="font-size:20px; font-weight:700; margin-bottom:8px;">Ponto Não Registrado</h2>
-                <p style="font-size:14px; color:#94a3b8; margin-bottom:24px;">
-                    Inicie sua jornada para ter acesso completo aos dados da equipe.
-                </p>
-                <a href="bate-ponto.html" class="botao-acao">
-                    <i class="fas fa-clock"></i> Registrar Ponto
-                </a>
-            </div>
-        </div>
-
-        <!-- TELA 2 — COM JORNADA ATIVA -->
-        <div class="tela-dados">
-            <div class="card cabecalho-membro">
-                <div class="avatar"><i class="fas fa-shield-alt"></i></div>
-                <div class="info-principal">
-                    <h2 id="nomeUsuario">—</h2>
-                    <p>Passaporte · <span id="passaporteUsuario">—</span></p>
-                </div>
-                <div class="status-tag">
-                    <i class="fas fa-circle"></i> Em Serviço
-                </div>
-            </div>
-
-            <div class="card">
-                <p class="etiqueta">Escala Ativa</p>
-                <h2 class="nome-equipe">ITÁLIA</h2>
-                <p class="sub-equipe">Aguardando alocação operacional</p>
-                <div class="grade">
-                    <div class="bloco largo">
-                        <p class="rotulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
-                        <p class="valor">A definir</p>
-                    </div>
-                    <div class="bloco">
-                        <p class="rotulo">Minha Posição</p>
-                        <p class="valor destaque">—</p>
-                    </div>
-                    <div class="bloco">
-                        <p class="rotulo">Função / Cargo</p>
-                        <p class="valor" id="cargoUsuario">—</p>
-                    </div>
-                    <div class="bloco">
-                        <p class="rotulo">Veículo</p>
-                        <p class="valor">—</p>
-                    </div>
-                    <div class="bloco">
-                        <p class="rotulo">Atividade</p>
-                        <p class="valor">—</p>
-                    </div>
-                    <div class="bloco largo">
-                        <p class="rotulo">Entrada Registrada</p>
-                        <p class="valor" id="horaEntrada">—</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <p class="etiqueta">Equipe em Campo</p>
-                <p class="membro-titulo">1 membro ativo</p>
-                <div class="lista-membros">
-                    <div class="membro-item">
-                        <div class="membro-posicao">1</div>
-                        <div>
-                            <div class="membro-nome" id="nomeLinha">—</div>
-                            <div class="membro-cargo" id="cargoLinha">—</div>
-                        </div>
-                        <span class="membro-voce">VOCÊ</span>
-                    </div>
-                </div>
-            </div>
+<body>
+    <div class="cabecalho">
+        <h1 class="titulo-pagina">
+            <i class="fas fa-users"></i> Minha Equipe
+        </h1>
+        <p class="subtitulo">Alocação e informações do grupo operacional</p>
+    </div>
+    
+    <div class="conteudo" id="areaConteudo">
+        <div class="carregando">
+            <i class="fas fa-spinner fa-spin"></i> Carregando informações...
         </div>
     </div>
-
+    
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item ativo"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
-        <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
+        <a href="painel.html" class="menu-item">
+            <i class="fas fa-home"></i><span>Painel</span>
+        </a>
+        <a href="bate-ponto.html" class="menu-item">
+            <i class="fas fa-clock"></i><span>Ponto</span>
+        </a>
+        <a href="equipe.html" class="menu-item ativo">
+            <i class="fas fa-users"></i><span>Equipe</span>
+        </a>
+        <a href="tickets.html" class="menu-item">
+            <i class="fas fa-file-alt"></i><span>Tickets</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-ellipsis-h"></i><span>Mais</span>
+        </a>
     </nav>
 
     <script>
-        const passaporte = localStorage.getItem('passaporte');
-        const pagina = document.getElementById('pagina');
-
+        // ========== FUNÇÃO PARA FORMATAR DATA ==========
+        function formatarData(data) {
+            if (!data) return "—";
+            const d = new Date(data);
+            const dia = String(d.getDate()).padStart(2, '0');
+            const mes = String(d.getMonth() + 1).padStart(2, '0');
+            const ano = d.getFullYear();
+            const h = String(d.getHours()).padStart(2, '0');
+            const m = String(d.getMinutes()).padStart(2, '0');
+            return `${dia}/${mes}/${ano} · ${h}:${m}`;
+        }
+        
+        // ========== CARREGAR TUDO ==========
         async function carregarDados() {
-            if (!passaporte) return;
-
-            // Busca pontos
-            const { data: pontos } = await sb
-                .from('pontos')
-                .select('*')
-                .eq('passaporte', passaporte)
-                .order('criado_em', { ascending: false });
-
-            if (!pontos) return;
-
-            const ativo = pontos.find(p => 
-                p.status === 'ativo' || p.status === 'ATIVO' || 
-                p.status === 'Ativo' || p.status === true ||
-                p.status === 'em_jornada' || p.status === 'aberta'
-            );
-
-            if (!ativo) return;
-
-            // Busca dados do membro
-            const { data: membro } = await sb
-                .from('membros')
-                .select('nome, cargo')
-                .eq('passaporte', passaporte)
-                .single();
-
-            // Mostra tudo
-            pagina.classList.add('com-jornada');
+            const passaporteSalvo = localStorage.getItem('passaporte');
             
-            if (membro) {
-                document.getElementById('nomeUsuario').textContent = membro.nome;
-                document.getElementById('cargoUsuario').textContent = membro.cargo || '—';
-                document.getElementById('nomeLinha').textContent = membro.nome;
-                document.getElementById('cargoLinha').textContent = `${membro.cargo || '—'} · Matrícula ${passaporte}`;
-            } else {
-                document.getElementById('nomeUsuario').textContent = 'Membro';
-                document.getElementById('nomeLinha').textContent = 'Membro';
-                document.getElementById('cargoLinha').textContent = `— · Matrícula ${passaporte}`;
+            if (!passaporteSalvo) {
+                window.location.href = 'login.html';
+                return;
             }
-
-            document.getElementById('passaporteUsuario').textContent = passaporte;
             
-            if (ativo.entrada) {
-                const d = new Date(ativo.entrada);
-                document.getElementById('horaEntrada').textContent = 
-                    d.toLocaleDateString('pt-BR') + ' · ' +
-                    d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            try {
+                // 1️⃣ Buscar dados do membro
+                const { data: membro, error: erroMembro } = await sb
+                    .from('membros')
+                    .select('*, equipe_id')
+                    .eq('passaporte', passaporteSalvo)
+                    .single();
+                
+                if (erroMembro) throw erroMembro;
+                
+                if (!membro || !membro.equipe_id) {
+                    document.getElementById('areaConteudo').innerHTML = `
+                        <div class="erro-mensagem">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Você ainda não está alocado em nenhuma equipe.</p>
+                            <a href="painel.html" class="botao-voltar">Voltar ao Painel</a>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                // 2️⃣ Buscar dados da equipe
+                const { data: equipe, error: erroEquipe } = await sb
+                    .from('equipes')
+                    .select('*')
+                    .eq('id', membro.equipe_id)
+                    .single();
+                
+                if (erroEquipe) throw erroEquipe;
+                
+                // 3️⃣ Buscar detalhes do membro na equipe
+                const { data: detalheEquipe } = await sb
+                    .from('equipe_membros')
+                    .select('*')
+                    .eq('equipe_id', membro.equipe_id)
+                    .eq('membro_id', membro.id)
+                    .maybeSingle();
+                
+                // 4️⃣ Buscar ponto/status
+                const { data: ponto } = await sb
+                    .from('pontos')
+                    .select('*')
+                    .eq('passaporte', passaporteSalvo)
+                    .is('saida', null)
+                    .order('entrada', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+                
+                // ========== MONTAR TELA ==========
+                const statusAtivo = ponto && ponto.status === 'em_servico';
+                const statusTexto = statusAtivo ? 'Em Serviço' : 'Fora de Serviço';
+                const classeStatus = statusAtivo ? 'status-ativo' : 'status-inativo';
+                
+                document.getElementById('areaConteudo').innerHTML = `
+                    <!-- CARD DO MEMBRO -->
+                    <div class="card-membro">
+                        <div class="icone-perfil">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="info-membro">
+                            <h2 class="nome-membro">${membro.nome || 'Membro'}</h2>
+                            <p class="passaporte-membro">Passaporte · ${membro.passaporte || '—'}</p>
+                        </div>
+                        <div class="status-badge ${classeStatus}">${statusTexto}</div>
+                    </div>
+                    
+                    <!-- CARD DA EQUIPE -->
+                    <div class="card-equipe">
+                        <p class="etiqueta">Escala Ativa</p>
+                        <h3 class="nome-equipe">${equipe.nome || 'ITÁLIA'}</h3>
+                        <p class="desc-equipe">${equipe.area ? `Área: ${equipe.area}` : 'Aguardando alocação operacional'}</p>
+                        
+                        <div class="grade-dados coluna-1">
+                            <div class="bloco-dado coluna-1">
+                                <p class="rotulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
+                                <p class="valor">${equipe.area || '<span class="vazio">A definir</span>'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grade-dados">
+                            <div class="bloco-dado">
+                                <p class="rotulo">Minha Posição</p>
+                                <p class="valor">${detalheEquipe?.posicao || '<span class="vazio">—</span>'}</p>
+                            </div>
+                            <div class="bloco-dado">
+                                <p class="rotulo">Função / Cargo</p>
+                                <p class="valor">${membro.cargo || equipe.funcao || '<span class="vazio">—</span>'}</p>
+                            </div>
+                            <div class="bloco-dado">
+                                <p class="rotulo">Veículo</p>
+                                <p class="valor">${detalheEquipe?.veiculo || '<span class="vazio">—</span>'}</p>
+                            </div>
+                            <div class="bloco-dado">
+                                <p class="rotulo">Atividade</p>
+                                <p class="valor">${detalheEquipe?.atividade || '<span class="vazio">—</span>'}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grade-dados coluna-1">
+                            <div class="bloco-dado coluna-1">
+                                <p class="rotulo">Entrada Registrada</p>
+                                <p class="valor">${ponto?.entrada ? formatarData(ponto.entrada) : '<span class="vazio">—</span>'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+            } catch (erro) {
+                console.error('Erro ao carregar:', erro);
+                document.getElementById('areaConteudo').innerHTML = `
+                    <div class="erro-mensagem">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <p>Não foi possível carregar as informações.</p>
+                        <a href="painel.html" class="botao-voltar">Voltar ao Painel</a>
+                    </div>
+                `;
             }
         }
-
+        
         carregarDados();
     </script>
-
 </body>
 </html>
