@@ -427,7 +427,7 @@
             <i class="fas fa-clock"></i><span>Ponto</span>
         </a>
         <a href="equipe.html" class="menu-item">
-            <i class="fas fa-clipboard-list"></i><span>Equipe</span>
+            <i class="fas fa-users"></i><span>Equipe</span>
         </a>
         <a href="tickets.html" class="menu-item">
             <i class="fas fa-file-alt"></i><span>Tickets</span>
@@ -494,7 +494,7 @@
             window.location.href = 'login.html';
         }
 
-        // ========== BUSCAR DADOS — SEM FILTRO DE ATIVO ✅ ==========
+        // ========== BUSCAR DADOS ==========
         async function carregarDadosUsuario() {
             const passaporteSalvo = localStorage.getItem('passaporte');
             
@@ -504,7 +504,6 @@
             }
 
             try {
-                // ✅ TIREI O .eq('ativo', true) — busca direto pelo passaporte!
                 const { data, error } = await sb
                     .from('membros')
                     .select('nome, passaporte, cargo')
@@ -520,7 +519,6 @@
                 }
             } catch (erro) {
                 console.log('Erro ao buscar:', erro);
-                // Se der erro, mostra o que já tem salvo
                 const salvo = localStorage.getItem('usuario');
                 if (salvo) {
                     const usuario = JSON.parse(salvo);
@@ -533,4 +531,5 @@
         carregarDadosUsuario();
     </script>
 </body>
-</html>
+    </html>
+    
