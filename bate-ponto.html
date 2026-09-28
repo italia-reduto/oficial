@@ -64,20 +64,6 @@
         .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
         .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
         
-        .botao-sair {
-            display: flex; align-items: center; gap: 6px;
-            background: rgba(239, 68, 68, 0.15);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            color: #fca5a5; padding: 10px 14px; border-radius: 10px;
-            font-size: 14px; font-weight: 500; cursor: pointer;
-            transition: all 0.25s ease; white-space: nowrap; user-select: none;
-        }
-        .botao-sair:hover {
-            background: rgba(239, 68, 68, 0.25);
-            border-color: rgba(239, 68, 68, 0.5);
-            transform: translateY(-1px);
-        }
-
         .grade-cards {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 14px; margin-bottom: 24px;
@@ -219,9 +205,46 @@
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             color: #94a3b8; text-decoration: none; font-size: 11px;
             cursor: pointer; transition: color 0.2s ease; user-select: none;
+            background: none; border: none;
         }
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
+
+        /* GAVETA MAIS */
+        .fundo-gaveta {
+            position: fixed; inset: 0; background: rgba(0,0,0,0);
+            z-index: 150; pointer-events: none; transition: all 0.3s ease;
+        }
+        .fundo-gaveta.aberto {
+            background: rgba(0,0,0,0.5); pointer-events: auto;
+            backdrop-filter: blur(4px);
+        }
+        .gaveta {
+            position: absolute; bottom: 70px; right: 0; width: 260px;
+            background: linear-gradient(180deg, #0f172a 0%, #000 100%);
+            border-left: 1px solid rgba(96,165,250,0.15);
+            border-top: 1px solid rgba(96,165,250,0.15);
+            border-radius: 16px 0 0 16px; padding: 24px 20px;
+            transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: calc(100vh - 90px); overflow-y: auto;
+        }
+        .fundo-gaveta.aberto .gaveta { transform: translateX(0); }
+        .titulo-gaveta {
+            font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 20px;
+            padding-bottom: 12px; border-bottom: 1px solid rgba(96,165,250,0.1);
+        }
+        .item-gaveta {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 12px; margin-bottom: 8px; border-radius: 10px;
+            color: #cbd5e1; font-size: 14px; cursor: pointer;
+            transition: all 0.2s ease; user-select: none;
+            background: rgba(30, 41, 59, 0.4);
+        }
+        .item-gaveta:hover {
+            background: rgba(96,165,250,0.12); color: #fff;
+        }
+        .item-gaveta i:first-child { color: #60a5fa; width: 20px; text-align: center; }
+        .item-gaveta i:last-child { color: #64748b; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -260,9 +283,8 @@
                     <span class="valor" id="exibePassaporte">—</span>
                 </div>
             </div>
-            <button class="botao-sair" id="botaoSair">
-                <i class="fas fa-sign-out-alt"></i> Sair
-            </button>
+            <!-- ✅ BOTÃO DE SAIR REMOVIDO -->
+            <div></div>
         </div>
 
         <div class="grade-cards">
@@ -311,20 +333,6 @@
         </div>
     </div>
 
-    <div class="fundo-modal" id="modalSair">
-        <div class="caixa-modal">
-            <div class="icone-modal" style="background: rgba(239,68,68,0.15);">
-                <i class="fas fa-question-circle" style="color: #f87171;"></i>
-            </div>
-            <h3 class="titulo-modal">Encerrar sessão?</h3>
-            <p class="texto-modal">Tem certeza que deseja sair da sua conta?</p>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" id="botaoCancelarSair">Cancelar</button>
-                <button class="botao-confirmar" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" id="botaoConfirmarSair">Sair</button>
-            </div>
-        </div>
-    </div>
-
     <div class="fundo-modal" id="modalEncerrar">
         <div class="caixa-modal">
             <div class="icone-modal" style="background: rgba(96, 165, 250, 0.15);">
@@ -344,12 +352,49 @@
         </div>
     </div>
 
+    <!-- GAVETA MAIS -->
+    <div class="fundo-gaveta" id="fundoGaveta">
+        <div class="gaveta">
+            <h3 class="titulo-gaveta">Mais Opções</h3>
+            <div class="item-gaveta">
+                <i class="fas fa-bell"></i>
+                <span>Avisos</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-file-alt"></i>
+                <span>Notificações</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-id-card"></i>
+                <span>Ficha</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-shield-alt"></i>
+                <span>Minha Segurança</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-question-circle"></i>
+                <span>Ajuda</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+
     <nav class="barra-menu">
         <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
         <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
-        <a href="#" class="menu-item"><i class="fas fa-ellipsis-h"></i><span>Mais</span></a>
+        <button class="menu-item" id="botaoMais"><i class="fas fa-ellipsis-h"></i><span>Mais</span></button>
     </nav>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -368,10 +413,11 @@
         const tempoMilesimos = document.getElementById('tempoMilesimos');
         const areaBotoes = document.getElementById('areaBotoes');
         const listaHistorico = document.getElementById('listaHistorico');
-        const modalSair = document.getElementById('modalSair');
         const modalEncerrar = document.getElementById('modalEncerrar');
         const avisoEspera = document.getElementById('avisoEspera');
         const contadorRegressivo = document.getElementById('contadorRegressivo');
+        const botaoMais = document.getElementById('botaoMais');
+        const fundoGaveta = document.getElementById('fundoGaveta');
 
         let passaporteUsuario = localStorage.getItem('passaporte') || null;
         let nomeUsuario = null;
@@ -381,6 +427,18 @@
         let momentoInicioPausa = null;
         let bloqueadoAte = parseInt(localStorage.getItem('bloqueadoAte') || '0');
         let intervaloContagem = null;
+
+        // ✅ MENU MAIS — ABRIR E FECHAR
+        botaoMais.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fundoGaveta.classList.toggle('aberto');
+        });
+        fundoGaveta.addEventListener('click', () => {
+            fundoGaveta.classList.remove('aberto');
+        });
+        fundoGaveta.querySelector('.gaveta').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
 
         function formatarTempoComMilesimos(segundosTotais) {
             const h = Math.floor(segundosTotais / 3600);
@@ -521,7 +579,7 @@
             momentoInicioPausa = null;
             atualizarInterface();
             
-            // ✅ REDIRECIONA PARA EQUIPE APÓS INICIAR JORNADA
+            // ✅ VAI PARA EQUIPE APÓS INICIAR
             window.location.href = 'equipe.html';
         }
 
@@ -560,7 +618,6 @@
         }
 
         function fecharModais() {
-            modalSair.classList.remove('aberto');
             modalEncerrar.classList.remove('aberto');
         }
 
@@ -705,15 +762,6 @@
             });
         });
 
-        document.getElementById('botaoSair').addEventListener('click', () => {
-            modalSair.classList.add('aberto');
-        });
-        document.getElementById('botaoCancelarSair').addEventListener('click', fecharModais);
-        document.getElementById('botaoConfirmarSair').addEventListener('click', () => {
-            localStorage.removeItem('passaporte');
-            localStorage.removeItem('bloqueadoAte');
-            window.location.href = 'login.html';
-        });
         document.getElementById('botaoCancelarEncerrar').addEventListener('click', fecharModais);
         document.getElementById('botaoConfirmarEncerrar').addEventListener('click', confirmarEncerramento);
 
