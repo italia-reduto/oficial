@@ -279,7 +279,7 @@
     </nav>
 
 <!-- CONTINUA NA PARTE 2 -->
-        <script>
+                <script>
         // ========== CONFIGURAÇÃO DAS EQUIPES ==========
         const regrasEquipes = {
             'ROTA 1': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
@@ -291,11 +291,6 @@
             'APOIO 1': { area: 'Segurança - Auxiliar', tipo: 'apoio', posicao: 'Apoio 1 (P1 — Favela)', veiculo: 'N/A' },
             'APOIO 2': { area: 'Segurança - Auxiliar', tipo: 'apoio', posicao: 'Apoio 2 (P2 — Favela)', veiculo: 'N/A' }
         };
-
-        // ========== POSIÇÃO ALEATÓRIA PARA ROTAS ==========
-        function sortearPosicaoRota() {
-            return Math.random() > 0.5 ? 'Piloto' : 'Tripulante';
-        }
 
         // ========== FORMATAR DATA ==========
         function formatarData(data) {
@@ -328,7 +323,7 @@
                 
                 if (erroMembro) throw erroMembro;
                 
-                // 2. Verificar jornada ativa — SEM SAIDA = EM SERVIÇO
+                // 2. Verificar jornada ativa
                 const { data: ponto } = await sb
                     .from('pontos')
                     .select('*')
@@ -338,7 +333,6 @@
                     .limit(1)
                     .maybeSingle();
 
-                // ✅ CORREÇÃO: Se tem registro SEM saida = jornada ativa
                 const temJornadaAtiva = !!ponto;
 
                 // 3. Sem jornada
@@ -374,18 +368,19 @@
                 
                 if (erroEquipe) throw erroEquipe;
 
-                // 6. Aplicar regras
+                // 6. Aplicar regras — SEM SORTEIO, SEMPRE PILOTO NAS ROTAS
                 const regra = regrasEquipes[equipe.nome] || {};
                 const areaAtuacao = regra.area || equipe.area || 'A definir';
                 const veiculo = regra.veiculo || '—';
                 
                 let posicao = regra.posicao;
+                // ✅ CORRIGIDO: Nas rotas, SEMPRE Piloto, não sorteia mais!
                 if (!posicao && regra.tipo === 'rota') {
-                    posicao = sortearPosicaoRota();
+                    posicao = 'Piloto';
                 }
                 if (!posicao) posicao = '—';
 
-                // 7. MOSTRAR DADOS DA EQUIPE
+                // 7. Mostrar tudo
                 document.getElementById('areaConteudo').innerHTML = `
                     <div class="card-membro">
                         <div class="icone-perfil">
