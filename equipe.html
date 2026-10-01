@@ -140,7 +140,7 @@
         }
         
         .nome-equipe {
-            font-size: 42px;
+            font-size: 32px;
             font-weight: 800;
             margin-bottom: 8px;
         }
@@ -176,6 +176,9 @@
             font-size: 13px;
             color: #94a3b8;
             margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
         
         .valor {
@@ -185,9 +188,6 @@
         
         .valor.vazio {
             color: #475569;
-            border-bottom: 2px solid #334155;
-            display: inline-block;
-            min-width: 60px;
         }
         
         .barra-menu {
@@ -223,6 +223,14 @@
             color: #94a3b8;
         }
         
+        .carregando i {
+            animation: giro 1s linear infinite;
+        }
+        
+        @keyframes giro {
+            to { transform: rotate(360deg); }
+        }
+        
         .erro-mensagem {
             text-align: center;
             padding: 40px 20px;
@@ -251,7 +259,7 @@
     
     <div class="conteudo" id="areaConteudo">
         <div class="carregando">
-            <i class="fas fa-spinner fa-spin"></i> Carregando informações...
+            <i class="fas fa-spinner"></i> Carregando informações...
         </div>
     </div>
     
@@ -259,7 +267,103 @@
         <a href="painel.html" class="menu-item">
             <i class="fas fa-home"></i><span>Painel</span>
         </a>
-        <a href="bate-ponto.html" class="menu-item">
+        <a href="ponto.html" class="menu-item">
+            <i class="fas fa-clock"></i><span>Ponto</span>
+        </a>
+        <a href="equipe.html" class="menu-item ativo">
+            <i class="fas fa-users"></i><span>Equipe</span>
+        </a>
+        <a href="tickets.html" class="menu-item">
+            <i class="fas fa-file-alt"></i><span>Tickets</span>
+        </a>
+        <a href="#" class="menu-item">
+            <i class="fas fa-ellipsis-h"></i><span>Mais</span>
+        </a>
+    </nav>
+
+<!-- CONTINUA NA PARTE 2 -->
+            .valor.vazio {
+            color: #475569;
+        }
+        
+        .barra-menu {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            border-top: 1px solid rgba(96, 165, 250, 0.15);
+            z-index: 100;
+        }
+        
+        .menu-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 11px;
+        }
+        
+        .menu-item.ativo { color: #60a5fa; }
+        .menu-item i { font-size: 20px; }
+        
+        .carregando {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+        
+        .carregando i {
+            animation: giro 1s linear infinite;
+        }
+        
+        @keyframes giro {
+            to { transform: rotate(360deg); }
+        }
+        
+        .erro-mensagem {
+            text-align: center;
+            padding: 40px 20px;
+            color: #f87171;
+        }
+        
+        .botao-voltar {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 10px 20px;
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="cabecalho">
+        <h1 class="titulo-pagina">
+            <i class="fas fa-users"></i> Minha Equipe
+        </h1>
+        <p class="subtitulo">Alocação e informações do grupo operacional</p>
+    </div>
+    
+    <div class="conteudo" id="areaConteudo">
+        <div class="carregando">
+            <i class="fas fa-spinner"></i> Carregando informações...
+        </div>
+    </div>
+    
+    <nav class="barra-menu">
+        <a href="painel.html" class="menu-item">
+            <i class="fas fa-home"></i><span>Painel</span>
+        </a>
+        <a href="ponto.html" class="menu-item">
             <i class="fas fa-clock"></i><span>Ponto</span>
         </a>
         <a href="equipe.html" class="menu-item ativo">
@@ -274,7 +378,27 @@
     </nav>
 
     <script>
-        // ========== FUNÇÃO PARA FORMATAR DATA ==========
+        // ========== REGRAS DAS EQUIPES ==========
+        const configuracaoEquipes = {
+            'ROTA 1': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
+            'ROTA 2': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
+            'ROTA 3': { area: 'Farm de Flipper', tipo: 'rota', veiculo: 'Veículo de serviço' },
+            'ROTA 4': { area: 'Farm de Flipper', tipo: 'rota', veiculo: 'Veículo de serviço' },
+            'P1': { area: 'Vendas de Lockpick', tipo: 'venda', posicao: 'P1', veiculo: 'N/A' },
+            'P2': { area: 'Vendas de Flipper', tipo: 'venda', posicao: 'P2', veiculo: 'N/A' },
+            'APOIO 1': { area: 'Segurança - Auxiliar', tipo: 'apoio', posicao: 'Apoio 1 (P1 — Favela)', veiculo: 'N/A' },
+            'APOIO 2': { area: 'Segurança - Auxiliar', tipo: 'apoio', posicao: 'Apoio 2 (P2 — Favela)', veiculo: 'N/A' }
+        };
+
+        // ========== SORTEIA POSIÇÃO PARA ROTAS ==========
+        function gerarPosicao(tipo) {
+            if (tipo === 'rota') {
+                return Math.random() > 0.5 ? 'Piloto' : 'Tripulante';
+            }
+            return null;
+        }
+
+        // ========== FORMATAR DATA ==========
         function formatarData(data) {
             if (!data) return "—";
             const d = new Date(data);
@@ -296,7 +420,7 @@
             }
             
             try {
-                // 1️⃣ Buscar dados do membro
+                // Buscar dados do membro
                 const { data: membro, error: erroMembro } = await sb
                     .from('membros')
                     .select('*, equipe_id')
@@ -309,14 +433,14 @@
                     document.getElementById('areaConteudo').innerHTML = `
                         <div class="erro-mensagem">
                             <i class="fas fa-info-circle"></i>
-                            <p>Você ainda não está alocado em nenhuma equipe.</p>
-                            <a href="painel.html" class="botao-voltar">Voltar ao Painel</a>
+                            <p>Você ainda não está alocado em nenhuma equipe.<br>Inicie a jornada no Ponto primeiro.</p>
+                            <a href="ponto.html" class="botao-voltar">Ir para o Ponto</a>
                         </div>
                     `;
                     return;
                 }
                 
-                // 2️⃣ Buscar dados da equipe
+                // Buscar dados da equipe
                 const { data: equipe, error: erroEquipe } = await sb
                     .from('equipes')
                     .select('*')
@@ -325,7 +449,7 @@
                 
                 if (erroEquipe) throw erroEquipe;
                 
-                // 3️⃣ Buscar detalhes do membro na equipe
+                // Buscar detalhes do membro na equipe
                 const { data: detalheEquipe } = await sb
                     .from('equipe_membros')
                     .select('*')
@@ -333,7 +457,7 @@
                     .eq('membro_id', membro.id)
                     .maybeSingle();
                 
-                // 4️⃣ Buscar ponto/status
+                // Buscar ponto/status
                 const { data: ponto } = await sb
                     .from('pontos')
                     .select('*')
@@ -343,13 +467,25 @@
                     .limit(1)
                     .maybeSingle();
                 
-                // ========== MONTAR TELA ==========
+                // Aplicar regras de configuração
+                const regra = configuracaoEquipes[equipe.nome] || {};
+                const areaAtuacao = regra.area || equipe.area || 'A definir';
+                const tipoEquipe = regra.tipo || 'normal';
+                const veiculoInfo = regra.veiculo || detalheEquipe?.veiculo || '—';
+                
+                let minhaPosicao = detalheEquipe?.posicao || regra.posicao;
+                if (!minhaPosicao && tipoEquipe === 'rota') {
+                    minhaPosicao = gerarPosicao('rota');
+                }
+                if (!minhaPosicao) minhaPosicao = '—';
+                
+                // Status
                 const statusAtivo = ponto && ponto.status === 'em_servico';
                 const statusTexto = statusAtivo ? 'Em Serviço' : 'Fora de Serviço';
                 const classeStatus = statusAtivo ? 'status-ativo' : 'status-inativo';
                 
+                // Montar tela
                 document.getElementById('areaConteudo').innerHTML = `
-                    <!-- CARD DO MEMBRO -->
                     <div class="card-membro">
                         <div class="icone-perfil">
                             <i class="fas fa-shield-alt"></i>
@@ -361,41 +497,40 @@
                         <div class="status-badge ${classeStatus}">${statusTexto}</div>
                     </div>
                     
-                    <!-- CARD DA EQUIPE -->
                     <div class="card-equipe">
                         <p class="etiqueta">Escala Ativa</p>
                         <h3 class="nome-equipe">${equipe.nome || 'ITÁLIA'}</h3>
-                        <p class="desc-equipe">${equipe.area ? `Área: ${equipe.area}` : 'Aguardando alocação operacional'}</p>
+                        <p class="desc-equipe">${areaAtuacao}</p>
                         
                         <div class="grade-dados coluna-1">
                             <div class="bloco-dado coluna-1">
                                 <p class="rotulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
-                                <p class="valor">${equipe.area || '<span class="vazio">A definir</span>'}</p>
+                                <p class="valor">${areaAtuacao}</p>
                             </div>
                         </div>
                         
                         <div class="grade-dados">
                             <div class="bloco-dado">
-                                <p class="rotulo">Minha Posição</p>
-                                <p class="valor">${detalheEquipe?.posicao || '<span class="vazio">—</span>'}</p>
+                                <p class="rotulo"><i class="fas fa-user-tag"></i> Minha Posição</p>
+                                <p class="valor">${minhaPosicao}</p>
                             </div>
                             <div class="bloco-dado">
-                                <p class="rotulo">Função / Cargo</p>
-                                <p class="valor">${membro.cargo || equipe.funcao || '<span class="vazio">—</span>'}</p>
+                                <p class="rotulo"><i class="fas fa-briefcase"></i> Função</p>
+                                <p class="valor">${membro.cargo || '<span class="vazio">—</span>'}</p>
                             </div>
                             <div class="bloco-dado">
-                                <p class="rotulo">Veículo</p>
-                                <p class="valor">${detalheEquipe?.veiculo || '<span class="vazio">—</span>'}</p>
+                                <p class="rotulo"><i class="fas fa-car"></i> Veículo</p>
+                                <p class="valor">${veiculoInfo}</p>
                             </div>
                             <div class="bloco-dado">
-                                <p class="rotulo">Atividade</p>
-                                <p class="valor">${detalheEquipe?.atividade || '<span class="vazio">—</span>'}</p>
+                                <p class="rotulo"><i class="fas fa-tasks"></i> Atividade</p>
+                                <p class="valor">${ponto ? 'Em operação' : '<span class="vazio">—</span>'}</p>
                             </div>
                         </div>
                         
                         <div class="grade-dados coluna-1">
                             <div class="bloco-dado coluna-1">
-                                <p class="rotulo">Entrada Registrada</p>
+                                <p class="rotulo"><i class="fas fa-clock"></i> Entrada Registrada</p>
                                 <p class="valor">${ponto?.entrada ? formatarData(ponto.entrada) : '<span class="vazio">—</span>'}</p>
                             </div>
                         </div>
@@ -403,12 +538,12 @@
                 `;
                 
             } catch (erro) {
-                console.error('Erro ao carregar:', erro);
+                console.error('Erro:', erro);
                 document.getElementById('areaConteudo').innerHTML = `
                     <div class="erro-mensagem">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Não foi possível carregar as informações.</p>
-                        <a href="painel.html" class="botao-voltar">Voltar ao Painel</a>
+                        <a href="ponto.html" class="botao-voltar">Ir para o Ponto</a>
                     </div>
                 `;
             }
@@ -418,3 +553,4 @@
     </script>
 </body>
 </html>
+    
