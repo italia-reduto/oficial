@@ -279,7 +279,7 @@
     </nav>
 
 <!-- CONTINUA NA PARTE 2 -->
-                <script>
+        <script>
         // ========== CONFIGURAÇÃO DAS EQUIPES ==========
         const regrasEquipes = {
             'ROTA 1': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
@@ -303,6 +303,13 @@
             const m = String(d.getMinutes()).padStart(2, '0');
             return `${dia}/${mes}/${ano} · ${h}:${m}`;
         }
+
+        // ========== DEFINIR POSIÇÃO POR ORDEM DE ENTRADA ==========
+        function definirPosicao(ordem, tipo) {
+            if (tipo !== 'rota') return null; // só aplica em rotas
+            if (ordem === 1) return 'Piloto';
+            return `Assento ${ordem}`;
+        }
         
         // ========== CARREGAR TUDO ==========
         async function carregarDados() {
@@ -314,7 +321,7 @@
             }
             
             try {
-                // 1. Buscar membro
+                // 1. Buscar dados do membro logado
                 const { data: membro, error: erroMembro } = await sb
                     .from('membros')
                     .select('nome, passaporte, cargo, equipe_id, id')
@@ -323,8 +330,8 @@
                 
                 if (erroMembro) throw erroMembro;
                 
-                // 2. Verificar jornada ativa
-                const { data: ponto } = await sb
+                // 2. Verificar se tem jornada ativa
+                const { data: meuPonto } = await sb
                     .from('pontos')
                     .select('*')
                     .eq('passaporte', passaporte)
@@ -333,9 +340,8 @@
                     .limit(1)
                     .maybeSingle();
 
-                const temJornadaAtiva = !!ponto;
+                const temJornadaAtiva = !!meuPonto;
 
-                // 3. Sem jornada
                 if (!temJornadaAtiva) {
                     document.getElementById('areaConteudo').innerHTML = `
                         <div class="sem-acesso">
@@ -347,7 +353,6 @@
                     return;
                 }
 
-                // 4. Sem equipe alocada
                 if (!membro.equipe_id) {
                     document.getElementById('areaConteudo').innerHTML = `
                         <div class="sem-acesso">
@@ -359,7 +364,7 @@
                     return;
                 }
 
-                // 5. Buscar dados da equipe
+                // 3. Buscar dados da equipe
                 const { data: equipe, error: erroEquipe } = await sb
                     .from('equipes')
                     .select('*')
@@ -368,15 +373,35 @@
                 
                 if (erroEquipe) throw erroEquipe;
 
-                // 6. Aplicar regras — SEM SORTEIO, SEMPRE PILOTO NAS ROTAS
+                // 4. Buscar TODOS os membros da equipe que estão em serviço
+                const { data: todosPontos, error: erroPontos } = await sb
+                    .from('pontos')
+                    .select('passaporte, entrada')
+                    .eq('equipe_id', membro.equipe_id)
+                    .is('saida', null)
+                    .order('entrada', { ascending: true }); // do PRIMEIRO ao ÚLTIMO a entrar
+
+                if (erroPontos) throw erroPontos;
+
+                // 5. Descobrir a posição (ordem) do usuário logado
+                let minhaOrdem = null;
+                if (todosPontos) {
+                    for (let i = 0; i < todosPontos.length; i++) {
+                        if (todosPontos[i].passaporte === passaporte) {
+                            minhaOrdem = i + 1; // 1º = índice 0 → ordem 1
+                            break;
+                        }
+                    }
+                }
+
+                // 6. Aplicar regras
                 const regra = regrasEquipes[equipe.nome] || {};
                 const areaAtuacao = regra.area || equipe.area || 'A definir';
                 const veiculo = regra.veiculo || '—';
                 
                 let posicao = regra.posicao;
-                // ✅ CORRIGIDO: Nas rotas, SEMPRE Piloto, não sorteia mais!
-                if (!posicao && regra.tipo === 'rota') {
-                    posicao = 'Piloto';
+                if (!posicao && regra.tipo === 'rota' && minhaOrdem) {
+                    posicao = definirPosicao(minhaOrdem, 'rota');
                 }
                 if (!posicao) posicao = '—';
 
@@ -420,7 +445,7 @@
                             </div>
                             <div class="bloco-dado">
                                 <p class="rotulo"><i class="fas fa-clock"></i> Entrada</p>
-                                <p class="valor">${formatarData(ponto.entrada)}</p>
+                                <p class="valor">${formatarData(meuPonto.entrada)}</p>
                             </div>
                         </div>
                     </div>
@@ -442,3 +467,4 @@
     </script>
 </body>
 </html>
+
