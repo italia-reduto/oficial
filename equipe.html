@@ -233,19 +233,27 @@
         
         .erro-mensagem {
             text-align: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
             color: #f87171;
+        }
+        
+        .erro-mensagem i {
+            font-size: 32px;
+            margin-bottom: 12px;
+            opacity: 0.7;
         }
         
         .botao-voltar {
             display: inline-block;
-            margin-top: 16px;
-            padding: 10px 20px;
+            margin-top: 20px;
+            padding: 12px 32px;
             background: rgba(96, 165, 250, 0.15);
             color: #60a5fa;
-            border-radius: 10px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -259,7 +267,7 @@
     
     <div class="conteudo" id="areaConteudo">
         <div class="carregando">
-            <i class="fas fa-spinner"></i> Carregando informações...
+            <i class="fas fa-spinner"></i> Carregando...
         </div>
     </div>
     
@@ -280,106 +288,9 @@
             <i class="fas fa-ellipsis-h"></i><span>Mais</span>
         </a>
     </nav>
-
-<!-- CONTINUA NA PARTE 2 -->
-            .valor.vazio {
-            color: #475569;
-        }
-        
-        .barra-menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid rgba(96, 165, 250, 0.15);
-            z-index: 100;
-        }
-        
-        .menu-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 11px;
-        }
-        
-        .menu-item.ativo { color: #60a5fa; }
-        .menu-item i { font-size: 20px; }
-        
-        .carregando {
-            text-align: center;
-            padding: 40px;
-            color: #94a3b8;
-        }
-        
-        .carregando i {
-            animation: giro 1s linear infinite;
-        }
-        
-        @keyframes giro {
-            to { transform: rotate(360deg); }
-        }
-        
-        .erro-mensagem {
-            text-align: center;
-            padding: 40px 20px;
-            color: #f87171;
-        }
-        
-        .botao-voltar {
-            display: inline-block;
-            margin-top: 16px;
-            padding: 10px 20px;
-            background: rgba(96, 165, 250, 0.15);
-            color: #60a5fa;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <div class="cabecalho">
-        <h1 class="titulo-pagina">
-            <i class="fas fa-users"></i> Minha Equipe
-        </h1>
-        <p class="subtitulo">Alocação e informações do grupo operacional</p>
-    </div>
-    
-    <div class="conteudo" id="areaConteudo">
-        <div class="carregando">
-            <i class="fas fa-spinner"></i> Carregando informações...
-        </div>
-    </div>
-    
-    <nav class="barra-menu">
-        <a href="painel.html" class="menu-item">
-            <i class="fas fa-home"></i><span>Painel</span>
-        </a>
-        <a href="ponto.html" class="menu-item">
-            <i class="fas fa-clock"></i><span>Ponto</span>
-        </a>
-        <a href="equipe.html" class="menu-item ativo">
-            <i class="fas fa-users"></i><span>Equipe</span>
-        </a>
-        <a href="tickets.html" class="menu-item">
-            <i class="fas fa-file-alt"></i><span>Tickets</span>
-        </a>
-        <a href="#" class="menu-item">
-            <i class="fas fa-ellipsis-h"></i><span>Mais</span>
-        </a>
-    </nav>
-
     <script>
-        // ========== REGRAS DAS EQUIPES ==========
-        const configuracaoEquipes = {
+        // ========== CONFIGURAÇÃO DAS EQUIPES ==========
+        const regrasEquipes = {
             'ROTA 1': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
             'ROTA 2': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
             'ROTA 3': { area: 'Farm de Flipper', tipo: 'rota', veiculo: 'Veículo de serviço' },
@@ -390,12 +301,9 @@
             'APOIO 2': { area: 'Segurança - Auxiliar', tipo: 'apoio', posicao: 'Apoio 2 (P2 — Favela)', veiculo: 'N/A' }
         };
 
-        // ========== SORTEIA POSIÇÃO PARA ROTAS ==========
-        function gerarPosicao(tipo) {
-            if (tipo === 'rota') {
-                return Math.random() > 0.5 ? 'Piloto' : 'Tripulante';
-            }
-            return null;
+        // ========== POSIÇÃO ALEATÓRIA PARA ROTAS ==========
+        function sortearPosicaoRota() {
+            return Math.random() > 0.5 ? 'Piloto' : 'Tripulante';
         }
 
         // ========== FORMATAR DATA ==========
@@ -412,35 +320,59 @@
         
         // ========== CARREGAR TUDO ==========
         async function carregarDados() {
-            const passaporteSalvo = localStorage.getItem('passaporte');
+            const passaporte = localStorage.getItem('passaporte');
             
-            if (!passaporteSalvo) {
+            if (!passaporte) {
                 window.location.href = 'login.html';
                 return;
             }
             
             try {
-                // Buscar dados do membro
+                // 1. Buscar membro
                 const { data: membro, error: erroMembro } = await sb
                     .from('membros')
-                    .select('*, equipe_id')
-                    .eq('passaporte', passaporteSalvo)
+                    .select('nome, passaporte, cargo, equipe_id, id')
+                    .eq('passaporte', passaporte)
                     .single();
                 
                 if (erroMembro) throw erroMembro;
                 
-                if (!membro || !membro.equipe_id) {
+                // 2. Verificar se tem jornada ativa
+                const { data: ponto } = await sb
+                    .from('pontos')
+                    .select('*')
+                    .eq('passaporte', passaporte)
+                    .is('saida', null)
+                    .order('entrada', { ascending: false })
+                    .limit(1)
+                    .maybeSingle();
+
+                const temJornadaAtiva = ponto && ponto.status === 'em_servico';
+
+                // 3. Se não tem jornada → pede pra ir ao ponto
+                if (!temJornadaAtiva) {
                     document.getElementById('areaConteudo').innerHTML = `
                         <div class="erro-mensagem">
                             <i class="fas fa-info-circle"></i>
-                            <p>Você ainda não está alocado em nenhuma equipe.<br>Inicie a jornada no Ponto primeiro.</p>
+                            <p>Você ainda não está em serviço.<br>Inicie a jornada no Ponto primeiro.</p>
                             <a href="ponto.html" class="botao-voltar">Ir para o Ponto</a>
                         </div>
                     `;
                     return;
                 }
-                
-                // Buscar dados da equipe
+
+                // 4. Buscar equipe do membro
+                if (!membro.equipe_id) {
+                    document.getElementById('areaConteudo').innerHTML = `
+                        <div class="erro-mensagem">
+                            <i class="fas fa-users-slash"></i>
+                            <p>Jornada ativa, mas sem equipe alocada.</p>
+                            <a href="ponto.html" class="botao-voltar">Voltar ao Ponto</a>
+                        </div>
+                    `;
+                    return;
+                }
+
                 const { data: equipe, error: erroEquipe } = await sb
                     .from('equipes')
                     .select('*')
@@ -448,58 +380,34 @@
                     .single();
                 
                 if (erroEquipe) throw erroEquipe;
-                
-                // Buscar detalhes do membro na equipe
-                const { data: detalheEquipe } = await sb
-                    .from('equipe_membros')
-                    .select('*')
-                    .eq('equipe_id', membro.equipe_id)
-                    .eq('membro_id', membro.id)
-                    .maybeSingle();
-                
-                // Buscar ponto/status
-                const { data: ponto } = await sb
-                    .from('pontos')
-                    .select('*')
-                    .eq('passaporte', passaporteSalvo)
-                    .is('saida', null)
-                    .order('entrada', { ascending: false })
-                    .limit(1)
-                    .maybeSingle();
-                
-                // Aplicar regras de configuração
-                const regra = configuracaoEquipes[equipe.nome] || {};
+
+                // 5. Aplicar regras da equipe
+                const regra = regrasEquipes[equipe.nome] || {};
                 const areaAtuacao = regra.area || equipe.area || 'A definir';
-                const tipoEquipe = regra.tipo || 'normal';
-                const veiculoInfo = regra.veiculo || detalheEquipe?.veiculo || '—';
+                const veiculo = regra.veiculo || '—';
                 
-                let minhaPosicao = detalheEquipe?.posicao || regra.posicao;
-                if (!minhaPosicao && tipoEquipe === 'rota') {
-                    minhaPosicao = gerarPosicao('rota');
+                let posicao = regra.posicao;
+                if (!posicao && regra.tipo === 'rota') {
+                    posicao = sortearPosicaoRota();
                 }
-                if (!minhaPosicao) minhaPosicao = '—';
-                
-                // Status
-                const statusAtivo = ponto && ponto.status === 'em_servico';
-                const statusTexto = statusAtivo ? 'Em Serviço' : 'Fora de Serviço';
-                const classeStatus = statusAtivo ? 'status-ativo' : 'status-inativo';
-                
-                // Montar tela
+                if (!posicao) posicao = '—';
+
+                // 6. Renderizar tudo
                 document.getElementById('areaConteudo').innerHTML = `
                     <div class="card-membro">
                         <div class="icone-perfil">
                             <i class="fas fa-shield-alt"></i>
                         </div>
                         <div class="info-membro">
-                            <h2 class="nome-membro">${membro.nome || 'Membro'}</h2>
-                            <p class="passaporte-membro">Passaporte · ${membro.passaporte || '—'}</p>
+                            <h2 class="nome-membro">${membro.nome}</h2>
+                            <p class="passaporte-membro">Passaporte · ${membro.passaporte}</p>
                         </div>
-                        <div class="status-badge ${classeStatus}">${statusTexto}</div>
+                        <div class="status-badge status-ativo">Em Serviço</div>
                     </div>
                     
                     <div class="card-equipe">
                         <p class="etiqueta">Escala Ativa</p>
-                        <h3 class="nome-equipe">${equipe.nome || 'ITÁLIA'}</h3>
+                        <h3 class="nome-equipe">${equipe.nome}</h3>
                         <p class="desc-equipe">${areaAtuacao}</p>
                         
                         <div class="grade-dados coluna-1">
@@ -512,26 +420,19 @@
                         <div class="grade-dados">
                             <div class="bloco-dado">
                                 <p class="rotulo"><i class="fas fa-user-tag"></i> Minha Posição</p>
-                                <p class="valor">${minhaPosicao}</p>
+                                <p class="valor">${posicao}</p>
                             </div>
                             <div class="bloco-dado">
                                 <p class="rotulo"><i class="fas fa-briefcase"></i> Função</p>
-                                <p class="valor">${membro.cargo || '<span class="vazio">—</span>'}</p>
+                                <p class="valor">${membro.cargo}</p>
                             </div>
                             <div class="bloco-dado">
                                 <p class="rotulo"><i class="fas fa-car"></i> Veículo</p>
-                                <p class="valor">${veiculoInfo}</p>
+                                <p class="valor">${veiculo}</p>
                             </div>
                             <div class="bloco-dado">
-                                <p class="rotulo"><i class="fas fa-tasks"></i> Atividade</p>
-                                <p class="valor">${ponto ? 'Em operação' : '<span class="vazio">—</span>'}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="grade-dados coluna-1">
-                            <div class="bloco-dado coluna-1">
-                                <p class="rotulo"><i class="fas fa-clock"></i> Entrada Registrada</p>
-                                <p class="valor">${ponto?.entrada ? formatarData(ponto.entrada) : '<span class="vazio">—</span>'}</p>
+                                <p class="rotulo"><i class="fas fa-clock"></i> Entrada</p>
+                                <p class="valor">${formatarData(ponto.entrada)}</p>
                             </div>
                         </div>
                     </div>
