@@ -231,19 +231,19 @@
             to { transform: rotate(360deg); }
         }
         
-        .erro-mensagem {
+        .sem-acesso {
             text-align: center;
             padding: 60px 20px;
             color: #f87171;
         }
         
-        .erro-mensagem i {
+        .sem-acesso i {
             font-size: 32px;
             margin-bottom: 12px;
             opacity: 0.7;
         }
         
-        .botao-voltar {
+        .botao-ir {
             display: inline-block;
             margin-top: 20px;
             padding: 12px 32px;
@@ -252,8 +252,6 @@
             border-radius: 12px;
             text-decoration: none;
             font-weight: 600;
-            border: none;
-            cursor: pointer;
         }
     </style>
 </head>
@@ -275,7 +273,7 @@
         <a href="painel.html" class="menu-item">
             <i class="fas fa-home"></i><span>Painel</span>
         </a>
-        <a href="ponto.html" class="menu-item">
+        <a href="bate-ponto.html" class="menu-item">
             <i class="fas fa-clock"></i><span>Ponto</span>
         </a>
         <a href="equipe.html" class="menu-item ativo">
@@ -288,7 +286,9 @@
             <i class="fas fa-ellipsis-h"></i><span>Mais</span>
         </a>
     </nav>
-    <script>
+
+<!-- CONTINUA NA PARTE 2 -->
+        <script>
         // ========== CONFIGURAÇÃO DAS EQUIPES ==========
         const regrasEquipes = {
             'ROTA 1': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
@@ -349,30 +349,31 @@
 
                 const temJornadaAtiva = ponto && ponto.status === 'em_servico';
 
-                // 3. Se não tem jornada → pede pra ir ao ponto
+                // 3. Sem jornada → mensagem COM botão de volta
                 if (!temJornadaAtiva) {
                     document.getElementById('areaConteudo').innerHTML = `
-                        <div class="erro-mensagem">
+                        <div class="sem-acesso">
                             <i class="fas fa-info-circle"></i>
-                            <p>Você ainda não está em serviço.<br>Inicie a jornada no Ponto primeiro.</p>
-                            <a href="ponto.html" class="botao-voltar">Ir para o Ponto</a>
+                            <p>Você ainda não está em serviço.<br>Inicie a jornada pelo Ponto.</p>
+                            <a href="bate-ponto.html" class="botao-ir">Ir para o Ponto</a>
                         </div>
                     `;
                     return;
                 }
 
-                // 4. Buscar equipe do membro
+                // 4. Sem equipe alocada
                 if (!membro.equipe_id) {
                     document.getElementById('areaConteudo').innerHTML = `
-                        <div class="erro-mensagem">
+                        <div class="sem-acesso">
                             <i class="fas fa-users-slash"></i>
                             <p>Jornada ativa, mas sem equipe alocada.</p>
-                            <a href="ponto.html" class="botao-voltar">Voltar ao Ponto</a>
+                            <a href="bate-ponto.html" class="botao-ir">Ir para o Ponto</a>
                         </div>
                     `;
                     return;
                 }
 
+                // 5. Buscar dados da equipe
                 const { data: equipe, error: erroEquipe } = await sb
                     .from('equipes')
                     .select('*')
@@ -381,7 +382,7 @@
                 
                 if (erroEquipe) throw erroEquipe;
 
-                // 5. Aplicar regras da equipe
+                // 6. Aplicar regras
                 const regra = regrasEquipes[equipe.nome] || {};
                 const areaAtuacao = regra.area || equipe.area || 'A definir';
                 const veiculo = regra.veiculo || '—';
@@ -392,7 +393,7 @@
                 }
                 if (!posicao) posicao = '—';
 
-                // 6. Renderizar tudo
+                // 7. Mostrar tudo
                 document.getElementById('areaConteudo').innerHTML = `
                     <div class="card-membro">
                         <div class="icone-perfil">
@@ -441,10 +442,10 @@
             } catch (erro) {
                 console.error('Erro:', erro);
                 document.getElementById('areaConteudo').innerHTML = `
-                    <div class="erro-mensagem">
+                    <div class="sem-acesso">
                         <i class="fas fa-exclamation-triangle"></i>
                         <p>Não foi possível carregar as informações.</p>
-                        <a href="ponto.html" class="botao-voltar">Ir para o Ponto</a>
+                        <a href="bate-ponto.html" class="botao-ir">Ir para o Ponto</a>
                     </div>
                 `;
             }
