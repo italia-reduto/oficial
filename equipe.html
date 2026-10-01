@@ -110,11 +110,6 @@
             color: #4ade80;
         }
         
-        .status-inativo {
-            background: rgba(239, 68, 68, 0.12);
-            color: #f87171;
-        }
-        
         .status-badge::before {
             content: "";
             width: 8px;
@@ -186,10 +181,6 @@
             font-weight: 600;
         }
         
-        .valor.vazio {
-            color: #475569;
-        }
-        
         .barra-menu {
             position: fixed;
             bottom: 0;
@@ -233,7 +224,7 @@
         
         .sem-acesso {
             text-align: center;
-            padding: 60px 20px;
+            padding: 80px 20px;
             color: #f87171;
         }
         
@@ -337,7 +328,7 @@
                 
                 if (erroMembro) throw erroMembro;
                 
-                // 2. Verificar se tem jornada ativa
+                // 2. Verificar jornada ativa — SEM SAIDA = EM SERVIÇO
                 const { data: ponto } = await sb
                     .from('pontos')
                     .select('*')
@@ -347,9 +338,10 @@
                     .limit(1)
                     .maybeSingle();
 
-                const temJornadaAtiva = ponto && ponto.status === 'em_servico';
+                // ✅ CORREÇÃO: Se tem registro SEM saida = jornada ativa
+                const temJornadaAtiva = !!ponto;
 
-                // 3. Sem jornada → mensagem COM botão de volta
+                // 3. Sem jornada
                 if (!temJornadaAtiva) {
                     document.getElementById('areaConteudo').innerHTML = `
                         <div class="sem-acesso">
@@ -393,7 +385,7 @@
                 }
                 if (!posicao) posicao = '—';
 
-                // 7. Mostrar tudo
+                // 7. MOSTRAR DADOS DA EQUIPE
                 document.getElementById('areaConteudo').innerHTML = `
                     <div class="card-membro">
                         <div class="icone-perfil">
