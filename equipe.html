@@ -5,466 +5,864 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <meta name="color-scheme" content="dark">
-    <title>ITÁLIA · EQUIPE</title>
+    <title>ITÁLIA · PONTO</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent;
+            outline: none !important;
+        }
+        *:focus, *:focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        html, body {
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+
+        .fundo-pagina {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #000000 0%, #0f172a 50%, #1e293b 100%);
+            z-index: -3;
+        }
+        .fundo-imagem {
+            position: fixed; inset: 0;
+            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
+            opacity: 0.08; z-index: -1;
+        }
+        .fundo-degrade {
+            position: fixed; inset: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
+            z-index: 0;
+        }
+
+        .conteudo { position: relative; z-index: 1; padding: 24px; }
+        
+        .cabecalho {
+            display: flex; align-items: flex-start; justify-content: space-between;
+            margin-bottom: 28px;
+        }
+        .titulo-secao { margin-bottom: 16px; }
+        .titulo-secao h1 { font-size: 22px; font-weight: 700; color: #fff; }
+        .titulo-secao p { font-size: 13px; color: #94a3b8; }
+        
+        .linha-dado {
+            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
+        }
+        .linha-dado i { color: #60a5fa; font-size: 16px; width: 20px; text-align: center; }
+        .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
+        .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
+        
+        .grade-cards {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 14px; margin-bottom: 24px;
+        }
+        .card {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 14px; padding: 18px 16px;
+            backdrop-filter: blur(8px);
+        }
+        .card-titulo {
+            font-size: 13px; color: #94a3b8; font-weight: 500;
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 8px;
+        }
+        .card-titulo i { font-size: 14px; color: #60a5fa; }
+        .card-valor { font-size: 20px; font-weight: 700; color: #ffffff; }
+
+        .card-abas {
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 14px; padding: 18px;
+            backdrop-filter: blur(8px);
+        }
+        .navegacao-abas { display: flex; gap: 10px; margin-bottom: 20px; }
+        .aba {
+            flex: 1; text-align: center; padding: 10px 0;
+            font-size: 15px; font-weight: 500; color: #94a3b8;
+            cursor: pointer; border-radius: 10px; transition: all 0.25s ease;
+            user-select: none;
+        }
+        .aba.ativa {
+            color: #fff; background: rgba(96, 165, 250, 0.15);
+            font-weight: 600;
+        }
+        .conteudo-aba { display: none; min-height: 220px; }
+        .conteudo-aba.visivel { display: block; }
+
+        .cronometro-bloco { text-align: center; padding: 20px 10px; }
+        .tempo-central {
+            font-size: 48px; font-weight: 700; color: #fff;
+            margin-bottom: 8px; letter-spacing: 1px;
+            font-variant-numeric: tabular-nums;
+        }
+        .tempo-central .milessimos {
+            font-size: 28px; color: #94a3b8;
+        }
+        .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+        .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
+        .botao-acao {
+            width: 100%; padding: 15px; border: none; border-radius: 12px;
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 8px; transition: all 0.3s ease; color: #fff;
+            user-select: none;
+        }
+        .botao-acao:disabled {
+            opacity: 0.4; cursor: not-allowed; transform: none !important;
+        }
+        .botao-acao.iniciar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
+        .botao-acao.pausar { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .botao-acao.retomar { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
+        .botao-acao.encerrar { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
+        .botao-acao:hover:not(:disabled) { transform: translateY(-2px); }
+
+        .item-historico {
+            padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
+        }
+        .item-historico:last-child { border-bottom: none; padding-bottom: 0; }
+        .item-cabecalho {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
+        }
+        .item-data { font-size: 15px; font-weight: 600; color: #fff; }
+        .item-duracao { font-size: 15px; font-weight: 700; color: #60a5fa; }
+        .item-detalhe { font-size: 13px; color: #94a3b8; line-height: 1.5; }
+        .vazio { text-align: center; padding: 40px 20px; color: #64748b; font-size: 14px; }
+
+        .fundo-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+            backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center;
+            z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px;
+        }
+        .fundo-modal.aberto { opacity: 1; visibility: visible; }
+        .caixa-modal {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid rgba(96,165,250,0.2); border-radius: 18px;
+            padding: 32px 28px; max-width: 360px; width: 100%; text-align: center;
+            transform: translateY(10px); transition: transform 0.3s ease;
+        }
+        .fundo-modal.aberto .caixa-modal { transform: translateY(0); }
+        .icone-modal {
+            width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 20px;
+        }
+        .icone-modal i { font-size: 24px; }
+        .titulo-modal { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .texto-modal { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
+        .botoes-modal { display: flex; gap: 12px; }
+        .botao-cancelar {
+            flex: 1; padding: 14px; border: 1px solid rgba(96,165,250,0.2);
+            background: transparent; color: #94a3b8; border-radius: 12px;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            transition: all 0.25s ease; user-select: none;
+        }
+        .botao-cancelar:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .botao-confirmar {
+            flex: 1; padding: 14px; border: none;
+            border-radius: 12px; font-size: 15px; font-weight: 600;
+            cursor: pointer; transition: all 0.25s ease; color: #fff; user-select: none;
+        }
+        .botao-confirmar:hover { transform: translateY(-1px); }
+
+        .aviso-espera {
+            position: fixed; top: 16px; left: 50%; transform: translateX(-50%);
+            z-index: 998;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.95));
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 12px; padding: 14px 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            max-width: 90%; width: 360px;
+            display: none;
+        }
+        .aviso-espera-conteudo {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .aviso-espera i { color: #60a5fa; font-size: 20px; flex-shrink: 0; }
+        .aviso-texto-linha1 { font-size: 13px; color: #94a3b8; margin-bottom: 2px; }
+        .aviso-texto-linha2 { font-size: 15px; font-weight: 600; color: #fff; }
+        .contador-destaque { color: #60a5fa; font-weight: 700; }
+
+        .barra-menu {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: #000; display: flex; align-items: center; justify-content: space-around;
+            border-top: 1px solid rgba(96,165,250,0.15); z-index: 100;
+        }
+        .menu-item {
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #94a3b8; text-decoration: none; font-size: 11px;
+            cursor: pointer; transition: color 0.2s ease; user-select: none;
+            background: none; border: none;
+        }
+        .menu-item.ativo { color: #60a5fa; }
+        .menu-item i { font-size: 20px; margin-bottom: 2px; }
+
+        .fundo-gaveta {
+            position: fixed; inset: 0; background: rgba(0,0,0,0);
+            z-index: 150; pointer-events: none; transition: all 0.3s ease;
+        }
+        .fundo-gaveta.aberto {
+            background: rgba(0,0,0,0.5); pointer-events: auto;
+            backdrop-filter: blur(4px);
+        }
+        .gaveta {
+            position: absolute; bottom: 70px; right: 0; width: 260px;
+            background: linear-gradient(180deg, #0f172a 0%, #000 100%);
+            border-left: 1px solid rgba(96,165,250,0.15);
+            border-top: 1px solid rgba(96,165,250,0.15);
+            border-radius: 16px 0 0 16px; padding: 24px 20px;
+            transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: calc(100vh - 90px); overflow-y: auto;
+        }
+        .fundo-gaveta.aberto .gaveta { transform: translateX(0); }
+        .titulo-gaveta {
+            font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 20px;
+            padding-bottom: 12px; border-bottom: 1px solid rgba(96,165,250,0.1);
+        }
+        .item-gaveta {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 12px; margin-bottom: 8px; border-radius: 10px;
+            color: #cbd5e1; font-size: 14px; cursor: pointer;
+            transition: all 0.2s ease; user-select: none;
+            background: rgba(30, 41, 59, 0.4);
+        }
+        .item-gaveta:hover {
+            background: rgba(96,165,250,0.12); color: #fff;
+        }
+        .item-gaveta i:first-child { color: #60a5fa; width: 20px; text-align: center; }
+        .item-gaveta i:last-child { color: #64748b; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="fundo-pagina"></div>
+    <div class="fundo-imagem"></div>
+    <div class="fundo-degrade"></div>
+
+    <div class="aviso-espera" id="avisoEspera">
+        <div class="aviso-espera-conteudo">
+            <i class="fas fa-clock"></i>
+            <div>
+                <p class="aviso-texto-linha1">Aguardando liberação</p>
+                <p class="aviso-texto-linha2">
+                    Próxima liberação em: <span class="contador-destaque" id="contadorRegressivo">01:00</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="conteudo">
+        <div class="cabecalho">
+            <div>
+                <div class="titulo-secao">
+                    <h1>Controle de Ponto</h1>
+                    <p>Acompanhe sua jornada e seu histórico</p>
+                </div>
+                <div class="linha-dado">
+                    <i class="fas fa-user"></i>
+                    <span class="rotulo">Nome:</span>
+                    <span class="valor" id="exibeNome">—</span>
+                </div>
+                <div class="linha-dado">
+                    <i class="fas fa-id-card"></i>
+                    <span class="rotulo">Passaporte:</span>
+                    <span class="valor" id="exibePassaporte">—</span>
+                </div>
+            </div>
+            <div></div>
+        </div>
+
+        <div class="grade-cards">
+            <div class="card">
+                <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
+                <p class="card-valor" id="exibeSituacao">Carregando...</p>
+            </div>
+            <div class="card">
+                <p class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></p>
+                <p class="card-valor" id="exibeHoje">0m</p>
+            </div>
+            <div class="card">
+                <p class="card-titulo">Pausas <i class="fas fa-coffee"></i></p>
+                <p class="card-valor" id="exibePausas">0</p>
+            </div>
+            <div class="card">
+                <p class="card-titulo">Semana <i class="fas fa-calendar-week"></i></p>
+                <p class="card-valor" id="exibeSemana">0m</p>
+            </div>
+        </div>
+
+        <div class="card-abas">
+            <div class="navegacao-abas">
+                <div class="aba ativa" data-aba="meu-ponto">Meu Ponto</div>
+                <div class="aba" data-aba="historico">Histórico</div>
+            </div>
+
+            <div class="conteudo-aba visivel" id="conteudo-meu-ponto">
+                <div class="cronometro-bloco">
+                    <div class="tempo-central">
+                        <span id="tempoPrincipal">00:00:00</span>
+                        <span class="milessimos" id="tempoMilesimos">.00</span>
+                    </div>
+                    <p class="legenda-tempo">Tempo de jornada</p>
+                    <div class="botoes-cronometro" id="areaBotoes">
+                        <button class="botao-acao iniciar" id="btnIniciar">
+                            <i class="fas fa-play"></i> Iniciar Jornada
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="conteudo-aba" id="conteudo-historico">
+                <div id="listaHistorico"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fundo-modal" id="modalEncerrar">
+        <div class="caixa-modal">
+            <div class="icone-modal" style="background: rgba(96, 165, 250, 0.15);">
+                <i class="fas fa-info-circle" style="color: #60a5fa;"></i>
+            </div>
+            <h3 class="titulo-modal">Encerrar Jornada</h3>
+            <p class="texto-modal">
+                Ao confirmar o encerramento, será necessário aguardar <strong>1 minuto</strong> antes de iniciar uma nova jornada. 
+                Este intervalo garante o registro correto e consistente de todas as suas informações.
+            </p>
+            <div class="botoes-modal">
+                <button class="botao-cancelar" id="botaoCancelarEncerrar">Cancelar</button>
+                <button class="botao-confirmar" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);" id="botaoConfirmarEncerrar">
+                    Confirmar Encerramento
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="fundo-gaveta" id="fundoGaveta">
+        <div class="gaveta">
+            <h3 class="titulo-gaveta">Mais Opções</h3>
+            <div class="item-gaveta">
+                <i class="fas fa-bell"></i>
+                <span>Avisos</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-file-alt"></i>
+                <span>Notificações</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-id-card"></i>
+                <span>Ficha</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-shield-alt"></i>
+                <span>Minha Segurança</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-cog"></i>
+                <span>Configurações</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="item-gaveta">
+                <i class="fas fa-question-circle"></i>
+                <span>Ajuda</span>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+    </div>
+
+    <nav class="barra-menu">
+        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
+        <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+        <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
+        <button class="menu-item" id="botaoMais"><i class="fas fa-ellipsis-h"></i><span>Mais</span></button>
+    </nav>
+
+<!-- CONTINUA NA PARTE 2 👇 -->
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    </script>
-    
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        html, body {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #000000 0%, #0f172a 100%);
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            padding-bottom: 90px;
-        }
-        
-        .cabecalho {
-            padding: 30px 24px 20px;
-        }
-        
-        .titulo-pagina {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 6px;
-        }
-        
-        .titulo-pagina i {
-            color: #60a5fa;
-        }
-        
-        .subtitulo {
-            color: #94a3b8;
-            font-size: 14px;
-        }
-        
-        .conteudo {
-            padding: 0 20px;
-        }
-        
-        .card-membro {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(96, 165, 250, 0.15);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
-        
-        .icone-perfil {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            color: #fff;
-            flex-shrink: 0;
-        }
-        
-        .info-membro {
-            flex: 1;
-        }
-        
-        .nome-membro {
-            font-size: 20px;
-            font-weight: 700;
-            margin-bottom: 2px;
-        }
-        
-        .passaporte-membro {
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        
-        .status-badge {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .status-ativo {
-            background: rgba(34, 197, 94, 0.12);
-            color: #4ade80;
-        }
-        
-        .status-badge::before {
-            content: "";
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: currentColor;
-        }
-        
-        .card-equipe {
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(96, 165, 250, 0.15);
-            border-radius: 20px;
-            padding: 24px;
-        }
-        
-        .etiqueta {
-            font-size: 13px;
-            color: #60a5fa;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 8px;
-        }
-        
-        .nome-equipe {
-            font-size: 32px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-        
-        .desc-equipe {
-            color: #94a3b8;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-        
-        .grade-dados {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-        
-        .grade-dados.coluna-1 {
-            grid-column: 1 / -1;
-        }
-        
-        .bloco-dado {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 12px;
-            padding: 16px;
-        }
-        
-        .bloco-dado.coluna-1 {
-            grid-column: 1 / -1;
-        }
-        
-        .rotulo {
-            font-size: 13px;
-            color: #94a3b8;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        
-        .valor {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        
-        .barra-menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid rgba(96, 165, 250, 0.15);
-            z-index: 100;
-        }
-        
-        .menu-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 11px;
-        }
-        
-        .menu-item.ativo { color: #60a5fa; }
-        .menu-item i { font-size: 20px; }
-        
-        .carregando {
-            text-align: center;
-            padding: 40px;
-            color: #94a3b8;
-        }
-        
-        .carregando i {
-            animation: giro 1s linear infinite;
-        }
-        
-        @keyframes giro {
-            to { transform: rotate(360deg); }
-        }
-        
-        .sem-acesso {
-            text-align: center;
-            padding: 80px 20px;
-            color: #f87171;
-        }
-        
-        .sem-acesso i {
-            font-size: 32px;
-            margin-bottom: 12px;
-            opacity: 0.7;
-        }
-        
-        .botao-ir {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 12px 32px;
-            background: rgba(96, 165, 250, 0.15);
-            color: #60a5fa;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <div class="cabecalho">
-        <h1 class="titulo-pagina">
-            <i class="fas fa-users"></i> Minha Equipe
-        </h1>
-        <p class="subtitulo">Alocação e informações do grupo operacional</p>
-    </div>
-    
-    <div class="conteudo" id="areaConteudo">
-        <div class="carregando">
-            <i class="fas fa-spinner"></i> Carregando...
-        </div>
-    </div>
-    
-    <nav class="barra-menu">
-        <a href="painel.html" class="menu-item">
-            <i class="fas fa-home"></i><span>Painel</span>
-        </a>
-        <a href="bate-ponto.html" class="menu-item">
-            <i class="fas fa-clock"></i><span>Ponto</span>
-        </a>
-        <a href="equipe.html" class="menu-item ativo">
-            <i class="fas fa-users"></i><span>Equipe</span>
-        </a>
-        <a href="tickets.html" class="menu-item">
-            <i class="fas fa-file-alt"></i><span>Tickets</span>
-        </a>
-        <a href="#" class="menu-item">
-            <i class="fas fa-ellipsis-h"></i><span>Mais</span>
-        </a>
-    </nav>
 
-<!-- CONTINUA NA PARTE 2 -->
-        <script>
-        // ========== CONFIGURAÇÃO DAS EQUIPES ==========
-        const regrasEquipes = {
-            'ROTA 1': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
-            'ROTA 2': { area: 'Farm de Lockpick', tipo: 'rota', veiculo: 'Veículo de serviço' },
-            'ROTA 3': { area: 'Farm de Flipper', tipo: 'rota', veiculo: 'Veículo de serviço' },
-            'ROTA 4': { area: 'Farm de Flipper', tipo: 'rota', veiculo: 'Veículo de serviço' },
-            'P1': { area: 'Vendas de Lockpick', tipo: 'venda', posicao: 'P1', veiculo: 'N/A' },
-            'P2': { area: 'Vendas de Flipper', tipo: 'venda', posicao: 'P2', veiculo: 'N/A' },
-            'APOIO 1': { area: 'Segurança - Auxiliar', tipo: 'apoio', posicao: 'Apoio 1 (P1 — Favela)', veiculo: 'N/A' },
-            'APOIO 2': { area: 'Segurança - Auxiliar', tipo: 'apoio', posicao: 'Apoio 2 (P2 — Favela)', veiculo: 'N/A' }
-        };
+        const exibeNome = document.getElementById('exibeNome');
+        const exibePassaporte = document.getElementById('exibePassaporte');
+        const exibeSituacao = document.getElementById('exibeSituacao');
+        const exibeHoje = document.getElementById('exibeHoje');
+        const exibePausas = document.getElementById('exibePausas');
+        const exibeSemana = document.getElementById('exibeSemana');
+        const tempoPrincipal = document.getElementById('tempoPrincipal');
+        const tempoMilesimos = document.getElementById('tempoMilesimos');
+        const areaBotoes = document.getElementById('areaBotoes');
+        const listaHistorico = document.getElementById('listaHistorico');
+        const modalEncerrar = document.getElementById('modalEncerrar');
+        const avisoEspera = document.getElementById('avisoEspera');
+        const contadorRegressivo = document.getElementById('contadorRegressivo');
+        const botaoMais = document.getElementById('botaoMais');
+        const fundoGaveta = document.getElementById('fundoGaveta');
 
-        // ========== FORMATAR DATA ==========
-        function formatarData(data) {
-            if (!data) return "—";
-            const d = new Date(data);
-            const dia = String(d.getDate()).padStart(2, '0');
-            const mes = String(d.getMonth() + 1).padStart(2, '0');
-            const ano = d.getFullYear();
-            const h = String(d.getHours()).padStart(2, '0');
-            const m = String(d.getMinutes()).padStart(2, '0');
-            return `${dia}/${mes}/${ano} · ${h}:${m}`;
+        let passaporteUsuario = localStorage.getItem('passaporte') || null;
+        let nomeUsuario = null;
+        let registroAtivo = null;
+        let totalPausas = 0;
+        let tempoPausadoAcumulado = 0;
+        let momentoInicioPausa = null;
+        let bloqueadoAte = parseInt(localStorage.getItem('bloqueadoAte') || '0');
+        let intervaloContagem = null;
+
+        // MENU MAIS / GAVETA
+        botaoMais.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fundoGaveta.classList.toggle('aberto');
+        });
+        fundoGaveta.addEventListener('click', () => {
+            fundoGaveta.classList.remove('aberto');
+        });
+        fundoGaveta.querySelector('.gaveta').addEventListener('click', (e) => {
+            e.stopPropagation();
+        });
+
+        // FORMATAÇÃO DE TEMPO
+        function formatarTempoComMilesimos(segundosTotais) {
+            const h = Math.floor(segundosTotais / 3600);
+            const m = Math.floor((segundosTotais % 3600) / 60);
+            const s = Math.floor(segundosTotais % 60);
+            const ms = Math.floor((segundosTotais % 1) * 100);
+            return {
+                principal: `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0'),
+                milesimos: '.' + `${ms}`.padStart(2,'0')
+            };
         }
 
-        // ========== DEFINIR POSIÇÃO POR ORDEM DE ENTRADA ==========
-        function definirPosicao(ordem, tipo) {
-            if (tipo !== 'rota') return null; // só aplica em rotas
-            if (ordem === 1) return 'Piloto';
-            return `Assento ${ordem}`;
+        function formatarDuracao(segundos) {
+            if (!segundos || segundos <= 0) return '0m';
+            const h = Math.floor(segundos / 3600);
+            const m = Math.floor((segundos % 3600) / 60);
+            const s = Math.floor(segundos % 60);
+            if (h > 0) return `${h}h${m.toString().padStart(2,'0')}m`;
+            if (m > 0) return `${m}m${s.toString().padStart(2,'0')}s`;
+            return `${s}s`;
         }
-        
-        // ========== CARREGAR TUDO ==========
-        async function carregarDados() {
-            const passaporte = localStorage.getItem('passaporte');
+
+        function formatarMinSeg(totalSegundos) {
+            const m = Math.floor(totalSegundos / 60);
+            const s = Math.floor(totalSegundos % 60);
+            return `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
+        }
+
+        function calcularSegundos(data1, data2) {
+            if (!data1 || !data2) return 0;
+            return Math.max(0, (new Date(data2) - new Date(data1)) / 1000);
+        }
+
+        function calcularTempoLiquido(registro) {
+            if (!registro) return 0;
+            const entrada = new Date(registro.entrada);
+            const agoraOuSaida = registro.saida ? new Date(registro.saida) : new Date();
+            let totalBruto = (agoraOuSaida - entrada) / 1000;
             
-            if (!passaporte) {
-                window.location.href = 'login.html';
+            if (registro.pausa_inicio && registro.pausa_fim) {
+                totalBruto -= calcularSegundos(registro.pausa_inicio, registro.pausa_fim);
+            }
+            else if (registro.pausa_inicio && !registro.pausa_fim) {
+                totalBruto -= calcularSegundos(registro.pausa_inicio, agoraOuSaida);
+            }
+            
+            return Math.max(0, totalBruto);
+        }
+
+        // CARREGAR DADOS DO USUÁRIO
+        async function carregarDadosUsuario() {
+            if (!passaporteUsuario) {
+                exibeNome.textContent = 'Não identificado';
+                exibePassaporte.textContent = '—';
+                return;
+            }
+            const { data, error } = await sb
+                .from('membros')
+                .select('nome, passaporte, equipe_id')
+                .eq('passaporte', passaporteUsuario)
+                .single();
+            if (data && !error) {
+                nomeUsuario = data.nome;
+                exibeNome.textContent = data.nome;
+                exibePassaporte.textContent = data.passaporte;
+            } else {
+                exibeNome.textContent = 'Membro';
+                exibePassaporte.textContent = passaporteUsuario;
+            }
+        }
+
+        // VERIFICAR SE TEM JORNADA ABERTA
+        async function verificarRegistroAtivo() {
+            if (!passaporteUsuario) return null;
+            const { data, error } = await sb
+                .from('pontos')
+                .select('*')
+                .eq('passaporte', passaporteUsuario)
+                .is('saida', null)
+                .order('entrada', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+            if (error) console.error('Erro ao buscar registro ativo:', error);
+            registroAtivo = data;
+            
+            if (registroAtivo) {
+                totalPausas = 0;
+                tempoPausadoAcumulado = 0;
+                momentoInicioPausa = null;
+                
+                if (registroAtivo.pausa_inicio && registroAtivo.pausa_fim) {
+                    tempoPausadoAcumulado += calcularSegundos(registroAtivo.pausa_inicio, registroAtivo.pausa_fim);
+                    totalPausas = 1;
+                }
+                else if (registroAtivo.pausa_inicio && !registroAtivo.pausa_fim) {
+                    momentoInicioPausa = new Date(registroAtivo.pausa_inicio);
+                    totalPausas = 1;
+                }
+            }
+            return data;
+        }
+
+        // CARREGAR HISTÓRICO
+        async function carregarHistorico() {
+            if (!passaporteUsuario) return [];
+            const { data, error } = await sb
+                .from('pontos')
+                .select('*')
+                .eq('passaporte', passaporteUsuario)
+                .not('saida', 'is', null)
+                .order('criado_em', { ascending: false });
+            if (error) {
+                console.error('Erro ao carregar histórico:', error);
+                return [];
+            }
+            return data || [];
+        }
+        // ✅ SORTEIO CORRIGIDO — Rotas com limite / Vendas e Apoio ILIMITADOS
+        async function sortearEquipeDisponivel() {
+            const { data: todasEquipes, error: erroEquipes } = await sb
+                .from('equipes')
+                .select('id, nome, limite, ativa')
+                .eq('ativa', true);
+            
+            if (erroEquipes || !todasEquipes || todasEquipes.length === 0) {
+                console.warn('Nenhuma equipe ativa encontrada');
+                return null;
+            }
+
+            // Quem já está em serviço numa equipe
+            const { data: pontosAbertos } = await sb
+                .from('pontos')
+                .select('equipe_id')
+                .is('saida', null)
+                .not('equipe_id', 'is', null);
+
+            const contagem = {};
+            (pontosAbertos || []).forEach(p => {
+                contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1;
+            });
+
+            // Filtra: Rotas respeitam limite / Vendas e Apoio SEMPRE disponíveis
+            const comVaga = todasEquipes.filter(e => {
+                const nome = (e.nome || '').toUpperCase();
+                const ehRota = nome.startsWith('ROTA');
+                
+                if (ehRota) {
+                    // ROTA: só entra se tiver vaga
+                    const ocupacao = contagem[e.id] || 0;
+                    return ocupacao < e.limite;
+                } else {
+                    // VENDAS / APOIO: ilimitado, SEMPRE entra
+                    return true;
+                }
+            });
+
+            if (comVaga.length === 0) {
+                console.warn('Nenhuma equipe com vaga livre');
+                return null;
+            }
+
+            console.log('Equipes disponíveis:', comVaga.map(e => e.nome));
+            const indice = Math.floor(Math.random() * comVaga.length);
+            return comVaga[indice];
+        }
+
+        // INICIAR JORNADA
+        async function iniciarJornada() {
+            if (Date.now() < bloqueadoAte) return;
+            if (!passaporteUsuario) return alert('Passaporte não identificado!');
+
+            const equipeSorteada = await sortearEquipeDisponivel();
+            
+            const { data: membro } = await sb
+                .from('membros')
+                .select('nome, id')
+                .eq('passaporte', passaporteUsuario)
+                .single();
+
+            if (equipeSorteada) {
+                await sb.from('membros')
+                    .update({ equipe_id: equipeSorteada.id })
+                    .eq('passaporte', passaporteUsuario);
+            }
+
+            const { data, error } = await sb.from('pontos').insert([{
+                passaporte: passaporteUsuario,
+                nome: membro?.nome || nomeUsuario || 'Membro',
+                entrada: new Date().toISOString(),
+                status: 'ativo',
+                equipe_id: equipeSorteada?.id || null
+            }]).select().single();
+            
+            if (error) return console.error('Erro ao iniciar:', error);
+            registroAtivo = data;
+            totalPausas = 0;
+            tempoPausadoAcumulado = 0;
+            momentoInicioPausa = null;
+            atualizarInterface();
+            
+            window.location.href = 'equipe.html';
+        }
+
+        // PAUSAR / RETOMAR / ENCERRAR
+        async function pausarJornada() {
+            if (!registroAtivo) return;
+            momentoInicioPausa = new Date();
+            const { data, error } = await sb.from('pontos')
+                .update({ pausa_inicio: momentoInicioPausa.toISOString() })
+                .eq('id', registroAtivo.id)
+                .select()
+                .single();
+            if (error) return console.error('Erro ao pausar:', error);
+            registroAtivo = data;
+            totalPausas++;
+            atualizarInterface();
+        }
+
+        async function retomarJornada() {
+            if (!registroAtivo || !momentoInicioPausa) return;
+            const fimPausa = new Date();
+            tempoPausadoAcumulado += calcularSegundos(momentoInicioPausa, fimPausa);
+            momentoInicioPausa = null;
+            
+            const { data, error } = await sb.from('pontos')
+                .update({ pausa_fim: fimPausa.toISOString() })
+                .eq('id', registroAtivo.id)
+                .select()
+                .single();
+            if (error) return console.error('Erro ao retomar:', error);
+            registroAtivo = data;
+            atualizarInterface();
+        }
+
+        function abrirModalEncerrar() {
+            modalEncerrar.classList.add('aberto');
+        }
+
+        function fecharModais() {
+            modalEncerrar.classList.remove('aberto');
+        }
+
+        async function confirmarEncerramento() {
+            fecharModais();
+            
+            if (!registroAtivo) return;
+            if (momentoInicioPausa) {
+                tempoPausadoAcumulado += calcularSegundos(momentoInicioPausa, new Date());
+                momentoInicioPausa = null;
+            }
+            
+            const { data, error } = await sb.from('pontos')
+                .update({ saida: new Date().toISOString() })
+                .eq('id', registroAtivo.id)
+                .select()
+                .single();
+            if (error) return console.error('Erro ao encerrar:', error);
+            
+            await sb.from('membros')
+                .update({ equipe_id: null })
+                .eq('passaporte', passaporteUsuario);
+            
+            registroAtivo = null;
+            totalPausas = 0;
+            tempoPausadoAcumulado = 0;
+            
+            bloqueadoAte = Date.now() + 60 * 1000;
+            localStorage.setItem('bloqueadoAte', bloqueadoAte);
+            atualizarInterface();
+            iniciarContagemRegressiva();
+            await renderizarHistorico();
+        }
+
+        // CONTAGEM REGRESSIVA DO BLOQUEIO
+        function iniciarContagemRegressiva() {
+            avisoEspera.style.display = 'block';
+            
+            if (intervaloContagem) clearInterval(intervaloContagem);
+            
+            intervaloContagem = setInterval(() => {
+                const agora = Date.now();
+                const restante = Math.max(0, Math.ceil((bloqueadoAte - agora) / 1000));
+                
+                if (restante <= 0) {
+                    clearInterval(intervaloContagem);
+                    avisoEspera.style.display = 'none';
+                    localStorage.removeItem('bloqueadoAte');
+                    bloqueadoAte = 0;
+                } else {
+                    contadorRegressivo.textContent = formatarMinSeg(restante);
+                }
+                atualizarInterface();
+            }, 1000);
+        }
+
+        // ATUALIZAR TELA
+        function atualizarInterface() {
+            const estaBloqueado = Date.now() < bloqueadoAte;
+            
+            if (!registroAtivo) {
+                if (estaBloqueado) {
+                    areaBotoes.innerHTML = `<button class="botao-acao iniciar" disabled><i class="fas fa-lock"></i> Aguarde...</button>`;
+                } else {
+                    areaBotoes.innerHTML = `<button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>`;
+                    const btn = document.getElementById('btnIniciar');
+                    if (btn) btn.addEventListener('click', iniciarJornada);
+                }
+                exibeSituacao.textContent = 'Fora de Serviço';
+                tempoPrincipal.textContent = '00:00:00';
+                tempoMilesimos.textContent = '.00';
+                exibePausas.textContent = '0';
                 return;
             }
             
-            try {
-                // 1. Buscar dados do membro logado
-                const { data: membro, error: erroMembro } = await sb
-                    .from('membros')
-                    .select('nome, passaporte, cargo, equipe_id, id')
-                    .eq('passaporte', passaporte)
-                    .single();
-                
-                if (erroMembro) throw erroMembro;
-                
-                // 2. Verificar se tem jornada ativa
-                const { data: meuPonto } = await sb
-                    .from('pontos')
-                    .select('*')
-                    .eq('passaporte', passaporte)
-                    .is('saida', null)
-                    .order('entrada', { ascending: false })
-                    .limit(1)
-                    .maybeSingle();
-
-                const temJornadaAtiva = !!meuPonto;
-
-                if (!temJornadaAtiva) {
-                    document.getElementById('areaConteudo').innerHTML = `
-                        <div class="sem-acesso">
-                            <i class="fas fa-info-circle"></i>
-                            <p>Você ainda não está em serviço.<br>Inicie a jornada pelo Ponto.</p>
-                            <a href="bate-ponto.html" class="botao-ir">Ir para o Ponto</a>
-                        </div>
-                    `;
-                    return;
-                }
-
-                if (!membro.equipe_id) {
-                    document.getElementById('areaConteudo').innerHTML = `
-                        <div class="sem-acesso">
-                            <i class="fas fa-users-slash"></i>
-                            <p>Jornada ativa, mas sem equipe alocada.</p>
-                            <a href="bate-ponto.html" class="botao-ir">Ir para o Ponto</a>
-                        </div>
-                    `;
-                    return;
-                }
-
-                // 3. Buscar dados da equipe
-                const { data: equipe, error: erroEquipe } = await sb
-                    .from('equipes')
-                    .select('*')
-                    .eq('id', membro.equipe_id)
-                    .single();
-                
-                if (erroEquipe) throw erroEquipe;
-
-                // 4. Buscar TODOS os membros da equipe que estão em serviço
-                const { data: todosPontos, error: erroPontos } = await sb
-                    .from('pontos')
-                    .select('passaporte, entrada')
-                    .eq('equipe_id', membro.equipe_id)
-                    .is('saida', null)
-                    .order('entrada', { ascending: true }); // do PRIMEIRO ao ÚLTIMO a entrar
-
-                if (erroPontos) throw erroPontos;
-
-                // 5. Descobrir a posição (ordem) do usuário logado
-                let minhaOrdem = null;
-                if (todosPontos) {
-                    for (let i = 0; i < todosPontos.length; i++) {
-                        if (todosPontos[i].passaporte === passaporte) {
-                            minhaOrdem = i + 1; // 1º = índice 0 → ordem 1
-                            break;
-                        }
-                    }
-                }
-
-                // 6. Aplicar regras
-                const regra = regrasEquipes[equipe.nome] || {};
-                const areaAtuacao = regra.area || equipe.area || 'A definir';
-                const veiculo = regra.veiculo || '—';
-                
-                let posicao = regra.posicao;
-                if (!posicao && regra.tipo === 'rota' && minhaOrdem) {
-                    posicao = definirPosicao(minhaOrdem, 'rota');
-                }
-                if (!posicao) posicao = '—';
-
-                // 7. Mostrar tudo
-                document.getElementById('areaConteudo').innerHTML = `
-                    <div class="card-membro">
-                        <div class="icone-perfil">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <div class="info-membro">
-                            <h2 class="nome-membro">${membro.nome}</h2>
-                            <p class="passaporte-membro">Passaporte · ${membro.passaporte}</p>
-                        </div>
-                        <div class="status-badge status-ativo">Em Serviço</div>
-                    </div>
-                    
-                    <div class="card-equipe">
-                        <p class="etiqueta">Escala Ativa</p>
-                        <h3 class="nome-equipe">${equipe.nome}</h3>
-                        <p class="desc-equipe">${areaAtuacao}</p>
-                        
-                        <div class="grade-dados coluna-1">
-                            <div class="bloco-dado coluna-1">
-                                <p class="rotulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
-                                <p class="valor">${areaAtuacao}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="grade-dados">
-                            <div class="bloco-dado">
-                                <p class="rotulo"><i class="fas fa-user-tag"></i> Minha Posição</p>
-                                <p class="valor">${posicao}</p>
-                            </div>
-                            <div class="bloco-dado">
-                                <p class="rotulo"><i class="fas fa-briefcase"></i> Função</p>
-                                <p class="valor">${membro.cargo}</p>
-                            </div>
-                            <div class="bloco-dado">
-                                <p class="rotulo"><i class="fas fa-car"></i> Veículo</p>
-                                <p class="valor">${veiculo}</p>
-                            </div>
-                            <div class="bloco-dado">
-                                <p class="rotulo"><i class="fas fa-clock"></i> Entrada</p>
-                                <p class="valor">${formatarData(meuPonto.entrada)}</p>
-                            </div>
-                        </div>
-                    </div>
+            if (!momentoInicioPausa) {
+                areaBotoes.innerHTML = `
+                    <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
+                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
-                
-            } catch (erro) {
-                console.error('Erro:', erro);
-                document.getElementById('areaConteudo').innerHTML = `
-                    <div class="sem-acesso">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        <p>Não foi possível carregar as informações.</p>
-                        <a href="bate-ponto.html" class="botao-ir">Ir para o Ponto</a>
-                    </div>
+                exibeSituacao.textContent = 'Em Jornada';
+                document.getElementById('btnPausar').addEventListener('click', pausarJornada);
+                document.getElementById('btnEncerrar').addEventListener('click', abrirModalEncerrar);
+            } else {
+                areaBotoes.innerHTML = `
+                    <button class="botao-acao retomar" id="btnRetomar"><i class="fas fa-play"></i> Retomar</button>
+                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
                 `;
+                exibeSituacao.textContent = 'Em Pausa';
+                document.getElementById('btnRetomar').addEventListener('click', retomarJornada);
+                document.getElementById('btnEncerrar').addEventListener('click', abrirModalEncerrar);
             }
+            exibePausas.textContent = totalPausas;
         }
-        
-        carregarDados();
+
+        // RENDERIZAR HISTÓRICO
+        async function renderizarHistorico() {
+            const historico = await carregarHistorico();
+            if (historico.length === 0) {
+                listaHistorico.innerHTML = `<div class="vazio">Nenhum registro de jornada ainda</div>`;
+                return;
+            }
+            let totalHoje = 0, totalSemana = 0;
+            const hoje = new Date().toLocaleDateString('pt-BR');
+            const umaSemanaAtras = new Date();
+            umaSemanaAtras.setDate(umaSemanaAtras.getDate() - 7);
+            
+            listaHistorico.innerHTML = historico.map(item => {
+                const duracao = calcularTempoLiquido(item);
+                const dataItem = new Date(item.entrada).toLocaleDateString('pt-BR');
+                if (dataItem === hoje) totalHoje += duracao;
+                if (new Date(item.entrada) >= umaSemanaAtras) totalSemana += duracao;
+                
+                const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }).toUpperCase();
+                const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+                const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) : '—';
+                
+                return `
+                    <div class="item-historico">
+                        <div class="item-cabecalho">
+                            <span class="item-data">${dataFormatada}</span>
+                            <span class="item-duracao">${formatarDuracao(duracao)}</span>
+                        </div>
+                        <div class="item-detalhe">
+                            Entrada: ${entrada} · Saída: ${saida}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            exibeHoje.textContent = formatarDuracao(totalHoje);
+            exibeSemana.textContent = formatarDuracao(totalSemana);
+        }
+
+        // TROCA DE ABAS
+        document.querySelectorAll('.aba').forEach(aba => {
+            aba.addEventListener('click', async () => {
+                document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
+                document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('visivel'));
+                aba.classList.add('ativa');
+                document.getElementById(`conteudo-${aba.dataset.aba}`).classList.add('visivel');
+                if (aba.dataset.aba === 'historico') await renderizarHistorico();
+            });
+        });
+
+        // BOTÕES DO MODAL
+        document.getElementById('botaoCancelarEncerrar').addEventListener('click', fecharModais);
+        document.getElementById('botaoConfirmarEncerrar').addEventListener('click', confirmarEncerramento);
+
+        // ATUALIZAÇÃO DO CRONÔMETRO
+        setInterval(() => {
+            if (!registroAtivo) return;
+            
+            let tempoDecorrido;
+            if (!momentoInicioPausa) {
+                tempoDecorrido = (Date.now() - new Date(registroAtivo.entrada).getTime()) / 1000 - tempoPausadoAcumulado;
+            } else {
+                tempoDecorrido = (Date.now() - new Date(registroAtivo.entrada).getTime()) / 1000 
+                    - tempoPausadoAcumulado 
+                    - (Date.now() - momentoInicioPausa.getTime()) / 1000;
+            }
+            
+            tempoDecorrido = Math.max(0, tempoDecorrido);
+            const fmt = formatarTempoComMilesimos(tempoDecorrido);
+            tempoPrincipal.textContent = fmt.principal;
+            tempoMilesimos.textContent = fmt.milesimos;
+            exibeHoje.textContent = formatarDuracao(tempoDecorrido);
+        }, 50);
+
+        // INICIALIZAÇÃO GERAL
+        async function inicializar() {
+            await carregarDadosUsuario();
+            await verificarRegistroAtivo();
+            
+            if (Date.now() < bloqueadoAte) {
+                iniciarContagemRegressiva();
+            }
+            
+            atualizarInterface();
+            await renderizarHistorico();
+        }
+        inicializar();
     </script>
 </body>
 </html>
 
+<!-- CONTINUA NA PARTE 3 👇 -->
+        
