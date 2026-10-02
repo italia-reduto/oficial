@@ -53,11 +53,11 @@
         }
         .icone-aviso {
             width: 72px; height: 72px; border-radius: 50%;
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(96, 165, 250, 0.15);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 24px;
         }
-        .icone-aviso i { font-size: 32px; color: #ef4444; }
+        .icone-aviso i { font-size: 32px; color: #60a5fa; }
         .aviso-titulo { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
         .aviso-texto { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
         .botao-ir-ponto {
@@ -66,6 +66,7 @@
             color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
             display: inline-flex; align-items: center; gap: 8px;
             transition: all 0.3s ease;
+            text-decoration: none;
         }
         .botao-ir-ponto:hover { transform: translateY(-2px); }
 
@@ -191,7 +192,6 @@
                 return;
             }
 
-            // Verifica se tem ponto aberto
             const { data: pontoAtivo, error: erroPonto } = await sb
                 .from('pontos')
                 .select('equipe_id, id')
@@ -200,13 +200,11 @@
                 .maybeSingle();
 
             if (!pontoAtivo) {
-                // Sem jornada → mostra aviso
                 document.getElementById('telaBloqueio').style.display = 'block';
                 document.getElementById('telaEquipe').classList.remove('visivel');
                 return;
             }
 
-            // Com jornada → carrega dados da equipe
             document.getElementById('telaBloqueio').style.display = 'none';
             document.getElementById('telaEquipe').classList.add('visivel');
 
@@ -220,7 +218,6 @@
                 return;
             }
 
-            // Busca dados da equipe
             const { data: equipe } = await sb
                 .from('equipes')
                 .select('*')
@@ -230,7 +227,6 @@
             if (equipe) {
                 document.getElementById('nomeEquipe').textContent = equipe.nome || 'Equipe sem nome';
                 
-                // Define área de atuação conforme nome da equipe
                 const nome = (equipe.nome || '').toUpperCase();
                 if (nome.includes('ROTA 1') || nome.includes('ROTA 2')) {
                     document.getElementById('areaAtuacao').textContent = 'Farm de Lockpick';
@@ -257,7 +253,6 @@
                 document.getElementById('funcao').textContent = 'Membro';
             }
 
-            // Lista integrantes
             const { data: todosPontos } = await sb
                 .from('pontos')
                 .select('nome, passaporte')
@@ -272,7 +267,6 @@
             }
         }
 
-        // Gaveta do "Mais"
         const botaoMais = document.getElementById('botaoMais');
         botaoMais?.addEventListener('click', () => {
             alert('Menu Mais em desenvolvimento');
