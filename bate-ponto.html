@@ -33,17 +33,29 @@
         .fundo-pagina {
             position: fixed; inset: 0;
             background: linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%);
-            z-index: -3;
+            z-index: -4;
         }
         .fundo-imagem {
             position: fixed; inset: 0;
             background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.08; z-index: -1;
+            opacity: 0.08; z-index: -3;
         }
         .fundo-degrade {
             position: fixed; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
-            z-index: 0;
+            background: linear-gradient(to bottom, 
+                rgba(0,0,0,0.3) 0%, 
+                rgba(0,0,0,0.75) 55%, 
+                rgba(15, 23, 42, 0.92) 80%,
+                rgba(30, 64, 175, 0.18) 100%);
+            z-index: -2;
+        }
+        .fundo-azul-embaixo {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 220px;
+            background: linear-gradient(to top, 
+                rgba(59, 130, 246, 0.15) 0%, 
+                rgba(59, 130, 246, 0.06) 45%,
+                transparent 100%);
+            pointer-events: none; z-index: -1;
         }
 
         .conteudo { position: relative; z-index: 1; padding: 24px; }
@@ -59,6 +71,15 @@
         .linha-dado i { color: #60a5fa; font-size: 16px; width: 20px; text-align: center; }
         .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
         .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
+        
+        .aviso-navegacao {
+            background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.25);
+            border-radius: 10px; padding: 12px 16px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .aviso-navegacao i { color: #60a5fa; font-size: 18px; }
+        .aviso-navegacao span { font-size: 14px; color: #cbd5e1; }
+        .aviso-navegacao a { color: #60a5fa; text-decoration: none; font-weight: 600; margin-left: 6px; }
         
         .grade-cards {
             display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
@@ -112,15 +133,6 @@
         .botao-acao.retomar { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .botao-acao.encerrar { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
         .botao-acao:hover:not(:disabled) { transform: translateY(-2px); }
-
-        .aviso-navegacao {
-            background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.25);
-            border-radius: 10px; padding: 12px 16px; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .aviso-navegacao i { color: #60a5fa; font-size: 18px; }
-        .aviso-navegacao span { font-size: 14px; color: #cbd5e1; }
-        .aviso-navegacao a { color: #60a5fa; text-decoration: none; font-weight: 600; margin-left: 6px; }
 
         .item-historico {
             padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
@@ -201,6 +213,8 @@
         <div class="fundo-pagina"></div>
     <div class="fundo-imagem"></div>
     <div class="fundo-degrade"></div>
+    <!-- ✅ GRADIENTE AZUL EMBAIXO -->
+    <div class="fundo-azul-embaixo"></div>
 
     <div class="aviso-espera" id="avisoEspera">
         <div class="aviso-espera-conteudo">
@@ -230,7 +244,6 @@
             </div>
         </div>
 
-        <!-- ✅ AVISO: Em jornada → pode ir pra equipe quando quiser -->
         <div class="aviso-navegacao" id="avisoEmJornada" style="display: none;">
             <i class="fas fa-info-circle"></i>
             <span>Você está em jornada. Verifique sua equipe <a href="equipe.html">aqui →</a></span>
@@ -389,7 +402,6 @@
             }
         }
 
-        // ✅ REMOVIDO O REDIRECIONAMENTO FORÇADO — agora navega livremente!
         async function verificarRegistroAtivo() {
             if (!passaporteUsuario) return null;
             const { data, error } = await sb
@@ -402,10 +414,7 @@
                 .maybeSingle();
             if (error) console.error('Erro ao buscar registro ativo:', error);
             registroAtivo = data;
-            
-            // Mostra aviso se tiver jornada aberta
             avisoEmJornada.style.display = registroAtivo ? 'flex' : 'none';
-            
             if (registroAtivo) {
                 totalPausas = 0; tempoPausadoAcumulado = 0; momentoInicioPausa = null;
                 if (registroAtivo.pausa_inicio && registroAtivo.pausa_fim) {
@@ -419,6 +428,7 @@
             return data;
         }
 
+        // ✅ SORTEIO CORRIGIDO → TODAS participam!
         async function sortearEquipeDisponivel() {
             const { data: todasEquipes } = await sb
                 .from('equipes')
@@ -439,13 +449,13 @@
             });
 
             const comVaga = todasEquipes.filter(e => {
-                const nome = (e.nome || '').toUpperCase();
+                const nome = (e.nome || '').toUpperCase().trim();
                 const ehRota = nome.startsWith('ROTA');
                 if (ehRota) {
                     const ocupacao = contagem[e.id] || 0;
                     return ocupacao < e.limite;
                 }
-                return true;
+                return true; // VENDAS, APOIO = ILIMITADO
             });
 
             if (comVaga.length === 0) return null;
@@ -485,11 +495,8 @@
                 if (error) { alert('Erro! Tente de novo.'); return; }
                 registroAtivo = data;
                 totalPausas = 0; tempoPausadoAcumulado = 0; momentoInicioPausa = null;
-
-                // ✅ APENAS AVISA — não força mais!
                 avisoEmJornada.style.display = 'flex';
                 atualizarInterface();
-
             } catch (erro) {
                 alert('Algo deu errado. Tente novamente!');
             }
