@@ -105,7 +105,6 @@
             font-size: 16px; font-weight: 700; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             gap: 8px; transition: all 0.3s ease; color: #fff; user-select: none;
-            text-decoration: none;
         }
         .botao-acao:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
         .botao-acao.iniciar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
@@ -113,6 +112,15 @@
         .botao-acao.retomar { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
         .botao-acao.encerrar { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
         .botao-acao:hover:not(:disabled) { transform: translateY(-2px); }
+
+        .aviso-navegacao {
+            background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.25);
+            border-radius: 10px; padding: 12px 16px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 10px;
+        }
+        .aviso-navegacao i { color: #60a5fa; font-size: 18px; }
+        .aviso-navegacao span { font-size: 14px; color: #cbd5e1; }
+        .aviso-navegacao a { color: #60a5fa; text-decoration: none; font-weight: 600; margin-left: 6px; }
 
         .item-historico {
             padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
@@ -222,6 +230,12 @@
             </div>
         </div>
 
+        <!-- ✅ AVISO: Em jornada → pode ir pra equipe quando quiser -->
+        <div class="aviso-navegacao" id="avisoEmJornada" style="display: none;">
+            <i class="fas fa-info-circle"></i>
+            <span>Você está em jornada. Verifique sua equipe <a href="equipe.html">aqui →</a></span>
+        </div>
+
         <div class="grade-cards">
             <div class="card">
                 <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
@@ -304,6 +318,7 @@
         const listaHistorico = document.getElementById('listaHistorico');
         const modalEncerrar = document.getElementById('modalEncerrar');
         const avisoEspera = document.getElementById('avisoEspera');
+        const avisoEmJornada = document.getElementById('avisoEmJornada');
         const contadorRegressivo = document.getElementById('contadorRegressivo');
 
         let passaporteUsuario = localStorage.getItem('passaporte') || null;
@@ -374,22 +389,7 @@
             }
         }
 
-        async function verificarERedirecionar() {
-            if (!passaporteUsuario) return;
-            const { data: pontoAberto } = await sb
-                .from('pontos')
-                .select('id')
-                .eq('passaporte', passaporteUsuario)
-                .is('saida', null)
-                .limit(1)
-                .maybeSingle();
-            
-            if (pontoAberto) {
-                console.log('✅ Já em jornada → indo para equipe.html');
-                window.location.href = 'equipe.html';
-            }
-        }
-
+        // ✅ REMOVIDO O REDIRECIONAMENTO FORÇADO — agora navega livremente!
         async function verificarRegistroAtivo() {
             if (!passaporteUsuario) return null;
             const { data, error } = await sb
@@ -402,6 +402,10 @@
                 .maybeSingle();
             if (error) console.error('Erro ao buscar registro ativo:', error);
             registroAtivo = data;
+            
+            // Mostra aviso se tiver jornada aberta
+            avisoEmJornada.style.display = registroAtivo ? 'flex' : 'none';
+            
             if (registroAtivo) {
                 totalPausas = 0; tempoPausadoAcumulado = 0; momentoInicioPausa = null;
                 if (registroAtivo.pausa_inicio && registroAtivo.pausa_fim) {
@@ -482,9 +486,10 @@
                 registroAtivo = data;
                 totalPausas = 0; tempoPausadoAcumulado = 0; momentoInicioPausa = null;
 
-                setTimeout(() => {
-                    window.location.href = 'equipe.html';
-                }, 300);
+                // ✅ APENAS AVISA — não força mais!
+                avisoEmJornada.style.display = 'flex';
+                atualizarInterface();
+
             } catch (erro) {
                 alert('Algo deu errado. Tente novamente!');
             }
@@ -526,6 +531,7 @@
             await sb.from('membros').update({ equipe_id: null }).eq('passaporte', passaporteUsuario);
             
             registroAtivo = null; totalPausas = 0; tempoPausadoAcumulado = 0;
+            avisoEmJornada.style.display = 'none';
             bloqueadoAte = Date.now() + 60 * 1000;
             localStorage.setItem('bloqueadoAte', bloqueadoAte);
             atualizarInterface();
@@ -561,6 +567,7 @@
                 tempoPrincipal.textContent = '00:00:00';
                 tempoMilesimos.textContent = '.00';
                 exibePausas.textContent = '0';
+                avisoEmJornada.style.display = 'none';
                 return;
             }
             if (!momentoInicioPausa) {
@@ -581,6 +588,7 @@
                 document.getElementById('btnEncerrar').onclick = abrirModalEncerrar;
             }
             exibePausas.textContent = totalPausas;
+            avisoEmJornada.style.display = 'flex';
         }
 
         async function carregarHistorico() {
@@ -657,7 +665,6 @@
 
         async function inicializar() {
             await carregarDadosUsuario();
-            await verificarERedirecionar();
             await verificarRegistroAtivo();
             if (Date.now() < bloqueadoAte) iniciarContagemRegressiva();
             atualizarInterface();
