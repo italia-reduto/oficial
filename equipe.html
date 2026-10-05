@@ -20,272 +20,163 @@
     </script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         :root {
-            --bg: #050508;
-            --card: #0f1525;
-            --card-2: #151b2d;
-            --azul: #2563eb;
-            --azul-claro: #3b82f6;
-            --texto: #e5e7eb;
-            --texto-sec: #9ca3af;
-            --borda: #1e293b;
+            --bg: #050508; --card: #0f1525; --card-2: #151b2d;
+            --azul: #2563eb; --azul-claro: #3b82f6;
+            --texto: #e5e7eb; --texto-sec: #9ca3af; --borda: #1e293b;
         }
-
         body {
-            background: var(--bg);
-            color: var(--texto);
-            min-height: 100vh;
+            background: var(--bg); color: var(--texto); min-height: 100vh;
             padding: 16px 16px 90px;
         }
-
-        *:focus {
-            outline: none;
-        }
-
-        .cabecalho {
-            margin: 12px 0 24px;
-        }
-
-        .titulo {
-            font-size: 26px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .titulo i {
-            color: var(--azul-claro);
-        }
-
-        .subtitulo {
-            color: var(--texto-sec);
-            font-size: 14px;
-            margin-top: 4px;
-        }
-
+        *:focus { outline: none; }
+        .cabecalho { margin: 12px 0 24px; }
+        .titulo { font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .titulo i { color: var(--azul-claro); }
+        .subtitulo { color: var(--texto-sec); font-size: 14px; margin-top: 4px; }
         .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(34, 197, 94, 0.1);
-            color: #22c55e;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            margin-top: 10px;
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-top: 10px;
         }
-
-        .status-badge i {
-            font-size: 10px;
-        }
-
+        .status-em { background: rgba(34,197,94,0.1); color: #22c55e; }
+        .status-fora { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .status-badge i { font-size: 10px; }
         .equipe-nome {
             background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(59,130,246,0.05));
             border: 1px solid rgba(37,99,235,0.25);
-            border-radius: 14px;
-            padding: 18px 20px;
-            margin-bottom: 16px;
+            border-radius: 14px; padding: 18px 20px; margin-bottom: 16px;
         }
-
-        .equipe-tag {
-            font-size: 13px;
-            color: var(--azul-claro);
-            font-weight: 600;
-            margin-bottom: 6px;
+        .equipe-tag { font-size: 13px; color: var(--azul-claro); font-weight: 600; margin-bottom: 6px; }
+        .equipe-valor { font-size: 32px; font-weight: 800; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+        .card { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 16px; }
+        .card.largo { grid-column: 1 / -1; }
+        .card-etiqueta { font-size: 12px; color: var(--texto-sec); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .card-etiqueta i { color: var(--azul-claro); }
+        .card-valor { font-size: 16px; font-weight: 600; }
+        .card-valor.destaque { font-size: 20px; font-weight: 700; color: var(--azul-claro); }
+        .integrantes-lista { display: flex; flex-wrap: wrap; gap: 8px; }
+        .integrante { background: var(--card-2); padding: 8px 14px; border-radius: 8px; font-size: 14px; }
+        .integrante.voce { border: 1px solid var(--azul-claro); background: rgba(37,99,235,0.15); }
+        .aviso-bloqueio {
+            text-align: center; padding: 40px 20px; color: var(--texto-sec);
         }
-
-        .equipe-valor {
-            font-size: 32px;
-            font-weight: 800;
+        .aviso-bloqueio i { font-size: 48px; color: var(--azul-claro); margin-bottom: 16px; }
+        .aviso-bloqueio h2 { font-size: 20px; margin-bottom: 8px; color: var(--texto); }
+        .aviso-bloqueio p { margin-bottom: 20px; }
+        .botao-ir {
+            display: inline-block; background: var(--azul); color: white;
+            padding: 12px 24px; border-radius: 10px; text-decoration: none;
+            font-weight: 600; transition: background .2s;
         }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .card {
-            background: var(--card);
-            border: 1px solid var(--borda);
-            border-radius: 12px;
-            padding: 16px;
-        }
-
-        .card.largo {
-            grid-column: 1 / -1;
-        }
-
-        .card-etiqueta {
-            font-size: 12px;
-            color: var(--texto-sec);
-            margin-bottom: 8px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .card-etiqueta i {
-            color: var(--azul-claro);
-        }
-
-        .card-valor {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .card-valor.destaque {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--azul-claro);
-        }
-
-        .integrantes-lista {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .integrante {
-            background: var(--card-2);
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-                .integrante.voce {
-            border: 1px solid var(--azul-claro);
-            background: rgba(37,99,235,0.15);
-        }
-
+        .botao-ir:hover { background: var(--azul-claro); }
         .navegacao {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: space-around;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+            display: flex; justify-content: space-around;
             padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
-            border-top: 1px solid #1f2937;
-            z-index: 999;
+            border-top: 1px solid #1f2937; z-index: 999;
         }
-
         .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--texto-sec);
-            text-decoration: none;
-            font-size: 11px;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: var(--texto-sec); text-decoration: none; font-size: 11px;
         }
-
-        .nav-item.ativo {
-            color: var(--azul-claro);
-        }
-
-        .nav-item i {
-            font-size: 20px;
-        }
-
+        .nav-item.ativo { color: var(--azul-claro); }
+        .nav-item i { font-size: 20px; }
         .gradiente-fundo {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 180px;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 180px;
             background: linear-gradient(to top, rgba(37,99,235,0.12), transparent);
-            pointer-events: none;
-            z-index: 0;
+            pointer-events: none; z-index: 0;
         }
-
-        .conteudo {
-            position: relative;
-            z-index: 1;
-        }
+        .conteudo { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
     <div class="gradiente-fundo"></div>
-    <div class="conteudo">
-        <div class="cabecalho">
-            <h1 class="titulo">
-                <i class="fas fa-users"></i> Minha Equipe
-            </h1>
-            <p class="subtitulo">Informações e integrantes da sua equipe atual</p>
-            <div class="status-badge" id="statusEquipe">
-                <i class="fas fa-circle"></i> Carregando...
+    <div class="conteudo" id="conteudoPagina">
+                <div id="telaBloqueio" style="display: none;">
+            <div class="aviso-bloqueio">
+                <i class="fas fa-lock"></i>
+                <h2>Controle de Ponto Necessário</h2>
+                <p>Você precisa iniciar sua jornada no Controle de Ponto<br>para ter acesso às informações da equipe.</p>
+                <a href="ponto.html" class="botao-ir">
+                    <i class="fas fa-clock"></i> Ir ao Controle de Ponto
+                </a>
             </div>
         </div>
 
-        <div class="equipe-nome" id="blocoEquipe">
-            <div class="equipe-tag">EQUIPE ATUAL</div>
-            <div class="equipe-valor" id="nomeEquipe">—</div>
-        </div>
-
-        <div class="grid">
-            <div class="card">
-                <div class="card-etiqueta">
-                    <i class="fas fa-map-marker-alt"></i> Área de Atuação
+        <div id="telaEquipe" style="display: none;">
+            <div class="cabecalho">
+                <h1 class="titulo">
+                    <i class="fas fa-users"></i> Minha Equipe
+                </h1>
+                <p class="subtitulo">Informações e integrantes da sua equipe atual</p>
+                <div class="status-badge status-em" id="statusEquipe">
+                    <i class="fas fa-circle"></i> Em Serviço
                 </div>
-                <div class="card-valor" id="areaAtuacao">—</div>
             </div>
 
-            <div class="card">
-                <div class="card-etiqueta">
-                    <i class="fas fa-user-check"></i> Minha Posição
-                </div>
-                <div class="card-valor destaque" id="minhaPosicao">—</div>
+            <div class="equipe-nome">
+                <div class="equipe-tag">EQUIPE ATUAL</div>
+                <div class="equipe-valor" id="nomeEquipe">—</div>
             </div>
 
-            <div class="card">
-                <div class="card-etiqueta">
-                    <i class="fas fa-car"></i> Veículo
+            <div class="grid">
+                <div class="card">
+                    <div class="card-etiqueta">
+                        <i class="fas fa-map-marker-alt"></i> Área de Atuação
+                    </div>
+                    <div class="card-valor" id="areaAtuacao">—</div>
                 </div>
-                <div class="card-valor" id="veiculo">—</div>
-            </div>
 
-            <div class="card">
-                <div class="card-etiqueta">
-                    <i class="fas fa-briefcase"></i> Função
+                <div class="card">
+                    <div class="card-etiqueta">
+                        <i class="fas fa-user-check"></i> Minha Posição
+                    </div>
+                    <div class="card-valor destaque" id="minhaPosicao">—</div>
                 </div>
-                <div class="card-valor" id="funcao">—</div>
-            </div>
 
-            <div class="card largo">
-                <div class="card-etiqueta">
-                    <i class="fas fa-list-ul"></i> Integrantes da Equipe
+                <div class="card">
+                    <div class="card-etiqueta">
+                        <i class="fas fa-car"></i> Veículo
+                    </div>
+                    <div class="card-valor" id="veiculo">N/A</div>
                 </div>
-                <div class="integrantes-lista" id="listaIntegrantes">
-                    <span>Carregando...</span>
+
+                <div class="card">
+                    <div class="card-etiqueta">
+                        <i class="fas fa-briefcase"></i> Função
+                    </div>
+                    <div class="card-valor">Membro</div>
+                </div>
+
+                <div class="card largo">
+                    <div class="card-etiqueta">
+                        <i class="fas fa-list-ul"></i> Integrantes da Equipe
+                    </div>
+                    <div class="integrantes-lista" id="listaIntegrantes">
+                        <span>Carregando...</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
         <script>
         let usuario = null;
-        let equipeAtual = null;
 
-        async function carregarDados() {
+        async function verificarAcesso() {
+            // ✅ NÃO REDIRECIONA MAIS PRO LOGIN — só verifica sessão
             const sessao = localStorage.getItem('sessao_usuario');
             if (!sessao) {
+                // Se não tem sessão, manda pro login
                 window.location.href = 'login.html';
                 return;
             }
 
             usuario = JSON.parse(sessao);
 
+            // Busca o ponto ativo
             const { data: ponto } = await sb
                 .from('pontos')
                 .select('*')
@@ -295,16 +186,16 @@
                 .limit(1)
                 .single();
 
-            if (!ponto) {
-                window.location.href = 'ponto.html';
+            // Sem ponto ativo → mostra aviso de bloqueio, NÃO sai da página
+            if (!ponto || !ponto.equipe_id) {
+                document.getElementById('telaBloqueio').style.display = 'block';
+                document.getElementById('telaEquipe').style.display = 'none';
                 return;
             }
 
-            if (!ponto.equipe_id) {
-                document.getElementById('statusEquipe').innerHTML = '<i class="fas fa-circle"></i> Fora de Equipe';
-                document.getElementById('statusEquipe').style.color = '#ef4444';
-                return;
-            }
+            // Tem ponto → carrega dados da equipe
+            document.getElementById('telaBloqueio').style.display = 'none';
+            document.getElementById('telaEquipe').style.display = 'block';
 
             const { data: equipe } = await sb
                 .from('equipes')
@@ -313,21 +204,20 @@
                 .single();
 
             if (!equipe) return;
-            equipeAtual = equipe;
 
-            document.getElementById('nomeEquipe').textContent = equipe.nome || 'Sem Nome';
+            document.getElementById('nomeEquipe').textContent = equipe.nome || '—';
             document.getElementById('areaAtuacao').textContent = equipe.area || '—';
             document.getElementById('veiculo').textContent = equipe.veiculo || 'N/A';
-            document.getElementById('funcao').textContent = 'Membro';
 
+            // Define posição
+            let posicao = 'Piloto';
             const { data: membros } = await sb
                 .from('equipe_membros')
-                .select('*, membros(nome, passaporte)')
+                .select('passaporte, membros(nome)')
                 .eq('equipe_id', equipe.id);
 
-            let posicao = 'Piloto';
             if (membros && membros.length > 0) {
-                const ordem = membros.sort((a, b) => new Date(a.entrada) - new Date(b.entrada));
+                const ordem = membros.sort((a, b) => new Date(a.entrada || 0) - new Date(b.entrada || 0));
                 const idx = ordem.findIndex(m => m.passaporte === usuario.passaporte);
                 if (idx === 1) posicao = 'Assento 2';
                 else if (idx === 2) posicao = 'Assento 3';
@@ -335,6 +225,7 @@
             }
             document.getElementById('minhaPosicao').textContent = posicao;
 
+            // Lista integrantes
             const lista = document.getElementById('listaIntegrantes');
             lista.innerHTML = '';
             if (membros) {
@@ -346,11 +237,9 @@
                     lista.appendChild(span);
                 });
             }
-
-            document.getElementById('statusEquipe').innerHTML = '<i class="fas fa-circle"></i> Em Serviço';
         }
 
-        carregarDados();
+        verificarAcesso();
     </script>
 
     <nav class="navegacao">
