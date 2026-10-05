@@ -8,7 +8,7 @@
     <title>ITÁLIA · EQUIPE</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -25,11 +25,13 @@
             -webkit-tap-highlight-color: transparent; outline: none !important;
         }
         *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
+        
         html, body {
             min-height: 100vh; font-family: 'Inter', sans-serif; color: #fff;
             padding-bottom: 90px; overflow-x: hidden;
         }
 
+        /* Fundos */
         .fundo-pagina {
             position: fixed; inset: 0;
             background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
@@ -46,84 +48,105 @@
             z-index: 0;
         }
 
-        .conteudo { position: relative; z-index: 1; padding: 24px 20px; }
-
-        /* Tela Bloqueio */
-        .aviso-bloqueio {
-            text-align: center; padding: 80px 24px;
+        /* Conteúdo centralizado */
+        .conteudo { 
+            position: relative; z-index: 1; 
+            padding: 24px 20px;
+            max-width: 560px; margin: 0 auto; width: 100%;
         }
-        .icone-aviso {
+
+        /* Tela sem jornada */
+        .aviso-bloqueio {
+            text-align: center; padding: 80px 24px; max-width: 420px; margin: 0 auto;
+        }
+        .icone-bloqueio {
             width: 72px; height: 72px; border-radius: 50%;
             background: rgba(59, 130, 246, 0.12);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 24px;
         }
-        .icone-aviso i { font-size: 32px; color: #3b82f6; }
+        .icone-bloqueio i { font-size: 32px; color: #3b82f6; }
         .aviso-titulo { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
-        .aviso-texto { font-size: 15px; color: #94a3b8; margin-bottom: 32px; line-height: 1.6; max-width: 320px; margin-left: auto; margin-right: auto; }
-        .botao-ir-ponto {
+        .aviso-texto { font-size: 15px; color: #94a3b8; margin-bottom: 32px; line-height: 1.6; }
+        .btn-ponto {
             padding: 15px 32px; border: none; border-radius: 14px;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
             display: inline-flex; align-items: center; gap: 10px;
-            transition: all 0.3s ease; text-decoration: none;
-            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+            text-decoration: none; box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
         }
-        .botao-ir-ponto:active { transform: scale(0.97); }
+        .btn-ponto:active { transform: scale(0.97); }
 
-        /* Cabeçalho */
-        .cabecalho { margin-bottom: 28px; }
-        .titulo-secao { margin-bottom: 6px; }
-        .titulo-secao h1 { 
-            font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 12px;
-            letter-spacing: -0.5px;
+        /* Cabeçalho da equipe */
+        .cabecalho-equipe { margin-bottom: 20px; }
+        .etiqueta-escala {
+            font-size: 13px; color: #60a5fa; font-weight: 600;
+            text-transform: uppercase; letter-spacing: 0.8px;
+            margin-bottom: 8px;
         }
-        .titulo-secao h1 i { color: #3b82f6; font-size: 24px; }
-        .titulo-secao p { font-size: 14px; color: #94a3b8; margin-top: 6px; line-height: 1.5; }
+        .nome-equipe {
+            font-size: 36px; font-weight: 800; letter-spacing: -1px;
+            line-height: 1.1; margin-bottom: 6px;
+        }
+        .subtitulo-equipe { font-size: 14px; color: #94a3b8; }
 
-        /* Cards Layout — inspirado na referência */
-        .grade-cards {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-        }
-        .card {
+        /* Caixa principal com todos os dados */
+        .caixa-dados {
             background: rgba(15, 23, 42, 0.6);
             border: 1px solid rgba(59, 130, 246, 0.1);
-            border-radius: 16px; padding: 18px 16px;
-            backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 24px 20px;
+            backdrop-filter: blur(10px); margin-bottom: 20px;
         }
-        .card-largo { grid-column: 1 / -1; }
-        
-        .card-label {
-            font-size: 12px; color: #64748b; font-weight: 500;
+
+        /* Área/Missão — destaque */
+        .bloco-missao { margin-bottom: 22px; }
+        .rotulo {
+            font-size: 12px; color: #64748b; font-weight: 600;
             text-transform: uppercase; letter-spacing: 0.5px;
             display: flex; align-items: center; gap: 8px;
             margin-bottom: 8px;
         }
-        .card-label i { color: #3b82f6; font-size: 14px; }
-        .card-valor { 
-            font-size: 18px; font-weight: 700; color: #fff;
-            line-height: 1.3;
-        }
-        .card-valor.pequeno { font-size: 16px; }
+        .rotulo i { color: #3b82f6; font-size: 16px; }
+        .valor { font-size: 18px; font-weight: 700; line-height: 1.4; }
 
-        /* Barra de Navegação */
+        /* Grade de informações */
+        .grade {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+            margin-bottom: 16px;
+        }
+        .bloco .rotulo { margin-bottom: 4px; }
+        .bloco .valor { font-size: 16px; }
+        .bloco-largo { grid-column: 1 / -1; }
+
+        /* Botão Trocar Equipe */
+        .btn-trocar {
+            width: 100%; padding: 16px; border: none; border-radius: 14px;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #000; font-size: 15px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            box-shadow: 0 4px 20px rgba(245, 158, 11, 0.25);
+            transition: all 0.3s ease; margin-top: 4px;
+        }
+        .btn-trocar:active { transform: scale(0.97); }
+
+        /* Barra de navegação */
         .barra-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
             background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(12px);
             display: flex; align-items: center; justify-content: space-around;
             border-top: 1px solid rgba(59, 130, 246, 0.12); z-index: 100;
         }
-        .menu-item {
+        .item-menu {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             color: #64748b; text-decoration: none; font-size: 11px;
-            cursor: pointer; transition: color 0.25s ease; user-select: none;
-            background: none; border: none;
+            cursor: pointer; transition: color 0.25s ease;
         }
-        .menu-item.ativo { color: #3b82f6; }
-        .menu-item i { font-size: 20px; margin-bottom: 2px; }
+        .item-menu.ativo { color: #3b82f6; }
+        .item-menu i { font-size: 20px; margin-bottom: 2px; }
 
-        .area-conteudo { display: none; }
-        .area-conteudo.visivel { display: block; }
+        .tela-conteudo { display: none; }
+        .tela-conteudo.visivel { display: block; }
     </style>
 </head>
 <body>
@@ -132,177 +155,147 @@
     <div class="fundo-imagem"></div>
     <div class="fundo-degrade"></div>
 
-    <!-- SEM JORNADA → BLOQUEIO -->
+    <!-- Sem jornada -->
     <div class="conteudo" id="telaBloqueio">
         <div class="aviso-bloqueio">
-            <div class="icone-aviso">
-                <i class="fas fa-lock"></i>
-            </div>
+            <div class="icone-bloqueio"><i class="fas fa-lock"></i></div>
             <h2 class="aviso-titulo">Acesso Restrito</h2>
-            <p class="aviso-texto">
-                Para ver as informações da sua equipe, inicie sua jornada no controle de ponto primeiro.
-            </p>
-            <a href="bate-ponto.html" class="botao-ir-ponto">
-                <i class="fas fa-clock"></i> Ir ao Controle de Ponto
-            </a>
+            <p class="aviso-texto">Inicie sua jornada no controle de ponto para ver as informações da sua equipe.</p>
+            <a href="ponto.html" class="btn-ponto"><i class="fas fa-clock"></i> Ir ao Controle de Ponto</a>
         </div>
     </div>
 
-    <!-- COM JORNADA → DADOS DA EQUIPE -->
-    <div class="conteudo area-conteudo" id="telaEquipe">
-        <div class="cabecalho">
-            <div class="titulo-secao">
-                <h1><i class="fas fa-users"></i> Minha Equipe</h1>
-                <p>Veja sua alocação após iniciar a jornada</p>
+    <!-- Com jornada — visual novo -->
+    <div class="conteudo tela-conteudo" id="telaEquipe">
+        <div class="cabecalho-equipe">
+            <p class="etiqueta-escala" id="etiquetaEscala">Escala atual · —</p>
+            <h1 class="nome-equipe" id="nomeEquipe">—</h1>
+            <p class="subtitulo-equipe">Veja sua alocação atual</p>
+        </div>
+
+        <div class="caixa-dados">
+            <!-- Missão / Área -->
+            <div class="bloco-missao">
+                <p class="rotulo"><i class="fas fa-location-dot"></i> Missão / Área</p>
+                <p class="valor" id="areaAtuacao">—</p>
+            </div>
+
+            <!-- Grade: Posição | Função -->
+            <div class="grade">
+                <div class="bloco">
+                    <p class="rotulo">Posição</p>
+                    <p class="valor" id="minhaPosicao">—</p>
+                </div>
+                <div class="bloco">
+                    <p class="rotulo">Função</p>
+                    <p class="valor" id="funcao">Membro</p>
+                </div>
+                <div class="bloco">
+                    <p class="rotulo">Veículo</p>
+                    <p class="valor" id="veiculo">N/A</p>
+                </div>
+                <div class="bloco">
+                    <p class="rotulo">Turno</p>
+                    <p class="valor">—</p>
+                </div>
+                <div class="bloco bloco-largo">
+                    <p class="rotulo"><i class="fas fa-users"></i> Integrantes</p>
+                    <p class="valor" id="integrantes">—</p>
+                </div>
             </div>
         </div>
 
-        <div class="grade-cards">
-            <!-- Nome da Equipe → Largo -->
-            <div class="card card-largo">
-                <p class="card-label"><i class="fas fa-flag"></i> Equipe</p>
-                <p class="card-valor" id="nomeEquipe">—</p>
-            </div>
-
-            <!-- Área de Atuação -->
-            <div class="card card-largo">
-                <p class="card-label"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
-                <p class="card-valor" id="areaAtuacao">—</p>
-            </div>
-
-            <!-- Minha Posição -->
-            <div class="card">
-                <p class="card-label"><i class="fas fa-user-check"></i> Posição</p>
-                <p class="card-valor" id="minhaPosicao">—</p>
-            </div>
-
-            <!-- Veículo -->
-            <div class="card">
-                <p class="card-label"><i class="fas fa-car"></i> Veículo</p>
-                <p class="card-valor pequeno" id="veiculo">N/A</p>
-            </div>
-
-            <!-- Função -->
-            <div class="card card-largo">
-                <p class="card-label"><i class="fas fa-briefcase"></i> Função</p>
-                <p class="card-valor" id="funcao">Membro</p>
-            </div>
-
-            <!-- Integrantes → Largo -->
-            <div class="card card-largo">
-                <p class="card-label"><i class="fas fa-list-ul"></i> Integrantes</p>
-                <p class="card-valor pequeno" id="integrantes">Carregando...</p>
-            </div>
-        </div>
+        <button class="btn-trocar" id="btnTrocarEquipe">
+            <i class="fas fa-exchange-alt"></i> Trocar de Equipe
+        </button>
     </div>
 
+    <!-- Navegação -->
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item ativo"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
-        <button class="menu-item" id="botaoMais"><i class="fas fa-ellipsis-h"></i><span>Mais</span></button>
+        <a href="painel.html" class="item-menu"><i class="fas fa-home"></i> Painel</a>
+        <a href="ponto.html" class="item-menu"><i class="fas fa-clock"></i> Ponto</a>
+        <a href="equipe.html" class="item-menu ativo"><i class="fas fa-users"></i> Equipe</a>
+        <a href="tickets.html" class="item-menu"><i class="fas fa-file-alt"></i> Tickets</a>
+        <a href="#" class="item-menu"><i class="fas fa-ellipsis-h"></i> Mais</a>
     </nav>
 
     <script>
-        let passaporteUsuario = localStorage.getItem('passaporte') || null;
+        let passaporteUsuario = localStorage.getItem('passaporte');
+        let pontoAtivo = false;
+        let equipeAtual = null;
 
-        async function verificarJornadaAtiva() {
+        async function verificarJornada() {
             if (!passaporteUsuario) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            const { data: todosPontos, error: erroPonto } = await sb
+            // Busca último registro de ponto ativo
+            const { data: ponto, error } = await sb
                 .from('pontos')
-                .select('*')
+                .select('*, equipes(*)')
                 .eq('passaporte', passaporteUsuario)
                 .is('saida', null)
-                .order('entrada', { ascending: false });
+                .order('entrada', { ascending: false })
+                .limit(1)
+                .single();
 
-            if (!todosPontos || todosPontos.length === 0) {
+            if (error || !ponto) {
                 document.getElementById('telaBloqueio').style.display = 'block';
-                document.getElementById('telaEquipe').classList.remove('visivel');
                 return;
             }
 
-            const pontoAtivo = todosPontos[0];
+            pontoAtivo = true;
+            equipeAtual = ponto.equipes;
+            montarTela(ponto);
+        }
+
+        function montarTela(ponto) {
             document.getElementById('telaBloqueio').style.display = 'none';
             document.getElementById('telaEquipe').classList.add('visivel');
 
-            if (!pontoAtivo.equipe_id) {
-                document.getElementById('nomeEquipe').textContent = 'Não definida';
-                document.getElementById('areaAtuacao').textContent = '—';
-                document.getElementById('minhaPosicao').textContent = 'Piloto';
-                document.getElementById('veiculo').textContent = 'N/A';
-                document.getElementById('funcao').textContent = 'Membro';
-                document.getElementById('integrantes').textContent = 'Apenas você no momento';
+            const eq = ponto.equipes;
+            if (!eq) {
+                document.getElementById('nomeEquipe').textContent = 'Não alocado';
+                document.getElementById('areaAtuacao').textContent = 'Sem equipe';
                 return;
             }
 
-            const { data: equipe } = await sb
-                .from('equipes')
-                .select('*')
-                .eq('id', pontoAtivo.equipe_id)
-                .maybeSingle();
+            // Extrai posição do nome da equipe
+            let posicao = 'Piloto';
+            const nomeEq = eq.nome?.toUpperCase() || '';
+            if (nomeEq.includes('P1')) posicao = 'P1';
+            else if (nomeEq.includes('P2')) posicao = 'P2';
+            else if (nomeEq.includes('P3')) posicao = 'P3';
+            else if (nomeEq.includes('P4')) posicao = 'P4';
+            else if (nomeEq.includes('APOIO 1')) posicao = 'Apoio 1';
+            else if (nomeEq.includes('APOIO 2')) posicao = 'Apoio 2';
+            else if (nomeEq.includes('ROTA')) posicao = 'Piloto';
 
-            if (equipe) {
-                document.getElementById('nomeEquipe').textContent = equipe.nome || 'Equipe sem nome';
-                
-                const nome = (equipe.nome || '').toUpperCase();
-                if (nome.includes('ROTA 1') || nome.includes('ROTA 2')) {
-                    document.getElementById('areaAtuacao').textContent = 'Farm de Lockpick';
-                    document.getElementById('minhaPosicao').textContent = 'Piloto';
-                } else if (nome.includes('ROTA 3') || nome.includes('ROTA 4')) {
-                    document.getElementById('areaAtuacao').textContent = 'Farm de Flipper';
-                    document.getElementById('minhaPosicao').textContent = 'Piloto';
-                } else if (nome.includes('P1')) {
-                    document.getElementById('areaAtuacao').textContent = 'Vendas de Lockpick';
-                    document.getElementById('minhaPosicao').textContent = 'P1';
-                } else if (nome.includes('P2')) {
-                    document.getElementById('areaAtuacao').textContent = 'Vendas de Flipper';
-                    document.getElementById('minhaPosicao').textContent = 'P2';
-                } else if (nome.includes('APOIO 1')) {
-                    document.getElementById('areaAtuacao').textContent = 'Segurança - Auxiliar';
-                    document.getElementById('minhaPosicao').textContent = 'P1 - Favela';
-                } else if (nome.includes('APOIO 2')) {
-                    document.getElementById('areaAtuacao').textContent = 'Segurança - Auxiliar';
-                    document.getElementById('minhaPosicao').textContent = 'P2 - Favela';
-                } else {
-                    document.getElementById('areaAtuacao').textContent = 'Área Geral';
-                    document.getElementById('minhaPosicao').textContent = 'Piloto';
-                }
+            // Etiqueta: "Escala atual · P2"
+            document.getElementById('etiquetaEscala').textContent = `Escala atual · ${posicao}`;
+            document.getElementById('nomeEquipe').textContent = eq.nome || '—';
 
-                document.getElementById('veiculo').textContent = 'N/A';
-                document.getElementById('funcao').textContent = 'Membro';
-            } else {
-                document.getElementById('nomeEquipe').textContent = 'Equipe não encontrada';
-                document.getElementById('areaAtuacao').textContent = '—';
-                document.getElementById('minhaPosicao').textContent = 'Piloto';
-                document.getElementById('veiculo').textContent = 'N/A';
-                document.getElementById('funcao').textContent = 'Membro';
-            }
+            // Área de atuação
+            let area = '—';
+            if (nomeEq.includes('ROTA 1') || nomeEq.includes('ROTA 2')) area = 'Farm de Lockpick';
+            else if (nomeEq.includes('ROTA 3') || nomeEq.includes('ROTA 4')) area = 'Farm de Flipper';
+            else if (nomeEq.includes('VENDAS P1')) area = 'Vendas de Lockpick';
+            else if (nomeEq.includes('VENDAS P2')) area = 'Vendas de Flipper';
+            else if (nomeEq.includes('APOIO 1') || nomeEq.includes('APOIO 2')) area = 'Segurança / Apoio';
+            document.getElementById('areaAtuacao').textContent = area;
 
-            const { data: todosAbertos } = await sb
-                .from('pontos')
-                .select('nome, passaporte')
-                .eq('equipe_id', pontoAtivo.equipe_id)
-                .is('saida', null);
-
-            if (todosAbertos && todosAbertos.length > 0) {
-                const nomes = todosAbertos.map(p => p.nome || p.passaporte).join(' · ');
-                document.getElementById('integrantes').textContent = nomes;
-            } else {
-                document.getElementById('integrantes').textContent = 'Apenas você no momento';
-            }
+            // Posição e demais
+            document.getElementById('minhaPosicao').textContent = posicao;
+            document.getElementById('integrantes').textContent = ponto.nome || passaporteUsuario;
         }
 
-        const botaoMais = document.getElementById('botaoMais');
-        botaoMais?.addEventListener('click', () => {
-            alert('Menu Mais em desenvolvimento');
+        // Botão Trocar Equipe — preparado
+        document.getElementById('btnTrocarEquipe').addEventListener('click', () => {
+            alert('Sistema de troca de equipe em desenvolvimento!\nEm breve você poderá escolher outra equipe com vagas.');
         });
 
-        verificarJornadaAtiva();
+        verificarJornada();
     </script>
 </body>
 </html>
