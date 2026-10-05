@@ -27,89 +27,103 @@
         *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
         html, body {
             min-height: 100vh; font-family: 'Inter', sans-serif; color: #fff;
-            padding-bottom: 80px; overflow-x: hidden;
+            padding-bottom: 90px; overflow-x: hidden;
         }
 
         .fundo-pagina {
             position: fixed; inset: 0;
-            background: linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%);
+            background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e293b 100%);
             z-index: -3;
         }
         .fundo-imagem {
             position: fixed; inset: 0;
             background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.08; z-index: -1;
+            opacity: 0.06; z-index: -1;
         }
         .fundo-degrade {
             position: fixed; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.9) 100%);
             z-index: 0;
         }
 
-        .conteudo { position: relative; z-index: 1; padding: 24px; }
+        .conteudo { position: relative; z-index: 1; padding: 24px 20px; }
 
+        /* Tela Bloqueio */
         .aviso-bloqueio {
-            text-align: center; padding: 60px 24px;
+            text-align: center; padding: 80px 24px;
         }
         .icone-aviso {
             width: 72px; height: 72px; border-radius: 50%;
-            background: rgba(96, 165, 250, 0.15);
+            background: rgba(59, 130, 246, 0.12);
             display: flex; align-items: center; justify-content: center;
             margin: 0 auto 24px;
         }
-        .icone-aviso i { font-size: 32px; color: #60a5fa; }
-        .aviso-titulo { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-        .aviso-texto { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
+        .icone-aviso i { font-size: 32px; color: #3b82f6; }
+        .aviso-titulo { font-size: 22px; font-weight: 700; margin-bottom: 12px; }
+        .aviso-texto { font-size: 15px; color: #94a3b8; margin-bottom: 32px; line-height: 1.6; max-width: 320px; margin-left: auto; margin-right: auto; }
         .botao-ir-ponto {
-            padding: 14px 28px; border: none; border-radius: 12px;
+            padding: 15px 32px; border: none; border-radius: 14px;
             background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
             color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 8px;
-            transition: all 0.3s ease;
-            text-decoration: none;
+            display: inline-flex; align-items: center; gap: 10px;
+            transition: all 0.3s ease; text-decoration: none;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
         }
-        .botao-ir-ponto:hover { transform: translateY(-2px); }
+        .botao-ir-ponto:active { transform: scale(0.97); }
 
+        /* Cabeçalho */
         .cabecalho { margin-bottom: 28px; }
-        .titulo-secao { margin-bottom: 8px; }
-        .titulo-secao h1 { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .titulo-secao h1 i { color: #60a5fa; }
-        .titulo-secao p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
+        .titulo-secao { margin-bottom: 6px; }
+        .titulo-secao h1 { 
+            font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 12px;
+            letter-spacing: -0.5px;
+        }
+        .titulo-secao h1 i { color: #3b82f6; font-size: 24px; }
+        .titulo-secao p { font-size: 14px; color: #94a3b8; margin-top: 6px; line-height: 1.5; }
 
+        /* Cards Layout — inspirado na referência */
         .grade-cards {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
         }
         .card {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px; padding: 16px;
-            backdrop-filter: blur(8px);
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(59, 130, 246, 0.1);
+            border-radius: 16px; padding: 18px 16px;
+            backdrop-filter: blur(10px);
         }
-        .card-titulo {
-            font-size: 13px; color: #94a3b8; font-weight: 500; margin-bottom: 6px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .card-titulo i { color: #60a5fa; font-size: 14px; }
-        .card-valor { font-size: 18px; font-weight: 700; color: #fff; }
         .card-largo { grid-column: 1 / -1; }
+        
+        .card-label {
+            font-size: 12px; color: #64748b; font-weight: 500;
+            text-transform: uppercase; letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 8px;
+            margin-bottom: 8px;
+        }
+        .card-label i { color: #3b82f6; font-size: 14px; }
+        .card-valor { 
+            font-size: 18px; font-weight: 700; color: #fff;
+            line-height: 1.3;
+        }
+        .card-valor.pequeno { font-size: 16px; }
 
+        /* Barra de Navegação */
         .barra-menu {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
-            background: #000; display: flex; align-items: center; justify-content: space-around;
-            border-top: 1px solid rgba(96,165,250,0.15); z-index: 100;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 75px;
+            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(12px);
+            display: flex; align-items: center; justify-content: space-around;
+            border-top: 1px solid rgba(59, 130, 246, 0.12); z-index: 100;
         }
         .menu-item {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #94a3b8; text-decoration: none; font-size: 11px;
-            cursor: pointer; transition: color 0.2s ease; user-select: none;
+            color: #64748b; text-decoration: none; font-size: 11px;
+            cursor: pointer; transition: color 0.25s ease; user-select: none;
             background: none; border: none;
         }
-        .menu-item.ativo { color: #60a5fa; }
+        .menu-item.ativo { color: #3b82f6; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
 
         .area-conteudo { display: none; }
         .area-conteudo.visivel { display: block; }
-        .debug { font-size: 11px; color: #475569; margin-top: 12px; text-align: center; }
     </style>
 </head>
 <body>
@@ -118,7 +132,7 @@
     <div class="fundo-imagem"></div>
     <div class="fundo-degrade"></div>
 
-    <!-- SEM JORNADA → AVISO -->
+    <!-- SEM JORNADA → BLOQUEIO -->
     <div class="conteudo" id="telaBloqueio">
         <div class="aviso-bloqueio">
             <div class="icone-aviso">
@@ -126,12 +140,11 @@
             </div>
             <h2 class="aviso-titulo">Acesso Restrito</h2>
             <p class="aviso-texto">
-                Para acessar as informações da sua equipe, é necessário iniciar sua jornada no controle de ponto primeiro.
+                Para ver as informações da sua equipe, inicie sua jornada no controle de ponto primeiro.
             </p>
             <a href="bate-ponto.html" class="botao-ir-ponto">
                 <i class="fas fa-clock"></i> Ir ao Controle de Ponto
             </a>
-            <p class="debug" id="textoDebug"></p>
         </div>
     </div>
 
@@ -140,39 +153,45 @@
         <div class="cabecalho">
             <div class="titulo-secao">
                 <h1><i class="fas fa-users"></i> Minha Equipe</h1>
-                <p>Informações e integrantes da sua equipe atual</p>
+                <p>Veja sua alocação após iniciar a jornada</p>
             </div>
         </div>
 
         <div class="grade-cards">
+            <!-- Nome da Equipe → Largo -->
             <div class="card card-largo">
-                <p class="card-titulo"><i class="fas fa-flag"></i> Nome da Equipe</p>
+                <p class="card-label"><i class="fas fa-flag"></i> Equipe</p>
                 <p class="card-valor" id="nomeEquipe">—</p>
             </div>
 
-            <div class="card">
-                <p class="card-titulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
+            <!-- Área de Atuação -->
+            <div class="card card-largo">
+                <p class="card-label"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
                 <p class="card-valor" id="areaAtuacao">—</p>
             </div>
 
+            <!-- Minha Posição -->
             <div class="card">
-                <p class="card-titulo"><i class="fas fa-user-check"></i> Minha Posição</p>
+                <p class="card-label"><i class="fas fa-user-check"></i> Posição</p>
                 <p class="card-valor" id="minhaPosicao">—</p>
             </div>
 
+            <!-- Veículo -->
             <div class="card">
-                <p class="card-titulo"><i class="fas fa-car"></i> Veículo</p>
-                <p class="card-valor" id="veiculo">—</p>
+                <p class="card-label"><i class="fas fa-car"></i> Veículo</p>
+                <p class="card-valor pequeno" id="veiculo">N/A</p>
             </div>
 
-            <div class="card">
-                <p class="card-titulo"><i class="fas fa-briefcase"></i> Função</p>
-                <p class="card-valor" id="funcao">—</p>
-            </div>
-
+            <!-- Função -->
             <div class="card card-largo">
-                <p class="card-titulo"><i class="fas fa-list-ul"></i> Integrantes da Equipe</p>
-                <p class="card-valor" id="integrantes">Carregando...</p>
+                <p class="card-label"><i class="fas fa-briefcase"></i> Função</p>
+                <p class="card-valor" id="funcao">Membro</p>
+            </div>
+
+            <!-- Integrantes → Largo -->
+            <div class="card card-largo">
+                <p class="card-label"><i class="fas fa-list-ul"></i> Integrantes</p>
+                <p class="card-valor pequeno" id="integrantes">Carregando...</p>
             </div>
         </div>
     </div>
@@ -187,7 +206,6 @@
 
     <script>
         let passaporteUsuario = localStorage.getItem('passaporte') || null;
-        const textoDebug = document.getElementById('textoDebug');
 
         async function verificarJornadaAtiva() {
             if (!passaporteUsuario) {
@@ -195,7 +213,6 @@
                 return;
             }
 
-            // Busca TODOS os registros abertos desse usuário
             const { data: todosPontos, error: erroPonto } = await sb
                 .from('pontos')
                 .select('*')
@@ -203,17 +220,13 @@
                 .is('saida', null)
                 .order('entrada', { ascending: false });
 
-            textoDebug.textContent = `Passaporte: ${passaporteUsuario} | Encontrados: ${todosPontos?.length || 0} registro(s)`;
-
             if (!todosPontos || todosPontos.length === 0) {
                 document.getElementById('telaBloqueio').style.display = 'block';
                 document.getElementById('telaEquipe').classList.remove('visivel');
                 return;
             }
 
-            // Pega o mais recente
             const pontoAtivo = todosPontos[0];
-            
             document.getElementById('telaBloqueio').style.display = 'none';
             document.getElementById('telaEquipe').classList.add('visivel');
 
@@ -227,7 +240,6 @@
                 return;
             }
 
-            // Busca dados da equipe
             const { data: equipe } = await sb
                 .from('equipes')
                 .select('*')
@@ -240,8 +252,10 @@
                 const nome = (equipe.nome || '').toUpperCase();
                 if (nome.includes('ROTA 1') || nome.includes('ROTA 2')) {
                     document.getElementById('areaAtuacao').textContent = 'Farm de Lockpick';
+                    document.getElementById('minhaPosicao').textContent = 'Piloto';
                 } else if (nome.includes('ROTA 3') || nome.includes('ROTA 4')) {
                     document.getElementById('areaAtuacao').textContent = 'Farm de Flipper';
+                    document.getElementById('minhaPosicao').textContent = 'Piloto';
                 } else if (nome.includes('P1')) {
                     document.getElementById('areaAtuacao').textContent = 'Vendas de Lockpick';
                     document.getElementById('minhaPosicao').textContent = 'P1';
@@ -269,7 +283,6 @@
                 document.getElementById('funcao').textContent = 'Membro';
             }
 
-            // Busca integrantes
             const { data: todosAbertos } = await sb
                 .from('pontos')
                 .select('nome, passaporte')
@@ -277,7 +290,7 @@
                 .is('saida', null);
 
             if (todosAbertos && todosAbertos.length > 0) {
-                const nomes = todosAbertos.map(p => p.nome || p.passaporte).join(' | ');
+                const nomes = todosAbertos.map(p => p.nome || p.passaporte).join(' · ');
                 document.getElementById('integrantes').textContent = nomes;
             } else {
                 document.getElementById('integrantes').textContent = 'Apenas você no momento';
@@ -292,5 +305,4 @@
         verificarJornadaAtiva();
     </script>
 </body>
-                                                          </html>
-                                                          
+</html>
