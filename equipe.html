@@ -18,19 +18,25 @@
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
-
-    <style>
+        <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         :root {
             --bg: #050508; --card: #0f1525; --card-2: #151b2d;
             --azul: #2563eb; --azul-claro: #3b82f6;
             --texto: #e5e7eb; --texto-sec: #9ca3af; --borda: #1e293b;
+            --verde: #22c55e; --vermelho: #ef4444;
         }
         body {
             background: var(--bg); color: var(--texto); min-height: 100vh;
             padding: 16px 16px 90px;
         }
         *:focus { outline: none; }
+        .gradiente-fundo {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 180px;
+            background: linear-gradient(to top, rgba(37,99,235,0.12), transparent);
+            pointer-events: none; z-index: 0;
+        }
+        .conteudo { position: relative; z-index: 1; }
         .cabecalho { margin: 12px 0 24px; }
         .titulo { font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .titulo i { color: var(--azul-claro); }
@@ -39,8 +45,7 @@
             display: inline-flex; align-items: center; gap: 6px;
             padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; margin-top: 10px;
         }
-        .status-em { background: rgba(34,197,94,0.1); color: #22c55e; }
-        .status-fora { background: rgba(239,68,68,0.1); color: #ef4444; }
+        .status-em { background: rgba(34,197,94,0.1); color: var(--verde); }
         .status-badge i { font-size: 10px; }
         .equipe-nome {
             background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(59,130,246,0.05));
@@ -60,14 +65,14 @@
         .integrante { background: var(--card-2); padding: 8px 14px; border-radius: 8px; font-size: 14px; }
         .integrante.voce { border: 1px solid var(--azul-claro); background: rgba(37,99,235,0.15); }
         .aviso-bloqueio {
-            text-align: center; padding: 40px 20px; color: var(--texto-sec);
+            text-align: center; padding: 60px 20px; color: var(--texto-sec);
         }
-        .aviso-bloqueio i { font-size: 48px; color: var(--azul-claro); margin-bottom: 16px; }
+        .aviso-bloqueio i { font-size: 52px; color: var(--azul-claro); margin-bottom: 20px; }
         .aviso-bloqueio h2 { font-size: 20px; margin-bottom: 8px; color: var(--texto); }
-        .aviso-bloqueio p { margin-bottom: 20px; }
+        .aviso-bloqueio p { margin-bottom: 24px; font-size: 15px; line-height: 1.5; }
         .botao-ir {
             display: inline-block; background: var(--azul); color: white;
-            padding: 12px 24px; border-radius: 10px; text-decoration: none;
+            padding: 12px 28px; border-radius: 10px; text-decoration: none;
             font-weight: 600; transition: background .2s;
         }
         .botao-ir:hover { background: var(--azul-claro); }
@@ -84,35 +89,37 @@
         }
         .nav-item.ativo { color: var(--azul-claro); }
         .nav-item i { font-size: 20px; }
-        .gradiente-fundo {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 180px;
-            background: linear-gradient(to top, rgba(37,99,235,0.12), transparent);
-            pointer-events: none; z-index: 0;
-        }
-        .conteudo { position: relative; z-index: 1; }
+        .carregando { text-align: center; padding: 40px; color: var(--texto-sec); }
     </style>
 </head>
 <body>
     <div class="gradiente-fundo"></div>
-    <div class="conteudo" id="conteudoPagina">
-                <div id="telaBloqueio" style="display: none;">
+    <div class="conteudo">
+               <!-- Tela de Carregamento -->
+        <div id="telaCarregando" class="carregando">
+            <i class="fas fa-spinner fa-spin"></i> Carregando...
+        </div>
+
+        <!-- Tela Bloqueio: Sem Ponto Ativo -->
+        <div id="telaBloqueio" style="display: none;">
             <div class="aviso-bloqueio">
                 <i class="fas fa-lock"></i>
                 <h2>Controle de Ponto Necessário</h2>
-                <p>Você precisa iniciar sua jornada no Controle de Ponto<br>para ter acesso às informações da equipe.</p>
+                <p>Você precisa iniciar sua jornada no Controle de Ponto<br>para visualizar as informações da sua equipe.</p>
                 <a href="ponto.html" class="botao-ir">
                     <i class="fas fa-clock"></i> Ir ao Controle de Ponto
                 </a>
             </div>
         </div>
 
+        <!-- Tela Equipe: Com Ponto Ativo -->
         <div id="telaEquipe" style="display: none;">
             <div class="cabecalho">
                 <h1 class="titulo">
                     <i class="fas fa-users"></i> Minha Equipe
                 </h1>
                 <p class="subtitulo">Informações e integrantes da sua equipe atual</p>
-                <div class="status-badge status-em" id="statusEquipe">
+                <div class="status-badge status-em">
                     <i class="fas fa-circle"></i> Em Serviço
                 </div>
             </div>
@@ -162,72 +169,93 @@
             </div>
         </div>
     </div>
-        <script>
+       <script>
         let usuario = null;
 
-        async function verificarAcesso() {
-            // ✅ NÃO REDIRECIONA MAIS PRO LOGIN — só verifica sessão
+        async function inicializar() {
+            // ✅ PRIMEIRO: Verifica se TEM sessão — SEM redirecionar sem necessidade
             const sessao = localStorage.getItem('sessao_usuario');
+            
             if (!sessao) {
-                // Se não tem sessão, manda pro login
+                // Só manda pro login se REALMENTE não tem ninguém logado
                 window.location.href = 'login.html';
                 return;
             }
 
             usuario = JSON.parse(sessao);
 
-            // Busca o ponto ativo
-            const { data: ponto } = await sb
-                .from('pontos')
-                .select('*')
-                .eq('passaporte', usuario.passaporte)
-                .is('saida', null)
-                .order('entrada', { ascending: false })
-                .limit(1)
-                .single();
+            // ✅ Usuário logado → mostra conteúdo, NÃO sai da página
+            document.getElementById('telaCarregando').style.display = 'none';
 
-            // Sem ponto ativo → mostra aviso de bloqueio, NÃO sai da página
-            if (!ponto || !ponto.equipe_id) {
+            // Busca o ponto ativo do usuário
+            try {
+                const { data: ponto, error } = await sb
+                    .from('pontos')
+                    .select('*')
+                    .eq('passaporte', usuario.passaporte)
+                    .is('saida', null)
+                    .order('entrada', { ascending: false })
+                    .limit(1)
+                    .single();
+
+                // SEM ponto ativo → mostra aviso de bloqueio, FICA na página
+                if (error || !ponto || !ponto.equipe_id) {
+                    document.getElementById('telaBloqueio').style.display = 'block';
+                    return;
+                }
+
+                // COM ponto ativo → carrega dados da equipe
+                await carregarEquipe(ponto.equipe_id);
+
+            } catch (erro) {
+                console.error('Erro ao verificar ponto:', erro);
                 document.getElementById('telaBloqueio').style.display = 'block';
-                document.getElementById('telaEquipe').style.display = 'none';
-                return;
             }
+        }
 
-            // Tem ponto → carrega dados da equipe
-            document.getElementById('telaBloqueio').style.display = 'none';
+        async function carregarEquipe(equipeId) {
+            // Mostra tela de equipe
             document.getElementById('telaEquipe').style.display = 'block';
 
+            // Busca dados da equipe
             const { data: equipe } = await sb
                 .from('equipes')
                 .select('*')
-                .eq('id', ponto.equipe_id)
+                .eq('id', equipeId)
                 .single();
 
             if (!equipe) return;
 
+            // Preenche dados
             document.getElementById('nomeEquipe').textContent = equipe.nome || '—';
             document.getElementById('areaAtuacao').textContent = equipe.area || '—';
             document.getElementById('veiculo').textContent = equipe.veiculo || 'N/A';
 
-            // Define posição
+            // Define posição baseada na ordem de entrada
             let posicao = 'Piloto';
+            
             const { data: membros } = await sb
                 .from('equipe_membros')
-                .select('passaporte, membros(nome)')
-                .eq('equipe_id', equipe.id);
+                .select('passaporte, entrada, membros(nome)')
+                .eq('equipe_id', equipeId);
 
             if (membros && membros.length > 0) {
-                const ordem = membros.sort((a, b) => new Date(a.entrada || 0) - new Date(b.entrada || 0));
+                const ordem = [...membros].sort((a, b) => 
+                    new Date(a.entrada || 0) - new Date(b.entrada || 0)
+                );
                 const idx = ordem.findIndex(m => m.passaporte === usuario.passaporte);
+                
                 if (idx === 1) posicao = 'Assento 2';
                 else if (idx === 2) posicao = 'Assento 3';
                 else if (idx === 3) posicao = 'Assento 4';
             }
+
             document.getElementById('minhaPosicao').textContent = posicao;
 
-            // Lista integrantes
+            // Lista de integrantes
             const lista = document.getElementById('listaIntegrantes');
             lista.innerHTML = '';
+            
             if (membros) {
                 membros.forEach(m => {
                     const nome = m.membros?.nome || 'Desconhecido';
@@ -239,10 +267,10 @@
             }
         }
 
-        verificarAcesso();
-    </script>
-
-    <nav class="navegacao">
+        // Inicia tudo
+        inicializar();
+       </script>
+        <nav class="navegacao">
         <a href="painel.html" class="nav-item">
             <i class="fas fa-home"></i>
             <span>Painel</span>
@@ -266,3 +294,5 @@
     </nav>
 </body>
 </html>
+
+    
