@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <meta name="color-scheme" content="dark">
-    <title>ITÁLIA · PONTO</title>
+    <title>ITÁLIA · EQUIPE</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -33,56 +33,51 @@
         .fundo-pagina {
             position: fixed; inset: 0;
             background: linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%);
-            z-index: -4;
+            z-index: -3;
         }
         .fundo-imagem {
             position: fixed; inset: 0;
             background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.08; z-index: -3;
+            opacity: 0.08; z-index: -1;
         }
         .fundo-degrade {
             position: fixed; inset: 0;
-            background: linear-gradient(to bottom, 
-                rgba(0,0,0,0.3) 0%, 
-                rgba(0,0,0,0.75) 55%, 
-                rgba(15, 23, 42, 0.92) 80%,
-                rgba(30, 64, 175, 0.18) 100%);
-            z-index: -2;
-        }
-        .fundo-azul-embaixo {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 220px;
-            background: linear-gradient(to top, 
-                rgba(59, 130, 246, 0.15) 0%, 
-                rgba(59, 130, 246, 0.06) 45%,
-                transparent 100%);
-            pointer-events: none; z-index: -1;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
+            z-index: 0;
         }
 
         .conteudo { position: relative; z-index: 1; padding: 24px; }
-        
+
+        .aviso-bloqueio {
+            text-align: center; padding: 60px 24px;
+        }
+        .icone-aviso {
+            width: 72px; height: 72px; border-radius: 50%;
+            background: rgba(96, 165, 250, 0.15);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 24px;
+        }
+        .icone-aviso i { font-size: 32px; color: #60a5fa; }
+        .aviso-titulo { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+        .aviso-texto { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
+        .botao-ir-ponto {
+            padding: 14px 28px; border: none; border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        .botao-ir-ponto:hover { transform: translateY(-2px); }
+
         .cabecalho { margin-bottom: 28px; }
-        .titulo-secao { margin-bottom: 16px; }
-        .titulo-secao h1 { font-size: 22px; font-weight: 700; }
+        .titulo-secao { margin-bottom: 8px; }
+        .titulo-secao h1 { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+        .titulo-secao h1 i { color: #60a5fa; }
         .titulo-secao p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
-        
-        .linha-dado {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
-        }
-        .linha-dado i { color: #60a5fa; font-size: 16px; width: 20px; text-align: center; }
-        .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
-        .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
-        
-        .aviso-navegacao {
-            background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.25);
-            border-radius: 10px; padding: 12px 16px; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .aviso-navegacao i { color: #60a5fa; font-size: 18px; }
-        .aviso-navegacao span { font-size: 14px; color: #cbd5e1; }
-        .aviso-navegacao a { color: #60a5fa; text-decoration: none; font-weight: 600; margin-left: 6px; }
-        
+
         .grade-cards {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px;
         }
         .card {
             background: rgba(15, 23, 42, 0.55);
@@ -91,108 +86,12 @@
             backdrop-filter: blur(8px);
         }
         .card-titulo {
-            font-size: 13px; color: #94a3b8; font-weight: 500;
-            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
+            font-size: 13px; color: #94a3b8; font-weight: 500; margin-bottom: 6px;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .card-titulo i { font-size: 14px; color: #60a5fa; }
-        .card-valor { font-size: 20px; font-weight: 700; color: #fff; }
-
-        .card-abas {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px; padding: 18px;
-            backdrop-filter: blur(8px);
-        }
-        .navegacao-abas { display: flex; gap: 10px; margin-bottom: 20px; }
-        .aba {
-            flex: 1; text-align: center; padding: 10px 0;
-            font-size: 15px; font-weight: 500; color: #94a3b8;
-            cursor: pointer; border-radius: 10px; transition: all 0.25s ease; user-select: none;
-        }
-        .aba.ativa { color: #fff; background: rgba(96, 165, 250, 0.15); font-weight: 600; }
-        .conteudo-aba { display: none; min-height: 220px; }
-        .conteudo-aba.visivel { display: block; }
-
-        .cronometro-bloco { text-align: center; padding: 20px 10px; }
-        .tempo-central {
-            font-size: 48px; font-weight: 700; color: #fff; margin-bottom: 8px;
-            letter-spacing: 1px; font-variant-numeric: tabular-nums;
-        }
-        .tempo-central .milessimos { font-size: 28px; color: #94a3b8; }
-        .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 24px; }
-        .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
-        .botao-acao {
-            width: 100%; padding: 15px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px; transition: all 0.3s ease; color: #fff; user-select: none;
-        }
-        .botao-acao:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-        .botao-acao.iniciar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-        .botao-acao.pausar { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-        .botao-acao.retomar { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .botao-acao.encerrar { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-        .botao-acao:hover:not(:disabled) { transform: translateY(-2px); }
-
-        .item-historico {
-            padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
-        }
-        .item-historico:last-child { border-bottom: none; padding-bottom: 0; }
-        .item-cabecalho {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
-        }
-        .item-data { font-size: 15px; font-weight: 600; color: #fff; }
-        .item-duracao { font-size: 15px; font-weight: 700; color: #60a5fa; }
-        .item-detalhe { font-size: 13px; color: #94a3b8; line-height: 1.5; }
-        .vazio { text-align: center; padding: 40px 20px; color: #64748b; font-size: 14px; }
-
-        .fundo-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
-            display: flex; align-items: center; justify-content: center; z-index: 999;
-            opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px;
-        }
-        .fundo-modal.aberto { opacity: 1; visibility: visible; }
-        .caixa-modal {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            border: 1px solid rgba(96,165,250,0.2); border-radius: 18px;
-            padding: 32px 28px; max-width: 360px; width: 100%; text-align: center;
-            transform: translateY(10px); transition: transform 0.3s ease;
-        }
-        .fundo-modal.aberto .caixa-modal { transform: translateY(0); }
-        .icone-modal {
-            width: 56px; height: 56px; border-radius: 50%;
-            background: rgba(96,165,250,0.15);
-            display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
-        }
-        .icone-modal i { font-size: 24px; color: #60a5fa; }
-        .titulo-modal { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
-        .texto-modal { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
-        .botoes-modal { display: flex; gap: 12px; }
-        .botao-cancelar {
-            flex: 1; padding: 14px; border: 1px solid rgba(96,165,250,0.2);
-            background: transparent; color: #94a3b8; border-radius: 12px;
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; user-select: none;
-        }
-        .botao-cancelar:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .botao-confirmar {
-            flex: 1; padding: 14px; border: none; border-radius: 12px;
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; color: #fff; user-select: none;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-        .botao-confirmar:hover { transform: translateY(-1px); }
-
-        .aviso-espera {
-            position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 998;
-            background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.95));
-            border: 1px solid rgba(96,165,250,0.3); border-radius: 12px;
-            padding: 14px 20px; backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 90%; width: 360px; display: none;
-        }
-        .aviso-espera-conteudo { display: flex; align-items: center; gap: 12px; }
-        .aviso-espera i { color: #60a5fa; font-size: 20px; flex-shrink: 0; }
-        .aviso-texto-linha1 { font-size: 13px; color: #94a3b8; margin-bottom: 2px; }
-        .aviso-texto-linha2 { font-size: 15px; font-weight: 600; color: #fff; }
-        .contador-destaque { color: #60a5fa; font-weight: 700; }
+        .card-titulo i { color: #60a5fa; font-size: 14px; }
+        .card-valor { font-size: 18px; font-weight: 700; color: #fff; }
+        .card-largo { grid-column: 1 / -1; }
 
         .barra-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
@@ -207,477 +106,173 @@
         }
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
+
+        .area-conteudo { display: none; }
+        .area-conteudo.visivel { display: block; }
     </style>
 </head>
 <body>
-        <div class="fundo-pagina"></div>
+
+    <div class="fundo-pagina"></div>
     <div class="fundo-imagem"></div>
     <div class="fundo-degrade"></div>
-    <!-- ✅ GRADIENTE AZUL EMBAIXO -->
-    <div class="fundo-azul-embaixo"></div>
 
-    <div class="aviso-espera" id="avisoEspera">
-        <div class="aviso-espera-conteudo">
-            <i class="fas fa-clock"></i>
-            <div>
-                <p class="aviso-texto-linha1">Aguardando liberação</p>
-                <p class="aviso-texto-linha2">Próxima liberação em: <span class="contador-destaque" id="contadorRegressivo">01:00</span></p>
+    <!-- SEM JORNADA → AVISO -->
+    <div class="conteudo" id="telaBloqueio">
+        <div class="aviso-bloqueio">
+            <div class="icone-aviso">
+                <i class="fas fa-lock"></i>
             </div>
+            <h2 class="aviso-titulo">Acesso Restrito</h2>
+            <p class="aviso-texto">
+                Para acessar as informações da sua equipe, é necessário iniciar sua jornada no controle de ponto primeiro.
+            </p>
+            <a href="bate-ponto.html" class="botao-ir-ponto">
+                <i class="fas fa-clock"></i> Ir ao Controle de Ponto
+            </a>
         </div>
     </div>
 
-    <div class="conteudo">
+    <!-- COM JORNADA → DADOS DA EQUIPE -->
+    <div class="conteudo area-conteudo" id="telaEquipe">
         <div class="cabecalho">
             <div class="titulo-secao">
-                <h1>Controle de Ponto</h1>
-                <p>Acompanhe sua jornada e seu histórico</p>
+                <h1><i class="fas fa-users"></i> Minha Equipe</h1>
+                <p>Informações e integrantes da sua equipe atual</p>
             </div>
-            <div class="linha-dado">
-                <i class="fas fa-user"></i>
-                <span class="rotulo">Nome:</span>
-                <span class="valor" id="exibeNome">—</span>
-            </div>
-            <div class="linha-dado">
-                <i class="fas fa-id-card"></i>
-                <span class="rotulo">Passaporte:</span>
-                <span class="valor" id="exibePassaporte">—</span>
-            </div>
-        </div>
-
-        <div class="aviso-navegacao" id="avisoEmJornada" style="display: none;">
-            <i class="fas fa-info-circle"></i>
-            <span>Você está em jornada. Verifique sua equipe <a href="equipe.html">aqui →</a></span>
         </div>
 
         <div class="grade-cards">
-            <div class="card">
-                <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
-                <p class="card-valor" id="exibeSituacao">Carregando...</p>
+            <div class="card card-largo">
+                <p class="card-titulo"><i class="fas fa-flag"></i> Nome da Equipe</p>
+                <p class="card-valor" id="nomeEquipe">—</p>
             </div>
-            <div class="card">
-                <p class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></p>
-                <p class="card-valor" id="exibeHoje">0m</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Pausas <i class="fas fa-coffee"></i></p>
-                <p class="card-valor" id="exibePausas">0</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Semana <i class="fas fa-calendar-week"></i></p>
-                <p class="card-valor" id="exibeSemana">0m</p>
-            </div>
-        </div>
 
-        <div class="card-abas">
-            <div class="navegacao-abas">
-                <div class="aba ativa" data-aba="meu-ponto">Meu Ponto</div>
-                <div class="aba" data-aba="historico">Histórico</div>
+            <div class="card">
+                <p class="card-titulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
+                <p class="card-valor" id="areaAtuacao">—</p>
             </div>
-            <div class="conteudo-aba visivel" id="conteudo-meu-ponto">
-                <div class="cronometro-bloco">
-                    <div class="tempo-central">
-                        <span id="tempoPrincipal">00:00:00</span>
-                        <span class="milessimos" id="tempoMilesimos">.00</span>
-                    </div>
-                    <p class="legenda-tempo">Tempo de jornada</p>
-                    <div class="botoes-cronometro" id="areaBotoes">
-                        <button class="botao-acao iniciar" id="btnIniciar">
-                            <i class="fas fa-play"></i> Iniciar Jornada
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="conteudo-aba" id="conteudo-historico">
-                <div id="listaHistorico"></div>
-            </div>
-        </div>
-    </div>
 
-    <div class="fundo-modal" id="modalEncerrar">
-        <div class="caixa-modal">
-            <div class="icone-modal">
-                <i class="fas fa-info-circle"></i>
+            <div class="card">
+                <p class="card-titulo"><i class="fas fa-user-check"></i> Minha Posição</p>
+                <p class="card-valor" id="minhaPosicao">—</p>
             </div>
-            <h3 class="titulo-modal">Encerrar Jornada</h3>
-            <p class="texto-modal">
-                Ao confirmar, aguarde 1 minuto para reiniciar. Isso garante o registro correto.
-            </p>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" id="botaoCancelarEncerrar">Cancelar</button>
-                <button class="botao-confirmar" id="botaoConfirmarEncerrar">
-                    Confirmar Encerramento
-                </button>
+
+            <div class="card">
+                <p class="card-titulo"><i class="fas fa-car"></i> Veículo</p>
+                <p class="card-valor" id="veiculo">—</p>
+            </div>
+
+            <div class="card">
+                <p class="card-titulo"><i class="fas fa-briefcase"></i> Função</p>
+                <p class="card-valor" id="funcao">—</p>
+            </div>
+
+            <div class="card card-largo">
+                <p class="card-titulo"><i class="fas fa-list-ul"></i> Integrantes da Equipe</p>
+                <p class="card-valor" id="integrantes">Carregando...</p>
             </div>
         </div>
     </div>
 
     <nav class="barra-menu">
         <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="menu-item ativo"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
         <button class="menu-item" id="botaoMais"><i class="fas fa-ellipsis-h"></i><span>Mais</span></button>
     </nav>
-        <script>
-        const exibeNome = document.getElementById('exibeNome');
-        const exibePassaporte = document.getElementById('exibePassaporte');
-        const exibeSituacao = document.getElementById('exibeSituacao');
-        const exibeHoje = document.getElementById('exibeHoje');
-        const exibePausas = document.getElementById('exibePausas');
-        const exibeSemana = document.getElementById('exibeSemana');
-        const tempoPrincipal = document.getElementById('tempoPrincipal');
-        const tempoMilesimos = document.getElementById('tempoMilesimos');
-        const areaBotoes = document.getElementById('areaBotoes');
-        const listaHistorico = document.getElementById('listaHistorico');
-        const modalEncerrar = document.getElementById('modalEncerrar');
-        const avisoEspera = document.getElementById('avisoEspera');
-        const avisoEmJornada = document.getElementById('avisoEmJornada');
-        const contadorRegressivo = document.getElementById('contadorRegressivo');
 
+    <script>
         let passaporteUsuario = localStorage.getItem('passaporte') || null;
-        let nomeUsuario = null;
-        let registroAtivo = null;
-        let totalPausas = 0;
-        let tempoPausadoAcumulado = 0;
-        let momentoInicioPausa = null;
-        let bloqueadoAte = parseInt(localStorage.getItem('bloqueadoAte') || '0');
-        let intervaloContagem = null;
 
-        function formatarTempoComMilesimos(segundosTotais) {
-            const h = Math.floor(segundosTotais / 3600);
-            const m = Math.floor((segundosTotais % 3600) / 60);
-            const s = Math.floor(segundosTotais % 60);
-            const ms = Math.floor((segundosTotais % 1) * 100);
-            return {
-                principal: `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0'),
-                milesimos: '.' + `${ms}`.padStart(2,'0')
-            };
-        }
-        function formatarDuracao(segundos) {
-            if (!segundos || segundos <= 0) return '0m';
-            const h = Math.floor(segundos / 3600);
-            const m = Math.floor((segundos % 3600) / 60);
-            const s = Math.floor(segundos % 60);
-            if (h > 0) return `${h}h${m.toString().padStart(2,'0')}m`;
-            if (m > 0) return `${m}m${s.toString().padStart(2,'0')}s`;
-            return `${s}s`;
-        }
-        function formatarMinSeg(totalSegundos) {
-            const m = Math.floor(totalSegundos / 60);
-            const s = Math.floor(totalSegundos % 60);
-            return `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
-        }
-        function calcularSegundos(data1, data2) {
-            if (!data1 || !data2) return 0;
-            return Math.max(0, (new Date(data2) - new Date(data1)) / 1000);
-        }
-        function calcularTempoLiquido(registro) {
-            if (!registro) return 0;
-            const entrada = new Date(registro.entrada);
-            const agoraOuSaida = registro.saida ? new Date(registro.saida) : new Date();
-            let totalBruto = (agoraOuSaida - entrada) / 1000;
-            if (registro.pausa_inicio && registro.pausa_fim) totalBruto -= calcularSegundos(registro.pausa_inicio, registro.pausa_fim);
-            else if (registro.pausa_inicio && !registro.pausa_fim) totalBruto -= calcularSegundos(registro.pausa_inicio, agoraOuSaida);
-            return Math.max(0, totalBruto);
-        }
-
-        async function carregarDadosUsuario() {
+        async function verificarJornadaAtiva() {
             if (!passaporteUsuario) {
-                exibeNome.textContent = 'Não identificado';
-                exibePassaporte.textContent = '—';
-                return;
-            }
-            const { data, error } = await sb
-                .from('membros')
-                .select('nome, passaporte')
-                .eq('passaporte', passaporteUsuario)
-                .single();
-            if (data && !error) {
-                nomeUsuario = data.nome;
-                exibeNome.textContent = data.nome;
-                exibePassaporte.textContent = data.passaporte;
-            } else {
-                exibeNome.textContent = 'Membro';
-                exibePassaporte.textContent = passaporteUsuario;
-            }
-        }
-
-        async function verificarRegistroAtivo() {
-            if (!passaporteUsuario) return null;
-            const { data, error } = await sb
-                .from('pontos')
-                .select('*')
-                .eq('passaporte', passaporteUsuario)
-                .is('saida', null)
-                .order('entrada', { ascending: false })
-                .limit(1)
-                .maybeSingle();
-            if (error) console.error('Erro ao buscar registro ativo:', error);
-            registroAtivo = data;
-            avisoEmJornada.style.display = registroAtivo ? 'flex' : 'none';
-            if (registroAtivo) {
-                totalPausas = 0; tempoPausadoAcumulado = 0; momentoInicioPausa = null;
-                if (registroAtivo.pausa_inicio && registroAtivo.pausa_fim) {
-                    tempoPausadoAcumulado += calcularSegundos(registroAtivo.pausa_inicio, registroAtivo.pausa_fim);
-                    totalPausas = 1;
-                } else if (registroAtivo.pausa_inicio && !registroAtivo.pausa_fim) {
-                    momentoInicioPausa = new Date(registroAtivo.pausa_inicio);
-                    totalPausas = 1;
-                }
-            }
-            return data;
-        }
-
-        // ✅ SORTEIO CORRIGIDO → TODAS participam!
-        async function sortearEquipeDisponivel() {
-            const { data: todasEquipes } = await sb
-                .from('equipes')
-                .select('id, nome, limite, ativa')
-                .eq('ativa', true);
-            
-            if (!todasEquipes || todasEquipes.length === 0) return null;
-
-            const { data: pontosAbertos } = await sb
-                .from('pontos')
-                .select('equipe_id')
-                .is('saida', null)
-                .not('equipe_id', 'is', null);
-
-            const contagem = {};
-            (pontosAbertos || []).forEach(p => {
-                contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1;
-            });
-
-            const comVaga = todasEquipes.filter(e => {
-                const nome = (e.nome || '').toUpperCase().trim();
-                const ehRota = nome.startsWith('ROTA');
-                if (ehRota) {
-                    const ocupacao = contagem[e.id] || 0;
-                    return ocupacao < e.limite;
-                }
-                return true; // VENDAS, APOIO = ILIMITADO
-            });
-
-            if (comVaga.length === 0) return null;
-            const indice = Math.floor(Math.random() * comVaga.length);
-            return comVaga[indice];
-        }
-
-        async function iniciarJornada() {
-            if (Date.now() < bloqueadoAte) return;
-            if (!passaporteUsuario) {
-                alert('Faça login novamente!');
                 window.location.href = 'login.html';
                 return;
             }
-            try {
-                const equipeSorteada = await sortearEquipeDisponivel();
-                const { data: membro } = await sb
-                    .from('membros')
-                    .select('nome, id')
-                    .eq('passaporte', passaporteUsuario)
-                    .single();
 
-                if (equipeSorteada) {
-                    await sb.from('membros')
-                        .update({ equipe_id: equipeSorteada.id })
-                        .eq('passaporte', passaporteUsuario);
-                }
-
-                const { data, error } = await sb.from('pontos').insert([{
-                    passaporte: passaporteUsuario,
-                    nome: membro?.nome || nomeUsuario || 'Membro',
-                    entrada: new Date().toISOString(),
-                    status: 'ativo',
-                    equipe_id: equipeSorteada?.id || null
-                }]).select().single();
-
-                if (error) { alert('Erro! Tente de novo.'); return; }
-                registroAtivo = data;
-                totalPausas = 0; tempoPausadoAcumulado = 0; momentoInicioPausa = null;
-                avisoEmJornada.style.display = 'flex';
-                atualizarInterface();
-            } catch (erro) {
-                alert('Algo deu errado. Tente novamente!');
-            }
-        }
-
-        async function pausarJornada() {
-            if (!registroAtivo) return;
-            momentoInicioPausa = new Date();
-            await sb.from('pontos')
-                .update({ pausa_inicio: momentoInicioPausa.toISOString() })
-                .eq('id', registroAtivo.id);
-            totalPausas++; atualizarInterface();
-        }
-
-        async function retomarJornada() {
-            if (!registroAtivo || !momentoInicioPausa) return;
-            const fimPausa = new Date();
-            tempoPausadoAcumulado += calcularSegundos(momentoInicioPausa, fimPausa);
-            momentoInicioPausa = null;
-            await sb.from('pontos')
-                .update({ pausa_fim: fimPausa.toISOString() })
-                .eq('id', registroAtivo.id);
-            atualizarInterface();
-        }
-
-        function abrirModalEncerrar() { modalEncerrar.classList.add('aberto'); }
-        function fecharModais() { modalEncerrar.classList.remove('aberto'); }
-
-        async function confirmarEncerramento() {
-            fecharModais();
-            if (!registroAtivo) return;
-            if (momentoInicioPausa) {
-                tempoPausadoAcumulado += calcularSegundos(momentoInicioPausa, new Date());
-                momentoInicioPausa = null;
-            }
-            await sb.from('pontos')
-                .update({ saida: new Date().toISOString() })
-                .eq('id', registroAtivo.id);
-            await sb.from('membros').update({ equipe_id: null }).eq('passaporte', passaporteUsuario);
-            
-            registroAtivo = null; totalPausas = 0; tempoPausadoAcumulado = 0;
-            avisoEmJornada.style.display = 'none';
-            bloqueadoAte = Date.now() + 60 * 1000;
-            localStorage.setItem('bloqueadoAte', bloqueadoAte);
-            atualizarInterface();
-            iniciarContagemRegressiva();
-            await renderizarHistorico();
-        }
-
-        function iniciarContagemRegressiva() {
-            avisoEspera.style.display = 'block';
-            if (intervaloContagem) clearInterval(intervaloContagem);
-            intervaloContagem = setInterval(() => {
-                const restante = Math.max(0, Math.ceil((bloqueadoAte - Date.now()) / 1000));
-                if (restante <= 0) {
-                    clearInterval(intervaloContagem);
-                    avisoEspera.style.display = 'none';
-                    localStorage.removeItem('bloqueadoAte');
-                    bloqueadoAte = 0;
-                } else {
-                    contadorRegressivo.textContent = formatarMinSeg(restante);
-                }
-                atualizarInterface();
-            }, 1000);
-        }
-
-        function atualizarInterface() {
-            const bloqueado = Date.now() < bloqueadoAte;
-            if (!registroAtivo) {
-                areaBotoes.innerHTML = bloqueado
-                    ? `<button class="botao-acao iniciar" disabled><i class="fas fa-lock"></i> Aguarde...</button>`
-                    : `<button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>`;
-                if (!bloqueado) document.getElementById('btnIniciar')?.addEventListener('click', iniciarJornada);
-                exibeSituacao.textContent = 'Fora de Serviço';
-                tempoPrincipal.textContent = '00:00:00';
-                tempoMilesimos.textContent = '.00';
-                exibePausas.textContent = '0';
-                avisoEmJornada.style.display = 'none';
-                return;
-            }
-            if (!momentoInicioPausa) {
-                areaBotoes.innerHTML = `
-                    <button class="botao-acao pausar" id="btnPausar"><i class="fas fa-pause"></i> Pausar</button>
-                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
-                `;
-                exibeSituacao.textContent = 'Em Jornada';
-                document.getElementById('btnPausar').onclick = pausarJornada;
-                document.getElementById('btnEncerrar').onclick = abrirModalEncerrar;
-            } else {
-                areaBotoes.innerHTML = `
-                    <button class="botao-acao retomar" id="btnRetomar"><i class="fas fa-play"></i> Retomar</button>
-                    <button class="botao-acao encerrar" id="btnEncerrar"><i class="fas fa-stop"></i> Encerrar</button>
-                `;
-                exibeSituacao.textContent = 'Em Pausa';
-                document.getElementById('btnRetomar').onclick = retomarJornada;
-                document.getElementById('btnEncerrar').onclick = abrirModalEncerrar;
-            }
-            exibePausas.textContent = totalPausas;
-            avisoEmJornada.style.display = 'flex';
-        }
-
-        async function carregarHistorico() {
-            if (!passaporteUsuario) return [];
-            const { data } = await sb
+            const { data: pontoAtivo, error: erroPonto } = await sb
                 .from('pontos')
-                .select('*')
+                .select('equipe_id, id')
                 .eq('passaporte', passaporteUsuario)
-                .not('saida', 'is', null)
-                .order('criado_em', { ascending: false });
-            return data || [];
-        }
+                .is('saida', null)
+                .maybeSingle();
 
-        async function renderizarHistorico() {
-            const historico = await carregarHistorico();
-            if (!historico.length) {
-                listaHistorico.innerHTML = `<div class="vazio">Nenhum registro ainda</div>`;
+            if (!pontoAtivo) {
+                document.getElementById('telaBloqueio').style.display = 'block';
+                document.getElementById('telaEquipe').classList.remove('visivel');
                 return;
             }
-            let totalHoje = 0, totalSemana = 0;
-            const hoje = new Date().toLocaleDateString('pt-BR');
-            const umaSemanaAtras = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-            listaHistorico.innerHTML = historico.map(item => {
-                const duracao = calcularTempoLiquido(item);
-                const dataItem = new Date(item.entrada).toLocaleDateString('pt-BR');
-                if (dataItem === hoje) totalHoje += duracao;
-                if (new Date(item.entrada) >= umaSemanaAtras) totalSemana += duracao;
-                const dataFormatada = new Date(item.entrada).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: '2-digit' }).toUpperCase();
-                const entrada = new Date(item.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                const saida = item.saida ? new Date(item.saida).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : '—';
-                return `
-                    <div class="item-historico">
-                        <div class="item-cabecalho">
-                            <span class="item-data">${dataFormatada}</span>
-                            <span class="item-duracao">${formatarDuracao(duracao)}</span>
-                        </div>
-                        <div class="item-detalhe">Entrada: ${entrada} · Saída: ${saida}</div>
-                    </div>
-                `;
-            }).join('');
-            exibeHoje.textContent = formatarDuracao(totalHoje);
-            exibeSemana.textContent = formatarDuracao(totalSemana);
+
+            document.getElementById('telaBloqueio').style.display = 'none';
+            document.getElementById('telaEquipe').classList.add('visivel');
+
+            if (!pontoAtivo.equipe_id) {
+                document.getElementById('nomeEquipe').textContent = 'Não definida';
+                document.getElementById('areaAtuacao').textContent = '—';
+                document.getElementById('minhaPosicao').textContent = 'Piloto';
+                document.getElementById('veiculo').textContent = 'N/A';
+                document.getElementById('funcao').textContent = 'Membro';
+                document.getElementById('integrantes').textContent = 'Apenas você no momento';
+                return;
+            }
+
+            const { data: equipe } = await sb
+                .from('equipes')
+                .select('*')
+                .eq('id', pontoAtivo.equipe_id)
+                .single();
+
+            if (equipe) {
+                document.getElementById('nomeEquipe').textContent = equipe.nome || 'Equipe sem nome';
+                
+                const nome = (equipe.nome || '').toUpperCase();
+                if (nome.includes('ROTA 1') || nome.includes('ROTA 2')) {
+                    document.getElementById('areaAtuacao').textContent = 'Farm de Lockpick';
+                } else if (nome.includes('ROTA 3') || nome.includes('ROTA 4')) {
+                    document.getElementById('areaAtuacao').textContent = 'Farm de Flipper';
+                } else if (nome.includes('P1')) {
+                    document.getElementById('areaAtuacao').textContent = 'Vendas de Lockpick';
+                    document.getElementById('minhaPosicao').textContent = 'P1';
+                } else if (nome.includes('P2')) {
+                    document.getElementById('areaAtuacao').textContent = 'Vendas de Flipper';
+                    document.getElementById('minhaPosicao').textContent = 'P2';
+                } else if (nome.includes('APOIO 1')) {
+                    document.getElementById('areaAtuacao').textContent = 'Segurança - Auxiliar';
+                    document.getElementById('minhaPosicao').textContent = 'P1 - Favela';
+                } else if (nome.includes('APOIO 2')) {
+                    document.getElementById('areaAtuacao').textContent = 'Segurança - Auxiliar';
+                    document.getElementById('minhaPosicao').textContent = 'P2 - Favela';
+                } else {
+                    document.getElementById('areaAtuacao').textContent = 'Área Geral';
+                    document.getElementById('minhaPosicao').textContent = 'Piloto';
+                }
+
+                document.getElementById('veiculo').textContent = 'N/A';
+                document.getElementById('funcao').textContent = 'Membro';
+            }
+
+            const { data: todosPontos } = await sb
+                .from('pontos')
+                .select('nome, passaporte')
+                .eq('equipe_id', pontoAtivo.equipe_id)
+                .is('saida', null);
+
+            if (todosPontos && todosPontos.length > 0) {
+                const nomes = todosPontos.map(p => p.nome || p.passaporte).join(' | ');
+                document.getElementById('integrantes').textContent = nomes;
+            } else {
+                document.getElementById('integrantes').textContent = 'Apenas você no momento';
+            }
         }
 
-        document.querySelectorAll('.aba').forEach(aba => {
-            aba.addEventListener('click', async () => {
-                document.querySelectorAll('.aba').forEach(a => a.classList.remove('ativa'));
-                document.querySelectorAll('.conteudo-aba').forEach(c => c.classList.remove('visivel'));
-                aba.classList.add('ativa');
-                document.getElementById(`conteudo-${aba.dataset.aba}`).classList.add('visivel');
-                if (aba.dataset.aba === 'historico') await renderizarHistorico();
-            });
+        const botaoMais = document.getElementById('botaoMais');
+        botaoMais?.addEventListener('click', () => {
+            alert('Menu Mais em desenvolvimento');
         });
 
-        document.getElementById('botaoCancelarEncerrar').onclick = fecharModais;
-        document.getElementById('botaoConfirmarEncerrar').onclick = confirmarEncerramento;
-
-        setInterval(() => {
-            if (!registroAtivo) return;
-            let tempoDecorrido;
-            if (!momentoInicioPausa) {
-                tempoDecorrido = (Date.now() - new Date(registroAtivo.entrada).getTime()) / 1000 - tempoPausadoAcumulado;
-            } else {
-                tempoDecorrido = (Date.now() - new Date(registroAtivo.entrada).getTime()) / 1000 
-                    - tempoPausadoAcumulado 
-                    - (Date.now() - momentoInicioPausa.getTime()) / 1000;
-            }
-            tempoDecorrido = Math.max(0, tempoDecorrido);
-            const fmt = formatarTempoComMilesimos(tempoDecorrido);
-            tempoPrincipal.textContent = fmt.principal;
-            tempoMilesimos.textContent = fmt.milesimos;
-            exibeHoje.textContent = formatarDuracao(tempoDecorrido);
-        }, 50);
-
-        async function inicializar() {
-            await carregarDadosUsuario();
-            await verificarRegistroAtivo();
-            if (Date.now() < bloqueadoAte) iniciarContagemRegressiva();
-            atualizarInterface();
-            await renderizarHistorico();
-        }
-        inicializar();
+        verificarJornadaAtiva();
     </script>
 </body>
 </html>
