@@ -20,6 +20,7 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        *:focus { outline: none; }
         html {
             height: 100%;
             overflow-y: auto;
@@ -32,6 +33,42 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        .notificacao-flutuante {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            z-index: 9999;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            display: none;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.35);
+            animation: deslizarBaixo 0.4s ease-out;
+        }
+
+        @keyframes deslizarBaixo {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .notif-sucesso {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #ffffff;
+        }
+
+        .notif-erro {
+            background: linear-gradient(135deg, #dc2626, #ef4444);
+            color: #ffffff;
+        }
+
+        .notificacao-flutuante i {
+            font-size: 18px;
         }
 
         .forma-superior {
@@ -121,42 +158,6 @@
             opacity: 0.8;
         }
 
-        .notificacao {
-            width: 100%;
-            padding: 14px 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            font-size: 15px;
-            font-weight: 600;
-            display: none;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 12px;
-            border: none;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.35);
-            animation: notifEntrada 0.45s ease-out;
-        }
-
-        @keyframes notifEntrada {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .notificacao i {
-            font-size: 20px;
-            flex-shrink: 0;
-        }
-
-        .sucesso {
-            background: linear-gradient(135deg, #166534, #15803d);
-            color: #bbf7d0;
-        }
-
-        .erro {
-            background: linear-gradient(135deg, #991b1b, #b91c1c);
-            color: #fecaca;
-        }
-
         .input-grupo {
             margin-bottom: 18px;
             position: relative;
@@ -186,7 +187,6 @@
             border-radius: 999px;
             font-size: 16px;
             color: #000000;
-            outline: none;
         }
 
         .input-campo::placeholder {
@@ -264,13 +264,14 @@
     <div class="forma-inferior"></div>
     <div class="luzes-fundo"></div>
 
+    <!-- NOTIFICAÇÃO FLUTUANTE LÁ EM CIMA -->
+    <div id="notificacao" class="notificacao-flutuante"></div>
+
     <div class="login-card">
         <div class="titulo">
             <h1>ITÁLIA</h1>
             <p>SISTEMA DE ACESSO</p>
         </div>
-
-        <div id="notificacao" class="notificacao"></div>
 
         <form id="formLogin">
             <div class="input-grupo">
@@ -300,7 +301,8 @@
             <a href="index.html">← Voltar para tela inicial</a>
         </div>
     </div>
-        <script>
+
+    <script>
         function alternarSenha() {
             const campo = document.getElementById('senha');
             const icone = document.getElementById('iconeOlho');
@@ -326,7 +328,7 @@
         function mostrarNotificacao(texto, tipo) {
             const icone = tipo === 'sucesso' ? 'fa-check-circle' : 'fa-exclamation-triangle';
             notificacao.innerHTML = `<i class="fas ${icone}"></i><span>${texto}</span>`;
-            notificacao.className = `notificacao ${tipo}`;
+            notificacao.className = `notificacao-flutuante notif-${tipo}`;
             notificacao.style.display = 'flex';
             clearTimeout(window.tempoNotificacao);
             window.tempoNotificacao = setTimeout(() => {
@@ -371,8 +373,7 @@
                     throw new Error('Conta desativada');
                 }
 
-                // ✅ SALVA DOS DOIS JEITOS — O PAINEL VAI ENCONTRAR!
-                localStorage.setItem('passaporte', data.passaporte); // ← linha mágica!
+                localStorage.setItem('passaporte', data.passaporte);
                 localStorage.setItem('usuario', JSON.stringify({
                     id: data.id,
                     passaporte: data.passaporte,
