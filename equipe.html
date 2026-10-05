@@ -20,259 +20,360 @@
     </script>
 
     <style>
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; outline: none !important;
-        }
-        *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
-        html, body {
-            min-height: 100vh; font-family: 'Inter', sans-serif; color: #fff;
-            padding-bottom: 80px; overflow-x: hidden;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
-        .fundo-pagina {
-            position: fixed; inset: 0;
-            background: linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%);
-            z-index: -3;
+        :root {
+            --bg: #050508;
+            --card: #0f1525;
+            --card-2: #151b2d;
+            --azul: #2563eb;
+            --azul-claro: #3b82f6;
+            --texto: #e5e7eb;
+            --texto-sec: #9ca3af;
+            --borda: #1e293b;
         }
-        .fundo-imagem {
-            position: fixed; inset: 0;
-            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.08; z-index: -1;
+
+        body {
+            background: var(--bg);
+            color: var(--texto);
+            min-height: 100vh;
+            padding: 16px 16px 90px;
         }
-        .fundo-degrade {
-            position: fixed; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.85) 60%, rgba(0,0,0,1) 100%);
+
+        *:focus {
+            outline: none;
+        }
+
+        .cabecalho {
+            margin: 12px 0 24px;
+        }
+
+        .titulo {
+            font-size: 26px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .titulo i {
+            color: var(--azul-claro);
+        }
+
+        .subtitulo {
+            color: var(--texto-sec);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .status-badge i {
+            font-size: 10px;
+        }
+
+        .equipe-nome {
+            background: linear-gradient(135deg, rgba(37,99,235,0.2), rgba(59,130,246,0.05));
+            border: 1px solid rgba(37,99,235,0.25);
+            border-radius: 14px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+
+        .equipe-tag {
+            font-size: 13px;
+            color: var(--azul-claro);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .equipe-valor {
+            font-size: 32px;
+            font-weight: 800;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--borda);
+            border-radius: 12px;
+            padding: 16px;
+        }
+
+        .card.largo {
+            grid-column: 1 / -1;
+        }
+
+        .card-etiqueta {
+            font-size: 12px;
+            color: var(--texto-sec);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .card-etiqueta i {
+            color: var(--azul-claro);
+        }
+
+        .card-valor {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .card-valor.destaque {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--azul-claro);
+        }
+
+        .integrantes-lista {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .integrante {
+            background: var(--card-2);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+                .integrante.voce {
+            border: 1px solid var(--azul-claro);
+            background: rgba(37,99,235,0.15);
+        }
+
+        .navegacao {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 calc(10px + env(safe-area-inset-bottom));
+            border-top: 1px solid #1f2937;
+            z-index: 999;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: var(--texto-sec);
+            text-decoration: none;
+            font-size: 11px;
+        }
+
+        .nav-item.ativo {
+            color: var(--azul-claro);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+        }
+
+        .gradiente-fundo {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 180px;
+            background: linear-gradient(to top, rgba(37,99,235,0.12), transparent);
+            pointer-events: none;
             z-index: 0;
         }
 
-        .conteudo { position: relative; z-index: 1; padding: 24px; }
-
-        .aviso-bloqueio {
-            text-align: center; padding: 60px 24px;
+        .conteudo {
+            position: relative;
+            z-index: 1;
         }
-        .icone-aviso {
-            width: 72px; height: 72px; border-radius: 50%;
-            background: rgba(96, 165, 250, 0.15);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 24px;
-        }
-        .icone-aviso i { font-size: 32px; color: #60a5fa; }
-        .aviso-titulo { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
-        .aviso-texto { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
-        .botao-ir-ponto {
-            padding: 14px 28px; border: none; border-radius: 12px;
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-            color: #fff; font-size: 15px; font-weight: 600; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 8px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-        }
-        .botao-ir-ponto:hover { transform: translateY(-2px); }
-
-        .cabecalho { margin-bottom: 28px; }
-        .titulo-secao { margin-bottom: 8px; }
-        .titulo-secao h1 { font-size: 22px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
-        .titulo-secao h1 i { color: #60a5fa; }
-        .titulo-secao p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
-
-        .grade-cards {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px;
-        }
-        .card {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px; padding: 16px;
-            backdrop-filter: blur(8px);
-        }
-        .card-titulo {
-            font-size: 13px; color: #94a3b8; font-weight: 500; margin-bottom: 6px;
-            display: flex; align-items: center; justify-content: space-between;
-        }
-        .card-titulo i { color: #60a5fa; font-size: 14px; }
-        .card-valor { font-size: 18px; font-weight: 700; color: #fff; }
-        .card-largo { grid-column: 1 / -1; }
-
-        .barra-menu {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
-            background: #000; display: flex; align-items: center; justify-content: space-around;
-            border-top: 1px solid rgba(96,165,250,0.15); z-index: 100;
-        }
-        .menu-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #94a3b8; text-decoration: none; font-size: 11px;
-            cursor: pointer; transition: color 0.2s ease; user-select: none;
-            background: none; border: none;
-        }
-        .menu-item.ativo { color: #60a5fa; }
-        .menu-item i { font-size: 20px; margin-bottom: 2px; }
-
-        .area-conteudo { display: none; }
-        .area-conteudo.visivel { display: block; }
     </style>
 </head>
 <body>
-
-    <div class="fundo-pagina"></div>
-    <div class="fundo-imagem"></div>
-    <div class="fundo-degrade"></div>
-
-    <!-- SEM JORNADA → AVISO -->
-    <div class="conteudo" id="telaBloqueio">
-        <div class="aviso-bloqueio">
-            <div class="icone-aviso">
-                <i class="fas fa-lock"></i>
-            </div>
-            <h2 class="aviso-titulo">Acesso Restrito</h2>
-            <p class="aviso-texto">
-                Para acessar as informações da sua equipe, é necessário iniciar sua jornada no controle de ponto primeiro.
-            </p>
-            <a href="bate-ponto.html" class="botao-ir-ponto">
-                <i class="fas fa-clock"></i> Ir ao Controle de Ponto
-            </a>
-        </div>
-    </div>
-
-    <!-- COM JORNADA → DADOS DA EQUIPE -->
-    <div class="conteudo area-conteudo" id="telaEquipe">
+    <div class="gradiente-fundo"></div>
+    <div class="conteudo">
         <div class="cabecalho">
-            <div class="titulo-secao">
-                <h1><i class="fas fa-users"></i> Minha Equipe</h1>
-                <p>Informações e integrantes da sua equipe atual</p>
+            <h1 class="titulo">
+                <i class="fas fa-users"></i> Minha Equipe
+            </h1>
+            <p class="subtitulo">Informações e integrantes da sua equipe atual</p>
+            <div class="status-badge" id="statusEquipe">
+                <i class="fas fa-circle"></i> Carregando...
             </div>
         </div>
 
-        <div class="grade-cards">
-            <div class="card card-largo">
-                <p class="card-titulo"><i class="fas fa-flag"></i> Nome da Equipe</p>
-                <p class="card-valor" id="nomeEquipe">—</p>
+        <div class="equipe-nome" id="blocoEquipe">
+            <div class="equipe-tag">EQUIPE ATUAL</div>
+            <div class="equipe-valor" id="nomeEquipe">—</div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-etiqueta">
+                    <i class="fas fa-map-marker-alt"></i> Área de Atuação
+                </div>
+                <div class="card-valor" id="areaAtuacao">—</div>
             </div>
 
             <div class="card">
-                <p class="card-titulo"><i class="fas fa-map-marker-alt"></i> Área de Atuação</p>
-                <p class="card-valor" id="areaAtuacao">—</p>
+                <div class="card-etiqueta">
+                    <i class="fas fa-user-check"></i> Minha Posição
+                </div>
+                <div class="card-valor destaque" id="minhaPosicao">—</div>
             </div>
 
             <div class="card">
-                <p class="card-titulo"><i class="fas fa-user-check"></i> Minha Posição</p>
-                <p class="card-valor" id="minhaPosicao">—</p>
+                <div class="card-etiqueta">
+                    <i class="fas fa-car"></i> Veículo
+                </div>
+                <div class="card-valor" id="veiculo">—</div>
             </div>
 
             <div class="card">
-                <p class="card-titulo"><i class="fas fa-car"></i> Veículo</p>
-                <p class="card-valor" id="veiculo">—</p>
+                <div class="card-etiqueta">
+                    <i class="fas fa-briefcase"></i> Função
+                </div>
+                <div class="card-valor" id="funcao">—</div>
             </div>
 
-            <div class="card">
-                <p class="card-titulo"><i class="fas fa-briefcase"></i> Função</p>
-                <p class="card-valor" id="funcao">—</p>
-            </div>
-
-            <div class="card card-largo">
-                <p class="card-titulo"><i class="fas fa-list-ul"></i> Integrantes da Equipe</p>
-                <p class="card-valor" id="integrantes">Carregando...</p>
+            <div class="card largo">
+                <div class="card-etiqueta">
+                    <i class="fas fa-list-ul"></i> Integrantes da Equipe
+                </div>
+                <div class="integrantes-lista" id="listaIntegrantes">
+                    <span>Carregando...</span>
+                </div>
             </div>
         </div>
     </div>
+        <script>
+        let usuario = null;
+        let equipeAtual = null;
 
-    <nav class="barra-menu">
-        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item ativo"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
-        <button class="menu-item" id="botaoMais"><i class="fas fa-ellipsis-h"></i><span>Mais</span></button>
-    </nav>
-
-    <script>
-        let passaporteUsuario = localStorage.getItem('passaporte') || null;
-
-        async function verificarJornadaAtiva() {
-            if (!passaporteUsuario) {
+        async function carregarDados() {
+            const sessao = localStorage.getItem('sessao_usuario');
+            if (!sessao) {
                 window.location.href = 'login.html';
                 return;
             }
 
-            const { data: pontoAtivo, error: erroPonto } = await sb
-                .from('pontos')
-                .select('equipe_id, id')
-                .eq('passaporte', passaporteUsuario)
-                .is('saida', null)
-                .maybeSingle();
+            usuario = JSON.parse(sessao);
 
-            if (!pontoAtivo) {
-                document.getElementById('telaBloqueio').style.display = 'block';
-                document.getElementById('telaEquipe').classList.remove('visivel');
+            const { data: ponto } = await sb
+                .from('pontos')
+                .select('*')
+                .eq('passaporte', usuario.passaporte)
+                .is('saida', null)
+                .order('entrada', { ascending: false })
+                .limit(1)
+                .single();
+
+            if (!ponto) {
+                window.location.href = 'ponto.html';
                 return;
             }
 
-            document.getElementById('telaBloqueio').style.display = 'none';
-            document.getElementById('telaEquipe').classList.add('visivel');
-
-            if (!pontoAtivo.equipe_id) {
-                document.getElementById('nomeEquipe').textContent = 'Não definida';
-                document.getElementById('areaAtuacao').textContent = '—';
-                document.getElementById('minhaPosicao').textContent = 'Piloto';
-                document.getElementById('veiculo').textContent = 'N/A';
-                document.getElementById('funcao').textContent = 'Membro';
-                document.getElementById('integrantes').textContent = 'Apenas você no momento';
+            if (!ponto.equipe_id) {
+                document.getElementById('statusEquipe').innerHTML = '<i class="fas fa-circle"></i> Fora de Equipe';
+                document.getElementById('statusEquipe').style.color = '#ef4444';
                 return;
             }
 
             const { data: equipe } = await sb
                 .from('equipes')
                 .select('*')
-                .eq('id', pontoAtivo.equipe_id)
+                .eq('id', ponto.equipe_id)
                 .single();
 
-            if (equipe) {
-                document.getElementById('nomeEquipe').textContent = equipe.nome || 'Equipe sem nome';
-                
-                const nome = (equipe.nome || '').toUpperCase();
-                if (nome.includes('ROTA 1') || nome.includes('ROTA 2')) {
-                    document.getElementById('areaAtuacao').textContent = 'Farm de Lockpick';
-                } else if (nome.includes('ROTA 3') || nome.includes('ROTA 4')) {
-                    document.getElementById('areaAtuacao').textContent = 'Farm de Flipper';
-                } else if (nome.includes('P1')) {
-                    document.getElementById('areaAtuacao').textContent = 'Vendas de Lockpick';
-                    document.getElementById('minhaPosicao').textContent = 'P1';
-                } else if (nome.includes('P2')) {
-                    document.getElementById('areaAtuacao').textContent = 'Vendas de Flipper';
-                    document.getElementById('minhaPosicao').textContent = 'P2';
-                } else if (nome.includes('APOIO 1')) {
-                    document.getElementById('areaAtuacao').textContent = 'Segurança - Auxiliar';
-                    document.getElementById('minhaPosicao').textContent = 'P1 - Favela';
-                } else if (nome.includes('APOIO 2')) {
-                    document.getElementById('areaAtuacao').textContent = 'Segurança - Auxiliar';
-                    document.getElementById('minhaPosicao').textContent = 'P2 - Favela';
-                } else {
-                    document.getElementById('areaAtuacao').textContent = 'Área Geral';
-                    document.getElementById('minhaPosicao').textContent = 'Piloto';
-                }
+            if (!equipe) return;
+            equipeAtual = equipe;
 
-                document.getElementById('veiculo').textContent = 'N/A';
-                document.getElementById('funcao').textContent = 'Membro';
+            document.getElementById('nomeEquipe').textContent = equipe.nome || 'Sem Nome';
+            document.getElementById('areaAtuacao').textContent = equipe.area || '—';
+            document.getElementById('veiculo').textContent = equipe.veiculo || 'N/A';
+            document.getElementById('funcao').textContent = 'Membro';
+
+            const { data: membros } = await sb
+                .from('equipe_membros')
+                .select('*, membros(nome, passaporte)')
+                .eq('equipe_id', equipe.id);
+
+            let posicao = 'Piloto';
+            if (membros && membros.length > 0) {
+                const ordem = membros.sort((a, b) => new Date(a.entrada) - new Date(b.entrada));
+                const idx = ordem.findIndex(m => m.passaporte === usuario.passaporte);
+                if (idx === 1) posicao = 'Assento 2';
+                else if (idx === 2) posicao = 'Assento 3';
+                else if (idx === 3) posicao = 'Assento 4';
+            }
+            document.getElementById('minhaPosicao').textContent = posicao;
+
+            const lista = document.getElementById('listaIntegrantes');
+            lista.innerHTML = '';
+            if (membros) {
+                membros.forEach(m => {
+                    const nome = m.membros?.nome || 'Desconhecido';
+                    const span = document.createElement('span');
+                    span.className = `integrante ${m.passaporte === usuario.passaporte ? 'voce' : ''}`;
+                    span.textContent = nome;
+                    lista.appendChild(span);
+                });
             }
 
-            const { data: todosPontos } = await sb
-                .from('pontos')
-                .select('nome, passaporte')
-                .eq('equipe_id', pontoAtivo.equipe_id)
-                .is('saida', null);
-
-            if (todosPontos && todosPontos.length > 0) {
-                const nomes = todosPontos.map(p => p.nome || p.passaporte).join(' | ');
-                document.getElementById('integrantes').textContent = nomes;
-            } else {
-                document.getElementById('integrantes').textContent = 'Apenas você no momento';
-            }
+            document.getElementById('statusEquipe').innerHTML = '<i class="fas fa-circle"></i> Em Serviço';
         }
 
-        const botaoMais = document.getElementById('botaoMais');
-        botaoMais?.addEventListener('click', () => {
-            alert('Menu Mais em desenvolvimento');
-        });
-
-        verificarJornadaAtiva();
+        carregarDados();
     </script>
+
+    <nav class="navegacao">
+        <a href="painel.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>Painel</span>
+        </a>
+        <a href="ponto.html" class="nav-item">
+            <i class="fas fa-clock"></i>
+            <span>Ponto</span>
+        </a>
+        <a href="equipe.html" class="nav-item ativo">
+            <i class="fas fa-users"></i>
+            <span>Equipe</span>
+        </a>
+        <a href="tickets.html" class="nav-item">
+            <i class="fas fa-file-alt"></i>
+            <span>Tickets</span>
+        </a>
+        <a href="#" class="nav-item">
+            <i class="fas fa-ellipsis-h"></i>
+            <span>Mais</span>
+        </a>
+    </nav>
 </body>
 </html>
