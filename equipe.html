@@ -37,6 +37,22 @@
             pointer-events: none; z-index: 0;
         }
         .conteudo { position: relative; z-index: 1; }
+        
+        /* 🟦 CAIXA DE DIAGNÓSTICO — APARECE NA TELA */
+        .caixa-debug {
+            background: #1a1a2e;
+            border: 1px solid var(--azul-claro);
+            border-radius: 10px;
+            padding: 12px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+        .debug-ok { color: var(--verde); }
+        .debug-erro { color: var(--vermelho); }
+        .debug-info { color: var(--azul-claro); }
+        
         .cabecalho { margin: 12px 0 24px; }
         .titulo { font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
         .titulo i { color: var(--azul-claro); }
@@ -65,7 +81,7 @@
         .integrante { background: var(--card-2); padding: 8px 14px; border-radius: 8px; font-size: 14px; }
         .integrante.voce { border: 1px solid var(--azul-claro); background: rgba(37,99,235,0.15); }
         .aviso-bloqueio {
-            text-align: center; padding: 60px 20px; color: var(--texto-sec);
+            text-align: center; padding: 40px 20px; color: var(--texto-sec);
         }
         .aviso-bloqueio i { font-size: 52px; color: var(--azul-claro); margin-bottom: 20px; }
         .aviso-bloqueio h2 { font-size: 20px; margin-bottom: 8px; color: var(--texto); }
@@ -89,19 +105,19 @@
         }
         .nav-item.ativo { color: var(--azul-claro); }
         .nav-item i { font-size: 20px; }
-        .carregando { text-align: center; padding: 40px; color: var(--texto-sec); }
+        .escondido { display: none !important; }
     </style>
 </head>
 <body>
     <div class="gradiente-fundo"></div>
     <div class="conteudo">
-               <!-- Tela de Carregamento -->
-        <div id="telaCarregando" class="carregando">
-            <i class="fas fa-spinner fa-spin"></i> Carregando...
+              <!-- 🟦 CAIXA QUE MOSTRA O QUE ESTÁ ACONTECENDO -->
+        <div class="caixa-debug" id="caixaStatus">
+<span class="debug-info">🔍 Verificando...</span>
         </div>
 
         <!-- Tela Bloqueio: Sem Ponto Ativo -->
-        <div id="telaBloqueio" style="display: none;">
+        <div id="telaBloqueio" class="escondido">
             <div class="aviso-bloqueio">
                 <i class="fas fa-lock"></i>
                 <h2>Controle de Ponto Necessário</h2>
@@ -113,7 +129,7 @@
         </div>
 
         <!-- Tela Equipe: Com Ponto Ativo -->
-        <div id="telaEquipe" style="display: none;">
+        <div id="telaEquipe" class="escondido">
             <div class="cabecalho">
                 <h1 class="titulo">
                     <i class="fas fa-users"></i> Minha Equipe
@@ -169,25 +185,34 @@
             </div>
         </div>
     </div>
-       <script>
-        let usuario = null;
+        <script>
+        const caixa = document.getElementById('caixaStatus');
+        function logar(texto, tipo='info') {
+            const classe = tipo === 'ok' ? 'debug-ok' : tipo === 'erro' ? 'debug-erro' : 'debug-info';
+            caixa.innerHTML += `<span class="${classe}">${texto}</span>\n`;
+        }
 
         async function inicializar() {
-            // ✅ PRIMEIRO: Verifica se TEM sessão — SEM redirecionar sem necessidade
+            logar("📦 Passo 1: Procurando sessão...");
+            
             const sessao = localStorage.getItem('sessao_usuario');
             
             if (!sessao) {
-                // Só manda pro login se REALMENTE não tem ninguém logado
-                window.location.href = 'login.html';
+                logar("❌ NÃO TEM SESSÃO SALVA!", "erro");
+                logar("➡️ Vou mandar pro login...", "info");
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
                 return;
             }
 
-            usuario = JSON.parse(sessao);
+            logar("✅ Sessão encontrada!", "ok");
+            
+            const usuario = JSON.parse(sessao);
+            logar(`👤 Usuário: ${usuario.nome} | Passaporte: ${usuario.passaporte}`);
 
-            // ✅ Usuário logado → mostra conteúdo, NÃO sai da página
-            document.getElementById('telaCarregando').style.display = 'none';
+            logar("📡 Passo 2: Buscando ponto ativo...");
 
-            // Busca o ponto ativo do usuário
             try {
                 const { data: ponto, error } = await sb
                     .from('pontos')
@@ -198,42 +223,54 @@
                     .limit(1)
                     .single();
 
-                // SEM ponto ativo → mostra aviso de bloqueio, FICA na página
-                if (error || !ponto || !ponto.equipe_id) {
-                    document.getElementById('telaBloqueio').style.display = 'block';
+                if (error || !ponto) {
+                    logar("ℹ️ Nenhum ponto ativo encontrado", "info");
+                    logar("➡️ Mostro aviso de bloqueio", "info");
+                    document.getElementById('telaBloqueio').classList.remove('escondido');
                     return;
                 }
 
-                // COM ponto ativo → carrega dados da equipe
-                await carregarEquipe(ponto.equipe_id);
+                if (!ponto.equipe_id) {
+                    logar("⚠️ Ponto ativo, mas SEM equipe vinculada", "info");
+                    document.getElementById('telaBloqueio').classList.remove('escondido');
+                    return;
+                }
+
+                logar(`✅ Ponto ativo! Equipe ID: ${ponto.equipe_id}`, "ok");
+                logar("📋 Passo 3: Carregando dados da equipe...");
+
+                await carregarEquipe(ponto.equipe_id, usuario);
 
             } catch (erro) {
-                console.error('Erro ao verificar ponto:', erro);
-                document.getElementById('telaBloqueio').style.display = 'block';
+                logar(`💥 Erro: ${erro.message}`, "erro");
+                document.getElementById('telaBloqueio').classList.remove('escondido');
             }
         }
 
-        async function carregarEquipe(equipeId) {
-            // Mostra tela de equipe
-            document.getElementById('telaEquipe').style.display = 'block';
-
-            // Busca dados da equipe
+        async function carregarEquipe(equipeId, usuario) {
             const { data: equipe } = await sb
                 .from('equipes')
                 .select('*')
                 .eq('id', equipeId)
                 .single();
 
-            if (!equipe) return;
+            if (!equipe) {
+                logar("❌ Equipe não encontrada no banco!", "erro");
+                return;
+            }
 
-            // Preenche dados
+            logar(`✅ Equipe: ${equipe.nome}`, "ok");
+            
+            // Esconde caixa de status depois de carregar
+            setTimeout(() => caixa.style.display = 'none', 2000);
+
+            document.getElementById('telaEquipe').classList.remove('escondido');
+
             document.getElementById('nomeEquipe').textContent = equipe.nome || '—';
             document.getElementById('areaAtuacao').textContent = equipe.area || '—';
             document.getElementById('veiculo').textContent = equipe.veiculo || 'N/A';
 
-            // Define posição baseada na ordem de entrada
             let posicao = 'Piloto';
-            
             const { data: membros } = await sb
                 .from('equipe_membros')
                 .select('passaporte, entrada, membros(nome)')
@@ -244,18 +281,14 @@
                     new Date(a.entrada || 0) - new Date(b.entrada || 0)
                 );
                 const idx = ordem.findIndex(m => m.passaporte === usuario.passaporte);
-                
                 if (idx === 1) posicao = 'Assento 2';
                 else if (idx === 2) posicao = 'Assento 3';
                 else if (idx === 3) posicao = 'Assento 4';
             }
-
             document.getElementById('minhaPosicao').textContent = posicao;
 
-            // Lista de integrantes
             const lista = document.getElementById('listaIntegrantes');
             lista.innerHTML = '';
-            
             if (membros) {
                 membros.forEach(m => {
                     const nome = m.membros?.nome || 'Desconhecido';
@@ -267,10 +300,9 @@
             }
         }
 
-        // Inicia tudo
         inicializar();
-       </script>
-        <nav class="navegacao">
+        </script>
+            <nav class="navegacao">
         <a href="painel.html" class="nav-item">
             <i class="fas fa-home"></i>
             <span>Painel</span>
@@ -294,5 +326,3 @@
     </nav>
 </body>
 </html>
-
-    
