@@ -109,6 +109,7 @@
 
         .area-conteudo { display: none; }
         .area-conteudo.visivel { display: block; }
+        .debug { font-size: 11px; color: #475569; margin-top: 12px; text-align: center; }
     </style>
 </head>
 <body>
@@ -130,6 +131,7 @@
             <a href="bate-ponto.html" class="botao-ir-ponto">
                 <i class="fas fa-clock"></i> Ir ao Controle de Ponto
             </a>
+            <p class="debug" id="textoDebug"></p>
         </div>
     </div>
 
@@ -185,6 +187,7 @@
 
     <script>
         let passaporteUsuario = localStorage.getItem('passaporte') || null;
+        const textoDebug = document.getElementById('textoDebug');
 
         async function verificarJornadaAtiva() {
             if (!passaporteUsuario) {
@@ -192,19 +195,25 @@
                 return;
             }
 
-            const { data: pontoAtivo, error: erroPonto } = await sb
+            // Busca TODOS os registros abertos desse usuário
+            const { data: todosPontos, error: erroPonto } = await sb
                 .from('pontos')
-                .select('equipe_id, id')
+                .select('*')
                 .eq('passaporte', passaporteUsuario)
                 .is('saida', null)
-                .maybeSingle();
+                .order('entrada', { ascending: false });
 
-            if (!pontoAtivo) {
+            textoDebug.textContent = `Passaporte: ${passaporteUsuario} | Encontrados: ${todosPontos?.length || 0} registro(s)`;
+
+            if (!todosPontos || todosPontos.length === 0) {
                 document.getElementById('telaBloqueio').style.display = 'block';
                 document.getElementById('telaEquipe').classList.remove('visivel');
                 return;
             }
 
+            // Pega o mais recente
+            const pontoAtivo = todosPontos[0];
+            
             document.getElementById('telaBloqueio').style.display = 'none';
             document.getElementById('telaEquipe').classList.add('visivel');
 
@@ -218,11 +227,12 @@
                 return;
             }
 
+            // Busca dados da equipe
             const { data: equipe } = await sb
                 .from('equipes')
                 .select('*')
                 .eq('id', pontoAtivo.equipe_id)
-                .single();
+                .maybeSingle();
 
             if (equipe) {
                 document.getElementById('nomeEquipe').textContent = equipe.nome || 'Equipe sem nome';
@@ -251,16 +261,23 @@
 
                 document.getElementById('veiculo').textContent = 'N/A';
                 document.getElementById('funcao').textContent = 'Membro';
+            } else {
+                document.getElementById('nomeEquipe').textContent = 'Equipe não encontrada';
+                document.getElementById('areaAtuacao').textContent = '—';
+                document.getElementById('minhaPosicao').textContent = 'Piloto';
+                document.getElementById('veiculo').textContent = 'N/A';
+                document.getElementById('funcao').textContent = 'Membro';
             }
 
-            const { data: todosPontos } = await sb
+            // Busca integrantes
+            const { data: todosAbertos } = await sb
                 .from('pontos')
                 .select('nome, passaporte')
                 .eq('equipe_id', pontoAtivo.equipe_id)
                 .is('saida', null);
 
-            if (todosPontos && todosPontos.length > 0) {
-                const nomes = todosPontos.map(p => p.nome || p.passaporte).join(' | ');
+            if (todosAbertos && todosAbertos.length > 0) {
+                const nomes = todosAbertos.map(p => p.nome || p.passaporte).join(' | ');
                 document.getElementById('integrantes').textContent = nomes;
             } else {
                 document.getElementById('integrantes').textContent = 'Apenas você no momento';
@@ -275,4 +292,5 @@
         verificarJornadaAtiva();
     </script>
 </body>
-</html>
+                                                          </html>
+                                                          
