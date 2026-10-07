@@ -1,259 +1,368 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <meta name="color-scheme" content="dark">
-    <title>ITÁLIA · EQUIPE</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-        const { createClient } = supabase;
-        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Equipe | Itália</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#000;
+    --card:#0f131a;
+    --inner:#161b25;
+    --line:#212838;
+    --azul:#3b82f6;
+    --amarelo:#f59e0b;
+    --txt:#f1f5f9;
+    --mut:#8b95a8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--bg)}
+  body{
+    font-family:'Inter',sans-serif;color:var(--txt);
+    min-height:100vh;
+    padding:20px 16px calc(96px + env(safe-area-inset-bottom,0px));
+    max-width:560px;margin:0 auto;
+  }
+  a{text-decoration:none;color:inherit}
 
-        let usuario = null;
-        let equipeAtual = null;
+  .topo{margin:8px 4px 20px}
+  .escala{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--azul)}
+  .nome-equipe{font-size:34px;font-weight:800;line-height:1.1;margin-top:6px;word-break:break-word}
+  .sub{font-size:14px;color:var(--mut);margin-top:6px}
 
-        async function verificarSessao() {
-            const { data: { session } } = await sb.auth.getSession();
-            if (!session) {
-                window.location.href = "login.html";
-                return null;
-            }
-            const { data: { user }, error } = await sb.auth.getUser();
-            if (error || !user) {
-                window.location.href = "login.html";
-                return null;
-            }
-            return user;
-        }
+  .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:14px}
+  .bloco{background:var(--inner);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+  .bloco + .bloco, .bloco + .linha, .linha + .bloco{margin-top:12px}
+  .linha{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .linha .bloco{margin-top:0}
 
-        async function carregarEquipe() {
-            usuario = await verificarSessao();
-            if (!usuario) return;
+  .rotulo{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--mut);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .rotulo i{color:var(--azul);font-size:13px}
+  .valor{font-size:16px;font-weight:600;line-height:1.35;word-break:break-word}
+  .valor.pequeno{font-size:15px}
 
-            const passaporte = usuario.user_metadata?.passaporte || usuario.email;
+  .lista{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .lista li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;padding:8px 10px;border-radius:10px;background:#0f131a;border:1px solid var(--line)}
+  .lista li i{color:var(--azul);width:18px;text-align:center}
+  .lista li.eu{border-color:var(--azul)}
+  .lista li .voce{margin-left:auto;font-size:11px;font-weight:700;color:var(--azul)}
 
-            const { data: ponto, error: errPonto } = await sb
-                .from("pontos")
-                .select("equipe_id, status")
-                .eq("passaporte", passaporte)
-                .eq("status", "ativo")
-                .order("criado_em", { ascending: false })
-                .limit(1)
-                .single();
+  .btn{
+    width:100%;margin-top:16px;border:0;border-radius:14px;
+    background:var(--amarelo);color:#111;
+    font-family:'Inter',sans-serif;font-size:16px;font-weight:700;
+    padding:16px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+  }
+  .btn:disabled{opacity:.6}
+  .btn:active{transform:scale(.99)}
 
-            if (errPonto || !ponto || !ponto.equipe_id) {
-                mostrarSemEquipe();
-                return;
-            }
+  .estado{text-align:center;padding:40px 20px}
+  .estado .ic{width:64px;height:64px;border-radius:50%;background:var(--inner);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:var(--azul)}
+  .estado h2{font-size:20px;font-weight:700}
+  .estado p{font-size:14px;color:var(--mut);margin-top:8px}
 
-            const { data: equipe, error: errEquipe } = await sb
-                .from("equipes")
-                .select("*")
-                .eq("id", ponto.equipe_id)
-                .single();
+  .aviso{margin-top:14px;font-size:13px;color:#fca5a5;text-align:center;display:none}
+  .aviso.ok{color:#86efac}
 
-            if (errEquipe || !equipe) {
-                mostrarSemEquipe();
-                return;
-            }
-
-            equipeAtual = equipe;
-            renderizarEquipe(equipe, passaporte);
-        }
-
-        function mostrarSemEquipe() {
-            document.getElementById("conteudo").innerHTML = `
-                <div class="aviso-caixa">
-                    <i class="fa-solid fa-lock"></i>
-                    <h3>Nenhum serviço ativo</h3>
-                    <p>Inicie sua jornada no Controle de Ponto para ver sua equipe.</p>
-                    <a href="bate-ponto.html" class="botao-primario">Ir ao Controle de Ponto</a>
-                </div>
-            `;
-        }
-                function renderizarEquipe(eu, passaporte) {
-            let posicao = "Piloto";
-            if (eu.membros && Array.isArray(eu.membros)) {
-                const idx = eu.membros.indexOf(passaporte);
-                if (idx > 0) posicao = `Assento ${idx + 1}`;
-            }
-
-            let area = "Área Operacional";
-            if (eu.tipo === "rota1" || eu.tipo === "rota2") area = "Farm de Lockpick";
-            else if (eu.tipo === "rota3" || eu.tipo === "rota4") area = "Farm de Flipper";
-            else if (eu.tipo === "vendas1") area = "Vendas de Lockpick";
-            else if (eu.tipo === "vendas2") area = "Vendas de Flipper";
-            else if (eu.tipo === "apoio1" || eu.tipo === "apoio2") area = "Segurança / Apoio";
-
-            const nomes = {
-                rota1: "ROTA 1", rota2: "ROTA 2", rota3: "ROTA 3", rota4: "ROTA 4",
-                vendas1: "VENDAS P1", vendas2: "VENDAS P2",
-                apoio1: "APOIO 1", apoio2: "APOIO 2"
-            };
-            const nomeEquipe = nomes[eu.tipo] || eu.nome || "EQUIPE";
-            const etiquetaEscala = nomeEquipe.split(' ').pop();
-
-            const listaMembros = eu.membros?.length
-                ? eu.membros.map(m => {
-                    const nomeExib = m === passaporte 
-                        ? `<strong>${usuario.user_metadata?.nome || 'Você'}</strong>` 
-                        : m;
-                    return `<div class="membro-item"><i class="fa-solid fa-user"></i> ${nomeExib}</div>`;
-                  }).join("")
-                : `<div class="membro-item"><i class="fa-solid fa-user-check"></i> ${usuario.user_metadata?.nome || 'Você'}</div>`;
-
-            document.getElementById("conteudo").innerHTML = `
-                <div class="cabecalho-equipe">
-                    <p class="escala-label">ESCALA ATUAL · ${etiquetaEscala}</p>
-                    <h1 class="nome-equipe">${nomeEquipe}</h1>
-                    <p class="subtitulo">Veja sua alocação atual</p>
-                </div>
-
-                <div class="card-principal">
-                    <div class="card-bloco">
-                        <div class="bloco-titulo">
-                            <i class="fa-solid fa-location-dot"></i> MISSÃO / ÁREA
-                        </div>
-                        <p class="dado-principal">${area}</p>
-                    </div>
-
-                    <div class="linha-dupla">
-                        <div class="card-bloco meio">
-                            <p class="rotulo">MINHA POSIÇÃO</p>
-                            ${eu.tipo?.startsWith('vendas')
-                                ? `<div class="posicao-caixa">${etiquetaEscala}</div>`
-                                : `<p class="dado-principal">${posicao}</p>`
-                            }
-                        </div>
-                        <div class="card-bloco meio">
-                            <p class="rotulo">FUNÇÃO</p>
-                            <p class="dado-principal">Membro</p>
-                        </div>
-                    </div>
-
-                    <div class="card-bloco">
-                        <p class="rotulo">VEÍCULO</p>
-                        <p class="dado-principal">N/A</p>
-                    </div>
-
-                    <div class="card-bloco">
-                        <div class="bloco-titulo">
-                            <i class="fa-solid fa-users"></i> INTEGRANTES
-                        </div>
-                        ${listaMembros}
-                    </div>
-                </div>
-
-                <button class="botao-trocar" onclick="alert('Funcionalidade em breve!')">
-                    <i class="fa-solid fa-arrow-right-arrow-left"></i> Trocar de Equipe
-                </button>
-            `;
-        }
-
-        window.onload = carregarEquipe;
-    </script>
-        <style>
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
-        :root {
-            --fundo: #000; --card: #12121f; --claro: #1a1a2e;
-            --azul: #3b82f6; --ouro: #f59e0b;
-            --texto: #fff; --cinza: #94a3b8;
-        }
-        body {
-            background: var(--fundo); color: var(--texto);
-            min-height: 100vh;
-            padding: 24px 20px 100px;
-        }
-        a { text-decoration: none; color: inherit; }
-
-        .cabecalho-equipe { margin-bottom: 28px; }
-        .escala-label { color: var(--azul); font-size: 15px; font-weight: 600; margin-bottom: 8px; }
-        .nome-equipe { font-size: 42px; font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
-        .subtitulo { color: var(--cinza); font-size: 15px; }
-
-        .card-principal {
-            background: var(--card); border-radius: 20px; padding: 24px;
-            margin-bottom: 28px; border: 1px solid rgba(59,130,246,.15);
-        }
-        .card-bloco {
-            background: var(--claro); border-radius: 14px; padding: 18px;
-            margin-bottom: 14px;
-        }
-        .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-        .bloco-titulo {
-            display: flex; align-items: center; gap: 8px;
-            color: var(--cinza); font-size: 13px; font-weight: 600;
-            text-transform: uppercase; margin-bottom: 10px;
-        }
-        .rotulo {
-            color: var(--cinza); font-size: 13px; font-weight: 500;
-            text-transform: uppercase; margin-bottom: 6px;
-        }
-        .dado-principal { font-size: 20px; font-weight: 700; }
-        .posicao-caixa {
-            background: var(--azul); color: white; font-size: 22px; font-weight: 700;
-            width: 72px; height: 72px; border-radius: 12px;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .membro-item {
-            display: flex; align-items: center; gap: 10px;
-            padding: 8px 0; font-size: 16px;
-        }
-        .membro-item strong { color: var(--azul); }
-
-        .botao-trocar {
-            width: 100%; background: linear-gradient(90deg, #f59e0b, #d97706);
-            border: none; border-radius: 14px; padding: 18px; color: white;
-            font-size: 17px; font-weight: 600; display: flex;
-            align-items: center; justify-content: center; gap: 10px;
-            cursor: pointer; box-shadow: 0 4px 16px rgba(245,158,11,.25);
-        }
-
-        .aviso-caixa { text-align: center; padding: 48px 24px; }
-        .aviso-caixa i { font-size: 48px; color: var(--azul); margin-bottom: 16px; }
-        .aviso-caixa h3 { font-size: 20px; margin-bottom: 8px; }
-        .aviso-caixa p { color: var(--cinza); margin-bottom: 24px; }
-        .botao-primario {
-            background: var(--azul); padding: 14px 28px; border-radius: 12px;
-            font-weight: 600; display: inline-block;
-        }
-
-        .navegacao {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: rgba(0,0,0,.92); backdrop-filter: blur(12px);
-            display: flex; justify-content: space-around;
-            padding: 12px 8px 24px; border-top: 1px solid rgba(255,255,255,.08);
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            gap: 4px; color: var(--cinza); font-size: 12px;
-            padding: 8px 12px; border-radius: 10px;
-        }
-        .nav-item.ativo { color: var(--azul); }
-        .nav-item i { font-size: 20px; }
-    </style>
+  .nav{
+    position:fixed;left:0;right:0;bottom:0;
+    background:#07090d;border-top:1px solid var(--line);
+    display:flex;justify-content:space-around;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));
+    z-index:10;
+  }
+  .nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--mut);padding:6px 0}
+  .nav a i{font-size:19px}
+  .nav a.ativo{color:var(--azul)}
+</style>
 </head>
 <body>
-    <div id="conteudo"></div>
 
-    <nav class="navegacao">
-        <a href="painel.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="nav-item"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="nav-item ativo"><i class="fa-solid fa-users"></i><span>Equipe</span></a>
-        <a href="tickets.html" class="nav-item"><i class="fa-solid fa-file-lines"></i><span>Tickets</span></a>
-        <a href="mais.html" class="nav-item"><i class="fa-solid fa-ellipsis"></i><span>Mais</span></a>
-    </nav>
+<div id="app">
+  <div class="estado">
+    <div class="ic"><i class="fa-solid fa-spinner fa-spin"></i></div>
+    <h2>Carregando</h2>
+  </div>
+</div>
+
+<nav class="nav">
+  <a href="painel.html"><i class="fa-solid fa-house"></i><span>Painel</span></a>
+  <a href="bate-ponto.html"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
+  <a href="equipe.html" class="ativo"><i class="fa-solid fa-users"></i><span>Equipe</span></a>
+  <a href="tickets.html"><i class="fa-solid fa-ticket"></i><span>Tickets</span></a>
+  <a href="mais.html"><i class="fa-solid fa-bars"></i><span>Mais</span></a>
+</nav>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
+const ESCALA = 'P2';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const app = document.getElementById('app');
+
+let sessao = null;
+let ponto = null;
+
+/* ---------- SESSÃO (só vai ao login se REALMENTE não houver sessão) ---------- */
+function achar(o, d){
+  if(!o || typeof o !== 'object' || d > 3) return null;
+  if(o.passaporte !== undefined && o.passaporte !== null && String(o.passaporte).trim() !== '') return o;
+  for(const k in o){
+    const r = achar(o[k], d + 1);
+    if(r) return r;
+  }
+  return null;
+}
+function extrair(chave, valor){
+  if(/^sb-/.test(chave)) return null;
+  try{
+    const o = JSON.parse(valor);
+    if(o && typeof o === 'object'){
+      const f = achar(o, 0);
+      if(f) return f;
+    } else if(/passaporte/i.test(chave) && (typeof o === 'string' || typeof o === 'number') && String(o).trim()){
+      return { passaporte: String(o).trim() };
+    }
+  }catch(e){
+    if(/passaporte/i.test(chave) && valor.trim() && valor.length < 40){
+      return { passaporte: valor.trim() };
+    }
+  }
+  return null;
+}
+function lerSessao(){
+  const lojas = [window.localStorage, window.sessionStorage];
+  for(const loja of lojas){
+    try{
+      for(let i = 0; i < loja.length; i++){
+        const k = loja.key(i);
+        const v = loja.getItem(k);
+        if(!v) continue;
+        const s = extrair(k, v);
+        if(s) return s;
+      }
+    }catch(e){}
+  }
+  return null;
+}
+
+/* ---------- UTILITÁRIOS ---------- */
+function esc(t){
+  return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatarTipo(tipo){
+  if(!tipo) return 'N/A';
+  const m = String(tipo).match(/^([a-zA-ZÀ-ú]+)(\d+)$/);
+  if(!m) return tipo;
+  return m[1].charAt(0).toUpperCase() + m[1].slice(1) + ' ' + m[2];
+}
+
+/* ---------- TELAS ---------- */
+function telaSemServico(){
+  app.innerHTML = `
+    <div class="topo">
+      <div class="escala">ESCALA ATUAL · ${esc(ESCALA)}</div>
+      <div class="nome-equipe">Sem equipe</div>
+      <div class="sub">Veja sua alocação atual</div>
+    </div>
+    <div class="card">
+      <div class="estado">
+        <div class="ic"><i class="fa-solid fa-circle-info"></i></div>
+        <h2>Nenhum serviço ativo</h2>
+        <p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p>
+      </div>
+      <a href="bate-ponto.html" class="btn"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a>
+    </div>`;
+}
+function telaErro(msg){
+  app.innerHTML = `
+    <div class="card">
+      <div class="estado">
+        <div class="ic"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <h2>Não foi possível carregar</h2>
+        <p>${esc(msg)}</p>
+      </div>
+      <button class="btn" onclick="iniciar()"><i class="fa-solid fa-rotate"></i> Tentar novamente</button>
+    </div>`;
+}
+function telaEquipe(eq, integrantes, cargo){
+  const lista = integrantes.length
+    ? integrantes.map(i => `
+        <li class="${i.eu ? 'eu' : ''}">
+          <i class="fa-solid fa-user"></i>
+          <span>${esc(i.nome)}</span>
+          ${i.eu ? '<span class="voce">VOCÊ</span>' : ''}
+        </li>`).join('')
+    : '<li><i class="fa-solid fa-user"></i><span>Nenhum integrante</span></li>';
+
+  app.innerHTML = `
+    <div class="topo">
+      <div class="escala">ESCALA ATUAL · ${esc(ESCALA)}</div>
+      <div class="nome-equipe">${esc(eq.nome || 'Equipe')}</div>
+      <div class="sub">Veja sua alocação atual</div>
+    </div>
+    <div class="card">
+      <div class="bloco">
+        <div class="rotulo"><i class="fa-solid fa-location-dot"></i> MISSÃO / ÁREA</div>
+        <div class="valor">${esc(eq.area || 'N/A')}</div>
+      </div>
+      <div class="linha" style="margin-top:12px">
+        <div class="bloco">
+          <div class="rotulo"><i class="fa-solid fa-flag"></i> MINHA POSIÇÃO</div>
+          <div class="valor pequeno">${esc(formatarTipo(eq.tipo))}</div>
+        </div>
+        <div class="bloco">
+          <div class="rotulo"><i class="fa-solid fa-id-badge"></i> FUNÇÃO</div>
+          <div class="valor pequeno">${esc(cargo || 'N/A')}</div>
+        </div>
+      </div>
+      <div class="bloco" style="margin-top:12px">
+        <div class="rotulo"><i class="fa-solid fa-car"></i> VEÍCULO</div>
+        <div class="valor">N/A</div>
+      </div>
+      <div class="bloco" style="margin-top:12px">
+        <div class="rotulo"><i class="fa-solid fa-users"></i> INTEGRANTES</div>
+        <ul class="lista">${lista}</ul>
+      </div>
+    </div>
+    <button class="btn" id="btnTrocar"><i class="fa-solid fa-shuffle"></i> Trocar de Equipe</button>
+    <div class="aviso" id="aviso"></div>`;
+  document.getElementById('btnTrocar').addEventListener('click', trocarEquipe);
+}
+function aviso(msg, ok){
+  const el = document.getElementById('aviso');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'aviso' + (ok ? ' ok' : '');
+  el.style.display = 'block';
+}
+
+/* ---------- DADOS ---------- */
+async function buscarPontoAtivo(passaporte){
+  const { data, error } = await sb.from('pontos').select('*')
+    .eq('passaporte', passaporte)
+    .is('saida', null)
+    .order('criado_em', { ascending: false })
+    .limit(1);
+  if(error) throw error;
+  return (data && data.length) ? data[0] : null;
+}
+
+async function sortearEquipe(excluirId){
+  const { data: equipes, error: e1 } = await sb.from('equipes').select('*').eq('ativo', true);
+  if(e1) throw e1;
+  const { data: ativos, error: e2 } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
+  if(e2) throw e2;
+  const cont = {};
+  (ativos || []).forEach(p => { cont[p.equipe_id] = (cont[p.equipe_id] || 0) + 1; });
+  const livres = (equipes || []).filter(e => {
+    if(excluirId && String(e.id) === String(excluirId)) return false;
+    const lim = e.limite_vagas;
+    return lim == null || (cont[e.id] || 0) < lim;
+  });
+  if(!livres.length) return null;
+  return livres[Math.floor(Math.random() * livres.length)];
+}
+
+async function salvarEquipeNoPonto(equipeId){
+  const { error } = await sb.from('pontos').update({ equipe_id: equipeId })
+    .eq('passaporte', ponto.passaporte)
+    .eq('criado_em', ponto.criado_em);
+  if(error) throw error;
+  ponto.equipe_id = equipeId;
+}
+
+async function carregarIntegrantes(eq){
+  const mapa = new Map();
+  const meuPass = String(sessao.passaporte);
+
+  // quem está em jornada ativa nesta equipe
+  const { data: ativos } = await sb.from('pontos').select('passaporte,nome')
+    .eq('equipe_id', eq.id).is('saida', null);
+  (ativos || []).forEach(p => mapa.set(String(p.passaporte), p.nome || String(p.passaporte)));
+
+  // membros cadastrados na equipe
+  const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
+  if(membros.length){
+    const { data: us } = await sb.from('usuarios').select('passaporte,nome').in('passaporte', membros);
+    const nomes = {};
+    (us || []).forEach(u => { nomes[String(u.passaporte)] = u.nome; });
+    membros.forEach(m => { if(!mapa.has(m)) mapa.set(m, nomes[m] || m); });
+  }
+  if(!mapa.has(meuPass)) mapa.set(meuPass, sessao.nome || meuPass);
+
+  return Array.from(mapa, ([pass, nome]) => ({ nome, eu: pass === meuPass }));
+}
+
+async function buscarCargo(){
+  try{
+    const { data } = await sb.from('usuarios').select('cargo').eq('passaporte', sessao.passaporte).limit(1);
+    if(data && data.length && data[0].cargo) return data[0].cargo;
+  }catch(e){}
+  return sessao.cargo || null;
+}
+
+async function mostrarEquipe(){
+  const { data, error } = await sb.from('equipes').select('*').eq('id', ponto.equipe_id).limit(1);
+  if(error) throw error;
+  if(!data || !data.length){ telaErro('Equipe não encontrada.'); return; }
+  const eq = data[0];
+  const [integrantes, cargo] = await Promise.all([carregarIntegrantes(eq), buscarCargo()]);
+  telaEquipe(eq, integrantes, cargo);
+}
+
+async function trocarEquipe(){
+  const btn = document.getElementById('btnTrocar');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Trocando...';
+  try{
+    const nova = await sortearEquipe(ponto.equipe_id);
+    if(!nova){
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-shuffle"></i> Trocar de Equipe';
+      aviso('Nenhuma outra equipe com vaga no momento.');
+      return;
+    }
+    await salvarEquipeNoPonto(nova.id);
+    await mostrarEquipe();
+    aviso('Equipe alterada para ' + (nova.nome || 'nova equipe') + '.', true);
+  }catch(e){
+    console.error(e);
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-shuffle"></i> Trocar de Equipe';
+    aviso('Não foi possível trocar de equipe. Tente de novo.');
+  }
+}
+
+/* ---------- INÍCIO ---------- */
+async function iniciar(){
+  sessao = lerSessao();
+  if(!sessao){
+    window.location.replace('login.html');
+    return;
+  }
+  sessao.passaporte = String(sessao.passaporte);
+  try{
+    ponto = await buscarPontoAtivo(sessao.passaporte);
+    if(!ponto){ telaSemServico(); return; }
+    if(!ponto.equipe_id){
+      const eq = await sortearEquipe(null);
+      if(!eq){ telaErro('Não há equipes com vaga no momento.'); return; }
+      await salvarEquipeNoPonto(eq.id);
+    }
+    await mostrarEquipe();
+  }catch(e){
+    console.error(e);
+    telaErro('Falha ao consultar os dados. Verifique a conexão.');
+  }
+}
+iniciar();
+</script>
 </body>
 </html>
