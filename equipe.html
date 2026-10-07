@@ -27,7 +27,11 @@
                 window.location.href = "login.html";
                 return null;
             }
-            const { data: { user } } = await sb.auth.getUser();
+            const { data: { user }, error } = await sb.auth.getUser();
+            if (error || !user) {
+                window.location.href = "login.html";
+                return null;
+            }
             return user;
         }
 
@@ -37,7 +41,7 @@
 
             const passaporte = usuario.user_metadata?.passaporte || usuario.email;
 
-            const { data: ponto } = await sb
+            const { data: ponto, error: errPonto } = await sb
                 .from("pontos")
                 .select("equipe_id, status")
                 .eq("passaporte", passaporte)
@@ -46,18 +50,18 @@
                 .limit(1)
                 .single();
 
-            if (!ponto || !ponto.equipe_id) {
+            if (errPonto || !ponto || !ponto.equipe_id) {
                 mostrarSemEquipe();
                 return;
             }
 
-            const { data: equipe } = await sb
+            const { data: equipe, error: errEquipe } = await sb
                 .from("equipes")
                 .select("*")
                 .eq("id", ponto.equipe_id)
                 .single();
 
-            if (!equipe) {
+            if (errEquipe || !equipe) {
                 mostrarSemEquipe();
                 return;
             }
@@ -71,65 +75,64 @@
                 <div class="aviso-caixa">
                     <i class="fa-solid fa-lock"></i>
                     <h3>Nenhum serviço ativo</h3>
-                    <p>Inicie sua jornada no Controle de Ponto para ser alocado em uma equipe.</p>
-                    <a href="ponto.html" class="botao-primario">Ir ao Controle de Ponto</a>
+                    <p>Inicie sua jornada no Controle de Ponto para ver sua equipe.</p>
+                    <a href="bate-ponto.html" class="botao-primario">Ir ao Controle de Ponto</a>
                 </div>
             `;
         }
-
-        function renderizarEquipe(eu, passaporte) {
-            // Define posição
+                function renderizarEquipe(eu, passaporte) {
             let posicao = "Piloto";
-            if (eu.membros) {
+            if (eu.membros && Array.isArray(eu.membros)) {
                 const idx = eu.membros.indexOf(passaporte);
                 if (idx > 0) posicao = `Assento ${idx + 1}`;
             }
 
-            // Área de atuação
-            let area = "";
+            let area = "Área Operacional";
             if (eu.tipo === "rota1" || eu.tipo === "rota2") area = "Farm de Lockpick";
             else if (eu.tipo === "rota3" || eu.tipo === "rota4") area = "Farm de Flipper";
             else if (eu.tipo === "vendas1") area = "Vendas de Lockpick";
             else if (eu.tipo === "vendas2") area = "Vendas de Flipper";
             else if (eu.tipo === "apoio1" || eu.tipo === "apoio2") area = "Segurança / Apoio";
-            else area = "Área Operacional";
 
-            // Nome amigável
             const nomes = {
                 rota1: "ROTA 1", rota2: "ROTA 2", rota3: "ROTA 3", rota4: "ROTA 4",
-                vendas1: "VENDAS P1", vendas2: "VENDAS P2", apoio1: "APOIO 1", apoio2: "APOIO 2"
+                vendas1: "VENDAS P1", vendas2: "VENDAS P2",
+                apoio1: "APOIO 1", apoio2: "APOIO 2"
             };
-            const nomeEquipe = nomes[eu.tipo] || eu.nome || "Equipe";
+            const nomeEquipe = nomes[eu.tipo] || eu.nome || "EQUIPE";
+            const etiquetaEscala = nomeEquipe.split(' ').pop();
 
-            // Integrantes
-            const listaMembros = eu.membros?.length 
-                ? eu.membros.map(m => `<div class="membro-item"><i class="fa-solid fa-user"></i> ${m === passaporte ? '<strong>'+(usuario.user_metadata?.nome || 'Você')+'</strong>' : m}</div>`).join("")
+            const listaMembros = eu.membros?.length
+                ? eu.membros.map(m => {
+                    const nomeExib = m === passaporte 
+                        ? `<strong>${usuario.user_metadata?.nome || 'Você'}</strong>` 
+                        : m;
+                    return `<div class="membro-item"><i class="fa-solid fa-user"></i> ${nomeExib}</div>`;
+                  }).join("")
                 : `<div class="membro-item"><i class="fa-solid fa-user-check"></i> ${usuario.user_metadata?.nome || 'Você'}</div>`;
 
             document.getElementById("conteudo").innerHTML = `
                 <div class="cabecalho-equipe">
-                    <p class="escala-label">ESCALA ATUAL · ${nomeEquipe.split(' ').pop()}</p>
+                    <p class="escala-label">ESCALA ATUAL · ${etiquetaEscala}</p>
                     <h1 class="nome-equipe">${nomeEquipe}</h1>
                     <p class="subtitulo">Veja sua alocação atual</p>
                 </div>
 
                 <div class="card-principal">
-                    <!-- Missão / Área -->
                     <div class="card-bloco">
                         <div class="bloco-titulo">
-                            <i class="fa-solid fa-location-dot"></i>
-                            MISSÃO / ÁREA
+                            <i class="fa-solid fa-location-dot"></i> MISSÃO / ÁREA
                         </div>
-                        <div class="bloco-conteudo">
-                            <p class="dado-principal">${area}</p>
-                        </div>
+                        <p class="dado-principal">${area}</p>
                     </div>
 
-                    <!-- Minha Posição & Função -->
                     <div class="linha-dupla">
                         <div class="card-bloco meio">
                             <p class="rotulo">MINHA POSIÇÃO</p>
-                            <div class="posicao-caixa">${eu.tipo?.startsWith('vendas') ? nomeEquipe.split(' ').pop() : posicao}</div>
+                            ${eu.tipo?.startsWith('vendas')
+                                ? `<div class="posicao-caixa">${etiquetaEscala}</div>`
+                                : `<p class="dado-principal">${posicao}</p>`
+                            }
                         </div>
                         <div class="card-bloco meio">
                             <p class="rotulo">FUNÇÃO</p>
@@ -137,25 +140,20 @@
                         </div>
                     </div>
 
-                    <!-- Veículo -->
                     <div class="card-bloco">
                         <p class="rotulo">VEÍCULO</p>
                         <p class="dado-principal">N/A</p>
                     </div>
 
-                    <!-- Integrantes -->
                     <div class="card-bloco">
                         <div class="bloco-titulo">
-                            <i class="fa-solid fa-users"></i>
-                            INTEGRANTES
+                            <i class="fa-solid fa-users"></i> INTEGRANTES
                         </div>
-                        <div class="bloco-conteudo">
-                            ${listaMembros}
-                        </div>
+                        ${listaMembros}
                     </div>
                 </div>
 
-                <button class="botao-trocar" onclick="window.location.href='trocar-equipe.html'">
+                <button class="botao-trocar" onclick="alert('Funcionalidade em breve!')">
                     <i class="fa-solid fa-arrow-right-arrow-left"></i> Trocar de Equipe
                 </button>
             `;
@@ -163,258 +161,99 @@
 
         window.onload = carregarEquipe;
     </script>
-
-    <style>
+        <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+            margin: 0; padding: 0; box-sizing: border-box;
             font-family: 'Inter', sans-serif;
         }
-
         :root {
-            --fundo: #000000;
-            --card: #12121f;
-            --card-claro: #1a1a2e;
-            --destaque: #3b82f6;
-            --amarelo: #f59e0b;
-            --texto: #ffffff;
-            --texto-fraco: #94a3b8;
+            --fundo: #000; --card: #12121f; --claro: #1a1a2e;
+            --azul: #3b82f6; --ouro: #f59e0b;
+            --texto: #fff; --cinza: #94a3b8;
         }
-
         body {
-            background-color: var(--fundo);
-            color: var(--texto);
+            background: var(--fundo); color: var(--texto);
             min-height: 100vh;
             padding: 24px 20px 100px;
         }
+        a { text-decoration: none; color: inherit; }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
+        .cabecalho-equipe { margin-bottom: 28px; }
+        .escala-label { color: var(--azul); font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+        .nome-equipe { font-size: 42px; font-weight: 700; line-height: 1.1; margin-bottom: 6px; }
+        .subtitulo { color: var(--cinza); font-size: 15px; }
 
-        /* Cabeçalho */
-        .cabecalho-equipe {
-            margin-bottom: 28px;
-        }
-
-        .escala-label {
-            color: var(--destaque);
-            font-size: 15px;
-            font-weight: 600;
-            margin-bottom: 8px;
-        }
-
-        .nome-equipe {
-            font-size: 42px;
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 6px;
-        }
-
-        .subtitulo {
-            color: var(--texto-fraco);
-            font-size: 15px;
-        }
-
-        /* Card Principal */
         .card-principal {
-            background-color: var(--card);
-            border-radius: 20px;
-            padding: 24px;
-            margin-bottom: 28px;
-            border: 1px solid rgba(59, 130, 246, 0.15);
+            background: var(--card); border-radius: 20px; padding: 24px;
+            margin-bottom: 28px; border: 1px solid rgba(59,130,246,.15);
         }
-
-        /* Blocos internos */
         .card-bloco {
-            background-color: var(--card-claro);
-            border-radius: 14px;
-            padding: 18px;
+            background: var(--claro); border-radius: 14px; padding: 18px;
             margin-bottom: 14px;
         }
-
-        .card-bloco:last-child {
-            margin-bottom: 0;
-        }
-
-        .linha-dupla {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-            margin-bottom: 14px;
-        }
-
-        .card-bloco.meio {
-            margin-bottom: 0;
-        }
-
+        .linha-dupla { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
         .bloco-titulo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--texto-fraco);
-            font-size: 13px;
-            font-weight: 600;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
+            display: flex; align-items: center; gap: 8px;
+            color: var(--cinza); font-size: 13px; font-weight: 600;
+            text-transform: uppercase; margin-bottom: 10px;
         }
-
         .rotulo {
-            color: var(--texto-fraco);
-            font-size: 13px;
-            font-weight: 500;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--cinza); font-size: 13px; font-weight: 500;
+            text-transform: uppercase; margin-bottom: 6px;
         }
-
-        .dado-principal {
-            font-size: 20px;
-            font-weight: 700;
-        }
-
+        .dado-principal { font-size: 20px; font-weight: 700; }
         .posicao-caixa {
-            background-color: var(--destaque);
-            color: white;
-            font-size: 22px;
-            font-weight: 700;
-            width: 72px;
-            height: 72px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            background: var(--azul); color: white; font-size: 22px; font-weight: 700;
+            width: 72px; height: 72px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
         }
-
         .membro-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 0;
-            font-size: 16px;
+            display: flex; align-items: center; gap: 10px;
+            padding: 8px 0; font-size: 16px;
         }
+        .membro-item strong { color: var(--azul); }
 
-        .membro-item strong {
-            color: var(--destaque);
-        }
-
-        /* Botão Trocar */
         .botao-trocar {
-            width: 100%;
-            background: linear-gradient(90deg, #f59e0b, #d97706);
-            border: none;
-            border-radius: 14px;
-            padding: 18px;
-            color: white;
-            font-size: 17px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 16px rgba(245, 158, 11, 0.25);
+            width: 100%; background: linear-gradient(90deg, #f59e0b, #d97706);
+            border: none; border-radius: 14px; padding: 18px; color: white;
+            font-size: 17px; font-weight: 600; display: flex;
+            align-items: center; justify-content: center; gap: 10px;
+            cursor: pointer; box-shadow: 0 4px 16px rgba(245,158,11,.25);
         }
 
-        /* Aviso sem equipe */
-        .aviso-caixa {
-            text-align: center;
-            padding: 48px 24px;
-        }
-
-        .aviso-caixa i {
-            font-size: 48px;
-            color: var(--destaque);
-            margin-bottom: 16px;
-        }
-
-        .aviso-caixa h3 {
-            font-size: 20px;
-            margin-bottom: 8px;
-        }
-
-        .aviso-caixa p {
-            color: var(--texto-fraco);
-            margin-bottom: 24px;
-        }
-
+        .aviso-caixa { text-align: center; padding: 48px 24px; }
+        .aviso-caixa i { font-size: 48px; color: var(--azul); margin-bottom: 16px; }
+        .aviso-caixa h3 { font-size: 20px; margin-bottom: 8px; }
+        .aviso-caixa p { color: var(--cinza); margin-bottom: 24px; }
         .botao-primario {
-            background-color: var(--destaque);
-            padding: 14px 28px;
-            border-radius: 12px;
-            font-weight: 600;
-            display: inline-block;
+            background: var(--azul); padding: 14px 28px; border-radius: 12px;
+            font-weight: 600; display: inline-block;
         }
-                /* Navegação Inferior */
+
         .navegacao {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: rgba(0,0,0,0.92);
-            backdrop-filter: blur(12px);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 8px 24px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            z-index: 99;
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: rgba(0,0,0,.92); backdrop-filter: blur(12px);
+            display: flex; justify-content: space-around;
+            padding: 12px 8px 24px; border-top: 1px solid rgba(255,255,255,.08);
         }
-
         .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: var(--texto-fraco);
-            font-size: 12px;
-            padding: 8px 12px;
-            border-radius: 10px;
-            transition: all 0.2s;
+            display: flex; flex-direction: column; align-items: center;
+            gap: 4px; color: var(--cinza); font-size: 12px;
+            padding: 8px 12px; border-radius: 10px;
         }
-
-        .nav-item.ativo {
-            color: var(--destaque);
-        }
-
-        .nav-item i {
-            font-size: 20px;
-        }
-
-        .nav-item:hover {
-            background-color: rgba(59, 130, 246, 0.1);
-        }
+        .nav-item.ativo { color: var(--azul); }
+        .nav-item i { font-size: 20px; }
     </style>
 </head>
 <body>
-
     <div id="conteudo"></div>
 
-    <!-- Navegação Inferior -->
     <nav class="navegacao">
-        <a href="painel.html" class="nav-item">
-            <i class="fa-solid fa-house"></i>
-            <span>Painel</span>
-        </a>
-        <a href="ponto.html" class="nav-item">
-            <i class="fa-solid fa-clock"></i>
-            <span>Ponto</span>
-        </a>
-        <a href="equipe.html" class="nav-item ativo">
-            <i class="fa-solid fa-users"></i>
-            <span>Equipe</span>
-        </a>
-        <a href="tickets.html" class="nav-item">
-            <i class="fa-solid fa-file-lines"></i>
-            <span>Tickets</span>
-        </a>
-        <a href="mais.html" class="nav-item">
-            <i class="fa-solid fa-ellipsis"></i>
-            <span>Mais</span>
-        </a>
+        <a href="painel.html" class="nav-item"><i class="fa-solid fa-house"></i><span>Painel</span></a>
+        <a href="bate-ponto.html" class="nav-item"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="nav-item ativo"><i class="fa-solid fa-users"></i><span>Equipe</span></a>
+        <a href="tickets.html" class="nav-item"><i class="fa-solid fa-file-lines"></i><span>Tickets</span></a>
+        <a href="mais.html" class="nav-item"><i class="fa-solid fa-ellipsis"></i><span>Mais</span></a>
     </nav>
-
 </body>
 </html>
