@@ -229,12 +229,16 @@ function esc(t){
 }
 function dois(n){ return String(n).padStart(2, '0'); }
 
-function grupoDe(tipo){
-  const t = String(tipo || '').toLowerCase();
+/* identifica o grupo pela coluna tipo; se não reconhecer, pela funcao */
+function grupoDe(eq){
+  const t = String(eq.tipo || '').toLowerCase();
+  const f = String(eq.funcao || '').toLowerCase();
   if(t.startsWith('rota')) return 'rota';
   if(t.startsWith('venda')) return 'vendas';
   if(t.startsWith('apoio')) return 'apoio';
-  return 'outro';
+  if(/seguran|apoio/.test(f)) return 'apoio';
+  if(/venda/.test(f)) return 'vendas';
+  return 'rota';
 }
 function formatarFuncao(f){
   if(!f) return '';
@@ -266,7 +270,7 @@ function posicaoFixa(eq, grupo){
 /* rotas: P1..P4 pela ordem de entrada | vendas/apoio: posição fixa */
 function minhaPosicao(eq, grupo, idx){
   if(grupo === 'rota') return idx >= 0 ? 'P' + (idx + 1) : 'N/A';
-  return posicaoFixa(eq, grupo) || 'N/A';
+  return posicaoFixa(eq, grupo) || (idx >= 0 ? 'P' + (idx + 1) : 'N/A');
 }
 function tsEntrada(v){
   const d = Date.parse(v);
@@ -334,7 +338,7 @@ function telaErro(msg){
 }
 function telaEquipe(eq, integrantes){
   estado = 'equipe';
-  const grupo = grupoDe(eq.tipo);
+  const grupo = grupoDe(eq);
   const idx = integrantes.findIndex(i => i.eu);
   const n = integrantes.length;
   const vagas = (eq.limite_vagas != null)
