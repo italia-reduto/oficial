@@ -43,7 +43,7 @@
   }
   .hero-topo{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
   .escala{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--azul)}
-  .nome-equipe{font-size:36px;font-weight:800;line-height:1.05;margin-top:8px;word-break:break-word}
+  .nome-equipe{font-size:34px;font-weight:800;line-height:1.05;margin-top:8px;word-break:break-word}
   .sub{font-size:14px;color:var(--mut);margin-top:8px}
 
   .selo{
@@ -74,16 +74,10 @@
 
   .posicao{
     display:inline-flex;align-items:center;justify-content:center;
-    min-width:64px;height:48px;padding:0 14px;border-radius:12px;
+    min-height:44px;padding:0 14px;border-radius:12px;
     background:linear-gradient(135deg,#3b82f6,#1d4ed8);
-    font-size:18px;font-weight:800;color:#fff;
+    font-size:16px;font-weight:800;color:#fff;white-space:nowrap;
   }
-
-  .lista{list-style:none;display:flex;flex-direction:column;gap:8px}
-  .lista li{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:500;padding:10px 12px;border-radius:12px;background:#0b0f16;border:1px solid var(--line)}
-  .lista li i{color:var(--azul);width:18px;text-align:center}
-  .lista li.eu{border-color:var(--azul)}
-  .lista li .voce{margin-left:auto;font-size:11px;font-weight:700;color:var(--azul)}
 
   .rodape{
     position:relative;z-index:1;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
@@ -91,6 +85,36 @@
     font-size:12px;color:var(--mut);
   }
   .rodape i{margin-right:6px}
+
+  /* ---------- INTEGRANTES ---------- */
+  .integrantes{
+    margin-top:14px;
+    background:linear-gradient(160deg,#0d1b36 0%,#0b1220 50%,#0a0d13 100%);
+    border:1px solid #1b2a47;border-radius:24px;padding:18px 14px 14px;
+  }
+  .integ-topo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 4px 14px}
+  .integ-titulo{font-size:22px;font-weight:800}
+  .pill{
+    font-size:11px;font-weight:700;letter-spacing:.08em;white-space:nowrap;
+    padding:8px 12px;border-radius:999px;color:var(--azul);
+    background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.35);
+  }
+  .integ-lista{display:flex;flex-direction:column;gap:10px}
+  .integ{
+    display:flex;align-items:center;gap:14px;
+    background:var(--inner);border:1px solid var(--line);border-radius:16px;padding:12px;
+  }
+  .integ.eu{border-color:var(--azul);background:rgba(59,130,246,.08)}
+  .integ-ic{
+    width:48px;height:48px;flex:0 0 48px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(59,130,246,.14);border:1px solid rgba(59,130,246,.28);
+    color:#93c5fd;font-size:16px;font-weight:800;
+  }
+  .integ-info{min-width:0;flex:1}
+  .integ-nome{font-size:16px;font-weight:700;word-break:break-word}
+  .integ-sub{font-size:13px;color:var(--mut);margin-top:3px;font-weight:500}
+  .voce{font-size:12px;font-weight:700;color:var(--azul);letter-spacing:.06em}
 
   /* ---------- BOTÃO / ESTADOS ---------- */
   .btn{
@@ -137,15 +161,13 @@
   <a href="painel.html"><i class="fa-solid fa-house"></i><span>Painel</span></a>
   <a href="bate-ponto.html"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
   <a href="equipe.html" class="ativo"><i class="fa-solid fa-users"></i><span>Equipe</span></a>
-  <a href="tickets.html"><i class="fa-solid fa-ticket"></i><span>Tickets</span></a>
+  <a href="tickets.html"><i class="fa-solid fa-file-lines"></i><span>Tickets</span></a>
   <a href="mais.html"><i class="fa-solid fa-bars"></i><span>Mais</span></a>
 </nav>
-
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
-const ESCALA = 'P2';
 const INTERVALO_ATUALIZACAO = 30000;
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -156,6 +178,7 @@ let ponto = null;
 let estado = 'carregando';
 let assinatura = null;
 let trocando = false;
+let membrosSincronizados = null;
 
 /* ---------- SESSÃO (só vai ao login se REALMENTE não houver sessão) ---------- */
 function achar(o, d){
@@ -204,18 +227,40 @@ function lerSessao(){
 function esc(t){
   return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-function formatarTipo(tipo){
-  if(!tipo) return 'N/A';
-  const m = String(tipo).match(/^([a-zA-ZÀ-ú]+)(\d+)$/);
-  if(!m) return tipo;
-  return m[1].charAt(0).toUpperCase() + m[1].slice(1) + ' ' + m[2];
-}
 function dois(n){ return String(n).padStart(2, '0'); }
-function horaEntrada(){
-  if(!ponto || !ponto.entrada) return '--:--';
-  const d = new Date(ponto.entrada);
+
+function grupoDe(tipo){
+  const t = String(tipo || '').toLowerCase();
+  if(t.startsWith('rota')) return 'rota';
+  if(t.startsWith('venda')) return 'vendas';
+  if(t.startsWith('apoio')) return 'apoio';
+  return 'outro';
+}
+function formatarFuncao(f){
+  if(!f) return '';
+  const s = String(f).trim();
+  if(/seguran/i.test(s)) return 'APOIO';
+  const palavras = s.split(/\s+/)
+    .filter(p => !/^(de|da|do|das|dos)$/i.test(p))
+    .map(p => /^venda$/i.test(p) ? 'VENDAS' : p);
+  return palavras.join(' ').toUpperCase();
+}
+function minhaPosicao(grupo, idx){
+  if(idx < 0) return 'N/A';
+  if(grupo === 'rota') return ['Piloto', 'Assento 2', 'Assento 3', 'Assento 4'][idx] || ('Assento ' + (idx + 1));
+  return 'P' + (idx + 1);
+}
+function tsEntrada(v){
+  const d = Date.parse(v);
+  if(!isNaN(d)) return d;
+  const m = String(v || '').match(/(\d{1,2}):(\d{2})/);
+  return m ? (parseInt(m[1], 10) * 60 + parseInt(m[2], 10)) * 60000 : Infinity;
+}
+function horaDe(v){
+  if(!v) return '--:--';
+  const d = new Date(v);
   if(!isNaN(d)) return dois(d.getHours()) + ':' + dois(d.getMinutes());
-  const m = String(ponto.entrada).match(/(\d{1,2}):(\d{2})/);
+  const m = String(v).match(/(\d{1,2}):(\d{2})/);
   return m ? dois(m[1]) + ':' + m[2] : '--:--';
 }
 function msEmServico(){
@@ -235,8 +280,7 @@ function formatarDuracao(ms){
   return dois(Math.floor(s / 3600)) + ':' + dois(Math.floor((s % 3600) / 60)) + ':' + dois(s % 60);
 }
 function emPausa(){
-  if(!ponto) return false;
-  return !!ponto.pausa_inicio && !ponto.pausa_fim;
+  return !!(ponto && ponto.pausa_inicio && !ponto.pausa_fim);
 }
 function textoSync(){
   const d = new Date();
@@ -270,28 +314,41 @@ function telaErro(msg){
       <button class="btn" onclick="iniciar()"><i class="fa-solid fa-rotate"></i> Tentar novamente</button>
     </div>`;
 }
-function telaEquipe(eq, integrantes, cargo){
+function telaEquipe(eq, integrantes){
   estado = 'equipe';
-  const lista = integrantes.length
-    ? integrantes.map(i => `
-        <li class="${i.eu ? 'eu' : ''}">
-          <i class="fa-solid fa-user"></i>
-          <span>${esc(i.nome)}</span>
-          ${i.eu ? '<span class="voce">VOCÊ</span>' : ''}
-        </li>`).join('')
-    : '<li><i class="fa-solid fa-user"></i><span>Nenhum integrante</span></li>';
+  const grupo = grupoDe(eq.tipo);
+  const idx = integrantes.findIndex(i => i.eu);
+  const n = integrantes.length;
+  const vagas = (eq.limite_vagas != null)
+    ? n + ' de ' + eq.limite_vagas + ' vagas'
+    : n + (n === 1 ? ' vaga ocupada' : ' vagas ocupadas');
+  const nomeGrande = formatarFuncao(eq.funcao) || String(eq.nome || 'EQUIPE').toUpperCase();
+  const escala = eq.nome ? 'ESCALA ATUAL · ' + esc(eq.nome) : 'ESCALA ATUAL';
 
-  const pausa = emPausa();
-  const selo = pausa
+  const selo = emPausa()
     ? '<div class="selo pausa"><i class="fa-solid fa-circle"></i> EM PAUSA</div>'
     : '<div class="selo"><i class="fa-solid fa-circle"></i> EM SERVIÇO</div>';
+
+  const itens = integrantes.map((i, k) => {
+    const desde = (i.entrada && horaDe(i.entrada) !== '--:--') ? ' · desde ' + horaDe(i.entrada) : '';
+    const icone = (grupo === 'rota') ? 'P' + (k + 1) : '<i class="fa-solid fa-user"></i>';
+    return `
+      <div class="integ ${i.eu ? 'eu' : ''}">
+        <div class="integ-ic">${icone}</div>
+        <div class="integ-info">
+          <div class="integ-nome">${esc(i.nome)}</div>
+          <div class="integ-sub">Passaporte ${esc(i.passaporte)}${esc(desde)}</div>
+        </div>
+        ${i.eu ? '<div class="voce">VOCÊ</div>' : ''}
+      </div>`;
+  }).join('');
 
   app.innerHTML = `
     <div class="hero">
       <div class="hero-topo">
         <div>
-          <div class="escala">ESCALA ATUAL · ${esc(ESCALA)}</div>
-          <div class="nome-equipe">${esc(eq.nome || 'Equipe')}</div>
+          <div class="escala">${escala}</div>
+          <div class="nome-equipe">${esc(nomeGrande)}</div>
           <div class="sub">Veja sua alocação atual</div>
         </div>
         ${selo}
@@ -311,18 +368,18 @@ function telaEquipe(eq, integrantes, cargo){
         <div class="grid2">
           <div class="bloco">
             <div class="rotulo"><i class="fa-solid fa-flag"></i> MINHA POSIÇÃO</div>
-            <div class="posicao">${esc(formatarTipo(eq.tipo))}</div>
+            <div class="posicao">${esc(minhaPosicao(grupo, idx))}</div>
           </div>
           <div class="bloco">
-            <div class="rotulo"><i class="fa-solid fa-id-badge"></i> FUNÇÃO</div>
-            <div class="valor">${esc(cargo || 'N/A')}</div>
+            <div class="rotulo"><i class="fa-solid fa-briefcase"></i> FUNÇÃO</div>
+            <div class="valor">${esc(eq.funcao || 'N/A')}</div>
           </div>
         </div>
 
         <div class="grid2">
           <div class="bloco">
             <div class="rotulo"><i class="fa-solid fa-right-to-bracket"></i> MINHA ENTRADA</div>
-            <div class="valor grande">${esc(horaEntrada())}</div>
+            <div class="valor grande">${esc(horaDe(ponto.entrada))}</div>
           </div>
           <div class="bloco">
             <div class="rotulo"><i class="fa-solid fa-stopwatch"></i> EM SERVIÇO HÁ</div>
@@ -330,14 +387,15 @@ function telaEquipe(eq, integrantes, cargo){
           </div>
         </div>
 
-        <div class="bloco">
-          <div class="rotulo"><i class="fa-solid fa-car"></i> VEÍCULO</div>
-          <div class="valor">N/A</div>
-        </div>
-
-        <div class="bloco">
-          <div class="rotulo"><i class="fa-solid fa-users"></i> INTEGRANTES</div>
-          <ul class="lista">${lista}</ul>
+        <div class="grid2">
+          <div class="bloco">
+            <div class="rotulo"><i class="fa-solid fa-user-group"></i> LIMITE DE VAGAS</div>
+            <div class="valor">${esc(vagas)}</div>
+          </div>
+          <div class="bloco">
+            <div class="rotulo"><i class="fa-solid fa-car"></i> VEÍCULO</div>
+            <div class="valor">N/A</div>
+          </div>
         </div>
       </div>
 
@@ -345,6 +403,14 @@ function telaEquipe(eq, integrantes, cargo){
         <span><i class="fa-solid fa-arrows-rotate"></i>Atualização automática</span>
         <span id="sync">${esc(textoSync())}</span>
       </div>
+    </div>
+
+    <div class="integrantes">
+      <div class="integ-topo">
+        <div class="integ-titulo">Integrantes</div>
+        <div class="pill">${n} ${n === 1 ? 'INTEGRANTE' : 'INTEGRANTES'}</div>
+      </div>
+      <div class="integ-lista">${itens}</div>
     </div>
 
     <button class="btn" id="btnTrocar"><i class="fa-solid fa-shuffle"></i> Trocar de Equipe</button>
@@ -358,8 +424,7 @@ function aviso(msg, ok){
   el.className = 'aviso' + (ok ? ' ok' : '');
   el.style.display = 'block';
 }
-
-/* ---------- DADOS ---------- */
+  /* ---------- DADOS ---------- */
 async function buscarPontoAtivo(passaporte){
   const { data, error } = await sb.from('pontos').select('*')
     .eq('passaporte', passaporte)
@@ -394,32 +459,61 @@ async function salvarEquipeNoPonto(equipeId){
   ponto.equipe_id = equipeId;
 }
 
-async function carregarIntegrantes(eq){
-  const mapa = new Map();
-  const meuPass = String(sessao.passaporte);
-
-  const { data: ativos } = await sb.from('pontos').select('passaporte,nome')
-    .eq('equipe_id', eq.id).is('saida', null);
-  (ativos || []).forEach(p => mapa.set(String(p.passaporte), p.nome || String(p.passaporte)));
-
-  const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
-  if(membros.length){
-    const { data: us } = await sb.from('usuarios').select('passaporte,nome').in('passaporte', membros);
-    const nomes = {};
-    (us || []).forEach(u => { nomes[String(u.passaporte)] = u.nome; });
-    membros.forEach(m => { if(!mapa.has(m)) mapa.set(m, nomes[m] || m); });
-  }
-  if(!mapa.has(meuPass)) mapa.set(meuPass, sessao.nome || meuPass);
-
-  return Array.from(mapa, ([pass, nome]) => ({ nome, eu: pass === meuPass }));
+/* mantém equipes.membros[] coerente (tenta, sem travar a tela se falhar) */
+async function sincronizarMembros(equipeId, antigaId){
+  const meu = String(sessao.passaporte);
+  try{
+    if(antigaId){
+      const { data } = await sb.from('equipes').select('id,membros').eq('id', antigaId).limit(1);
+      if(data && data[0] && Array.isArray(data[0].membros)){
+        const novo = data[0].membros.filter(m => String(m) !== meu);
+        if(novo.length !== data[0].membros.length){
+          await sb.from('equipes').update({ membros: novo }).eq('id', antigaId);
+        }
+      }
+    }
+    const { data: d2 } = await sb.from('equipes').select('id,membros').eq('id', equipeId).limit(1);
+    if(d2 && d2[0]){
+      const atual = Array.isArray(d2[0].membros) ? d2[0].membros.slice() : [];
+      if(!atual.some(m => String(m) === meu)){
+        const numerico = atual.length && typeof atual[0] === 'number';
+        atual.push(numerico ? Number(meu) : meu);
+        await sb.from('equipes').update({ membros: atual }).eq('id', equipeId);
+      }
+    }
+  }catch(e){}
 }
 
-async function buscarCargo(){
-  try{
-    const { data } = await sb.from('usuarios').select('cargo').eq('passaporte', sessao.passaporte).limit(1);
-    if(data && data.length && data[0].cargo) return data[0].cargo;
-  }catch(e){}
-  return sessao.cargo || null;
+async function carregarIntegrantes(eq){
+  const meuPass = String(sessao.passaporte);
+  const { data: ativos, error } = await sb.from('pontos').select('passaporte,nome,entrada,equipe_id').is('saida', null);
+  if(error) throw error;
+  const todos = ativos || [];
+
+  const mapa = new Map();
+  todos.filter(p => String(p.equipe_id) === String(eq.id)).forEach(p => {
+    mapa.set(String(p.passaporte), { passaporte: String(p.passaporte), nome: p.nome || String(p.passaporte), entrada: p.entrada });
+  });
+
+  const emOutra = new Set(todos
+    .filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id))
+    .map(p => String(p.passaporte)));
+  const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
+  const faltam = membros.filter(m => !mapa.has(m) && !emOutra.has(m));
+  if(faltam.length){
+    const { data: us } = await sb.from('usuarios').select('passaporte,nome').in('passaporte', faltam);
+    const nomes = {};
+    (us || []).forEach(u => { nomes[String(u.passaporte)] = u.nome; });
+    faltam.forEach(m => mapa.set(m, { passaporte: m, nome: nomes[m] || m, entrada: null }));
+  }
+
+  if(!mapa.has(meuPass)){
+    mapa.set(meuPass, { passaporte: meuPass, nome: ponto.nome || sessao.nome || meuPass, entrada: ponto.entrada });
+  }
+
+  const lista = Array.from(mapa.values()).map(i => ({ ...i, eu: i.passaporte === meuPass }));
+  lista.sort((a, b) => tsEntrada(a.entrada) - tsEntrada(b.entrada));
+  return lista;
 }
 
 async function carregarEDesenhar(forcar){
@@ -427,11 +521,19 @@ async function carregarEDesenhar(forcar){
   if(error) throw error;
   if(!data || !data.length){ telaErro('Equipe não encontrada.'); return; }
   const eq = data[0];
-  const [integrantes, cargo] = await Promise.all([carregarIntegrantes(eq), buscarCargo()]);
-  const sig = JSON.stringify([eq, integrantes, cargo, ponto.entrada, ponto.pausa_inicio, ponto.pausa_fim, ponto.status]);
+
+  const meu = String(sessao.passaporte);
+  const temEu = Array.isArray(eq.membros) && eq.membros.some(m => String(m) === meu);
+  if(!temEu && membrosSincronizados !== String(eq.id)){
+    membrosSincronizados = String(eq.id);
+    await sincronizarMembros(eq.id, null);
+  }
+
+  const integrantes = await carregarIntegrantes(eq);
+  const sig = JSON.stringify([eq, integrantes, ponto.entrada, ponto.pausa_inicio, ponto.pausa_fim, ponto.status]);
   if(forcar || sig !== assinatura || estado !== 'equipe'){
     assinatura = sig;
-    telaEquipe(eq, integrantes, cargo);
+    telaEquipe(eq, integrantes);
   }
   const s = document.getElementById('sync');
   if(s) s.textContent = textoSync();
@@ -443,7 +545,8 @@ async function trocarEquipe(){
   btn.disabled = true;
   btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Trocando...';
   try{
-    const nova = await sortearEquipe(ponto.equipe_id);
+    const antiga = ponto.equipe_id;
+    const nova = await sortearEquipe(antiga);
     if(!nova){
       btn.disabled = false;
       btn.innerHTML = '<i class="fa-solid fa-shuffle"></i> Trocar de Equipe';
@@ -452,8 +555,10 @@ async function trocarEquipe(){
       return;
     }
     await salvarEquipeNoPonto(nova.id);
+    await sincronizarMembros(nova.id, antiga);
+    membrosSincronizados = String(nova.id);
     await carregarEDesenhar(true);
-    aviso('Equipe alterada para ' + (nova.nome || 'nova equipe') + '.', true);
+    aviso('Equipe alterada.', true);
   }catch(e){
     console.error(e);
     const b = document.getElementById('btnTrocar');
@@ -504,6 +609,8 @@ async function iniciar(){
       const eq = await sortearEquipe(null);
       if(!eq){ telaErro('Não há equipes com vaga no momento.'); return; }
       await salvarEquipeNoPonto(eq.id);
+      await sincronizarMembros(eq.id, null);
+      membrosSincronizados = String(eq.id);
     }
     await carregarEDesenhar(true);
   }catch(e){
