@@ -138,6 +138,43 @@
   .aviso{margin-top:12px;font-size:13px;color:#fca5a5;text-align:center;display:none}
   .aviso.ok{color:#86efac}
 
+  /* ---------- MODAL TROCAR EQUIPE ---------- */
+  .fundo-modal{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;display:none;
+  }
+  .fundo-modal.aberto{display:flex}
+  .modal{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:20px;width:100%;max-width:420px;
+    padding:24px;animation:aparecer .2s ease-out;
+  }
+  @keyframes aparecer{
+    from{opacity:0;transform:scale(.95)}
+    to{opacity:1;transform:scale(1)}
+  }
+  .modal h3{font-size:18px;font-weight:700;margin-bottom:10px}
+  .modal p{font-size:14px;color:var(--mut);line-height:1.5;margin-bottom:20px}
+  .modal-botoes{display:flex;gap:10px;flex-wrap:wrap}
+  .modal-botao{
+    flex:1;min-width:120px;padding:12px 16px;border-radius:12px;border:none;
+    font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+  }
+  .modal-cancelar{background:var(--inner);color:var(--txt)}
+  .modal-confirmar{background:var(--amarelo);color:#111}
+
+  .lista-equipes{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;margin:10px -4px;padding:10px 4px}
+  .card-equipe{
+    background:var(--inner);border:1px solid var(--line);border-radius:14px;padding:14px;
+    cursor:pointer;transition:all .15s
+  }
+  .card-equipe:hover{border-color:var(--azul);background:rgba(59,130,246,.06)}
+  .card-equipe h4{font-size:15px;font-weight:700;margin-bottom:4px}
+  .card-equipe small{font-size:12px;color:var(--mut)}
+  .card-equipe .vagas{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:var(--azul)}
+
   /* ---------- NAVEGAÇÃO ---------- */
   .nav{
     position:fixed;left:0;right:0;bottom:0;
@@ -181,15 +218,43 @@
     .nav a.ativo:hover{color:var(--azul)}
     .integ:hover{border-color:#2c3a55}
     .integ.eu:hover{border-color:var(--azul)}
+    .card-equipe:hover{border-color:var(--azul);background:rgba(59,130,246,.06)}
   }
 </style>
 </head>
 <body>
-
-<div id="app">
+  <div id="app">
   <div class="estado">
     <div class="ic"><i class="fa-solid fa-spinner fa-spin"></i></div>
     <h2>Carregando</h2>
+  </div>
+</div>
+
+<!-- MODAL 1: CONFIRMAÇÃO INICIAL -->
+<div class="fundo-modal" id="modalConfirma">
+  <div class="modal">
+    <h3><i class="fa-solid fa-shuffle" style="color:var(--azul);margin-right:8px"></i>Trocar de Equipe</h3>
+    <p>Ao trocar, você sairá da sua equipe atual e será realocado para uma das equipes que ainda tem vagas disponíveis.<br><br>Isso pode alterar sua posição e área de atuação. Tem certeza que deseja continuar?</p>
+    <div class="modal-botoes">
+      <button class="modal-botao modal-cancelar" onclick="fecharModal('modalConfirma')">Cancelar</button>
+      <button class="modal-botao modal-confirmar" onclick="abrirListaEquipes()">Ver Equipes Disponíveis</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL 2: LISTA DE EQUIPES -->
+<div class="fundo-modal" id="modalEquipes">
+  <div class="modal">
+    <h3><i class="fa-solid fa-users" style="color:var(--azul);margin-right:8px"></i>Equipes Disponíveis</h3>
+    <p>Selecione abaixo para onde deseja ir:</p>
+    <div class="lista-equipes" id="listaEquipes">
+      <div style="text-align:center;padding:20px;color:var(--mut)">
+        <i class="fa-solid fa-spinner fa-spin"></i> Carregando...
+      </div>
+    </div>
+    <div class="modal-botoes" style="margin-top:10px">
+      <button class="modal-botao modal-cancelar" onclick="fecharModal('modalEquipes')">Cancelar</button>
+    </div>
   </div>
 </div>
 
@@ -215,8 +280,22 @@ let estado = 'carregando';
 let assinatura = null;
 let trocando = false;
 let membrosSincronizados = null;
+let equipesDisponiveis = [];
 
-/* ---------- SESSÃO (só vai ao login se REALMENTE não houver sessão) ---------- */
+/* ---------- FUNÇÕES DOS MODAIS ---------- */
+function fecharModal(id){
+  document.getElementById(id).classList.remove('aberto');
+}
+function abrirModal(id){
+  document.getElementById(id).classList.add('aberto');
+}
+function abrirListaEquipes(){
+  fecharModal('modalConfirma');
+  abrirModal('modalEquipes');
+  carregarEquipesDisponiveis();
+}
+
+/* ---------- SESSÃO ---------- */
 function achar(o, d){
   if(!o || typeof o !== 'object' || d > 3) return null;
   if(o.passaporte !== undefined && o.passaporte !== null && String(o.passaporte).trim() !== '') return o;
@@ -265,7 +344,6 @@ function esc(t){
 }
 function dois(n){ return String(n).padStart(2, '0'); }
 
-/* identifica o grupo pela coluna tipo; se não reconhecer, pela funcao */
 function grupoDe(eq){
   const t = String(eq.tipo || '').toLowerCase();
   const f = String(eq.funcao || '').toLowerCase();
@@ -286,7 +364,6 @@ function formatarFuncao(f){
   return palavras.join(' ').toUpperCase();
 }
 
-/* posição fixa: Apoio 1 e Vendas Lockpick = P1 | Apoio 2 e Vendas Flipper = P2 */
 function posicaoFixa(eq, grupo){
   const t = String(eq.tipo || '').toLowerCase();
   const f = String(eq.funcao || '').toLowerCase();
@@ -303,7 +380,6 @@ function posicaoFixa(eq, grupo){
   }
   return null;
 }
-/* rotas: P1..P4 pela ordem de entrada | vendas/apoio: posição fixa */
 function minhaPosicao(eq, grupo, idx){
   if(grupo === 'rota') return idx >= 0 ? 'P' + (idx + 1) : 'N/A';
   return posicaoFixa(eq, grupo) || (idx >= 0 ? 'P' + (idx + 1) : 'N/A');
@@ -343,6 +419,150 @@ function emPausa(){
 function textoSync(){
   const d = new Date();
   return 'Sincronizado ' + dois(d.getDate()) + '/' + dois(d.getMonth() + 1) + ', ' + dois(d.getHours()) + ':' + dois(d.getMinutes());
+}
+  /* ---------- CARREGAR EQUIPES DISPONÍVEIS ---------- */
+async function carregarEquipesDisponiveis(){
+  const lista = document.getElementById('listaEquipes');
+  try{
+    const { data: todas, error: e1 } = await sb.from('equipes').select('*').eq('ativo', true);
+    if(e1) throw e1;
+
+    const { data: ativos, error: e2 } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
+    if(e2) throw e2;
+
+    const cont = {};
+    (ativos || []).forEach(p => { cont[String(p.equipe_id)] = (cont[String(p.equipe_id)] || 0) + 1; });
+
+    equipesDisponiveis = (todas || []).filter(e => {
+      const lim = e.limite_vagas;
+      const atual = cont[String(e.id)] || 0;
+      return String(e.id) !== String(ponto.equipe_id) && (lim == null || atual < lim);
+    });
+
+    if(!equipesDisponiveis.length){
+      lista.innerHTML = `<div style="text-align:center;padding:30px;color:var(--mut)">
+        <i class="fa-solid fa-circle-info" style="font-size:24px;color:var(--azul)"></i>
+        <p style="margin-top:12px">Nenhuma outra equipe com vaga no momento.</p>
+      </div>`;
+      return;
+    }
+
+    lista.innerHTML = equipesDisponiveis.map(eq => {
+      const nome = formatarFuncao(eq.funcao) || String(eq.nome || 'EQUIPE').toUpperCase();
+      const atual = cont[String(eq.id)] || 0;
+      const vagas = eq.limite_vagas ? `${atual} de ${eq.limite_vagas} vagas` : `${atual} vaga(s) ocupada(s)`;
+      return `
+        <div class="card-equipe" onclick="escolherEquipe('${eq.id.replace(/'/g, "\\'")}')">
+          <h4>${esc(nome)}</h4>
+          <small><i class="fa-solid fa-location-dot"></i> ${esc(eq.area || 'Área não definida')}</small>
+          <div class="vagas"><i class="fa-solid fa-user-check"></i> ${esc(vagas)}</div>
+        </div>`;
+    }).join('');
+
+  }catch(err){
+    console.error(err);
+    lista.innerHTML = `<div style="text-align:center;padding:20px;color:#fca5a5">Erro ao carregar. Tente novamente.</div>`;
+  }
+}
+
+/* ---------- ESCOLHER EQUIPE ---------- */
+async function escolherEquipe(equipeId){
+  fecharModal('modalEquipes');
+  trocando = true;
+  const btn = document.getElementById('btnTrocar');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Trocando...';
+
+  try{
+    const antigaId = ponto.equipe_id;
+    await salvarEquipeNoPonto(equipeId);
+    await sincronizarMembros(equipeId, antigaId);
+    membrosSincronizados = String(equipeId);
+    await carregarEDesenhar(true);
+    aviso('✅ Equipe alterada com sucesso!', true);
+  }catch(e){
+    console.error(e);
+    aviso('❌ Não foi possível trocar. Tente novamente.', false);
+  }
+
+  trocando = false;
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fa-solid fa-shuffle"></i> Trocar de Equipe';
+}
+
+/* ---------- DADOS ---------- */
+async function buscarPontoAtivo(passaporte){
+  const { data, error } = await sb.from('pontos').select('*')
+    .eq('passaporte', passaporte)
+    .is('saida', null)
+    .order('criado_em', { ascending: false })
+    .limit(1);
+  if(error) throw error;
+  return (data && data.length) ? data[0] : null;
+}
+
+async function salvarEquipeNoPonto(equipeId){
+  const { error } = await sb.from('pontos').update({ equipe_id: equipeId })
+    .eq('passaporte', ponto.passaporte)
+    .eq('criado_em', ponto.criado_em);
+  if(error) throw error;
+  ponto.equipe_id = equipeId;
+}
+
+async function sincronizarMembros(equipeId, antigaId){
+  const meu = String(sessao.passaporte);
+  try{
+    if(antigaId){
+      const { data } = await sb.from('equipes').select('id,membros').eq('id', antigaId).limit(1);
+      if(data && data[0] && Array.isArray(data[0].membros)){
+        const novo = data[0].membros.filter(m => String(m) !== meu);
+        if(novo.length !== data[0].membros.length){
+          await sb.from('equipes').update({ membros: novo }).eq('id', antigaId);
+        }
+      }
+    }
+    const { data: d2 } = await sb.from('equipes').select('id,membros').eq('id', equipeId).limit(1);
+    if(d2 && d2[0]){
+      const atual = Array.isArray(d2[0].membros) ? d2[0].membros.slice() : [];
+      if(!atual.some(m => String(m) === meu)){
+        const numerico = atual.length && typeof atual[0] === 'number';
+        atual.push(numerico ? Number(meu) : meu);
+        await sb.from('equipes').update({ membros: atual }).eq('id', equipeId);
+      }
+    }
+  }catch(e){}
+}
+
+async function carregarIntegrantes(eq){
+  const meuPass = String(sessao.passaporte);
+  const { data: ativos, error } = await sb.from('pontos').select('passaporte,nome,entrada,equipe_id').is('saida', null);
+  if(error) throw error;
+  const todos = ativos || [];
+
+  const mapa = new Map();
+  todos.filter(p => String(p.equipe_id) === String(eq.id)).forEach(p => {
+    mapa.set(String(p.passaporte), { passaporte: String(p.passaporte), nome: p.nome || String(p.passaporte), entrada: p.entrada });
+  });
+
+  const emOutra = new Set(todos
+    .filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id))
+    .map(p => String(p.passaporte)));
+  const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
+  const faltam = membros.filter(m => !mapa.has(m) && !emOutra.has(m));
+  if(faltam.length){
+    const { data: us } = await sb.from('usuarios').select('passaporte,nome').in('passaporte', faltam);
+    const nomes = {};
+    (us || []).forEach(u => { nomes[String(u.passaporte)] = u.nome; });
+    faltam.forEach(m => mapa.set(m, { passaporte: m, nome: nomes[m] || m, entrada: null }));
+  }
+
+  if(!mapa.has(meuPass)){
+    mapa.set(meuPass, { passaporte: meuPass, nome: ponto.nome || sessao.nome || meuPass, entrada: ponto.entrada });
+  }
+
+  const lista = Array.from(mapa.values()).map(i => ({ ...i, eu: i.passaporte === meuPass }));
+  lista.sort((a, b) => tsEntrada(a.entrada) - tsEntrada(b.entrada));
+  return lista;
 }
 
 /* ---------- TELAS ---------- */
@@ -475,11 +695,10 @@ function telaEquipe(eq, integrantes){
           <div class="integ-lista">${itens}</div>
         </div>
 
-        <button class="btn" id="btnTrocar"><i class="fa-solid fa-shuffle"></i> Trocar de Equipe</button>
+        <button class="btn" id="btnTrocar" onclick="abrirModal('modalConfirma')"><i class="fa-solid fa-shuffle"></i> Trocar de Equipe</button>
         <div class="aviso" id="aviso"></div>
       </div>
     </div>`;
-  document.getElementById('btnTrocar').addEventListener('click', trocarEquipe);
 }
 function aviso(msg, ok){
   const el = document.getElementById('aviso');
@@ -487,97 +706,7 @@ function aviso(msg, ok){
   el.textContent = msg;
   el.className = 'aviso' + (ok ? ' ok' : '');
   el.style.display = 'block';
-}
-  /* ---------- DADOS ---------- */
-async function buscarPontoAtivo(passaporte){
-  const { data, error } = await sb.from('pontos').select('*')
-    .eq('passaporte', passaporte)
-    .is('saida', null)
-    .order('criado_em', { ascending: false })
-    .limit(1);
-  if(error) throw error;
-  return (data && data.length) ? data[0] : null;
-}
-
-async function sortearEquipe(excluirId){
-  const { data: equipes, error: e1 } = await sb.from('equipes').select('*').eq('ativo', true);
-  if(e1) throw e1;
-  const { data: ativos, error: e2 } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
-  if(e2) throw e2;
-  const cont = {};
-  (ativos || []).forEach(p => { cont[p.equipe_id] = (cont[p.equipe_id] || 0) + 1; });
-  const livres = (equipes || []).filter(e => {
-    if(excluirId && String(e.id) === String(excluirId)) return false;
-    const lim = e.limite_vagas;
-    return lim == null || (cont[e.id] || 0) < lim;
-  });
-  if(!livres.length) return null;
-  return livres[Math.floor(Math.random() * livres.length)];
-}
-
-async function salvarEquipeNoPonto(equipeId){
-  const { error } = await sb.from('pontos').update({ equipe_id: equipeId })
-    .eq('passaporte', ponto.passaporte)
-    .eq('criado_em', ponto.criado_em);
-  if(error) throw error;
-  ponto.equipe_id = equipeId;
-}
-
-/* mantém equipes.membros[] coerente (tenta, sem travar a tela se falhar) */
-async function sincronizarMembros(equipeId, antigaId){
-  const meu = String(sessao.passaporte);
-  try{
-    if(antigaId){
-      const { data } = await sb.from('equipes').select('id,membros').eq('id', antigaId).limit(1);
-      if(data && data[0] && Array.isArray(data[0].membros)){
-        const novo = data[0].membros.filter(m => String(m) !== meu);
-        if(novo.length !== data[0].membros.length){
-          await sb.from('equipes').update({ membros: novo }).eq('id', antigaId);
-        }
-      }
-    }
-    const { data: d2 } = await sb.from('equipes').select('id,membros').eq('id', equipeId).limit(1);
-    if(d2 && d2[0]){
-      const atual = Array.isArray(d2[0].membros) ? d2[0].membros.slice() : [];
-      if(!atual.some(m => String(m) === meu)){
-        const numerico = atual.length && typeof atual[0] === 'number';
-        atual.push(numerico ? Number(meu) : meu);
-        await sb.from('equipes').update({ membros: atual }).eq('id', equipeId);
-      }
-    }
-  }catch(e){}
-}
-
-async function carregarIntegrantes(eq){
-  const meuPass = String(sessao.passaporte);
-  const { data: ativos, error } = await sb.from('pontos').select('passaporte,nome,entrada,equipe_id').is('saida', null);
-  if(error) throw error;
-  const todos = ativos || [];
-
-  const mapa = new Map();
-  todos.filter(p => String(p.equipe_id) === String(eq.id)).forEach(p => {
-    mapa.set(String(p.passaporte), { passaporte: String(p.passaporte), nome: p.nome || String(p.passaporte), entrada: p.entrada });
-  });
-
-  const emOutra = new Set(todos
-    .filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id))
-    .map(p => String(p.passaporte)));
-  const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
-  const faltam = membros.filter(m => !mapa.has(m) && !emOutra.has(m));
-  if(faltam.length){
-    const { data: us } = await sb.from('usuarios').select('passaporte,nome').in('passaporte', faltam);
-    const nomes = {};
-    (us || []).forEach(u => { nomes[String(u.passaporte)] = u.nome; });
-    faltam.forEach(m => mapa.set(m, { passaporte: m, nome: nomes[m] || m, entrada: null }));
-  }
-
-  if(!mapa.has(meuPass)){
-    mapa.set(meuPass, { passaporte: meuPass, nome: ponto.nome || sessao.nome || meuPass, entrada: ponto.entrada });
-  }
-
-  const lista = Array.from(mapa.values()).map(i => ({ ...i, eu: i.passaporte === meuPass }));
-  lista.sort((a, b) => tsEntrada(a.entrada) - tsEntrada(b.entrada));
-  return lista;
+  setTimeout(() => { el.style.display = 'none'; }, 4000);
 }
 
 async function carregarEDesenhar(forcar){
@@ -603,39 +732,6 @@ async function carregarEDesenhar(forcar){
   if(s) s.textContent = textoSync();
 }
 
-async function trocarEquipe(){
-  const btn = document.getElementById('btnTrocar');
-  trocando = true;
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Trocando...';
-  try{
-    const antiga = ponto.equipe_id;
-    const nova = await sortearEquipe(antiga);
-    if(!nova){
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-shuffle"></i> Trocar de Equipe';
-      aviso('Nenhuma outra equipe com vaga no momento.');
-      trocando = false;
-      return;
-    }
-    await salvarEquipeNoPonto(nova.id);
-    await sincronizarMembros(nova.id, antiga);
-    membrosSincronizados = String(nova.id);
-    await carregarEDesenhar(true);
-    aviso('Equipe alterada.', true);
-  }catch(e){
-    console.error(e);
-    const b = document.getElementById('btnTrocar');
-    if(b){
-      b.disabled = false;
-      b.innerHTML = '<i class="fa-solid fa-shuffle"></i> Trocar de Equipe';
-    }
-    aviso('Não foi possível trocar de equipe. Tente de novo.');
-  }
-  trocando = false;
-}
-
-/* ---------- ATUALIZAÇÃO AUTOMÁTICA ---------- */
 async function atualizar(){
   if(!sessao || trocando || estado === 'carregando') return;
   try{
@@ -648,7 +744,7 @@ async function atualizar(){
     ponto = p;
     if(!ponto.equipe_id) return;
     await carregarEDesenhar(false);
-  }catch(e){ /* mantém a tela atual */ }
+  }catch(e){}
 }
 
 setInterval(() => {
@@ -670,8 +766,16 @@ async function iniciar(){
     ponto = await buscarPontoAtivo(sessao.passaporte);
     if(!ponto){ telaSemServico(); return; }
     if(!ponto.equipe_id){
-      const eq = await sortearEquipe(null);
-      if(!eq){ telaErro('Não há equipes com vaga no momento.'); return; }
+      const { data: equipes } = await sb.from('equipes').select('*').eq('ativo', true);
+      const { data: ativos } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
+      const cont = {};
+      (ativos || []).forEach(p => { cont[p.equipe_id] = (cont[p.equipe_id] || 0) + 1; });
+      const livres = (equipes || []).filter(e => {
+        const lim = e.limite_vagas;
+        return lim == null || (cont[e.id] || 0) < lim;
+      });
+      if(!livres.length){ telaErro('Não há equipes com vaga no momento.'); return; }
+      const eq = livres[Math.floor(Math.random() * livres.length)];
       await salvarEquipeNoPonto(eq.id);
       await sincronizarMembros(eq.id, null);
       membrosSincronizados = String(eq.id);
