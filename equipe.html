@@ -169,6 +169,7 @@
 const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
 const INTERVALO_ATUALIZACAO = 30000;
+const POSICOES_FAVELA = ['P1', 'P2'];
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const app = document.getElementById('app');
@@ -179,6 +180,7 @@ let estado = 'carregando';
 let assinatura = null;
 let trocando = false;
 let membrosSincronizados = null;
+let posicaoLocal = null;
 
 /* ---------- SESSÃO (só vai ao login se REALMENTE não houver sessão) ---------- */
 function achar(o, d){
@@ -245,10 +247,10 @@ function formatarFuncao(f){
     .map(p => /^venda$/i.test(p) ? 'VENDAS' : p);
   return palavras.join(' ').toUpperCase();
 }
+/* rotas: P1..P4 pela ordem de entrada | vendas/apoio: posição sorteada e salva em pontos.posicao */
 function minhaPosicao(grupo, idx){
-  if(idx < 0) return 'N/A';
-  if(grupo === 'rota') return ['Piloto', 'Assento 2', 'Assento 3', 'Assento 4'][idx] || ('Assento ' + (idx + 1));
-  return 'P' + (idx + 1);
+  if(grupo === 'rota') return idx >= 0 ? 'P' + (idx + 1) : 'N/A';
+  return (ponto && ponto.posicao) ? ponto.posicao : 'N/A';
 }
 function tsEntrada(v){
   const d = Date.parse(v);
@@ -432,7 +434,11 @@ async function buscarPontoAtivo(passaporte){
     .order('criado_em', { ascending: false })
     .limit(1);
   if(error) throw error;
-  return (data && data.length) ? data[0] : null;
+  const p = (data && data.length) ? data[0] : null;
+  if(p && !p.posicao && posicaoLocal && posicaoLocal.equipeId === String(p.equipe_id)){
+    p.posicao = posicaoLocal.valor;
+  }
+  return p;
 }
 
 async function sortearEquipe(excluirId){
@@ -452,11 +458,39 @@ async function sortearEquipe(excluirId){
 }
 
 async function salvarEquipeNoPonto(equipeId){
-  const { error } = await sb.from('pontos').update({ equipe_id: equipeId })
+  const { error } = await sb.from('pontos').update({ equipe_id: equipeId, posicao: null })
     .eq('passaporte', ponto.passaporte)
     .eq('criado_em', ponto.criado_em);
   if(error) throw error;
   ponto.equipe_id = equipeId;
+  ponto.posicao = null;
+  posicaoLocal = null;
+}
+
+/* vendas/apoio: sorteia P1 ou P2, equilibrando com quem já está na equipe */
+async function atribuirPosicao(eq){
+  let escolhida = null;
+  try{
+    const { data } = await sb.from('pontos').select('passaporte,posicao')
+      .eq('equipe_id', eq.id).is('saida', null);
+    const cont = {};
+    POSICOES_FAVELA.forEach(p => { cont[p] = 0; });
+    (data || []).forEach(r => {
+      if(String(r.passaporte) !== String(ponto.passaporte) && r.posicao && cont[r.posicao] !== undefined) cont[r.posicao]++;
+    });
+    const min = Math.min(...POSICOES_FAVELA.map(p => cont[p]));
+    const opcoes = POSICOES_FAVELA.filter(p => cont[p] === min);
+    escolhida = opcoes[Math.floor(Math.random() * opcoes.length)];
+  }catch(e){
+    escolhida = POSICOES_FAVELA[Math.floor(Math.random() * POSICOES_FAVELA.length)];
+  }
+  ponto.posicao = escolhida;
+  posicaoLocal = { equipeId: String(eq.id), valor: escolhida };
+  try{
+    await sb.from('pontos').update({ posicao: escolhida })
+      .eq('passaporte', ponto.passaporte)
+      .eq('criado_em', ponto.criado_em);
+  }catch(e){}
 }
 
 /* mantém equipes.membros[] coerente (tenta, sem travar a tela se falhar) */
@@ -522,6 +556,10 @@ async function carregarEDesenhar(forcar){
   if(!data || !data.length){ telaErro('Equipe não encontrada.'); return; }
   const eq = data[0];
 
+  if(grupoDe(eq.tipo) !== 'rota' && !ponto.posicao){
+    await atribuirPosicao(eq);
+  }
+
   const meu = String(sessao.passaporte);
   const temEu = Array.isArray(eq.membros) && eq.membros.some(m => String(m) === meu);
   if(!temEu && membrosSincronizados !== String(eq.id)){
@@ -530,7 +568,7 @@ async function carregarEDesenhar(forcar){
   }
 
   const integrantes = await carregarIntegrantes(eq);
-  const sig = JSON.stringify([eq, integrantes, ponto.entrada, ponto.pausa_inicio, ponto.pausa_fim, ponto.status]);
+  const sig = JSON.stringify([eq, integrantes, ponto.entrada, ponto.pausa_inicio, ponto.pausa_fim, ponto.status, ponto.posicao]);
   if(forcar || sig !== assinatura || estado !== 'equipe'){
     assinatura = sig;
     telaEquipe(eq, integrantes);
