@@ -173,8 +173,7 @@ let cronId = null;
 let tempoRestante = 0;
 
 const INTERVALO_ATUALIZACAO = 30000;
-
-function aviso(msg, tipo){
+  function aviso(msg, tipo){
   const el = document.getElementById('aviso');
   if(!el) return;
   el.textContent = msg;
@@ -201,8 +200,21 @@ function formatarDuracao(segundos){
   return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
 }
 
+function tempoEmServico(){
+  if(!ponto || !ponto.entrada) return 0;
+  if(ponto.status === 'saida') return 0;
+  if(ponto.status === 'espera' && ponto.pausa_inicio){
+    const entrada = new Date(ponto.entrada).getTime();
+    const pausa = new Date(ponto.pausa_inicio).getTime();
+    return Math.floor((pausa - entrada) / 1000);
+  }
+  const agora = Date.now();
+  const entrada = new Date(ponto.entrada).getTime();
+  return Math.floor((agora - entrada) / 1000);
+}
+
 function tempoRestanteEspera(){
-  if(!ponto || ponto.status !== 'espera') return 0;
+  if(!ponto || ponto.status !== 'espera' || !ponto.pausa_inicio) return 0;
   const agora = Date.now();
   const inicio = new Date(ponto.pausa_inicio).getTime();
   const duracao = 60000;
@@ -220,114 +232,17 @@ function horaDe(d){
   return dt.toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'});
 }
 
-function dataCurta(d){
-  if(!d) return '';
-  const dt = new Date(d);
-  return dt.toLocaleDateString('pt-BR');
-}
-
 function grupoDe(eq){
-  if(!eq) return '';
-  const n = eq.nome_equipe || '';
+  if(!eq) return {grupo:'', k:0, nome:''};
+  const n = (eq.nome_equipe || eq.nome || '').toUpperCase();
   if(n.includes('VENDAS P1')) return {grupo:'vendas', k:1, nome:'Vendas P1'};
   if(n.includes('VENDAS P2')) return {grupo:'vendas', k:2, nome:'Vendas P2'};
-  if(n.includes('ROTA')) return {grupo:'rota', k:parseInt(n.match(/\d+/)?.[0] || 1), nome:n};
+  const rotaMatch = n.match(/ROTA\s*(\d+)/);
+  if(rotaMatch) return {grupo:'rota', k:parseInt(rotaMatch[1]), nome:n};
   return {grupo:'outro', k:0, nome:n};
 }
 
-async function sincronizarMembros(equipe_id, novo_passaporte){
-  if(!equipe_id) return;
-  const {data:eq} = await sb.from('equipes').select('membros').eq('id', equipe_id).single();
-  if(!eq) return;
-  const atuais = eq.membros || [];
-  const passaporte = novo_passaporte || sessao.passaporte;
-  if(!atuais.includes(passaporte)) atuais.push(passaporte);
-  await sb.from('equipes').update({membros:atuais}).eq('id', equipe_id);
-  membrosSincronizados = String(equipe_id);
-}
-
-async function salvarEquipeNoPonto(equipe_id){
-  await sb.from('pontos').update({equipe_id}).eq('id', ponto.id);
-}
-
-async function buscarPontoAtivo(passaporte){
-  const {data, error} = await sb.from('pontos').select('*,equipe:equipe_id(*)').eq('passaporte', passaporte).order('entrada',{asc:false}).limit(1);
-  if(error) return null;
-  const ultimo = data?.[0];
-  if(ultimo && ultimo.status !== 'saida') return ultimo;
-  return null;
-}
-
-async function carregarIntegrantes(equipe_id){
-  const {data:eq} = await sb.from('equipes').select('membros,limite_vagas,nome_equipe,funcao').eq('id', equipe_id).single();
-  if(!eq || !eq.membros) return [];
-  const todos = eq.membros || [];
-  const {data:usuarios} = await sb.from('usuarios').select('passaporte,nome').in('passaporte', todos);
-  const mapa = new Map((usuarios || []).map(u => [u.passaporte, u.nome]));
-  return todos.map(p => ({passaporte:p, nome:mapa.get(p) || p}));
-}
-
-async function buscarEquipesDisponiveis(){
-  const {data:todas} = await sb.from('equipes').select('*').eq('ativa', true);
-  const {data:ativos} = await sb.from('pontos').select('equipe_id','status').neq('status','saida');
-  const ocupadas = new Set((ativos||[]).map(p => String(p.equipe_id)).filter(Boolean));
-  const todos = [];
-  (todas||[]).forEach(eq => {
-    const emOutra = new Set((ativos||[]).filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id)).map(p => String(p.equipe_id)));
-    const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
-    const faltam = membros.filter(m => !emOutra.has(m) && !mapa.has(m));
-    const mapa = new Map();
-    const {data:us} = await sb.from('usuarios').select('passaporte,nome').in('passaporte', membros);
-    (us||[]).forEach(u => mapa.set(String(u.passaporte), u.nome));
-    const lista = Array.from(mapa.values()).map((nome, passaporte) => ({passaporte, nome}));
-    lista.sort((a,b) => a.nome.localeCompare(b.nome));
-    return lista;
-  });
-  const {data:ativos} = await sb.from('pontos').select('equipe_id','status').neq('status','saida');
-  const ocupadas = new Set((ativos||[]).map(p => String(p.equipe_id)).filter(Boolean));
-  const todos = [];
-  (todas||[]).forEach(eq => {
-    const emOutra = new Set((ativos||[]).filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id)).map(p => String(p.equipe_id)));
-    const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
-    const faltam = membros.filter(m => !emOutra.has(m) && !mapa.has(m));
-    const mapa = new Map();
-    const {data:us} = await sb.from('usuarios').select('passaporte,nome').in('passaporte', membros);
-    (us||[]).forEach(u => mapa.set(String(u.passaporte), u.nome));
-    const lista = Array.from(mapa.values()).map((nome, passaporte) => ({passaporte, nome}));
-    lista.sort((a,b) => a.nome.localeCompare(b.nome));
-    return lista;
-  });
-  const {data:ativos} = await sb.from('pontos').select('equipe_id','status').neq('status','saida');
-  const ocupadas = new Set((ativos||[]).map(p => String(p.equipe_id)).filter(Boolean));
-  const todos = [];
-  (todas||[]).forEach(eq => {
-    const emOutra = new Set((ativos||[]).filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id)).map(p => String(p.equipe_id)));
-    const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
-    const faltam = membros.filter(m => !emOutra.has(m) && !mapa.has(m));
-    const mapa = new Map();
-    const {data:us} = await sb.from('usuarios').select('passaporte,nome').in('passaporte', membros);
-    (us||[]).forEach(u => mapa.set(String(u.passaporte), u.nome));
-    const lista = Array.from(mapa.values()).map((nome, passaporte) => ({passaporte, nome}));
-    lista.sort((a,b) => a.nome.localeCompare(b.nome));
-    return lista;
-  });
-  const {data:ativos} = await sb.from('pontos').select('equipe_id','status').neq('status','saida');
-  const ocupadas = new Set((ativos||[]).map(p => String(p.equipe_id)).filter(Boolean));
-  const todos = [];
-  (todas||[]).forEach(eq => {
-    const emOutra = new Set((ativos||[]).filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id)).map(p => String(p.equipe_id)));
-    const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
-    const faltam = membros.filter(m => !emOutra.has(m) && !mapa.has(m));
-    const mapa = new Map();
-    const {data:us} = await sb.from('usuarios').select('passaporte,nome').in('passaporte', membros);
-    (us||[]).forEach(u => mapa.set(String(u.passaporte), u.nome));
-    const lista = Array.from(mapa.values()).map((nome, passaporte) => ({passaporte, nome}));
-    lista.sort((a,b) => a.nome.localeCompare(b.nome));
-    return lista;
-  });
-}
-    </script>
-    function telaSemServico(){
+function telaSemServico(){
   estado = 'sem'; assinatura = null;
   app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-circle-info"></i></div><h2>Nenhum serviço ativo</h2><p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p></div><a href="bate-ponto.html" class="btn" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div>`;
 }
@@ -344,71 +259,75 @@ async function telaEquipe(eq, integrantes){
   const n = integrantes.length;
   const lim = eq.limite_vagas;
   const vagas = lim != null ? `${n} de ${lim}` : `${n} ocupada${n !== 1 ? 's' : ''}`;
-  const nomeGrande = eq.nome_equipe || 'EQUIPE';
+  const nomeGrande = (eq.nome_equipe || eq.nome || 'EQUIPE').toUpperCase();
   const escala = eq.nome ? `ESCALA ATUAL · ${eq.nome}` : 'ESCALA ATUAL';
   const restante = tempoRestanteEspera();
-  const selo = emPausa() ? `<div class="selo pausa"><i class="fa-solid fa-circle-pause"></i> EM PAUSA</div>` : 
-               restante > 0 ? `<div class="selo espera" id="esperaInfo"><i class="fa-solid fa-clock"></i> Próxima troca em ${restante}s</div>` : '';
+  const selo = emPausa() 
+    ? `<div class="selo pausa"><i class="fa-solid fa-circle-pause"></i> EM PAUSA</div>` 
+    : restante > 0 
+      ? `<div class="selo espera" id="esperaInfo"><i class="fa-solid fa-clock"></i> Próxima troca em ${restante}s</div>` 
+      : '';
   const desde = (ponto && ponto.entrada && horaDe(ponto.entrada) !== '--:--') ? ` · desde ${horaDe(ponto.entrada)}` : '';
-  const icone = (grupo.grupo === 'rota') ? 'P' + (grupo.k + 1) : '<i class="fa-solid fa-user"></i>';
+  const icone = grupo.grupo === 'rota' 
+    ? `R${grupo.k}` 
+    : grupo.grupo === 'vendas' 
+      ? `V${grupo.k}` 
+      : '<i class="fa-solid fa-user"></i>';
   const me = integrantes[idx];
   
   app.innerHTML = `
     <div class="layout">
-      <div class="col-esq, col-dir">
-        <div class="hero">
-          <div class="hero-topo">
-            <div>
-              <div class="escala">${escala}</div>
-              <h1 class="nome-equipe">${nomeGrande.toUpperCase()}</h1>
-              <div class="sub">Veja sua função e integrantes da equipe</div>
-            </div>
-            ${selo}
+      <div class="hero">
+        <div class="hero-topo">
+          <div>
+            <div class="escala">${escala}</div>
+            <h1 class="nome-equipe">${nomeGrande}</h1>
+            <div class="sub">Veja sua função e integrantes da equipe</div>
           </div>
-          <div class="corpo">
-            <div class="local">
-              <div class="ic"><i class="fa-solid fa-location-dot"></i></div>
-              <div>
-                <div class="rotulo">ÁREA / MISSÃO</div>
-                <div class="valor">${eq.funcao || 'Não definida'}</div>
-              </div>
-            </div>
-            <div class="grid2">
-              <div class="bloco">
-                <div class="rotulo"><i class="fa-solid fa-flag"></i> MINHA POSIÇÃO</div>
-                <div class="valor">${me?.nome || '—'}</div>
-              </div>
-              <div class="bloco">
-                <div class="rotulo"><i class="fa-solid fa-briefcase"></i> FUNÇÃO</div>
-                <div class="valor">${eq.funcao || 'Não definida'}</div>
-              </div>
-            </div>
-            <div class="grid2">
-              <div class="bloco">
-                <div class="rotulo"><i class="fa-solid fa-right-to-bracket"></i> MINHA ENTRADA</div>
-                <div class="valor">${horaDe(ponto?.entrada)}${desde}</div>
-              </div>
-              <div class="bloco">
-                <div class="rotulo"><i class="fa-solid fa-stopwatch"></i> EM SERVIÇO HÁ</div>
-                <div class="valor" id="tempo">—</div>
-              </div>
-            </div>
-            <div class="grid2">
-              <div class="bloco">
-                <div class="rotulo"><i class="fa-solid fa-user-group"></i> LIMITE DE VAGAS</div>
-                <div class="valor">${vagas}</div>
-              </div>
-              <div class="bloco">
-                <div class="rotulo"><i class="fa-solid fa-car"></i> VEÍCULO</div>
-                <div class="valor">N/A</div>
-              </div>
-            </div>
-          </div>
-          <button class="btn" id="btnTrocar" onclick="abrirModal('modalConfirma')" ${restante > 0 ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''}>
-            <i class="fa-solid fa-shuffle"></i> Trocar de Equipe
-          </button>
-          <div id="aviso" class="aviso"></div>
+          ${selo}
         </div>
+        <div class="corpo">
+          <div class="local">
+            <div class="ic"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <div class="rotulo">ÁREA / MISSÃO</div>
+              <div class="valor">${eq.funcao || 'Não definida'}</div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="bloco">
+              <div class="rotulo"><i class="fa-solid fa-flag"></i> MINHA POSIÇÃO</div>
+              <div class="valor">${me?.nome || '—'}</div>
+            </div>
+            <div class="bloco">
+              <div class="rotulo"><i class="fa-solid fa-briefcase"></i> FUNÇÃO</div>
+              <div class="valor">${eq.funcao || 'Não definida'}</div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="bloco">
+              <div class="rotulo"><i class="fa-solid fa-right-to-bracket"></i> MINHA ENTRADA</div>
+              <div class="valor">${horaDe(ponto?.entrada)}${desde}</div>
+            </div>
+            <div class="bloco">
+              <div class="rotulo"><i class="fa-solid fa-stopwatch"></i> EM SERVIÇO HÁ</div>
+              <div class="valor" id="tempo">—</div>
+            </div>
+          </div>
+          <div class="grid2">
+            <div class="bloco">
+              <div class="rotulo"><i class="fa-solid fa-user-group"></i> LIMITE DE VAGAS</div>
+              <div class="valor">${vagas}</div>
+            </div>
+            <div class="bloco">
+              <div class="rotulo"><i class="fa-solid fa-car"></i> VEÍCULO</div>
+              <div class="valor">N/A</div>
+            </div>
+          </div>
+        </div>
+        <button class="btn" id="btnTrocar" onclick="abrirModal('modalConfirma')" ${restante > 0 ? 'disabled style="opacity:.5;cursor:not-allowed"' : ''}>
+          <i class="fa-solid fa-shuffle"></i> Trocar de Equipe
+        </button>
       </div>
       
       <div class="integrantes">
@@ -427,16 +346,59 @@ async function telaEquipe(eq, integrantes){
       </div>
     </div>
   `;
-}
-       function abrirModal(id){
+  }
+  function abrirModal(id){
   document.getElementById(id).style.display = 'flex';
 }
 
 function fecharModal(id){
   document.getElementById(id).style.display = 'none';
-  if(id === 'modalConfirma'){
+  if(id === 'modalEquipes'){
     document.getElementById('listaEquipes').innerHTML = '';
   }
+}
+
+async function buscarPontoAtivo(passaporte){
+  const {data, error} = await sb.from('pontos').select('*,equipe:equipe_id(*)').eq('passaporte', passaporte).order('entrada', {asc:false}).limit(1);
+  if(error) return null;
+  const ultimo = data?.[0];
+  if(ultimo && ultimo.status !== 'saida') return ultimo;
+  return null;
+}
+
+async function carregarIntegrantes(equipe_id){
+  const {data:eq} = await sb.from('equipes').select('membros,limite_vagas,nome_equipe,funcao,nome').eq('id', equipe_id).single();
+  if(!eq || !eq.membros) return [];
+  const todos = eq.membros.map(p => String(p));
+  const {data:usuarios} = await sb.from('usuarios').select('passaporte,nome').in('passaporte', todos);
+  const mapa = new Map((usuarios || []).map(u => [String(u.passaporte), u.nome]));
+  const meupassaporte = String(sessao.passaporte);
+  return todos.map(p => ({
+    passaporte: p,
+    nome: mapa.get(p) || p,
+    eu: p === meupassaporte
+  })).sort((a, b) => {
+    if(a.eu) return -1;
+    if(b.eu) return 1;
+    return a.nome.localeCompare(b.nome);
+  });
+}
+
+async function sincronizarMembros(equipe_id, novo_passaporte){
+  if(!equipe_id) return;
+  const passaporte = novo_passaporte || String(sessao.passaporte);
+  const {data:eq} = await sb.from('equipes').select('membros').eq('id', equipe_id).single();
+  if(!eq) return;
+  const atuais = (eq.membros || []).map(p => String(p));
+  if(!atuais.includes(passaporte)){
+    atuais.push(passaporte);
+    await sb.from('equipes').update({membros: atuais}).eq('id', equipe_id);
+  }
+  membrosSincronizados = String(equipe_id);
+}
+
+async function salvarEquipeNoPonto(ponto_id, equipe_id){
+  await sb.from('pontos').update({equipe_id: equipe_id}).eq('id', ponto_id);
 }
 
 async function abrirEquipesDisponiveis(){
@@ -444,18 +406,26 @@ async function abrirEquipesDisponiveis(){
   abrirModal('modalEquipes');
   
   const {data:todas, error:e1} = await sb.from('equipes').select('*').eq('ativa', true);
-  if(e1 || !todas) { document.getElementById('listaEquipes').innerHTML = '<p style="color:var(--vermelho)">Erro ao carregar equipes.</p>'; return; }
+  if(e1 || !todas) {
+    document.getElementById('listaEquipes').innerHTML = '<p style="color:var(--vermelho);text-align:center;padding:20px">Erro ao carregar equipes.</p>';
+    return;
+  }
   
   const {data:ativos, error:e2} = await sb.from('pontos').select('equipe_id,status').neq('status','saida');
-  if(e2) { document.getElementById('listaEquipes').innerHTML = '<p style="color:var(--vermelho)">Erro ao verificar vagas.</p>'; return; }
+  if(e2) {
+    document.getElementById('listaEquipes').innerHTML = '<p style="color:var(--vermelho);text-align:center;padding:20px">Erro ao verificar vagas.</p>';
+    return;
+  }
   
   const ocupadas = new Set(ativos.filter(p => p.equipe_id).map(p => String(p.equipe_id)));
-  const meuId = ponto?.equipe_id;
+  const meuId = ponto?.equipe_id ? String(ponto.equipe_id) : null;
   
   const disponiveis = todas.filter(eq => {
+    const eqId = String(eq.id);
+    if(eqId === meuId) return false;
     const limite = eq.limite_vagas || 999;
     const membros = eq.membros || [];
-    return String(eq.id) !== String(meuId) && membros.length < limite;
+    return membros.length < limite;
   });
   
   const container = document.getElementById('listaEquipes');
@@ -466,9 +436,10 @@ async function abrirEquipesDisponiveis(){
   
   container.innerHTML = disponiveis.map(eq => {
     const vagasDisponiveis = (eq.limite_vagas || 999) - (eq.membros?.length || 0);
+    const nome = (eq.nome_equipe || eq.nome || 'Equipe sem nome').toUpperCase();
     return `
       <div class="equipe-card" onclick="confirmarTroca('${eq.id}')">
-        <div class="equipe-nome">${(eq.nome_equipe || eq.nome || 'Equipe sem nome').toUpperCase()}</div>
+        <div class="equipe-nome">${nome}</div>
         <div class="equipe-vagas">${vagasDisponiveis} vaga${vagasDisponiveis !== 1 ? 's' : ''} disponível${vagasDisponiveis !== 1 ? 'e' : ''}</div>
       </div>
     `;
@@ -484,9 +455,10 @@ async function confirmarTroca(novaEquipeId){
   
   const {data:eq} = await sb.from('equipes').select('membros').eq('id', novaEquipeId).single();
   const membros = eq?.membros || [];
-  if(!membros.includes(sessao.passaporte)){
-    membros.push(sessao.passaporte);
-    await sb.from('equipes').update({membros}).eq('id', novaEquipeId);
+  const meuPassaporte = String(sessao.passaporte);
+  if(!membros.map(p => String(p)).includes(meuPassaporte)){
+    membros.push(meuPassaporte);
+    await sb.from('equipes').update({membros: membros}).eq('id', novaEquipeId);
   }
   
   aviso('Equipe alterada com sucesso! Aguarde 1 minuto para iniciar nova jornada.', 'sucesso');
@@ -496,42 +468,43 @@ async function confirmarTroca(novaEquipeId){
   const btn = document.getElementById('btnTrocar');
   if(btn) btn.disabled = true;
   
-  const contadorEl = document.createElement('div');
-  contadorEl.style.cssText = 'color:var(--amarelo);font-size:13px;margin-top:8px;text-align:center;';
-  contadorEl.textContent = 'Aguarde 60s...';
-  document.querySelector('.integrantes')?.insertAdjacentElement('beforebegin', contadorEl);
-  
   if(cronId) clearInterval(cronId);
   cronId = setInterval(() => {
     tempoRestante--;
+    const contadorEl = document.getElementById('cronContador');
+    const btnConfirmar = document.getElementById('btnConfirmarTroca');
+    if(contadorEl) contadorEl.style.display = 'block';
+    const span = document.getElementById('contador');
+    if(span) span.textContent = tempoRestante;
+    
     if(tempoRestante <= 0){
       clearInterval(cronId);
       if(btn) btn.disabled = false;
-      contadorEl.remove();
+      if(contadorEl) contadorEl.style.display = 'none';
       aviso('Pode iniciar nova jornada agora!', 'sucesso');
       atualizar();
-    } else {
-      contadorEl.textContent = `Aguarde ${tempoRestante}s...`;
     }
   }, 1000);
   
   trocando = false;
   atualizar();
-}
-      async function carregarEDesenhar(forcar=false){
+      }
+  async function carregarEDesenhar(forcar=false){
+  if(!ponto?.equipe_id) return;
   const { data, error } = await sb.from('equipes').select('*').eq('id', ponto.equipe_id).limit(1);
-  if(error || !data.length){ telaErro('Equipe não encontrada.'); return; }
+  if(error || !data || !data.length){ telaErro('Equipe não encontrada.'); return; }
   const eq = data[0];
   const meupassaporte = String(sessao.passaporte);
   const integrantes = await carregarIntegrantes(eq.id);
-  const temEu = Array.isArray(eq.membros) && eq.membros.some(m => String(m) === meupassaporte);
+  const temEu = integrantes.some(i => i.eu);
   if(!temEu && membrosSincronizados !== String(eq.id)){
+    await sincronizarMembros(eq.id, meupassaporte);
+    integrantes.push({ passaporte: meupassaporte, nome: sessao.nome || meupassaporte, eu: true });
     membrosSincronizados = String(eq.id);
-    await sincronizarMembros(eq.id, null);
   }
-  const sig = JSON.stringify([eq, integrantes, ponto.entrada, ponto.pausa_inicio, ponto.pausa_fim, ponto.status]);
-  if(forcar || sig !== assinatura || estado !== 'equipe'){
-    assinatura = sig;
+  const assinaturaNova = JSON.stringify([eq, integrantes, ponto.entrada, ponto.pausa_inicio, ponto.pausa_fim, ponto.status]);
+  if(forcar || assinaturaNova !== assinatura || estado !== 'equipe'){
+    assinatura = assinaturaNova;
     telaEquipe(eq, integrantes);
   }
 }
@@ -540,9 +513,16 @@ async function atualizar(){
   if(!sessao || trocando || estado === 'carregando') return;
   try{
     const p = await buscarPontoAtivo(sessao.passaporte);
-    if(!p){ ponto = null; if(estado !== 'sem') telaSemServico(); return; }
+    if(!p){ 
+      ponto = null; 
+      if(estado !== 'sem') telaSemServico(); 
+      return; 
+    }
     ponto = p;
-    if(!ponto.equipe_id) return;
+    if(!ponto.equipe_id){
+      telaSemServico();
+      return;
+    }
     await carregarEDesenhar(false);
   }catch(e){
     console.error(e);
@@ -563,20 +543,9 @@ async function iniciar(){
   sessao.passaporte = String(sessao.passaporte);
   estado = 'carregando';
   try{
-    const ponto = await buscarPontoAtivo(sessao.passaporte);
+    ponto = await buscarPontoAtivo(sessao.passaporte);
     if(!ponto){ telaSemServico(); return; }
-    if(!ponto.equipe_id) return;
-    const { data: equipes } = await sb.from('equipes').select('*');
-    const { data: ativos } = await sb.from('pontos').select('equipe_id').is('saida', null).neq('equipe_id', null);
-    const contDisponivel = {};
-    (ativos || []).forEach(p => { contDisponivel[String(p.equipe_id)] = (contDisponivel[String(p.equipe_id)] || 0) + 1; });
-    const disponiveis = (equipes || []).filter(eq => {
-      const ativos = contDisponivel[String(eq.id)] || 0;
-      const limite = eq.limite_vagas || 999;
-      return ativos < limite;
-    });
-    await salvarEquipeNoPonto(ponto.id);
-    await sincronizarMembros(ponto.equipe_id);
+    if(!ponto.equipe_id){ telaSemServico(); return; }
     await carregarEDesenhar(true);
   }catch(e){
     console.error(e);
@@ -587,5 +556,4 @@ async function iniciar(){
 iniciar();
 </script>
 </body>
-      </html>
-        
+</html>
