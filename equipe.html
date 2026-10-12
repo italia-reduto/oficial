@@ -3,285 +3,678 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#000000">
 <title>Equipe | Itália</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   :root{
+    --bg:#000;
+    --card:#0c1017;
+    --inner:#111722;
+    --line:#1e2636;
     --azul:#3b82f6;
-    --azul-escuro:#1e3a5f;
+    --amarelo:#f59e0b;
     --verde:#22c55e;
-    --bg-card:rgba(30, 58, 95, 0.25);
-    --borda:rgba(59, 130, 246, 0.15);
-    --texto-claro:#cbd5e1;
+    --vermelho:#ef4444;
+    --txt:#f1f5f9;
+    --mut:#8b95a8;
   }
   *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
   html,body{
-    background:linear-gradient(to bottom, #000000 0%, #000000 30%, #0a1628 60%, #0f172a 100%);
-    min-height:100vh;
+    background: linear-gradient(to bottom, #000000 0%, #000000 35%, #1e3a5f 75%, #0f172a 100%);
+    min-height: 100vh;
   }
   body{
-    font-family:'Inter',sans-serif;color:#fff;
-    padding:20px 16px 100px;max-width:520px;margin:0 auto;
+    font-family:'Inter',sans-serif;color:var(--txt);
+    padding:18px 14px calc(96px + env(safe-area-inset-bottom,0px));
+    max-width:560px;margin:0 auto;
   }
   a{text-decoration:none;color:inherit}
 
-  .sem-jornada{text-align:center;padding:80px 20px}
-  .sem-jornada .icone{
-    width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,0.1);
-    display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:var(--azul);
+  .layout{display:block}
+  .col-esq,.col-dir{min-width:0}
+
+  .hero{
+    position:relative;overflow:hidden;
+    background:linear-gradient(160deg,#0d1b36 0%,#0b1220 45%,#0a0d13 100%);
+    border:1px solid #1b2a47;border-radius:24px;padding:20px 16px 14px;
   }
-  .sem-jornada h2{font-size:20px;margin-bottom:8px}
-  .sem-jornada p{font-size:14px;color:#94a3b8;margin-bottom:24px}
-  .ir-ponto{
-    display:inline-flex;align-items:center;gap:8px;padding:14px 28px;
-    background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border-radius:12px;
-    font-size:16px;font-weight:700;text-decoration:none
+  .hero::after{
+    content:"";position:absolute;top:-70px;right:-70px;width:200px;height:200px;border-radius:50%;
+    background:radial-gradient(circle,rgba(59,130,246,.18),rgba(59,130,246,0) 70%);
+    pointer-events:none;
+  }
+  .hero-topo{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+  .escala{font-size:12px;font-weight:700;letter-spacing:.12em;color:var(--azul)}
+  .nome-equipe{font-size:34px;font-weight:800;line-height:1.05;margin-top:8px;word-break:break-word}
+  .sub{font-size:14px;color:var(--mut);margin-top:8px}
+
+  .selo{
+    display:inline-flex;align-items:center;gap:8px;white-space:nowrap;
+    font-size:11px;font-weight:700;letter-spacing:.08em;
+    padding:8px 12px;border-radius:999px;
+    color:var(--verde);background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.35);
+  }
+  .selo i{font-size:8px}
+  .selo.pausa{color:var(--amarelo);background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.35)}
+  .selo.espera{color:var(--vermelho);background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35)}
+
+  .corpo{position:relative;z-index:1;margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .bloco{background:var(--inner);border:1px solid var(--line);border-radius:16px;padding:14px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+  .rotulo{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--mut);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+  .rotulo i{color:var(--azul);font-size:12px}
+  .valor{font-size:16px;font-weight:600;line-height:1.3;word-break:break-word}
+  .valor.grande{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+
+  .local{display:flex;align-items:center;gap:14px}
+  .local .ic{
+    width:44px;height:44px;border-radius:12px;flex:0 0 44px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:var(--azul);font-size:18px;
+  }
+  .local .rotulo{margin-bottom:4px}
+
+  .posicao{
+    display:inline-flex;align-items:center;justify-content:center;
+    min-height:44px;padding:0 14px;border-radius:12px;
+    background:linear-gradient(135deg,#3b82f6,#1d4ed8);
+    font-size:16px;font-weight:800;color:#fff;white-space:nowrap;
   }
 
-  .escala-topo{font-size:14px;color:var(--azul);font-weight:600;margin-bottom:8px}
-  .nome-equipe{font-size:36px;font-weight:900;line-height:1.1;margin-bottom:6px}
-  .subtitulo{font-size:14px;color:#94a3b8;margin-bottom:20px}
-  .status{display:inline-flex;align-items:center;gap:8px;background:rgba(34,197,94,0.1);padding:6px 14px;border-radius:20px;margin-bottom:24px}
-  .status .bolinha{width:8px;height:8px;border-radius:50%;background:var(--verde)}
-  .status span{color:var(--verde);font-size:14px;font-weight:600}
+  .rodape{
+    position:relative;z-index:1;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;
+    font-size:12px;color:var(--mut);
+  }
+  .rodape i{margin-right:6px}
+  .espera-info{font-size:11px;color:var(--vermelho);display:flex;align-items:center;gap:6px}
 
-  .grid-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:32px}
-  .card{background:var(--bg-card);border:1px solid var(--borda);border-radius:12px;padding:14px}
-  .card-titulo{display:flex;align-items:center;gap:8px;font-size:13px;color:#94a3b8;margin-bottom:8px}
-  .card-titulo i{color:var(--azul);font-size:15px;width:16px;text-align:center}
-  .card-valor{font-size:15px;font-weight:600;line-height:1.4}
-  .card-valor.destaque{font-size:24px;font-weight:800;color:var(--azul)}
+  .integrantes{
+    margin-top:14px;
+    background:linear-gradient(160deg,#0d1b36 0%,#0b1220 50%,#0a0d13 100%);
+    border:1px solid #1b2a47;border-radius:24px;padding:18px 14px 14px;
+  }
+  .integ-topo{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:0 4px 14px}
+  .integ-titulo{font-size:22px;font-weight:800}
+  .pill{
+    font-size:11px;font-weight:700;letter-spacing:.08em;white-space:nowrap;
+    padding:8px 12px;border-radius:999px;color:var(--azul);
+    background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.35);
+  }
+  .integ-lista{display:flex;flex-direction:column;gap:10px}
+  .integ{
+    display:flex;align-items:center;gap:14px;
+    background:var(--inner);border:1px solid var(--line);border-radius:16px;padding:12px;
+  }
+  .integ.eu{border-color:var(--azul);background:rgba(59,130,246,.08)}
+  .integ-ic{
+    width:48px;height:48px;flex:0 0 48px;border-radius:12px;
+    display:flex;align-items:center;justify-content:center;
+    background:rgba(59,130,246,.14);border:1px solid rgba(59,130,246,.28);
+    color:#93c5fd;font-size:16px;font-weight:800;
+  }
+  .integ-info{min-width:0;flex:1}
+  .integ-nome{font-size:16px;font-weight:700;word-break:break-word}
+  .integ-sub{font-size:13px;color:var(--mut);margin-top:3px;font-weight:500}
+  .voce{font-size:12px;font-weight:700;color:var(--azul);letter-spacing:.06em}
 
-  .secao-integrantes{margin-top:32px}
-  .cabecalho-integrantes{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-  .titulo-secao{font-size:22px;font-weight:800}
-  .qtd-integrantes{background:rgba(59,130,246,0.1);color:var(--azul);padding:4px 12px;border-radius:12px;font-size:13px;font-weight:600}
-  .card-integrante{background:var(--bg-card);border:1px solid var(--borda);border-radius:12px;padding:14px;margin-bottom:10px}
-  .integrante-nome{font-size:15px;font-weight:600;margin-bottom:4px}
-  .integrante-funcao{font-size:13px;color:#94a3b8}
+  .btn{
+    width:100%;margin-top:14px;border:0;border-radius:14px;
+    background:var(--amarelo);color:#111;
+    font-family:'Inter',sans-serif;font-size:16px;font-weight:700;
+    padding:16px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+    transition:opacity .15s
+  }
+  .btn:disabled{opacity:.55;cursor:not-allowed}
+  .btn:active{transform:scale(.99)}
+
+  .estado{text-align:center;padding:36px 18px}
+  .estado .ic{width:64px;height:64px;border-radius:50%;background:var(--inner);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:24px;color:var(--azul)}
+  .estado h2{font-size:20px;font-weight:700}
+  .estado p{font-size:14px;color:var(--mut);margin-top:8px;line-height:1.4}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:14px}
+
+  .aviso{margin-top:12px;font-size:13px;text-align:center;display:none}
+  .aviso.erro{color:#fca5a5}
+  .aviso.sucesso{color:#86efac}
+
+  .fundo-modal{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+    display:flex;align-items:center;justify-content:center;
+    padding:20px;display:none;
+  }
+  .fundo-modal.aberto{display:flex}
+  .modal{
+    background:var(--card);border:1px solid var(--line);
+    border-radius:20px;width:100%;max-width:420px;
+    padding:24px;animation:aparecer .2s ease-out;
+  }
+  @keyframes aparecer{
+    from{opacity:0;transform:scale(.95)}
+    to{opacity:1;transform:scale(1)}
+  }
+  .modal h3{font-size:18px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .modal p{font-size:14px;color:var(--mut);line-height:1.6;margin-bottom:20px}
+  .modal-botoes{display:flex;gap:10px;flex-wrap:wrap}
+  .modal-botao{
+    flex:1;min-width:120px;padding:12px 16px;border-radius:12px;border:none;
+    font-family:'Inter',sans-serif;font-size:15px;font-weight:600;cursor:pointer;
+  }
+  .modal-cancelar{background:var(--inner);color:var(--txt)}
+  .modal-confirmar{background:var(--amarelo);color:#111}
+
+  .lista-equipes{display:flex;flex-direction:column;gap:10px;max-height:360px;overflow-y:auto;margin:10px -4px;padding:10px 4px}
+  .card-equipe{
+    background:var(--inner);border:1px solid var(--line);border-radius:14px;padding:14px;
+    cursor:pointer;transition:all .15s
+  }
+  .card-equipe:hover{border-color:var(--azul);background:rgba(59,130,246,.06)}
+  .card-equipe h4{font-size:15px;font-weight:700;margin-bottom:4px}
+  .card-equipe small{font-size:12px;color:var(--mut)}
+  .card-equipe .vagas{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:var(--azul)}
 
   .nav{
-    position:fixed;left:0;right:0;bottom:0;background:#000;border-top:1px solid #1e293b;
-    display:flex;justify-content:space-around;padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));z-index:10;
+    position:fixed;left:0;right:0;bottom:0;
+    background:#07090d;border-top:1px solid var(--line);
+    display:flex;justify-content:space-around;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));
+    z-index:10;
   }
-  .nav a{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;color:#64748b;padding:4px 8px}
-  .nav a i{font-size:20px;margin-bottom:2px}
+  .nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--mut);padding:6px 0}
+  .nav a i{font-size:19px}
   .nav a.ativo{color:var(--azul)}
 
-  .oculto{display:none !important}
+  @media (min-width:900px){
+    body{max-width:1120px;padding:36px 24px 120px}
+    .layout{display:grid;grid-template-columns:1.25fr 1fr;gap:24px;align-items:start}
+    .integrantes{margin-top:0;padding:22px 20px 18px}
+    .hero{padding:28px 24px 18px}
+    .escala{font-size:13px}
+    .nome-equipe{font-size:46px}
+    .sub{font-size:16px}
+    .selo{font-size:12px}
+    .bloco{padding:16px}
+    .valor{font-size:18px}
+    .valor.grande{font-size:24px}
+    .rodape{font-size:13px}
+    .integ-titulo{font-size:26px}
+    .integ-nome{font-size:17px}
+    .btn{font-size:17px;padding:18px}
+    .card{max-width:560px;margin:60px auto 0}
+    .nav{
+      left:50%;right:auto;width:min(680px,calc(100% - 48px));transform:translateX(-50%);
+      bottom:18px;border:1px solid var(--line);border-radius:20px;padding:10px 8px;
+    }
+    .nav a{font-size:12px}
+    .nav a i{font-size:20px}
+  }
+  @media (hover:hover){
+    .btn:hover:not(:disabled){filter:brightness(1.08)}
+    .nav a:hover{color:#fff}
+    .nav a.ativo:hover{color:var(--azul)}
+    .integ:hover{border-color:#2c3a55}
+    .integ.eu:hover{border-color:var(--azul)}
+    .card-equipe:hover{border-color:var(--azul);background:rgba(59,130,246,.06)}
+  }
 </style>
 </head>
 <body>
-  <div id="semJornada" class="sem-jornada">
-  <div class="icone"><i class="fa-solid fa-info"></i></div>
-  <h2>Nenhum serviço ativo</h2>
-  <p>Inicie sua jornada no controle de ponto para ver sua alocação.</p>
-  <a href="bate-ponto.html" class="ir-ponto"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a>
+  <div id="app">
+  <div class="estado">
+    <div class="ic"><i class="fa-solid fa-spinner fa-spin"></i></div>
+    <h2>Carregando</h2>
+  </div>
 </div>
 
-<div id="comJornada" class="oculto">
-  <div class="escala-topo" id="escalaTopo">Escala atual · ---</div>
-  <h1 class="nome-equipe" id="nomeEquipe">---</h1>
-  <p class="subtitulo">Veja sua alocação atual</p>
-  
-  <div class="status">
-    <span class="bolinha"></span>
-    <span>EM SERVIÇO</span>
-  </div>
-
-  <div class="grid-cards">
-    <div class="card" style="grid-column:span 2">
-      <div class="card-titulo"><i class="fa-solid fa-location-dot"></i> Missão / Área</div>
-      <div class="card-valor" id="missaoArea">---</div>
-    </div>
-
-    <div class="card">
-      <div class="card-titulo"><i class="fa-solid fa-flag"></i> Minha Posição</div>
-      <div class="card-valor destaque" id="minhaPosicao">---</div>
-    </div>
-
-    <div class="card">
-      <div class="card-titulo"><i class="fa-solid fa-briefcase"></i> Função</div>
-      <div class="card-valor" id="minhaFuncao">---</div>
-    </div>
-
-    <div class="card">
-      <div class="card-titulo"><i class="fa-solid fa-arrow-right-to-bracket"></i> Minha Entrada</div>
-      <div class="card-valor" id="minhaEntrada">--:--</div>
-    </div>
-
-    <div class="card">
-      <div class="card-titulo"><i class="fa-solid fa-clock"></i> Em serviço há</div>
-      <div class="card-valor" id="tempoServico">00:00:00</div>
-    </div>
-
-    <div class="card">
-      <div class="card-titulo"><i class="fa-solid fa-users"></i> Limite de Vagas</div>
-      <div class="card-valor" id="vagas">-- / --</div>
-    </div>
-
-    <div class="card">
-      <div class="card-titulo"><i class="fa-solid fa-car"></i> Veículo</div>
-      <div class="card-valor" id="veiculo">N/A</div>
+<div class="fundo-modal" id="modalConfirma">
+  <div class="modal">
+    <h3><i class="fa-solid fa-shuffle" style="color:var(--azul)"></i>Trocar de Equipe</h3>
+    <p>Ao trocar, você sairá da sua equipe atual e será realocado para uma das equipes que ainda tem vagas disponíveis.<br><br>Isso pode alterar sua posição e área de atuação.<br><br>⚠️ <strong>Atenção:</strong> Após trocar, você precisará aguardar 1 minuto antes de poder trocar novamente. Tem certeza que deseja continuar?</p>
+    <div class="modal-botoes">
+      <button class="modal-botao modal-cancelar" onclick="fecharModal('modalConfirma')">Cancelar</button>
+      <button class="modal-botao modal-confirmar" onclick="abrirListaEquipes()">Ver Equipes Disponíveis</button>
     </div>
   </div>
+</div>
 
-  <div class="secao-integrantes">
-    <div class="cabecalho-integrantes">
-      <h2 class="titulo-secao">Integrantes</h2>
-      <span class="qtd-integrantes" id="qtdIntegrantes">0</span>
+<div class="fundo-modal" id="modalEquipes">
+  <div class="modal">
+    <h3><i class="fa-solid fa-users" style="color:var(--azul)"></i>Equipes Disponíveis</h3>
+    <p>Selecione abaixo para onde deseja ir:</p>
+    <div class="lista-equipes" id="listaEquipes">
+      <div style="text-align:center;padding:20px;color:var(--mut)">
+        <i class="fa-solid fa-spinner fa-spin"></i> Carregando...
+      </div>
     </div>
-    <div id="listaIntegrantes">
-      <div style="text-align:center;color:#94a3b8;padding:20px">Carregando...</div>
+    <div class="modal-botoes" style="margin-top:10px">
+      <button class="modal-botao modal-cancelar" onclick="fecharModal('modalEquipes')">Cancelar</button>
     </div>
   </div>
-  </div>
-    <nav class="nav">
+</div>
+
+<nav class="nav">
   <a href="painel.html"><i class="fa-solid fa-house"></i><span>Painel</span></a>
   <a href="bate-ponto.html"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
   <a href="equipe.html" class="ativo"><i class="fa-solid fa-users"></i><span>Equipe</span></a>
-  <a href="tickets.html"><i class="fa-solid fa-file-lines"></i><span>Tickets</span></a>
-  <a href="#"><i class="fa-solid fa-ellipsis-v"></i><span>Mais</span></a>
-    </nav>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
+const INTERVALO_ATUALIZACAO = 30000;
+const TEMPO_ESPERA_TROCA = 60000;
+
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const app = document.getElementById('app');
 
-let sessao = null;
-let membroAtual = null;
-let pontoAtivo = null;
-let intervaloTempo = null;
+let sessao = null, ponto = null, estado = 'carregando', assinatura = null;
+let trocando = false, membrosSincronizados = null, equipesDisponiveis = [];
+let ultimaTroca = parseInt(localStorage.getItem('ultimaTrocaEquipe') || '0');
+let cronometroEspera = null;
 
+function fecharModal(id){ document.getElementById(id).classList.remove('aberto'); }
+function abrirModal(id){ document.getElementById(id).classList.add('aberto'); }
+function abrirListaEquipes(){ fecharModal('modalConfirma'); abrirModal('modalEquipes'); carregarEquipesDisponiveis(); }
+
+function tempoRestanteEspera(){
+  const agora = Date.now();
+  const fim = ultimaTroca + TEMPO_ESPERA_TROCA;
+  return agora < fim ? Math.ceil((fim - agora) / 1000) : 0;
+}
+function formatarSegundos(s){ return s <= 0 ? '' : `${s}s`; }
+function atualizarEstadoBotao(){
+  const btn = document.getElementById('btnTrocar');
+  const esperaEl = document.getElementById('esperaInfo');
+  const restante = tempoRestanteEspera();
+  if(!btn) return;
+  if(restante > 0){
+    btn.disabled = true;
+    btn.innerHTML = `<i class="fa-solid fa-clock"></i> Aguardando... ${formatarSegundos(restante)}`;
+    if(esperaEl) esperaEl.innerHTML = `<i class="fa-solid fa-clock"></i> Próxima troca em ${formatarSegundos(restante)}`;
+  }else{
+    btn.disabled = trocando;
+    btn.innerHTML = `<i class="fa-solid fa-shuffle"></i> Trocar de Equipe`;
+    if(esperaEl) esperaEl.innerHTML = '';
+  }
+}
+function iniciarCronometro(){
+  if(cronometroEspera) clearInterval(cronometroEspera);
+  atualizarEstadoBotao();
+  cronometroEspera = setInterval(() => {
+    atualizarEstadoBotao();
+    if(tempoRestanteEspera() <= 0 && cronometroEspera){
+      clearInterval(cronometroEspera);
+      cronometroEspera = null;
+    }
+  }, 1000);
+}
+
+function achar(o, d){
+  if(!o || typeof o !== 'object' || d > 3) return null;
+  if(o.passaporte !== undefined && o.passaporte !== null && String(o.passaporte).trim() !== '') return o;
+  for(const k in o){ const r = achar(o[k], d + 1); if(r) return r; }
+  return null;
+}
+function extrair(chave, valor){
+  if(/^sb-/.test(chave)) return null;
+  try{
+    const o = JSON.parse(valor);
+    if(o && typeof o === 'object'){ const f = achar(o, 0); if(f) return f; }
+    else if(/passaporte/i.test(chave) && (typeof o === 'string' || typeof o === 'number') && String(o).trim()){
+      return { passaporte: String(o).trim() };
+    }
+  }catch(e){
+    if(/passaporte/i.test(chave) && valor.trim() && valor.length < 40){
+      return { passaporte: valor.trim() };
+    }
+  }
+  return null;
+}
 function lerSessao(){
-  for(const loja of [localStorage, sessionStorage]){
+  const lojas = [window.localStorage, window.sessionStorage];
+  for(const loja of lojas){
     try{
-      for(let i=0;i<loja.length;i++){
-        const k = loja.key(i), v = loja.getItem(k);
+      for(let i = 0; i < loja.length; i++){
+        const k = loja.key(i);
+        const v = loja.getItem(k);
         if(!v) continue;
-        try{ const o=JSON.parse(v); if(o?.passaporte) return o; }
-        catch(e){ if(/passaporte/i.test(k) && v.trim().length<40) return {passaporte:v.trim()}; }
+        const s = extrair(k, v);
+        if(s) return s;
       }
     }catch(e){}
   }
   return null;
 }
 
-async function buscarMembro(){
-  if(!sessao) return null;
-  const {data,error}=await sb.from('membros').select('*')
-    .eq('passaporte', sessao.passaporte).single();
-  return error?null:data;
+function esc(t){ return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function dois(n){ return String(n).padStart(2, '0'); }
+
+function grupoDe(eq){
+  const t = String(eq.tipo || '').toLowerCase();
+  const f = String(eq.funcao || '').toLowerCase();
+  if(t.startsWith('rota')) return 'rota';
+  if(t.startsWith('venda')) return 'vendas';
+  if(t.startsWith('apoio')) return 'apoio';
+  if(/seguran|apoio/.test(f)) return 'apoio';
+  if(/venda/.test(f)) return 'vendas';
+  return 'rota';
+}
+function formatarFuncao(f){
+  if(!f) return '';
+  const s = String(f).trim();
+  const palavras = s.split(/\s+/)
+    .filter(p => !/^(de|da|do|das|dos)$/i.test(p))
+    .map(p => /^venda$/i.test(p) ? 'VENDAS' : p);
+  return palavras.join(' ').toUpperCase();
 }
 
-async function buscarPontoAtivo(){
-  if(!sessao) return null;
-  const {data,error}=await sb.from('pontos').select('*')
-    .eq('passaporte', sessao.passaporte).is('saida', null)
-    .order('criado_em', {ascending:false}).limit(1);
-  return error?null:(data?.length?data[0]:null);
-}
-
-function formatarTempo(ms){
-  if(!ms || ms<0) return '00:00:00';
-  const h = Math.floor(ms/3600000);
-  const m = Math.floor((ms%3600000)/60000);
-  const s = Math.floor((ms%60000)/1000);
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function atualizarTempoServico(){
-  if(!pontoAtivo || !pontoAtivo.entrada) return;
-  const ms = Date.now() - new Date(pontoAtivo.entrada).getTime();
-  document.getElementById('tempoServico').textContent = formatarTempo(ms);
-}
-
-async function carregarDados(){
-  pontoAtivo = await buscarPontoAtivo();
-  
-  if(!pontoAtivo){
-    document.getElementById('semJornada').classList.remove('oculto');
-    document.getElementById('comJornada').classList.add('oculto');
-    if(intervaloTempo) clearInterval(intervaloTempo);
-    return;
+function posicaoFixa(eq, grupo){
+  const t = String(eq.tipo || '').toLowerCase();
+  const f = String(eq.funcao || '').toLowerCase();
+  if(grupo === 'apoio') return t.endsWith('1') ? 'P1' : t.endsWith('2') ? 'P2' : null;
+  if(grupo === 'vendas'){
+    if(f.includes('lockpick')) return 'P1';
+    if(f.includes('flipper')) return 'P2';
+    if(t.endsWith('1')) return 'P1';
+    if(t.endsWith('2')) return 'P2';
   }
-
-  document.getElementById('semJornada').classList.add('oculto');
-  document.getElementById('comJornada').classList.remove('oculto');
-
-  membroAtual = await buscarMembro();
-  if(!membroAtual || !membroAtual.equipe_atual){
-    document.getElementById('semJornada').classList.remove('oculto');
-    document.getElementById('comJornada').classList.add('oculto');
-    return;
+  return null;
+}
+function minhaPosicao(eq, grupo, idx){
+  if(grupo === 'rota') return idx >= 0 ? 'P' + (idx + 1) : 'N/A';
+  return posicaoFixa(eq, grupo) || (idx >= 0 ? 'P' + (idx + 1) : 'N/A');
+}
+function tsEntrada(v){
+  const d = Date.parse(v);
+  if(!isNaN(d)) return d;
+  const m = String(v || '').match(/(\d{1,2}):(\d{2})/);
+  return m ? (parseInt(m[1], 10) * 60 + parseInt(m[2], 10)) * 60000 : Infinity;
+}
+function horaDe(v){
+  if(!v) return '--:--';
+  const d = new Date(v);
+  if(!isNaN(d)) return dois(d.getHours()) + ':' + dois(d.getMinutes());
+  const m = String(v).match(/(\d{1,2}):(\d{2})/);
+  return m ? dois(m[1]) + ':' + m[2] : '--:--';
+}
+function msEmServico(){
+  if(!ponto) return null;
+  const ent = Date.parse(ponto.entrada);
+  if(isNaN(ent)) return null;
+  const agora = Date.now();
+  let ms = agora - ent;
+  const pi = Date.parse(ponto.pausa_inicio);
+  const pf = Date.parse(ponto.pausa_fim);
+  if(!isNaN(pi)) ms -= ((!isNaN(pf) ? pf : agora) - pi);
+  return Math.max(ms, 0);
+}
+function formatarDuracao(ms){
+  if(ms == null) return '--:--:--';
+  const s = Math.floor(ms / 1000);
+  return dois(Math.floor(s / 3600)) + ':' + dois(Math.floor((s % 3600) / 60)) + ':' + dois(s % 60);
+}
+function emPausa(){ return !!(ponto && ponto.pausa_inicio && !ponto.pausa_fim); }
+function textoSync(){
+  const d = new Date();
+  return 'Sincronizado ' + dois(d.getDate()) + '/' + dois(d.getMonth() + 1) + ', ' + dois(d.getHours()) + ':' + dois(d.getMinutes());
+}
+  async function carregarEquipesDisponiveis(){
+  const lista = document.getElementById('listaEquipes');
+  lista.innerHTML = `<div style="text-align:center;padding:20px;color:var(--mut)"><i class="fa-solid fa-spinner fa-spin"></i> Carregando...</div>`;
+  try{
+    const { data: todas, error: e1 } = await sb.from('equipes').select('*');
+    if(e1) throw e1;
+    const { data: ativos, error: e2 } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
+    if(e2) throw e2;
+    const cont = {};
+    (ativos || []).forEach(p => { cont[String(p.equipe_id)] = (cont[String(p.equipe_id)] || 0) + 1; });
+    equipesDisponiveis = (todas || []).filter(e => {
+      const ativo = e.ativo !== false;
+      if(!ativo) return false;
+      const lim = e.limite_vagas;
+      const atual = cont[String(e.id)] || 0;
+      return String(e.id) !== String(ponto.equipe_id) && (lim == null || atual < lim);
+    });
+    if(!equipesDisponiveis.length){
+      lista.innerHTML = `<div style="text-align:center;padding:30px;color:var(--mut)"><i class="fa-solid fa-circle-info" style="font-size:24px;color:var(--azul)"></i><p style="margin-top:12px">Nenhuma outra equipe com vaga no momento.</p></div>`;
+      return;
+    }
+    lista.innerHTML = equipesDisponiveis.map(eq => {
+      const nome = formatarFuncao(eq.funcao) || String(eq.nome || 'EQUIPE').toUpperCase();
+      const atual = cont[String(eq.id)] || 0;
+      const vagas = eq.limite_vagas ? `${atual} de ${eq.limite_vagas} vagas` : `${atual} vaga(s) ocupada(s)`;
+      return `<div class="card-equipe" onclick="escolherEquipe('${String(eq.id).replace(/'/g, "\\'")}')"><h4>${esc(nome)}</h4><small><i class="fa-solid fa-location-dot"></i> ${esc(eq.area || 'Área não definida')}</small><div class="vagas"><i class="fa-solid fa-user-check"></i> ${esc(vagas)}</div></div>`;
+    }).join('');
+  }catch(err){
+    console.error('Erro ao carregar equipes:', err);
+    lista.innerHTML = `<div style="text-align:center;padding:20px;color:#fca5a5"><i class="fa-solid fa-triangle-exclamation"></i><p style="margin-top:8px">Não foi possível carregar.</p><small style="color:var(--mut);margin-top:4px;display:block">${esc(err.message || '')}</small></div>`;
   }
-
-  const {data:equipe,error}=await sb.from('equipes').select('*')
-    .eq('nome', membroAtual.equipe_atual).single();
-
-  if(equipe && !error){
-    document.getElementById('escalaTopo').textContent = `Escala atual · ${equipe.escala || '---'}`;
-    document.getElementById('nomeEquipe').textContent = equipe.nome;
-    document.getElementById('missaoArea').textContent = equipe.missao || '---';
-    document.getElementById('vagas').textContent = `${equipe.quantidade_integrantes || 0} / ${equipe.limite_vagas || 10}`;
-    document.getElementById('veiculo').textContent = equipe.veiculo || 'N/A';
-  }else{
-    document.getElementById('escalaTopo').textContent = 'Escala atual · ---';
-    document.getElementById('nomeEquipe').textContent = membroAtual.equipe_atual;
-    document.getElementById('missaoArea').textContent = '---';
-    document.getElementById('vagas').textContent = '1 / 10';
-    document.getElementById('veiculo').textContent = 'N/A';
-  }
-
-  document.getElementById('minhaPosicao').textContent = membroAtual.posicao || '---';
-  document.getElementById('minhaFuncao').textContent = membroAtual.funcao || '---';
-  document.getElementById('minhaEntrada').textContent = pontoAtivo.entrada 
-    ? new Date(pontoAtivo.entrada).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'}) 
-    : '--:--';
-
-  atualizarTempoServico();
-  if(intervaloTempo) clearInterval(intervaloTempo);
-  intervaloTempo = setInterval(atualizarTempoServico, 1000);
-
-  await carregarIntegrantes(membroAtual.equipe_atual);
 }
 
-async function carregarIntegrantes(nomeEquipe){
-  const {data:membros,error}=await sb.from('membros').select('*')
-    .eq('equipe_atual', nomeEquipe).order('nome');
-  
-  const lista = document.getElementById('listaIntegrantes');
-  const qtd = document.getElementById('qtdIntegrantes');
-  
-  if(error || !membros || !membros.length){
-    qtd.textContent = '0';
-    lista.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:20px">Nenhum integrante encontrado</div>';
-    return;
+async function escolherEquipe(equipeId){
+  fecharModal('modalEquipes');
+  trocando = true;
+  const btn = document.getElementById('btnTrocar');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Trocando...';
+  try{
+    const antigaId = ponto.equipe_id;
+    await salvarEquipeNoPonto(equipeId);
+    await sincronizarMembros(equipeId, antigaId);
+    membrosSincronizados = String(equipeId);
+    ultimaTroca = Date.now();
+    localStorage.setItem('ultimaTrocaEquipe', String(ultimaTroca));
+    await carregarEDesenhar(true);
+    aviso('✅ Equipe alterada com sucesso!', 'sucesso');
+    iniciarCronometro();
+  }catch(e){
+    console.error(e);
+    aviso('❌ Não foi possível trocar. Tente novamente.', 'erro');
   }
-
-  qtd.textContent = `${membros.length}`;
-  lista.innerHTML = membros.map(m=>`
-    <div class="card-integrante">
-      <div class="integrante-nome">${m.nome}</div>
-      <div class="integrante-funcao">${m.funcao || 'Membro'}</div>
-    </div>
-  `).join('');
+  trocando = false;
+  atualizarEstadoBotao();
 }
+
+async function buscarPontoAtivo(passaporte){
+  const { data, error } = await sb.from('pontos').select('*').eq('passaporte', passaporte).is('saida', null).order('criado_em', { ascending: false }).limit(1);
+  if(error) throw error;
+  return (data && data.length) ? data[0] : null;
+}
+async function salvarEquipeNoPonto(equipeId){
+  const { error } = await sb.from('pontos').update({ equipe_id: equipeId }).eq('passaporte', ponto.passaporte).eq('criado_em', ponto.criado_em);
+  if(error) throw error;
+  ponto.equipe_id = equipeId;
+}
+async function sincronizarMembros(equipeId, antigaId){
+  const meu = String(sessao.passaporte);
+  try{
+    if(antigaId){
+      const { data } = await sb.from('equipes').select('id,membros').eq('id', antigaId).limit(1);
+      if(data && data[0] && Array.isArray(data[0].membros)){
+        const novo = data[0].membros.filter(m => String(m) !== meu);
+        if(novo.length !== data[0].membros.length)
+          await sb.from('equipes').update({ membros: novo }).eq('id', antigaId);
+      }
+    }
+    const { data: d2 } = await sb.from('equipes').select('id,membros').eq('id', equipeId).limit(1);
+    if(d2 && d2[0]){
+      const atual = Array.isArray(d2[0].membros) ? d2[0].membros.slice() : [];
+      if(!atual.some(m => String(m) === meu)){
+        const numerico = atual.length && typeof atual[0] === 'number';
+        atual.push(numerico ? Number(meu) : meu);
+        await sb.from('equipes').update({ membros: atual }).eq('id', equipeId);
+      }
+    }
+  }catch(e){}
+}
+async function carregarIntegrantes(eq){
+  const meuPass = String(sessao.passaporte);
+  const { data: ativos, error } = await sb.from('pontos').select('passaporte,nome,entrada,equipe_id').is('saida', null);
+  if(error) throw error;
+  const todos = ativos || [];
+  const mapa = new Map();
+  todos.filter(p => String(p.equipe_id) === String(eq.id)).forEach(p => {
+    mapa.set(String(p.passaporte), { passaporte: String(p.passaporte), nome: p.nome || String(p.passaporte), entrada: p.entrada });
+  });
+  const emOutra = new Set(todos.filter(p => p.equipe_id != null && String(p.equipe_id) !== String(eq.id)).map(p => String(p.passaporte)));
+  const membros = Array.isArray(eq.membros) ? eq.membros.map(String) : [];
+  const faltam = membros.filter(m => !mapa.has(m) && !emOutra.has(m));
+  if(faltam.length){
+    const { data: us } = await sb.from('usuarios').select('passaporte,nome').in('passaporte', faltam);
+    const nomes = {};
+    (us || []).forEach(u => { nomes[String(u.passaporte)] = u.nome; });
+    faltam.forEach(m => mapa.set(m, { passaporte: m, nome: nomes[m] || m, entrada: null }));
+  }
+  if(!mapa.has(meuPass)){
+    mapa.set(meuPass, { passaporte: meuPass, nome: ponto.nome || sessao.nome || meuPass, entrada: ponto.entrada });
+  }
+  const lista = Array.from(mapa.values()).map(i => ({ ...i, eu: i.passaporte === meuPass }));
+  lista.sort((a, b) => tsEntrada(a.entrada) - tsEntrada(b.entrada));
+  return lista;
+}
+
+function telaSemServico(){
+  estado = 'sem'; assinatura = null;
+  app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-circle-info"></i></div><h2>Nenhum serviço ativo</h2><p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p></div><a href="bate-ponto.html" class="btn"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div>`;
+}
+function telaErro(msg){
+  estado = 'erro'; assinatura = null;
+  app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-triangle-exclamation"></i></div><h2>Não foi possível carregar</h2><p>${esc(msg)}</p></div><button class="btn" onclick="iniciar()"><i class="fa-solid fa-rotate"></i> Tentar novamente</button></div>`;
+}
+function telaEquipe(eq, integrantes){
+  estado = 'equipe';
+  const grupo = grupoDe(eq);
+  const idx = integrantes.findIndex(i => i.eu);
+  const n = integrantes.length;
+  const lim = eq.limite_vagas;
+  const vagas = lim != null ? n + ' de ' + lim + ' vagas' : n + (n === 1 ? ' vaga ocupada' : ' vagas ocupadas');
+  const nomeGrande = formatarFuncao(eq.funcao) || String(eq.nome || 'EQUIPE').toUpperCase();
+  const escala = eq.nome ? 'ESCALA ATUAL · ' + esc(eq.nome) : 'ESCALA ATUAL';
+  const restante = tempoRestanteEspera();
+  const selo = emPausa() ? '<div class="selo pausa"><i class="fa-solid fa-circle"></i> EM PAUSA</div>' : '<div class="selo"><i class="fa-solid fa-circle"></i> EM SERVIÇO</div>';
+  const esperaInfo = restante > 0 ? `<div class="espera-info" id="esperaInfo"><i class="fa-solid fa-clock"></i> Próxima troca em ${restante}s</div>` : `<div class="espera-info" id="esperaInfo"></div>`;
+  const itens = integrantes.map((i, k) => {
+    const desde = (i.entrada && horaDe(i.entrada) !== '--:--') ? ' · desde ' + horaDe(i.entrada) : '';
+    const icone = (grupo === 'rota') ? 'P' + (k + 1) : '<i class="fa-solid fa-user"></i>';
+    return `<div class="integ ${i.eu ? 'eu' : ''}"><div class="integ-ic">${icone}</div><div class="integ-info"><div class="integ-nome">${esc(i.nome)}</div><div class="integ-sub">Passaporte ${esc(i.passaporte)}${esc(desde)}</div></div>${i.eu ? '<div class="voce">VOCÊ</div>' : ''}</div>`;
+  }).join('');
+  app.innerHTML = `
+    <div class="layout">
+      <div class="col-esq">
+        <div class="hero">
+          <div class="hero-topo">
+            <div><div class="escala">${escala}</div><div class="nome-equipe">${esc(nomeGrande)}</div><div class="sub">Veja sua alocação atual</div></div>
+            ${selo}
+          </div>
+          <div class="corpo">
+            <div class="bloco"><div class="local"><div class="ic"><i class="fa-solid fa-location-dot"></i></div><div><div class="rotulo">MISSÃO / ÁREA</div><div class="valor">${esc(eq.area || 'N/A')}</div></div></div></div>
+            <div class="grid2">
+              <div class="bloco"><div class="rotulo"><i class="fa-solid fa-flag"></i> MINHA POSIÇÃO</div><div class="posicao">${esc(minhaPosicao(eq, grupo, idx))}</div></div>
+              <div class="bloco"><div class="rotulo"><i class="fa-solid fa-briefcase"></i> FUNÇÃO</div><div class="valor">${esc(eq.funcao || 'N/A')}</div></div>
+            </div>
+            <div class="grid2">
+              <div class="bloco"><div class="rotulo"><i class="fa-solid fa-right-to-bracket"></i> MINHA ENTRADA</div><div class="valor grande">${esc(horaDe(ponto.entrada))}</div></div>
+              <div class="bloco"><div class="rotulo"><i class="fa-solid fa-stopwatch"></i> EM SERVIÇO HÁ</div><div class="valor grande" id="tempo">${esc(formatarDuracao(msEmServico()))}</div></div>
+            </div>
+            <div class="grid2">
+              <div class="bloco"><div class="rotulo"><i class="fa-solid fa-user-group"></i> LIMITE DE VAGAS</div><div class="valor">${esc(vagas)}</div></div>
+              <div class="bloco"><div class="rotulo"><i class="fa-solid fa-car"></i> VEÍCULO</div><div class="valor">N/A</div></div>
+            </div>
+          </div>
+          <div class="rodape"><span><i class="fa-solid fa-arrows-rotate"></i>${esc(textoSync())}</span>${esperaInfo}</div>
+        </div>
+      </div>
+      <div class="col-dir">
+        <div class="integrantes">
+          <div class="integ-topo"><div class="integ-titulo">Integrantes</div><div class="pill">${n} ${n === 1 ? 'INTEGRANTE' : 'INTEGRANTES'}</div></div>
+          <div class="integ-lista">${itens}</div>
+        </div>
+        <button class="btn" id="btnTrocar" onclick="abrirModal('modalConfirma')"><i class="fa-solid fa-shuffle"></i> Trocar de Equipe</button>
+        <div class="aviso" id="aviso"></div>
+      </div>
+    </div>`;
+  iniciarCronometro();
+}
+function aviso(msg, tipo){
+  const el = document.getElementById('aviso');
+  if(!el) return;
+  el.textContent = msg;
+  el.className = 'aviso ' + (tipo === 'sucesso' ? 'sucesso' : 'erro');
+  el.style.display = 'block';
+  setTimeout(() => { el.style.display = 'none'; }, 5000);
+}
+
+async function carregarEDesenhar(forcar){
+  const { data, error } = await sb.from('equipes').select('*').eq('id', ponto.equipe_id).limit(1);
+  if(error) throw error;
+  if(!data || !data.length){ telaErro('Equipe não encontrada.'); return; }
+  const eq = data[0];
+  const meu = String(sessao.passaporte);
+  const temEu = Array.isArray(eq.membros) && eq.membros.some(m => String(m) === meu);
+  if(!temEu && membrosSincronizados !== String(eq.id)){
+    membrosSincronizados = String(eq.id);
+    await sincronizarMembros(eq.id, null);
+  }
+  const integrantes = await carregarIntegrantes(eq);
+  const sig = JSON.stringify([eq, integrantes, ponto.entrada, ponto.pausa_inicio, ponto.pausa_fim, ponto.status]);
+  if(forcar || sig !== assinatura || estado !== 'equipe'){
+    assinatura = sig;
+    telaEquipe(eq, integrantes);
+  }
+}
+async function atualizar(){
+  if(!sessao || trocando || estado === 'carregando') return;
+  try{
+    const p = await buscarPontoAtivo(sessao.passaporte);
+    if(!p){ ponto = null; if(estado !== 'sem') telaSemServico(); return; }
+    ponto = p;
+    if(!ponto.equipe_id) return;
+    await carregarEDesenhar(false);
+  }catch(e){}
+}
+
+setInterval(() => {
+  const el = document.getElementById('tempo');
+  if(el && estado === 'equipe') el.textContent = formatarDuracao(msEmServico());
+}, 1000);
+setInterval(atualizar, INTERVALO_ATUALIZACAO);
 
 async function iniciar(){
   sessao = lerSessao();
-  if(!sessao){
-    window.location.replace('login.html');
-    return;
+  if(!sessao){ window.location.replace('login.html'); return; }
+  sessao.passaporte = String(sessao.passaporte);
+  estado = 'carregando';
+  try{
+    ponto = await buscarPontoAtivo(sessao.passaporte);
+    if(!ponto){ telaSemServico(); return; }
+    if(!ponto.equipe_id){
+      const { data: equipes } = await sb.from('equipes').select('*');
+      const { data: ativos } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
+      const cont = {};
+      (ativos || []).forEach(p => { cont[p.equipe_id] = (cont[p.equipe_id] || 0) + 1; });
+      const livres = (equipes || []).filter(e => {
+        const ativo = e.ativo !== false;
+        if(!ativo) return false;
+        const lim = e.limite_vagas;
+        return lim == null || (cont[e.id] || 0) < lim;
+      });
+      if(!livres.length){ telaErro('Não há equipes com vaga no momento.'); return; }
+      const eq = livres[Math.floor(Math.random() * livres.length)];
+      await salvarEquipeNoPonto(eq.id);
+      await sincronizarMembros(eq.id, null);
+      membrosSincronizados = String(eq.id);
+    }
+    await carregarEDesenhar(true);
+  }catch(e){
+    console.error(e);
+    telaErro('Falha ao consultar os dados.');
   }
-  await carregarDados();
 }
-
 iniciar();
 </script>
 </body>
