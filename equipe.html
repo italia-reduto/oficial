@@ -175,7 +175,7 @@
     <div class="secao-integrantes">
       <h2 class="titulo-secao">Integrantes da Equipe</h2>
       <div id="listaIntegrantes">
-        <div class="sem-dados">Carregando...</div>
+        <div style="text-align:center;color:#8b95a8;padding:20px">Carregando...</div>
       </div>
     </div>
 
@@ -192,7 +192,7 @@
   <div class="aviso-box">
     <h3 class="aviso-titulo">Trocar de Equipe</h3>
     <p class="aviso-texto">
-      Ao trocar de equipe, você será removido da sua equipe atual e realocado para uma das equipes com vagas disponíveis.<br><br>
+      Ao trocar de equipe, você será realocado para uma das equipes com vagas disponíveis.<br><br>
       ⏰ <strong>Atenção:</strong> Após trocar de equipe, você precisará aguardar <strong>1 minuto</strong> antes de poder trocar novamente.
     </p>
     <div class="aviso-botoes">
@@ -207,7 +207,7 @@
   <div class="equipes-box">
     <h3 class="equipes-titulo">Equipes Disponíveis</h3>
     <div id="listaEquipes">
-      <div class="sem-dados">Carregando...</div>
+      <div style="text-align:center;color:#8b95a8;padding:20px">Carregando...</div>
     </div>
     <button class="fechar-modal" onclick="fecharEquipes()">Fechar</button>
   </div>
@@ -225,7 +225,7 @@ const SUPABASE_KEY = 'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let sessao = null;
-let pontoAtivo = null;
+let membroAtual = null;
 let tempoBloqueioTroca = null;
 let intervaloTroca = null;
 
@@ -243,51 +243,73 @@ function lerSessao(){
   return null;
 }
 
+async function buscarMembro(){
+  if(!sessao) return null;
+  const {data,error}=await sb.from('membros').select('*')
+    .eq('passaporte', sessao.passaporte).single();
+  if(error){
+    console.log('Erro ao buscar membro:', error);
+    return null;
+  }
+  return data;
+}
+
 async function buscarPontoAtivo(){
   if(!sessao) return null;
   const {data,error}=await sb.from('pontos').select('*')
-    .eq('passaporte',sessao.passaporte).is('saida',null)
-    .order('criado_em',{ascending:false}).limit(1);
+    .eq('passaporte', sessao.passaporte).is('saida', null)
+    .order('criado_em', {ascending:false}).limit(1);
   return error?null:(data?.length?data[0]:null);
 }
 
 async function carregarDadosEquipe(){
-  if(!pontoAtivo || !pontoAtivo.equipe){
+  const pontoAtivo = await buscarPontoAtivo();
+  
+  // Se não tem jornada ativa, mostra a tela inicial
+  if(!pontoAtivo){
     document.getElementById('semJornada').classList.remove('oculto');
     document.getElementById('comJornada').classList.add('oculto');
     return;
   }
 
+  // Tem jornada ativa → busca os dados do membro
+  membroAtual = await buscarMembro();
+  
+  if(!membroAtual || !membroAtual.equipe_atual){
+    document.getElementById('semJornada').classList.remove('oculto');
+    document.getElementById('comJornada').classList.add('oculto');
+    return;
+  }
+
+  // Mostra os dados da equipe
   document.getElementById('semJornada').classList.add('oculto');
   document.getElementById('comJornada').classList.remove('oculto');
 
   const {data:equipe,error}=await sb.from('equipes').select('*')
-    .eq('nome',pontoAtivo.equipe).single();
+    .eq('nome', membroAtual.equipe_atual).single();
 
   if(error || !equipe){
-    document.getElementById('nomeEquipe').textContent = pontoAtivo.equipe;
+    document.getElementById('nomeEquipe').textContent = membroAtual.equipe_atual;
     document.getElementById('missaoEquipe').textContent = '---';
     document.getElementById('areaEquipe').textContent = '---';
     document.getElementById('escalaAtual').textContent = '---';
-    document.getElementById('listaIntegrantes').innerHTML = '<div class="sem-dados">Nenhum integrante encontrado</div>';
-    return;
+  }else{
+    document.getElementById('nomeEquipe').textContent = equipe.nome || '---';
+    document.getElementById('missaoEquipe').textContent = equipe.missao || '---';
+    document.getElementById('areaEquipe').textContent = equipe.area || '---';
+    document.getElementById('escalaAtual').textContent = equipe.escala || '---';
   }
 
-  document.getElementById('nomeEquipe').textContent = equipe.nome || '---';
-  document.getElementById('missaoEquipe').textContent = equipe.missao || '---';
-  document.getElementById('areaEquipe').textContent = equipe.area || '---';
-  document.getElementById('escalaAtual').textContent = equipe.escala || '---';
-
-  await carregarIntegrantes(equipe);
+  await carregarIntegrantes(membroAtual.equipe_atual);
 }
 
-async function carregarIntegrantes(equipe){
+async function carregarIntegrantes(nomeEquipe){
   const {data:membros,error}=await sb.from('membros').select('*')
-    .eq('equipe_atual',equipe.nome).order('nome');
+    .eq('equipe_atual', nomeEquipe).order('nome');
 
   const lista = document.getElementById('listaIntegrantes');
   if(error || !membros || !membros.length){
-    lista.innerHTML = '<div class="sem-dados">Nenhum integrante encontrado</div>';
+    lista.innerHTML = '<div style="text-align:center;color:#8b95a8;padding:20px">Nenhum integrante encontrado</div>';
     return;
   }
 
@@ -348,18 +370,18 @@ async function abrirEquipesDisponiveis(){
   const lista = document.getElementById('listaEquipes');
   
   if(error || !equipes){
-    lista.innerHTML = '<div class="sem-dados">Erro ao carregar equipes</div>';
+    lista.innerHTML = '<div style="text-align:center;color:#8b95a8;padding:20px">Erro ao carregar equipes</div>';
     return;
   }
 
   const disponiveis = equipes.filter(e=>{
     const limite = e.limite_vagas || 10;
     const ocupadas = e.quantidade_integrantes || 0;
-    return ocupadas < limite && e.nome !== pontoAtivo.equipe;
+    return ocupadas < limite && e.nome !== membroAtual.equipe_atual;
   });
 
   if(!disponiveis.length){
-    lista.innerHTML = '<div class="sem-dados">Nenhuma equipe com vaga disponível no momento</div>';
+    lista.innerHTML = '<div style="text-align:center;color:#8b95a8;padding:20px">Nenhuma equipe com vaga disponível no momento</div>';
     return;
   }
 
@@ -380,17 +402,14 @@ function fecharEquipes(){
 }
 
 async function trocarEquipe(novaEquipe){
-  if(!sessao || !pontoAtivo) return;
+  if(!sessao || !membroAtual) return;
   
   fecharEquipes();
   
-  const {error:err1}=await sb.from('pontos').update({equipe:novaEquipe})
-    .eq('id',pontoAtivo.id);
-  
-  const {error:err2}=await sb.from('membros').update({equipe_atual:novaEquipe})
-    .eq('passaporte',sessao.passaporte);
+  const {error}=await sb.from('membros').update({equipe_atual: novaEquipe})
+    .eq('passaporte', sessao.passaporte);
 
-  if(err1 || err2){
+  if(error){
     alert('Erro ao trocar de equipe. Tente novamente.');
     return;
   }
@@ -398,7 +417,7 @@ async function trocarEquipe(novaEquipe){
   tempoBloqueioTroca = Date.now() + 60000;
   localStorage.setItem('bloqueioTrocaEquipe', tempoBloqueioTroca);
   
-  pontoAtivo.equipe = novaEquipe;
+  membroAtual.equipe_atual = novaEquipe;
   await carregarDadosEquipe();
   verificarBloqueioTroca();
 }
@@ -415,7 +434,6 @@ async function iniciar(){
     tempoBloqueioTroca = parseInt(salvo);
   }
 
-  pontoAtivo = await buscarPontoAtivo();
   await carregarDadosEquipe();
   
   verificarBloqueioTroca();
