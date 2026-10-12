@@ -34,7 +34,6 @@
   }
   a{text-decoration:none;color:inherit}
   .layout{display:block}
-  .col-esq,.col-dir{min-width:0}
   .hero{
     position:relative;overflow:hidden;
     background:linear-gradient(160deg,#0d1b36 0%,#0b1220 45%,#0a0d13 100%);
@@ -66,11 +65,10 @@
   .valor.grande{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
   .local{display:flex;align-items:center;gap:14px}
   .local .ic{
-    width:44px;height:44px;border-radius:12px 0 0 44px;
+    width:44px;height:44px;border-radius:12px 0 0 12px;
     display:flex;justify-content:center;
     background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.24);color:var(--azul);font-size:18px;
   }
-  .local .rotulo{margin-bottom:4px}
   .integrantes{margin-top:24px}
   .integ-titulo{font-size:18px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
   .integ-lista{display:flex;flex-direction:column;gap:8px}
@@ -87,10 +85,9 @@
   .aviso.erro{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#fca5a5}
   .btn{
     display:block;width:100%;text-align:center;padding:14px;border-radius:12px;font-weight:600;font-size:15px;
-    background:var(--azul);color:#000;border:none;cursor:pointer;font-family:inherit;
+    background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;border:none;cursor:pointer;font-family:inherit;
   }
   .btn.secundario{background:var(--inner);color:var(--txt);border:1px solid var(--line)}
-  .btn.trocar-equipe{background:linear-gradient(135deg,#f59e0b,#d97706);color:#000;margin-top:16px}
   .card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 20px;text-align:center}
   .estado .ic{width:64px;height:64px;border-radius:50%;background:rgba(59,130,246,.12);display:flex;align-items:center;justify-content:center;margin:0 auto 16px}
   .estado .ic i{font-size:28px;color:var(--azul)}
@@ -163,7 +160,7 @@ const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 const app = document.getElementById('app');
-let sessao = JSON.parse(localStorage.getItem('sessao') || 'null');
+let sessao = JSON.parse(localStorage.getItem('sessao') || '{}');
 let estado = 'carregando';
 let assinatura = null;
 let ponto = null;
@@ -184,7 +181,7 @@ const INTERVALO_ATUALIZACAO = 30000;
 
 function lerSessao(){
   const s = localStorage.getItem('sessao');
-  return s ? JSON.parse(s) : null;
+  return s ? JSON.parse(s) : {};
 }
 
 function salvarSessao(dados){
@@ -244,12 +241,12 @@ function grupoDe(eq){
 
 function telaSemServico(){
   estado = 'sem'; assinatura = null;
-  app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-circle-info"></i></div><h2>Nenhum serviço ativo</h2><p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p></div><a href="bate-ponto.html" class="btn" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div>`;
+  app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-circle-info"></i></div><h2>Nenhum serviço ativo</h2><p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p></div><a href="bate-ponto.html" class="btn"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div>`;
 }
 
 function telaErro(msg){
   estado = 'erro'; assinatura = null;
-  app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-triangle-exclamation"></i></div><h2>Atenção</h2><p>${msg}</p><a href="bate-ponto.html" class="btn" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div></div>`;
+  app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-triangle-exclamation"></i></div><h2>Atenção</h2><p>${msg}</p><a href="bate-ponto.html" class="btn"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div></div>`;
 }
 
 async function telaEquipe(eq, integrantes){
@@ -359,6 +356,7 @@ function fecharModal(id){
 }
 
 async function buscarPontoAtivo(passaporte){
+  if(!passaporte) return null;
   const {data, error} = await sb.from('pontos').select('*,equipe:equipe_id(*)').eq('passaporte', passaporte).order('entrada', {asc:false}).limit(1);
   if(error) return null;
   const ultimo = data?.[0];
@@ -367,16 +365,17 @@ async function buscarPontoAtivo(passaporte){
 }
 
 async function carregarIntegrantes(equipe_id){
+  if(!equipe_id) return [];
   const {data:eq} = await sb.from('equipes').select('membros,limite_vagas,nome_equipe,funcao,nome').eq('id', equipe_id).single();
   if(!eq || !eq.membros) return [];
   const todos = eq.membros.map(p => String(p));
   const {data:usuarios} = await sb.from('usuarios').select('passaporte,nome').in('passaporte', todos);
   const mapa = new Map((usuarios || []).map(u => [String(u.passaporte), u.nome]));
-  const meupassaporte = String(sessao.passaporte);
+  const meupassaporte = String(sessao.passaporte || '');
   return todos.map(p => ({
     passaporte: p,
     nome: mapa.get(p) || p,
-    eu: p === meupassaporte
+    eu: meupassaporte && p === meupassaporte
   })).sort((a, b) => {
     if(a.eu) return -1;
     if(b.eu) return 1;
@@ -386,7 +385,8 @@ async function carregarIntegrantes(equipe_id){
 
 async function sincronizarMembros(equipe_id, novo_passaporte){
   if(!equipe_id) return;
-  const passaporte = novo_passaporte || String(sessao.passaporte);
+  const passaporte = novo_passaporte || String(sessao.passaporte || '');
+  if(!passaporte) return;
   const {data:eq} = await sb.from('equipes').select('membros').eq('id', equipe_id).single();
   if(!eq) return;
   const atuais = (eq.membros || []).map(p => String(p));
@@ -447,7 +447,7 @@ async function abrirEquipesDisponiveis(){
 }
 
 async function confirmarTroca(novaEquipeId){
-  if(!ponto || !sessao) return;
+  if(!ponto) return;
   
   trocando = true;
   
@@ -455,8 +455,8 @@ async function confirmarTroca(novaEquipeId){
   
   const {data:eq} = await sb.from('equipes').select('membros').eq('id', novaEquipeId).single();
   const membros = eq?.membros || [];
-  const meuPassaporte = String(sessao.passaporte);
-  if(!membros.map(p => String(p)).includes(meuPassaporte)){
+  const meuPassaporte = String(sessao.passaporte || '');
+  if(meuPassaporte && !membros.map(p => String(p)).includes(meuPassaporte)){
     membros.push(meuPassaporte);
     await sb.from('equipes').update({membros: membros}).eq('id', novaEquipeId);
   }
@@ -471,16 +471,12 @@ async function confirmarTroca(novaEquipeId){
   if(cronId) clearInterval(cronId);
   cronId = setInterval(() => {
     tempoRestante--;
-    const contadorEl = document.getElementById('cronContador');
-    const btnConfirmar = document.getElementById('btnConfirmarTroca');
-    if(contadorEl) contadorEl.style.display = 'block';
     const span = document.getElementById('contador');
     if(span) span.textContent = tempoRestante;
     
     if(tempoRestante <= 0){
       clearInterval(cronId);
       if(btn) btn.disabled = false;
-      if(contadorEl) contadorEl.style.display = 'none';
       aviso('Pode iniciar nova jornada agora!', 'sucesso');
       atualizar();
     }
@@ -488,16 +484,16 @@ async function confirmarTroca(novaEquipeId){
   
   trocando = false;
   atualizar();
-      }
+    }
   async function carregarEDesenhar(forcar=false){
-  if(!ponto?.equipe_id) return;
+  if(!ponto?.equipe_id) { telaSemServico(); return; }
   const { data, error } = await sb.from('equipes').select('*').eq('id', ponto.equipe_id).limit(1);
   if(error || !data || !data.length){ telaErro('Equipe não encontrada.'); return; }
   const eq = data[0];
-  const meupassaporte = String(sessao.passaporte);
+  const meupassaporte = String(sessao.passaporte || '');
   const integrantes = await carregarIntegrantes(eq.id);
-  const temEu = integrantes.some(i => i.eu);
-  if(!temEu && membrosSincronizados !== String(eq.id)){
+  const temEu = meupassaporte && integrantes.some(i => i.eu);
+  if(!temEu && membrosSincronizados !== String(eq.id) && meupassaporte){
     await sincronizarMembros(eq.id, meupassaporte);
     integrantes.push({ passaporte: meupassaporte, nome: sessao.nome || meupassaporte, eu: true });
     membrosSincronizados = String(eq.id);
@@ -510,7 +506,7 @@ async function confirmarTroca(novaEquipeId){
 }
 
 async function atualizar(){
-  if(!sessao || trocando || estado === 'carregando') return;
+  if(trocando || estado === 'carregando') return;
   try{
     const p = await buscarPontoAtivo(sessao.passaporte);
     if(!p){ 
@@ -539,10 +535,15 @@ setInterval(atualizar, INTERVALO_ATUALIZACAO);
 
 async function iniciar(){
   sessao = lerSessao();
-  if(!sessao){ window.location.replace('login.html'); return; }
-  sessao.passaporte = String(sessao.passaporte);
+  if(!sessao) sessao = {};
+  sessao.passaporte = String(sessao?.passaporte || '');
   estado = 'carregando';
   try{
+    if(!sessao.passaporte){
+      telaSemServico();
+      estado = 'sem';
+      return;
+    }
     ponto = await buscarPontoAtivo(sessao.passaporte);
     if(!ponto){ telaSemServico(); return; }
     if(!ponto.equipe_id){ telaSemServico(); return; }
