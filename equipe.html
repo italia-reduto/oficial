@@ -541,8 +541,8 @@ async function carregarIntegrantes(eq){
 
 function telaSemServico(){
   estado = 'sem'; assinatura = null;
-  app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-circle-info"></i></div><h2>Nenhum serviço ativo</h2><p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p></div><a href="bate-ponto.html" class="btn"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div>`;
-}
+app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-circle-info"></i></div><h2>Nenhum serviço ativo</h2><p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p></div><a href="bate-ponto.html" class="btn" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff"><i class="fa-solid fa-clock"></i> Ir ao Controle de Ponto</a></div>`;
+  
 function telaErro(msg){
   estado = 'erro'; assinatura = null;
   app.innerHTML = `<div class="card"><div class="estado"><div class="ic"><i class="fa-solid fa-triangle-exclamation"></i></div><h2>Não foi possível carregar</h2><p>${esc(msg)}</p></div><button class="btn" onclick="iniciar()"><i class="fa-solid fa-rotate"></i> Tentar novamente</button></div>`;
