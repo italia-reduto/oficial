@@ -453,8 +453,8 @@ function telaEquipe(eq, integrantes){
   const grupo = grupoDe(eq);
   const idx = integrantes.findIndex(i => i.eu);
   const n = integrantes.length;
-  const vagas = (eq.limite_vagas != null)
-    ? n + ' de ' + eq.limite_vagas + ' vagas'
+  const vagas = (eq.limite != null)
+    ? n + ' de ' + eq.limite + ' vagas'
     : n + (n === 1 ? ' vaga ocupada' : ' vagas ocupadas');
   const nomeGrande = formatarFuncao(eq.funcao) || String(eq.nome || 'EQUIPE').toUpperCase();
   const escala = eq.nome ? 'ESCALA ATUAL · ' + esc(eq.nome) : 'ESCALA ATUAL';
@@ -573,7 +573,7 @@ async function buscarPontoAtivo(passaporte){
 }
 
 async function sortearEquipe(excluirId){
-  const { data: equipes, error: e1 } = await sb.from('equipes').select('*').eq('ativo', true);
+  const { data: equipes, error: e1 } = await sb.from('equipes').select('*').eq('ativa', true);
   if(e1) throw e1;
   const { data: ativos, error: e2 } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
   if(e2) throw e2;
@@ -581,7 +581,7 @@ async function sortearEquipe(excluirId){
   (ativos || []).forEach(p => { cont[p.equipe_id] = (cont[p.equipe_id] || 0) + 1; });
   const livres = (equipes || []).filter(e => {
     if(excluirId && String(e.id) === String(excluirId)) return false;
-    const lim = e.limite_vagas;
+    const lim = e.limite;
     return lim == null || (cont[e.id] || 0) < lim;
   });
   if(!livres.length) return null;
@@ -673,7 +673,7 @@ async function carregarEDesenhar(forcar){
   }
   const s = document.getElementById('sync');
   if(s) s.textContent = textoSync();
-                  }
+  }
   /* ---------- TROCAR DE EQUIPE ---------- */
 async function abrirEquipesDisponiveis(){
   fecharModal('modalConfirma');
@@ -681,7 +681,7 @@ async function abrirEquipesDisponiveis(){
   const lista = document.getElementById('listaEquipes');
   lista.innerHTML = '<p class="vazio">Carregando...</p>';
   try{
-    const { data: todas, error: e1 } = await sb.from('equipes').select('*').eq('ativo', true);
+    const { data: todas, error: e1 } = await sb.from('equipes').select('*').eq('ativa', true);
     if(e1) throw e1;
     const { data: ativos, error: e2 } = await sb.from('pontos').select('equipe_id').is('saida', null).not('equipe_id', 'is', null);
     if(e2) throw e2;
@@ -690,7 +690,7 @@ async function abrirEquipesDisponiveis(){
     const meuId = (ponto && ponto.equipe_id != null) ? String(ponto.equipe_id) : null;
 
     const disp = (todas || [])
-      .map(eq => ({ eq: eq, livres: eq.limite_vagas == null ? null : eq.limite_vagas - (cont[eq.id] || 0) }))
+      .map(eq => ({ eq: eq, livres: eq.limite == null ? null : eq.limite - (cont[eq.id] || 0) }))
       .filter(x => String(x.eq.id) !== meuId && (x.livres === null || x.livres > 0));
 
     if(!disp.length){
