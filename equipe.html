@@ -128,7 +128,7 @@
   /* ---------- BOTÃO / ESTADOS ---------- */
   .btn{
     width:100%;margin-top:14px;border:0;border-radius:14px;
-    background:var(--amarelo);color:#111;
+    background:linear-gradient(135deg,#3b82f6,#1d4ed8);color:#fff;
     font-family:'Inter',sans-serif;font-size:16px;font-weight:700;
     padding:16px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
   }
@@ -673,7 +673,7 @@ async function carregarEDesenhar(forcar){
   }
   const s = document.getElementById('sync');
   if(s) s.textContent = textoSync();
-  }
+                       }
   /* ---------- TROCAR DE EQUIPE ---------- */
 async function abrirEquipesDisponiveis(){
   fecharModal('modalConfirma');
