@@ -150,6 +150,20 @@
   .toast.sucesso{background:#0b1f14;border:1px solid rgba(34,197,94,.4);color:#86efac}
   .toast.erro{background:#2a1212;border:1px solid rgba(239,68,68,.4);color:#fca5a5}
 
+  /* ---------- AVISO DE ESPERA SERVIDOR ---------- */
+  .aviso-espera{
+    position:fixed;top:16px;left:16px;right:16px;max-width:520px;margin:0 auto;
+    background:linear-gradient(135deg,rgba(15,23,42,.95),rgba(30,41,59,.95));
+    border:1px solid rgba(96,165,250,.3);border-radius:12px;padding:14px 16px;
+    backdrop-filter:blur(10px);box-shadow:0 4px 20px rgba(0,0,0,.3);
+    z-index:9998;display:none;
+  }
+  .aviso-espera-conteudo{display:flex;align-items:center;gap:12px}
+  .aviso-espera i{color:#60a5fa;font-size:20px;flex-shrink:0}
+  .aviso-texto-linha1{font-size:13px;color:#94a3b8;margin-bottom:2px}
+  .aviso-texto-linha2{font-size:15px;font-weight:600;color:#fff}
+  .contador-destaque{color:#60a5fa;font-weight:700}
+
   /* ---------- MODAIS ---------- */
   .modal-fundo{
     position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);
@@ -220,7 +234,17 @@
 </style>
 </head>
 <body>
-  <div id="toast" class="toast"></div>
+<div id="avisoEspera" class="aviso-espera">
+  <div class="aviso-espera-conteudo">
+    <i class="fas fa-clock"></i>
+    <div>
+      <p class="aviso-texto-linha1">Troca de equipe temporariamente bloqueada</p>
+      <p class="aviso-texto-linha2">Próxima troca em: <span class="contador-destaque" id="contadorRegressivo">01:00</span></p>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
 
 <div id="app">
   <div class="estado">
@@ -256,18 +280,18 @@
     </div>
   </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- FIM PARTE 1/4 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
 const INTERVALO_ATUALIZACAO = 30000;
-const TEMPO_ESPERA_TROCA = 60000;
-const CHAVE_TROCA = 'troca_equipe_ate';
 const BTN_PADRAO = '<i class="fa-solid fa-shuffle"></i> Trocar de Equipe';
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 const app = document.getElementById('app');
+const avisoEspera = document.getElementById('avisoEspera');
+const contadorRegressivo = document.getElementById('contadorRegressivo');
 
 let sessao = null;
 let ponto = null;
@@ -279,6 +303,11 @@ let membrosSincronizados = null;
 let ultimaRecarga = 0;
 let toastTimer = null;
 let equipesDisponiveis = {};
+
+// ✅ NOVO: Controle de espera via servidor
+let esperaTrocaSeg = 0;
+let tempoInicioContagem = 0;
+let intervaloContagem = null;
 
 /* ---------- SESSÃO ---------- */
 function achar(o, d){
@@ -328,6 +357,11 @@ function esc(t){
   return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function dois(n){ return String(n).padStart(2, '0'); }
+function formatarMinSeg(totalSegundos) {
+  const m = Math.floor(totalSegundos / 60);
+  const s = Math.floor(totalSegundos % 60);
+  return `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
+}
 
 function mostrarAviso(msg, tipo){
   const el = document.getElementById('toast');
@@ -416,11 +450,72 @@ function textoSync(){
   const d = new Date();
   return 'Sincronizado ' + dois(d.getDate()) + '/' + dois(d.getMonth() + 1) + ', ' + dois(d.getHours()) + ':' + dois(d.getMinutes());
 }
-function restanteTroca(){
-  const t = parseInt(localStorage.getItem(CHAVE_TROCA) || '0', 10);
-  const r = Math.ceil((t - Date.now()) / 1000);
-  return r > 0 ? r : 0;
+
+// ✅ NOVO: Carregar tempo de espera do servidor
+async function carregarEsperaServidor() {
+  if(!sessao || !sessao.passaporte) return;
+  try {
+    const { data, error } = await sb.rpc('espera_troca', { p_passaporte: sessao.passaporte });
+    if(!error && data !== null) {
+      esperaTrocaSeg = data;
+    }
+  } catch(e) {
+    console.log('Sem dados de espera');
+  }
+  atualizarExibicaoEspera();
 }
+
+// ✅ NOVO: Iniciar contador com performance.now()
+function iniciarContadorServidor() {
+  if(intervaloContagem) clearInterval(intervaloContagem);
+  tempoInicioContagem = performance.now();
+  
+  intervaloContagem = setInterval(() => {
+    const decorridoMs = performance.now() - tempoInicioContagem;
+    const decorridoSeg = Math.floor(decorridoMs / 1000);
+    if(esperaTrocaSeg > 0) {
+      esperaTrocaSeg = Math.max(0, esperaTrocaSeg - decorridoSeg);
+    }
+    tempoInicioContagem = performance.now();
+    atualizarExibicaoEspera();
+  }, 1000);
+}
+
+// ✅ NOVO: Atualizar exibição visual da espera
+function atualizarExibicaoEspera() {
+  const btn = document.getElementById('btnTrocar');
+  if(esperaTrocaSeg > 0) {
+    avisoEspera.style.display = 'block';
+    contadorRegressivo.textContent = formatarMinSeg(esperaTrocaSeg);
+    if(btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Aguarde ' + formatarMinSeg(esperaTrocaSeg);
+    }
+  } else {
+    avisoEspera.style.display = 'none';
+    if(btn) {
+      btn.disabled = false;
+      btn.innerHTML = BTN_PADRAO;
+    }
+  }
+}
+
+// ✅ NOVO: Extrair tempo de erro retornado pelo servidor
+function extrairTempoDoErro(erro) {
+  if(!erro || !erro.message) return false;
+  if(erro.message.includes('ESPERA_TROCA|')) {
+    const partes = erro.message.split('|');
+    const seg = parseInt(partes[1]);
+    if(!isNaN(seg)) {
+      esperaTrocaSeg = seg;
+      tempoInicioContagem = performance.now();
+      atualizarExibicaoEspera();
+    }
+    return true;
+  }
+  return false;
+}
+/* FIM PARTE 2/4 */
   /* ---------- TELAS ---------- */
 function telaSemServico(){
   estado = 'sem';
@@ -458,10 +553,6 @@ function telaEquipe(eq, integrantes){
     : n + (n === 1 ? ' vaga ocupada' : ' vagas ocupadas');
   const nomeGrande = formatarFuncao(eq.funcao) || String(eq.nome || 'EQUIPE').toUpperCase();
   const escala = eq.nome ? 'ESCALA ATUAL · ' + esc(eq.nome) : 'ESCALA ATUAL';
-  const espera = restanteTroca();
-  const textoBtn = espera > 0
-    ? '<i class="fa-solid fa-hourglass-half"></i> Aguarde ' + espera + 's'
-    : BTN_PADRAO;
 
   const selo = emPausa()
     ? '<div class="selo pausa"><i class="fa-solid fa-circle"></i> EM PAUSA</div>'
@@ -555,10 +646,11 @@ function telaEquipe(eq, integrantes){
           <div class="integ-lista">${itens}</div>
         </div>
 
-        <button class="btn" id="btnTrocar" data-bloq="${espera > 0 ? 1 : 0}" ${espera > 0 ? 'disabled' : ''}>${textoBtn}</button>
+        <button class="btn" id="btnTrocar">${BTN_PADRAO}</button>
       </div>
     </div>`;
   document.getElementById('btnTrocar').addEventListener('click', () => abrirModal('modalConfirma'));
+  atualizarExibicaoEspera();
 }
 
 /* ---------- DADOS ---------- */
@@ -673,7 +765,7 @@ async function carregarEDesenhar(forcar){
   }
   const s = document.getElementById('sync');
   if(s) s.textContent = textoSync();
-                       }
+  }
   /* ---------- TROCAR DE EQUIPE ---------- */
 async function abrirEquipesDisponiveis(){
   fecharModal('modalConfirma');
@@ -729,12 +821,17 @@ async function confirmarTroca(novaId){
     await salvarEquipeNoPonto(nova.id);
     await sincronizarMembros(nova.id, antiga);
     membrosSincronizados = String(nova.id);
-    localStorage.setItem(CHAVE_TROCA, String(Date.now() + TEMPO_ESPERA_TROCA));
+    
     fecharModal('modalEquipes');
     await carregarEDesenhar(true);
-    mostrarAviso('Equipe alterada com sucesso! Nova troca disponível em 1 minuto.', 'sucesso');
+    await carregarEsperaServidor();
+    mostrarAviso('Equipe alterada com sucesso! Nova troca disponível em 10 minutos.', 'sucesso');
   }catch(e){
     console.error(e);
+    if(extrairTempoDoErro(e)) {
+      fecharModal('modalEquipes');
+      return;
+    }
     fecharModal('modalEquipes');
     mostrarAviso('Não foi possível trocar de equipe. Tente de novo.', 'erro');
   }
@@ -767,6 +864,7 @@ async function sincronizar(silencioso){
       membrosSincronizados = String(eq.id);
     }
     await carregarEDesenhar(false);
+    await carregarEsperaServidor();
   }catch(e){
     console.error(e);
     if(!silencioso || estado !== 'equipe') telaErro('Falha ao consultar os dados. Verifique a conexão.');
@@ -790,19 +888,6 @@ window.addEventListener('focus', recarregar);
 setInterval(() => {
   const el = document.getElementById('tempo');
   if(el && estado === 'equipe') el.textContent = formatarDuracao(msEmServico());
-  const b = document.getElementById('btnTrocar');
-  if(b && estado === 'equipe'){
-    const r = restanteTroca();
-    if(r > 0){
-      b.disabled = true;
-      b.dataset.bloq = '1';
-      b.innerHTML = '<i class="fa-solid fa-hourglass-half"></i> Aguarde ' + r + 's';
-    } else if(b.dataset.bloq === '1'){
-      b.disabled = false;
-      b.dataset.bloq = '0';
-      b.innerHTML = BTN_PADRAO;
-    }
-  }
 }, 1000);
 setInterval(() => sincronizar(true), INTERVALO_ATUALIZACAO);
 
