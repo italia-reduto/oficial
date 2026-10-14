@@ -1,416 +1,120 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <meta name="color-scheme" content="dark">
-    <title>ITÁLIA · PONTO</title>
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script>
-        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
-        const { createClient } = supabase;
-        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    </script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Ponto | Itália</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  :root{
+    --bg:#000;
+    --card:#0c1017;
+    --inner:#111722;
+    --line:#1e2636;
+    --azul:#3b82f6;
+    --amarelo:#f59e0b;
+    --verde:#22c55e;
+    --vermelho:#ef4444;
+    --txt:#f1f5f9;
+    --mut:#8b95a8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{
+    background:linear-gradient(to bottom,#000000 0%,#000000 35%,#1e3a5f 75%,#0f172a 100%);
+    min-height:100%;
+  }
+  body{
+    font-family:'Inter',sans-serif;color:var(--txt);
+    background:transparent;
+    min-height:100vh;
+    padding:18px 14px calc(96px + env(safe-area-inset-bottom,0px));
+    max-width:560px;margin:0 auto;
+  }
+  a{text-decoration:none;color:inherit}
 
-    <style>
-        * { 
-            margin: 0; padding: 0; box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent; outline: none !important;
-        }
-        *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
-        html, body {
-            min-height: 100vh; font-family: 'Inter', sans-serif; color: #fff;
-            padding-bottom: 80px; overflow-x: hidden;
-        }
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:22px;
+    padding:24px 20px;text-align:center;margin-top:40px;
+  }
+  .card h1{font-size:26px;font-weight:800;margin-bottom:8px}
+  .card p{font-size:14px;color:var(--mut);margin-bottom:24px;line-height:1.5}
 
-        .fundo-pagina {
-            position: fixed; inset: 0;
-            background: linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%);
-            z-index: -4;
-        }
-        .fundo-imagem {
-            position: fixed; inset: 0;
-            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
-            opacity: 0.08; z-index: -3;
-        }
-        .fundo-degrade {
-            position: fixed; inset: 0;
-            background: linear-gradient(to bottom, 
-                rgba(0,0,0,0.3) 0%, 
-                rgba(0,0,0,0.75) 55%, 
-                rgba(15, 23, 42, 0.92) 80%,
-                rgba(30, 64, 175, 0.18) 100%);
-            z-index: -2;
-        }
-        .fundo-azul-embaixo {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 220px;
-            background: linear-gradient(to top, 
-                rgba(59, 130, 246, 0.15) 0%, 
-                rgba(59, 130, 246, 0.06) 45%,
-                transparent 100%);
-            pointer-events: none; z-index: -1;
-        }
+  .relogio{font-size:52px;font-weight:800;font-variant-numeric:tabular-nums;margin:16px 0}
+  .data{font-size:15px;color:var(--mut);margin-bottom:24px}
 
-        .conteudo { position: relative; z-index: 1; padding: 24px; }
-        
-        .cabecalho { margin-bottom: 28px; }
-        .titulo-secao { margin-bottom: 16px; }
-        .titulo-secao h1 { font-size: 22px; font-weight: 700; }
-        .titulo-secao p { font-size: 13px; color: #94a3b8; margin-top: 4px; }
-        
-        .linha-dado {
-            display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
-        }
-        .linha-dado i { color: #60a5fa; font-size: 16px; width: 20px; text-align: center; }
-        .linha-dado .rotulo { font-size: 14px; color: #94a3b8; }
-        .linha-dado .valor { font-size: 16px; font-weight: 600; color: #fff; }
-        
-        .aviso-navegacao {
-            background: rgba(96, 165, 250, 0.1); border: 1px solid rgba(96, 165, 250, 0.25);
-            border-radius: 10px; padding: 12px 16px; margin-bottom: 20px;
-            display: flex; align-items: center; gap: 10px;
-        }
-        .aviso-navegacao i { color: #60a5fa; font-size: 18px; }
-        .aviso-navegacao span { font-size: 14px; color: #cbd5e1; }
-        .aviso-navegacao a { color: #60a5fa; text-decoration: none; font-weight: 600; margin-left: 6px; }
-        
-        .grade-cards {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
-        }
-        .card {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px; padding: 16px;
-            backdrop-filter: blur(8px);
-        }
-        .card-titulo {
-            font-size: 13px; color: #94a3b8; font-weight: 500;
-            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
-        }
-        .card-titulo i { font-size: 14px; color: #60a5fa; }
-        .card-valor { font-size: 20px; font-weight: 700; color: #fff; }
+  .btn{
+    width:100%;border:0;border-radius:14px;
+    font-family:'Inter',sans-serif;font-size:16px;font-weight:700;
+    padding:16px;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;
+    transition:transform .1s,filter .1s;
+  }
+  .btn:active{transform:scale(.98)}
+  .btn.entrada{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;margin-bottom:12px}
+  .btn.pausa{background:var(--amarelo);color:#111;margin-bottom:12px}
+  .btn.saida{background:var(--vermelho);color:#fff}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
 
-        .card-abas {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px; padding: 18px;
-            backdrop-filter: blur(8px);
-        }
-        .navegacao-abas { display: flex; gap: 10px; margin-bottom: 20px; }
-        .aba {
-            flex: 1; text-align: center; padding: 10px 0;
-            font-size: 15px; font-weight: 500; color: #94a3b8;
-            cursor: pointer; border-radius: 10px; transition: all 0.25s ease; user-select: none;
-        }
-        .aba.ativa { color: #fff; background: rgba(96, 165, 250, 0.15); font-weight: 600; }
-        .conteudo-aba { display: none; min-height: 220px; }
-        .conteudo-aba.visivel { display: block; }
+  .status{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:14px;font-weight:600;padding:8px 14px;border-radius:999px;margin-bottom:20px;
+  }
+  .status.fora{background:rgba(239,68,68,.1);color:var(--vermelho);border:1px solid rgba(239,68,68,.3)}
+  .status.dentro{background:rgba(34,197,94,.1);color:var(--verde);border:1px solid rgba(34,197,94,.3)}
+  .status.pausa{background:rgba(245,158,11,.1);color:var(--amarelo);border:1px solid rgba(245,158,11,.3)}
+  .status i{font-size:10px}
 
-        .cronometro-bloco { text-align: center; padding: 20px 10px; }
-        .tempo-central {
-            font-size: 48px; font-weight: 700; color: #fff; margin-bottom: 8px;
-            letter-spacing: 1px; font-variant-numeric: tabular-nums;
-        }
-        .tempo-central .milessimos { font-size: 28px; color: #94a3b8; }
-        .legenda-tempo { font-size: 13px; color: #64748b; margin-bottom: 24px; }
-        .botoes-cronometro { display: flex; flex-direction: column; gap: 12px; max-width: 320px; margin: 0 auto; }
-        .botao-acao {
-            width: 100%; padding: 15px; border: none; border-radius: 12px;
-            font-size: 16px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-            gap: 8px; transition: all 0.3s ease; color: #fff; user-select: none;
-        }
-        .botao-acao:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
-        .botao-acao.iniciar { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); }
-        .botao-acao.pausar { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
-        .botao-acao.retomar { background: linear-gradient(135deg, #10b981 0%, #059669 100%); }
-        .botao-acao.encerrar { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-        .botao-acao:hover:not(:disabled) { transform: translateY(-2px); }
+  .info{
+    background:var(--inner);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:20px;text-align:left;
+  }
+  .info-linha{display:flex;justify-content:space-between;align-items:center;padding:6px 0;font-size:14px}
+  .info-linha span:first-child{color:var(--mut)}
 
-        .item-historico {
-            padding: 14px 0; border-bottom: 1px solid rgba(96,165,250,0.08);
-        }
-        .item-historico:last-child { border-bottom: none; padding-bottom: 0; }
-        .item-cabecalho {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;
-        }
-        .item-data { font-size: 15px; font-weight: 600; color: #fff; }
-        .item-duracao { font-size: 15px; font-weight: 700; color: #60a5fa; }
-        .item-detalhe { font-size: 13px; color: #94a3b8; line-height: 1.5; }
-        .vazio { text-align: center; padding: 40px 20px; color: #64748b; font-size: 14px; }
+  .historico{margin-top:24px;text-align:left}
+  .historico h3{font-size:16px;font-weight:700;margin-bottom:12px}
+  .item{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:10px 12px;border-radius:10px;background:var(--inner);border:1px solid var(--line);margin-bottom:8px;font-size:13px;
+  }
+  .item .tipo{font-weight:600}
+  .item .entrada{color:var(--verde)}
+  .item .saida{color:var(--vermelho)}
+  .item .pausa{color:var(--amarelo)}
 
-        .fundo-modal {
-            position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
-            display: flex; align-items: center; justify-content: center; z-index: 999;
-            opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px;
-        }
-        .fundo-modal.aberto { opacity: 1; visibility: visible; }
-        .caixa-modal {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-            border: 1px solid rgba(96,165,250,0.2); border-radius: 18px;
-            padding: 32px 28px; max-width: 360px; width: 100%; text-align: center;
-            transform: translateY(10px); transition: transform 0.3s ease;
-        }
-        .fundo-modal.aberto .caixa-modal { transform: translateY(0); }
-        .icone-modal {
-            width: 56px; height: 56px; border-radius: 50%;
-            background: rgba(96,165,250,0.15);
-            display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;
-        }
-        .icone-modal i { font-size: 24px; color: #60a5fa; }
-        .titulo-modal { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
-        .texto-modal { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
-        .botoes-modal { display: flex; gap: 12px; }
-        .botao-cancelar {
-            flex: 1; padding: 14px; border: 1px solid rgba(96,165,250,0.2);
-            background: transparent; color: #94a3b8; border-radius: 12px;
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; user-select: none;
-        }
-        .botao-cancelar:hover { background: rgba(255,255,255,0.05); color: #fff; }
-        .botao-confirmar {
-            flex: 1; padding: 14px; border: none; border-radius: 12px;
-            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; color: #fff; user-select: none;
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-        }
-        .botao-confirmar:hover { transform: translateY(-1px); }
+  .nav{
+    position:fixed;left:0;right:0;bottom:0;
+    background:#07090d;border-top:1px solid var(--line);
+    display:flex;justify-content:space-around;
+    padding:8px 4px calc(8px + env(safe-area-inset-bottom,0px));
+    z-index:10;
+  }
+  .nav a{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:11px;font-weight:600;color:var(--mut);padding:6px 0}
+  .nav a i{font-size:19px}
+  .nav a.ativo{color:var(--azul)}
 
-        .aviso-espera {
-            position: fixed; top: 16px; left: 50%; transform: translateX(-50%); z-index: 998;
-            background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(30,41,59,0.95));
-            border: 1px solid rgba(96,165,250,0.3); border-radius: 12px;
-            padding: 14px 20px; backdrop-filter: blur(10px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3); max-width: 90%; width: 360px; display: none;
-        }
-        .aviso-espera-conteudo { display: flex; align-items: center; gap: 12px; }
-        .aviso-espera i { color: #60a5fa; font-size: 20px; flex-shrink: 0; }
-        .aviso-texto-linha1 { font-size: 13px; color: #94a3b8; margin-bottom: 2px; }
-        .aviso-texto-linha2 { font-size: 15px; font-weight: 600; color: #fff; }
-        .contador-destaque { color: #60a5fa; font-weight: 700; }
+  .passaporte{
+    background:var(--inner);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:20px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .passaporte span{font-size:14px;color:var(--mut)}
+  .passaporte strong{font-size:16px;font-weight:700;color:var(--azul)}
 
-        .barra-menu {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
-            background: #000; display: flex; align-items: center; justify-content: space-around;
-            border-top: 1px solid rgba(96,165,250,0.15); z-index: 100;
-        }
-        .menu-item {
-            display: flex; flex-direction: column; align-items: center; gap: 4px;
-            color: #94a3b8; text-decoration: none; font-size: 11px;
-            cursor: pointer; transition: color 0.2s ease; user-select: none;
-            background: none; border: none;
-        }
-        .menu-item.ativo { color: #60a5fa; }
-        .menu-item i { font-size: 20px; margin-bottom: 2px; }
-    </style>
+  @media (min-width:900px){
+    body{padding:40px 24px 100px}
+    .card{max-width:480px;margin:60px auto 0;padding:32px 28px}
+    .relogio{font-size:64px}
+    .nav{
+      left:50%;right:auto;width:min(520px,calc(100% - 48px));transform:translateX(-50%);
+      bottom:20px;border:1px solid var(--line);border-radius:20px;padding:10px 8px;
+    }
+  }
+</style>
 </head>
 <body>
-        <div class="fundo-pagina"></div>
-    <div class="fundo-imagem"></div>
-    <div class="fundo-degrade"></div>
-    <!-- ✅ GRADIENTE AZUL EMBAIXO -->
-    <div class="fundo-azul-embaixo"></div>
-
-    <div class="aviso-espera" id="avisoEspera">
-        <div class="aviso-espera-conteudo">
-            <i class="fas fa-clock"></i>
-            <div>
-                <p class="aviso-texto-linha1">Aguardando liberação</p>
-                <p class="aviso-texto-linha2">Próxima liberação em: <span class="contador-destaque" id="contadorRegressivo">01:00</span></p>
-            </div>
-        </div>
-    </div>
-
-    <div class="conteudo">
-        <div class="cabecalho">
-            <div class="titulo-secao">
-                <h1>Controle de Ponto</h1>
-                <p>Acompanhe sua jornada e seu histórico</p>
-            </div>
-            <div class="linha-dado">
-                <i class="fas fa-user"></i>
-                <span class="rotulo">Nome:</span>
-                <span class="valor" id="exibeNome">—</span>
-            </div>
-            <div class="linha-dado">
-                <i class="fas fa-id-card"></i>
-                <span class="rotulo">Passaporte:</span>
-                <span class="valor" id="exibePassaporte">—</span>
-            </div>
-        </div>
-
-        <div class="aviso-navegacao" id="avisoEmJornada" style="display: none;">
-            <i class="fas fa-info-circle"></i>
-            <span>Você está em jornada. Verifique sua equipe <a href="equipe.html">aqui →</a></span>
-        </div>
-
-        <div class="grade-cards">
-            <div class="card">
-                <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
-                <p class="card-valor" id="exibeSituacao">Carregando...</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></p>
-                <p class="card-valor" id="exibeHoje">0m</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Pausas <i class="fas fa-coffee"></i></p>
-                <p class="card-valor" id="exibePausas">0</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Semana <i class="fas fa-calendar-week"></i></p>
-                <p class="card-valor" id="exibeSemana">0m</p>
-            </div>
-        </div>
-
-        <div class="card-abas">
-            <div class="navegacao-abas">
-                <div class="aba ativa" data-aba="meu-ponto">Meu Ponto</div>
-                <div class="aba" data-aba="historico">Histórico</div>
-            </div>
-            <div class="conteudo-aba visivel" id="conteudo-meu-ponto">
-                <div class="cronometro-bloco">
-                    <div class="tempo-central">
-                        <span id="tempoPrincipal">00:00:00</span>
-                        <span class="milessimos" id="tempoMilesimos">.00</span>
-                    </div>
-                    <p class="legenda-tempo">Tempo de jornada</p>
-                    <div class="botoes-cronometro" id="areaBotoes">
-                        <button class="botao-acao iniciar" id="btnIniciar">
-                            <i class="fas fa-play"></i> Iniciar Jornada
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div class="conteudo-aba" id="conteudo-historico">
-                <div id="listaHistorico"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="fundo-modal" id="modalEncerrar">
-        <div class="caixa-modal">
-            <div class="icone-modal">
-                <i class="fas fa-info-circle"></i>
-            </div>
-            <h3 class="titulo-modal">Encerrar Jornada</h3>
-            <p class="texto-modal">
-                Ao confirmar, aguarde 1 minuto para reiniciar. Isso garante o registro correto.
-            </p>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" id="botaoCancelarEncerrar">Cancelar</button>
-                <button class="botao-confirmar" id="botaoConfirmarEncerrar">
-                    Confirmar Encerramento
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <nav class="barra-menu">
-        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <a href="tickets.html" class="menu-item"><i class="fas fa-file-alt"></i><span>Tickets</span></a>
-        <button class="menu-item" id="botaoMais"><i class="fas fa-ellipsis-h"></i><span>Mais</span></button>
-    </nav>
-        <script>
-        const exibeNome = document.getElementById('exibeNome');
-        const exibePassaporte = document.getElementById('exibePassaporte');
-        const exibeSituacao = document.getElementById('exibeSituacao');
-        const exibeHoje = document.getElementById('exibeHoje');
-        const exibePausas = document.getElementById('exibePausas');
-        const exibeSemana = document.getElementById('exibeSemana');
-        const tempoPrincipal = document.getElementById('tempoPrincipal');
-        const tempoMilesimos = document.getElementById('tempoMilesimos');
-        const areaBotoes = document.getElementById('areaBotoes');
-        const listaHistorico = document.getElementById('listaHistorico');
-        const modalEncerrar = document.getElementById('modalEncerrar');
-        const avisoEspera = document.getElementById('avisoEspera');
-        const avisoEmJornada = document.getElementById('avisoEmJornada');
-        const contadorRegressivo = document.getElementById('contadorRegressivo');
-
-        let passaporteUsuario = localStorage.getItem('passaporte') || null;
-        let nomeUsuario = null;
-        let registroAtivo = null;
-        let totalPausas = 0;
-        let tempoPausadoAcumulado = 0;
-        let momentoInicioPausa = null;
-        let bloqueadoAte = parseInt(localStorage.getItem('bloqueadoAte') || '0');
-        let intervaloContagem = null;
-
-        function formatarTempoComMilesimos(segundosTotais) {
-            const h = Math.floor(segundosTotais / 3600);
-            const m = Math.floor((segundosTotais % 3600) / 60);
-            const s = Math.floor(segundosTotais % 60);
-            const ms = Math.floor((segundosTotais % 1) * 100);
-            return {
-                principal: `${h}`.padStart(2,'0') + ':' + `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0'),
-                milesimos: '.' + `${ms}`.padStart(2,'0')
-            };
-        }
-        function formatarDuracao(segundos) {
-            if (!segundos || segundos <= 0) return '0m';
-            const h = Math.floor(segundos / 3600);
-            const m = Math.floor((segundos % 3600) / 60);
-            const s = Math.floor(segundos % 60);
-            if (h > 0) return `${h}h${m.toString().padStart(2,'0')}m`;
-            if (m > 0) return `${m}m${s.toString().padStart(2,'0')}s`;
-            return `${s}s`;
-        }
-        function formatarMinSeg(totalSegundos) {
-            const m = Math.floor(totalSegundos / 60);
-            const s = Math.floor(totalSegundos % 60);
-            return `${m}`.padStart(2,'0') + ':' + `${s}`.padStart(2,'0');
-        }
-        function calcularSegundos(data1, data2) {
-            if (!data1 || !data2) return 0;
-            return Math.max(0, (new Date(data2) - new Date(data1)) / 1000);
-        }
-        function calcularTempoLiquido(registro) {
-            if (!registro) return 0;
-            const entrada = new Date(registro.entrada);
-            const agoraOuSaida = registro.saida ? new Date(registro.saida) : new Date();
-            let totalBruto = (agoraOuSaida - entrada) / 1000;
-            if (registro.pausa_inicio && registro.pausa_fim) totalBruto -= calcularSegundos(registro.pausa_inicio, registro.pausa_fim);
-            else if (registro.pausa_inicio && !registro.pausa_fim) totalBruto -= calcularSegundos(registro.pausa_inicio, agoraOuSaida);
-            return Math.max(0, totalBruto);
-        }
-
-        async function carregarDadosUsuario() {
-            if (!passaporteUsuario) {
-                exibeNome.textContent = 'Não identificado';
-                exibePassaporte.textContent = '—';
-                return;
-            }
-            const { data, error } = await sb
-                .from('membros')
-                .select('nome, passaporte')
-                .eq('passaporte', passaporteUsuario)
-                .single();
-            if (data && !error) {
-                nomeUsuario = data.nome;
-                exibeNome.textContent = data.nome;
-                exibePassaporte.textContent = data.passaporte;
-            } else {
-                exibeNome.textContent = 'Membro';
-                exibePassaporte.textContent = passaporteUsuario;
-            }
-        }
-
-        async function verificarRegistroAtivo() {
-            if (!passaporteUsuario) return null;
-            const { data, error } = await sb
-                .from('pontos')
-                .select('*')
-                .eq('passaporte', passaporteUsuario)
-                .is('saida', null)
-                .order(
-                    <div class="card">
+    <div class="card">
   <h1>Controle de Ponto</h1>
   <p>Itália · Reduto</p>
 
@@ -462,7 +166,7 @@
 
 <nav class="nav">
   <a href="painel.html"><i class="fa-solid fa-house"></i><span>Painel</span></a>
-  <a href="ponto.html" class="ativo"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
+  <a href="bate-ponto.html" class="ativo"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
   <a href="equipe.html"><i class="fa-solid fa-users"></i><span>Equipe</span></a>
 </nav>
 
