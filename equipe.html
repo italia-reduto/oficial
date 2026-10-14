@@ -220,8 +220,7 @@
 </style>
 </head>
 <body>
-
-<div id="toast" class="toast"></div>
+  <div id="toast" class="toast"></div>
 
 <div id="app">
   <div class="estado">
@@ -234,8 +233,6 @@
   <a href="painel.html"><i class="fa-solid fa-house"></i><span>Painel</span></a>
   <a href="bate-ponto.html"><i class="fa-solid fa-clock"></i><span>Ponto</span></a>
   <a href="equipe.html" class="ativo"><i class="fa-solid fa-users"></i><span>Equipe</span></a>
-  <a href="tickets.html"><i class="fa-solid fa-file-lines"></i><span>Tickets</span></a>
-  <a href="mais.html"><i class="fa-solid fa-bars"></i><span>Mais</span></a>
 </nav>
 
 <div id="modalConfirma" class="modal-fundo">
@@ -259,6 +256,7 @@
     </div>
   </div>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
@@ -282,7 +280,7 @@ let ultimaRecarga = 0;
 let toastTimer = null;
 let equipesDisponiveis = {};
 
-/* ---------- SESSÃO (só vai ao login se REALMENTE não houver sessão) ---------- */
+/* ---------- SESSÃO ---------- */
 function achar(o, d){
   if(!o || typeof o !== 'object' || d > 3) return null;
   if(o.passaporte !== undefined && o.passaporte !== null && String(o.passaporte).trim() !== '') return o;
@@ -362,7 +360,6 @@ function formatarFuncao(f){
     .map(p => /^venda$/i.test(p) ? 'VENDAS' : p);
   return palavras.join(' ').toUpperCase();
 }
-/* posição fixa: Apoio 1 e Vendas Lockpick = P1 | Apoio 2 e Vendas Flipper = P2 */
 function posicaoFixa(eq, grupo){
   const t = String(eq.tipo || '').toLowerCase();
   const f = String(eq.funcao || '').toLowerCase();
@@ -379,7 +376,6 @@ function posicaoFixa(eq, grupo){
   }
   return null;
 }
-/* rotas: P1..P4 pela ordem de entrada | vendas/apoio: posição fixa */
 function minhaPosicao(eq, grupo, idx){
   if(grupo === 'rota') return idx >= 0 ? 'P' + (idx + 1) : 'N/A';
   return posicaoFixa(eq, grupo) || (idx >= 0 ? 'P' + (idx + 1) : 'N/A');
@@ -425,8 +421,7 @@ function restanteTroca(){
   const r = Math.ceil((t - Date.now()) / 1000);
   return r > 0 ? r : 0;
 }
-
-/* ---------- TELAS ---------- */
+  /* ---------- TELAS ---------- */
 function telaSemServico(){
   estado = 'sem';
   assinatura = null;
@@ -565,7 +560,8 @@ function telaEquipe(eq, integrantes){
     </div>`;
   document.getElementById('btnTrocar').addEventListener('click', () => abrirModal('modalConfirma'));
 }
-  /* ---------- DADOS ---------- */
+
+/* ---------- DADOS ---------- */
 async function buscarPontoAtivo(passaporte){
   const { data, error } = await sb.from('pontos').select('*')
     .eq('passaporte', passaporte)
@@ -600,7 +596,6 @@ async function salvarEquipeNoPonto(equipeId){
   ponto.equipe_id = equipeId;
 }
 
-/* mantém equipes.membros[] coerente (tenta, sem travar a tela se falhar) */
 async function sincronizarMembros(equipeId, antigaId){
   const meu = String(sessao.passaporte);
   try{
@@ -678,9 +673,8 @@ async function carregarEDesenhar(forcar){
   }
   const s = document.getElementById('sync');
   if(s) s.textContent = textoSync();
-}
-
-/* ---------- TROCAR DE EQUIPE ---------- */
+                  }
+  /* ---------- TROCAR DE EQUIPE ---------- */
 async function abrirEquipesDisponiveis(){
   fecharModal('modalConfirma');
   abrirModal('modalEquipes');
@@ -781,7 +775,6 @@ async function sincronizar(silencioso){
   }
 }
 
-/* rebusca ao abrir, ao voltar para a aba, ao voltar pelo histórico e ao focar a janela */
 function recarregar(){
   const agora = Date.now();
   if(agora - ultimaRecarga < 1000) return;
@@ -813,7 +806,6 @@ setInterval(() => {
 }, 1000);
 setInterval(() => sincronizar(true), INTERVALO_ATUALIZACAO);
 
-/* ---------- INÍCIO ---------- */
 async function iniciar(){
   estado = 'carregando';
   ultimaRecarga = Date.now();
