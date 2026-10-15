@@ -170,6 +170,22 @@
             grid-column: 1 / -1;
         }
         
+        .card-clicavel {
+            cursor: pointer;
+            transition: border-color 0.25s ease, background 0.25s ease;
+        }
+        
+        .card-clicavel:hover {
+            border-color: rgba(96, 165, 250, 0.35);
+            background: rgba(30, 64, 175, 0.12);
+        }
+        
+        .card-dica {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        
         .barra-menu {
             position: fixed;
             bottom: 0;
@@ -334,9 +350,97 @@
             font-weight: 600;
             cursor: pointer;
         }
+        
+        /* ---------- LISTA DE MEMBROS (ON / OFF) ---------- */
+        .caixa-lista {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
+            border: 1px solid rgba(96, 165, 250, 0.2);
+            border-radius: 24px;
+            padding: 22px 18px 18px;
+            max-width: 440px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .lista-topo {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+        
+        .lista-titulo { font-size: 20px; font-weight: 700; }
+        
+        .lista-fechar {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        
+        .lista-resumo {
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 14px;
+            min-height: 16px;
+        }
+        
+        .lista-corpo {
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 2px;
+        }
+        
+        .membro-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: rgba(30, 64, 175, 0.08);
+            border: 1px solid rgba(96, 165, 250, 0.12);
+            border-radius: 12px;
+        }
+        
+        .membro-info { flex: 1; min-width: 0; }
+        .membro-nome { font-size: 15px; font-weight: 600; color: #fff; word-break: break-word; }
+        .membro-passaporte { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+        
+        .membro-status {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            padding: 5px 12px;
+            border-radius: 999px;
+        }
+        
+        .membro-status.on {
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+        }
+        
+        .membro-status.off {
+            color: #94a3b8;
+            background: rgba(148, 163, 184, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.25);
+        }
+        
+        .membros-vazio {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+            padding: 28px 10px;
+        }
     </style>
-</head>
-<body>
+    </head>
+    <body>
     <div class="banner-topo"></div>
     
     <div class="cabecalho-superior">
@@ -380,9 +484,10 @@
                 <div class="card-titulo">Ausências Pendentes <i class="fas fa-calendar-times"></i></div>
                 <div class="card-valor">0</div>
             </div>
-            <div class="card">
+            <div class="card card-clicavel" id="cardMembrosAtivos" onclick="abrirListaMembros()">
                 <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
                 <div class="card-valor" id="membrosAtivos">—</div>
+                <div class="card-dica">Toque para ver a lista</div>
             </div>
             <div class="card">
                 <div class="card-titulo">Pontos Hoje <i class="fas fa-clipboard-check"></i></div>
@@ -429,8 +534,19 @@
         <a href="equipe.html" class="menu-item">
             <i class="fas fa-users"></i><span>Equipe</span>
         </a>
-    </nav>
-        <div class="fundo-modal" id="modalSair">
+            </nav>
+                <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
+        <div class="caixa-lista">
+            <div class="lista-topo">
+                <h3 class="lista-titulo">Membros</h3>
+                <button class="lista-fechar" onclick="fecharListaMembros()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="lista-resumo" id="resumoMembros"></div>
+            <div class="lista-corpo" id="listaMembros"></div>
+        </div>
+    </div>
+
+    <div class="fundo-modal" id="modalSair">
         <div class="caixa-modal">
             <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
             <h3 class="titulo-modal">Deseja sair?</h3>
@@ -523,6 +639,73 @@
 
         carregarDadosUsuario();
 
+        // ========== LISTA DE MEMBROS (ON / OFF) ==========
+        const modalMembros = document.getElementById('modalMembros');
+        const listaMembros = document.getElementById('listaMembros');
+        const resumoMembros = document.getElementById('resumoMembros');
+        let passaportesAtivos = new Set();
+        let membrosCadastrados = null;
+        let timerListaMembros = null;
+
+        function escaparHtml(t) {
+            return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        async function carregarMembrosCadastrados() {
+            const { data, error } = await sb
+                .from('membros')
+                .select('nome, passaporte');
+            if (error) throw error;
+            membrosCadastrados = data || [];
+        }
+
+        function renderizarListaMembros() {
+            if (!membrosCadastrados) return;
+            const lista = membrosCadastrados.map(m => ({
+                nome: m.nome || 'Sem nome',
+                passaporte: String(m.passaporte),
+                on: passaportesAtivos.has(String(m.passaporte))
+            }));
+            lista.sort((a, b) => (Number(b.on) - Number(a.on)) || a.nome.localeCompare(b.nome, 'pt-BR'));
+            const qtdOn = lista.filter(m => m.on).length;
+            resumoMembros.textContent = qtdOn + ' ON · ' + (lista.length - qtdOn) + ' OFF · ' + lista.length + ' cadastrados';
+            if (!lista.length) {
+                listaMembros.innerHTML = '<div class="membros-vazio">Nenhum membro cadastrado.</div>';
+                return;
+            }
+            listaMembros.innerHTML = lista.map(m => `
+                <div class="membro-item">
+                    <div class="membro-info">
+                        <div class="membro-nome">${escaparHtml(m.nome)}</div>
+                        <div class="membro-passaporte">Passaporte ${escaparHtml(m.passaporte)}</div>
+                    </div>
+                    <span class="membro-status ${m.on ? 'on' : 'off'}">${m.on ? 'ON' : 'OFF'}</span>
+                </div>
+            `).join('');
+        }
+
+        async function abrirListaMembros() {
+            modalMembros.classList.add('aberto');
+            listaMembros.innerHTML = '<div class="membros-vazio">Carregando...</div>';
+            resumoMembros.textContent = '';
+            try {
+                await Promise.all([carregarMembrosCadastrados(), atualizarMembrosAtivos()]);
+                renderizarListaMembros();
+            } catch (erro) {
+                console.log('Erro ao carregar lista de membros:', erro);
+                listaMembros.innerHTML = '<div class="membros-vazio">Não foi possível carregar a lista.</div>';
+            }
+            clearInterval(timerListaMembros);
+            timerListaMembros = setInterval(() => {
+                carregarMembrosCadastrados().then(renderizarListaMembros).catch(() => {});
+            }, 30000);
+        }
+
+        function fecharListaMembros() {
+            modalMembros.classList.remove('aberto');
+            clearInterval(timerListaMembros);
+        }
+
         // ========== MEMBROS ATIVOS (TEMPO REAL) ==========
         const elMembrosAtivos = document.getElementById('membrosAtivos');
         let contandoAtivos = false;
@@ -538,7 +721,9 @@
                     .is('saida', null);
                 if (error) throw error;
                 const unicos = new Set((data || []).map(p => String(p.passaporte)));
+                passaportesAtivos = unicos;
                 if (elMembrosAtivos) elMembrosAtivos.textContent = unicos.size;
+                if (modalMembros.classList.contains('aberto')) renderizarListaMembros();
             } catch (erro) {
                 console.log('Erro ao contar membros ativos:', erro);
             } finally {
