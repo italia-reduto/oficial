@@ -352,6 +352,8 @@
         }
         
         /* ---------- LISTA DE MEMBROS (ON / PAUSADO / OFF) ---------- */
+        #modalMembros { padding: 14px; }
+        
         .caixa-lista {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
             border: 1px solid rgba(96, 165, 250, 0.2);
@@ -370,6 +372,7 @@
             justify-content: space-between;
             gap: 10px;
             margin-bottom: 6px;
+            flex-shrink: 0;
         }
         
         .lista-titulo { font-size: 20px; font-weight: 700; }
@@ -384,14 +387,17 @@
         }
         
         .lista-resumo {
+            flex-shrink: 0;
+            text-align: center;
             font-size: 13px;
             color: #94a3b8;
-            margin-bottom: 14px;
-            min-height: 16px;
-            line-height: 1.5;
+            line-height: 1.6;
+            margin: 4px 0 16px;
         }
         
         .lista-corpo {
+            flex: 1 1 auto;
+            min-height: 0;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
@@ -400,21 +406,34 @@
         }
         
         .membro-item {
-            padding: 12px 14px;
+            padding: 12px;
             background: rgba(30, 64, 175, 0.08);
             border: 1px solid rgba(96, 165, 250, 0.12);
             border-radius: 12px;
+            flex-shrink: 0;
         }
         
         .membro-linha {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
         
         .membro-info { flex: 1; min-width: 0; }
         .membro-nome { font-size: 15px; font-weight: 600; color: #fff; word-break: break-word; }
-        .membro-passaporte { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        
+        .membro-passaporte {
+            display: flex;
+            align-items: center;
+            flex-wrap: nowrap;
+            gap: 8px;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #94a3b8;
+            white-space: nowrap;
+        }
+        
+        .pass-txt { flex: 0 0 auto; }
         
         .membro-tag {
             font-size: 10px;
@@ -428,10 +447,10 @@
         }
         
         .ver-equipe {
+            flex: 0 0 auto;
             display: inline-flex;
             align-items: center;
             gap: 5px;
-            margin-left: 8px;
             padding: 2px 9px;
             background: rgba(96, 165, 250, 0.12);
             border: 1px solid rgba(96, 165, 250, 0.3);
@@ -440,6 +459,7 @@
             font-family: inherit;
             font-size: 11px;
             font-weight: 600;
+            white-space: nowrap;
             cursor: pointer;
         }
         
@@ -462,10 +482,11 @@
         .equipe-mini-funcao { font-size: 12px; color: #94a3b8; margin-top: 2px; }
         
         .membro-status {
-            font-size: 12px;
+            flex: 0 0 auto;
+            font-size: 11px;
             font-weight: 700;
-            letter-spacing: 0.06em;
-            padding: 5px 12px;
+            letter-spacing: 0.05em;
+            padding: 5px 10px;
             border-radius: 999px;
         }
         
@@ -493,9 +514,13 @@
             font-size: 14px;
             padding: 28px 10px;
         }
+        
+        @media (max-width: 340px) {
+            .ver-txt { display: none; }
+        }
     </style>
-</head>
-<body>
+    </head>
+    <body>
     <div class="banner-topo"></div>
     
     <div class="cabecalho-superior">
@@ -589,8 +614,8 @@
         <a href="equipe.html" class="menu-item">
             <i class="fas fa-users"></i><span>Equipe</span>
         </a>
-                                                                                              </nav>
-                                                                                                  <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
+    </nav>
+        <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
         <div class="caixa-lista">
             <div class="lista-topo">
                 <h3 class="lista-titulo">Membros</h3>
@@ -789,8 +814,8 @@
                         <div class="membro-info">
                             <div class="membro-nome">${escaparHtml(m.nome)}${m.semCadastro ? ' <span class="membro-tag">sem cadastro</span>' : ''}</div>
                             <div class="membro-passaporte">
-                                Passaporte ${escaparHtml(m.passaporte)}
-                                ${emJornada ? `<button class="ver-equipe" data-pass="${escaparHtml(m.passaporte)}">ver equipe <i class="fas fa-chevron-down"></i></button>` : ''}
+                                <span class="pass-txt">Passaporte ${escaparHtml(m.passaporte)}</span>
+                                ${emJornada ? `<button class="ver-equipe" data-pass="${escaparHtml(m.passaporte)}"><span class="ver-txt">ver </span>equipe <i class="fas fa-chevron-down"></i></button>` : ''}
                             </div>
                         </div>
                         <span class="membro-status ${m.estado}">${rotulo[m.estado]}</span>
