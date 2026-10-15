@@ -382,7 +382,7 @@
             </div>
             <div class="card">
                 <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
-                <div class="card-valor">0</div>
+                <div class="card-valor" id="membrosAtivos">—</div>
             </div>
             <div class="card">
                 <div class="card-titulo">Pontos Hoje <i class="fas fa-clipboard-check"></i></div>
@@ -429,8 +429,8 @@
         <a href="equipe.html" class="menu-item">
             <i class="fas fa-users"></i><span>Equipe</span>
         </a>
-            </nav>
-                <div class="fundo-modal" id="modalSair">
+    </nav>
+        <div class="fundo-modal" id="modalSair">
         <div class="caixa-modal">
             <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
             <h3 class="titulo-modal">Deseja sair?</h3>
@@ -522,6 +522,51 @@
         }
 
         carregarDadosUsuario();
+
+        // ========== MEMBROS ATIVOS (TEMPO REAL) ==========
+        const elMembrosAtivos = document.getElementById('membrosAtivos');
+        let contandoAtivos = false;
+        let atualizarDeNovo = false;
+
+        async function atualizarMembrosAtivos() {
+            if (contandoAtivos) { atualizarDeNovo = true; return; }
+            contandoAtivos = true;
+            try {
+                const { data, error } = await sb
+                    .from('pontos')
+                    .select('passaporte')
+                    .is('saida', null);
+                if (error) throw error;
+                const unicos = new Set((data || []).map(p => String(p.passaporte)));
+                if (elMembrosAtivos) elMembrosAtivos.textContent = unicos.size;
+            } catch (erro) {
+                console.log('Erro ao contar membros ativos:', erro);
+            } finally {
+                contandoAtivos = false;
+                if (atualizarDeNovo) {
+                    atualizarDeNovo = false;
+                    atualizarMembrosAtivos();
+                }
+            }
+        }
+
+        atualizarMembrosAtivos();
+        setInterval(() => {
+            if (document.visibilityState === 'visible') atualizarMembrosAtivos();
+        }, 10000);
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') atualizarMembrosAtivos();
+        });
+        window.addEventListener('focus', atualizarMembrosAtivos);
+        window.addEventListener('pageshow', (e) => { if (e.persisted) atualizarMembrosAtivos(); });
+
+        try {
+            sb.channel('membros-ativos-pontos')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'pontos' }, () => atualizarMembrosAtivos())
+                .subscribe();
+        } catch (erro) {
+            console.log('Tempo real indisponível, usando atualização a cada 10s.');
+        }
     </script>
 </body>
 </html>
