@@ -351,7 +351,7 @@
             cursor: pointer;
         }
         
-        /* ---------- LISTA DE MEMBROS (ON / OFF) ---------- */
+        /* ---------- LISTA DE MEMBROS (ON / PAUSADO / OFF) ---------- */
         .caixa-lista {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
             border: 1px solid rgba(96, 165, 250, 0.2);
@@ -388,6 +388,7 @@
             color: #94a3b8;
             margin-bottom: 14px;
             min-height: 16px;
+            line-height: 1.5;
         }
         
         .lista-corpo {
@@ -399,18 +400,66 @@
         }
         
         .membro-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
             padding: 12px 14px;
             background: rgba(30, 64, 175, 0.08);
             border: 1px solid rgba(96, 165, 250, 0.12);
             border-radius: 12px;
         }
         
+        .membro-linha {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
         .membro-info { flex: 1; min-width: 0; }
         .membro-nome { font-size: 15px; font-weight: 600; color: #fff; word-break: break-word; }
-        .membro-passaporte { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+        .membro-passaporte { font-size: 12px; color: #94a3b8; margin-top: 4px; }
+        
+        .membro-tag {
+            font-size: 10px;
+            font-weight: 600;
+            color: #94a3b8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+            border-radius: 999px;
+            padding: 1px 7px;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        
+        .ver-equipe {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-left: 8px;
+            padding: 2px 9px;
+            background: rgba(96, 165, 250, 0.12);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+            border-radius: 999px;
+            color: #60a5fa;
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .ver-equipe i { font-size: 10px; transition: transform 0.2s ease; }
+        .membro-item.aberto .ver-equipe i { transform: rotate(180deg); }
+        
+        .membro-equipe {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: rgba(2, 6, 23, 0.5);
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            border-radius: 10px;
+        }
+        
+        .membro-equipe > i { color: #60a5fa; font-size: 16px; }
+        .equipe-mini-nome { font-size: 14px; font-weight: 700; color: #fff; }
+        .equipe-mini-funcao { font-size: 12px; color: #94a3b8; margin-top: 2px; }
         
         .membro-status {
             font-size: 12px;
@@ -426,6 +475,12 @@
             border: 1px solid rgba(34, 197, 94, 0.35);
         }
         
+        .membro-status.pausado {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.35);
+        }
+        
         .membro-status.off {
             color: #94a3b8;
             background: rgba(148, 163, 184, 0.08);
@@ -439,8 +494,8 @@
             padding: 28px 10px;
         }
     </style>
-    </head>
-    <body>
+</head>
+<body>
     <div class="banner-topo"></div>
     
     <div class="cabecalho-superior">
@@ -534,8 +589,8 @@
         <a href="equipe.html" class="menu-item">
             <i class="fas fa-users"></i><span>Equipe</span>
         </a>
-            </nav>
-                <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
+                                                                                              </nav>
+                                                                                                  <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
         <div class="caixa-lista">
             <div class="lista-topo">
                 <h3 class="lista-titulo">Membros</h3>
@@ -639,57 +694,130 @@
 
         carregarDadosUsuario();
 
-        // ========== LISTA DE MEMBROS (ON / OFF) ==========
+        // ========== LISTA DE MEMBROS (ON / PAUSADO / OFF) ==========
         const modalMembros = document.getElementById('modalMembros');
         const listaMembros = document.getElementById('listaMembros');
         const resumoMembros = document.getElementById('resumoMembros');
-        let passaportesAtivos = new Set();
+        let estadoAtivos = new Map();
         let membrosCadastrados = null;
+        let equipesPorId = {};
+        let equipesAbertas = new Set();
         let timerListaMembros = null;
 
         function escaparHtml(t) {
             return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
         }
 
-        async function carregarMembrosCadastrados() {
-            const { data, error } = await sb
-                .from('membros')
-                .select('nome, passaporte');
-            if (error) throw error;
-            membrosCadastrados = data || [];
+        async function carregarDadosLista() {
+            const [resMembros, resEquipes] = await Promise.all([
+                sb.from('membros').select('nome, passaporte'),
+                sb.from('equipes').select('*')
+            ]);
+            if (resMembros.error) throw resMembros.error;
+            membrosCadastrados = resMembros.data || [];
+            equipesPorId = {};
+            if (!resEquipes.error) {
+                (resEquipes.data || []).forEach(e => { equipesPorId[String(e.id)] = e; });
+            }
+        }
+
+        function htmlEquipeDoMembro(equipeId) {
+            if (equipeId === null || equipeId === undefined) {
+                return '<div class="equipe-mini-nome">Sem equipe definida</div>';
+            }
+            const eq = equipesPorId[String(equipeId)];
+            if (!eq) {
+                return '<div class="equipe-mini-nome">Equipe não encontrada</div>';
+            }
+            return `
+                <div class="equipe-mini-nome">${escaparHtml(eq.nome || 'Equipe')}</div>
+                ${eq.funcao ? `<div class="equipe-mini-funcao">${escaparHtml(eq.funcao)}</div>` : ''}
+            `;
         }
 
         function renderizarListaMembros() {
             if (!membrosCadastrados) return;
-            const lista = membrosCadastrados.map(m => ({
-                nome: m.nome || 'Sem nome',
-                passaporte: String(m.passaporte),
-                on: passaportesAtivos.has(String(m.passaporte))
-            }));
-            lista.sort((a, b) => (Number(b.on) - Number(a.on)) || a.nome.localeCompare(b.nome, 'pt-BR'));
-            const qtdOn = lista.filter(m => m.on).length;
-            resumoMembros.textContent = qtdOn + ' ON · ' + (lista.length - qtdOn) + ' OFF · ' + lista.length + ' cadastrados';
+            const cadastrados = new Set(membrosCadastrados.map(m => String(m.passaporte)));
+
+            const lista = membrosCadastrados.map(m => {
+                const pass = String(m.passaporte);
+                const at = estadoAtivos.get(pass);
+                return {
+                    nome: m.nome || 'Sem nome',
+                    passaporte: pass,
+                    estado: at ? (at.pausado ? 'pausado' : 'on') : 'off',
+                    equipe_id: at ? at.equipe_id : null,
+                    semCadastro: false
+                };
+            });
+
+            // quem está com jornada aberta mas não aparece na tabela membros também entra na lista
+            estadoAtivos.forEach((at, pass) => {
+                if (!cadastrados.has(pass)) {
+                    lista.push({
+                        nome: at.nome || 'Sem nome',
+                        passaporte: pass,
+                        estado: at.pausado ? 'pausado' : 'on',
+                        equipe_id: at.equipe_id,
+                        semCadastro: true
+                    });
+                }
+            });
+
+            const ordem = { on: 0, pausado: 1, off: 2 };
+            lista.sort((a, b) => (ordem[a.estado] - ordem[b.estado]) || a.nome.localeCompare(b.nome, 'pt-BR'));
+
+            const qtdOn = lista.filter(m => m.estado === 'on').length;
+            const qtdPausado = lista.filter(m => m.estado === 'pausado').length;
+            const qtdOff = lista.filter(m => m.estado === 'off').length;
+            resumoMembros.innerHTML =
+                '<div>' + (qtdOn + qtdPausado) + ' em jornada · ' + qtdOn + ' ON · ' + qtdPausado + ' pausado</div>' +
+                '<div>' + qtdOff + ' OFF · ' + membrosCadastrados.length + ' cadastrados</div>';
+
             if (!lista.length) {
                 listaMembros.innerHTML = '<div class="membros-vazio">Nenhum membro cadastrado.</div>';
                 return;
             }
-            listaMembros.innerHTML = lista.map(m => `
-                <div class="membro-item">
-                    <div class="membro-info">
-                        <div class="membro-nome">${escaparHtml(m.nome)}</div>
-                        <div class="membro-passaporte">Passaporte ${escaparHtml(m.passaporte)}</div>
+
+            const rotulo = { on: 'ON', pausado: 'PAUSADO', off: 'OFF' };
+            listaMembros.innerHTML = lista.map(m => {
+                const aberto = equipesAbertas.has(m.passaporte);
+                const emJornada = m.estado !== 'off';
+                return `
+                <div class="membro-item ${aberto && emJornada ? 'aberto' : ''}">
+                    <div class="membro-linha">
+                        <div class="membro-info">
+                            <div class="membro-nome">${escaparHtml(m.nome)}${m.semCadastro ? ' <span class="membro-tag">sem cadastro</span>' : ''}</div>
+                            <div class="membro-passaporte">
+                                Passaporte ${escaparHtml(m.passaporte)}
+                                ${emJornada ? `<button class="ver-equipe" data-pass="${escaparHtml(m.passaporte)}">ver equipe <i class="fas fa-chevron-down"></i></button>` : ''}
+                            </div>
+                        </div>
+                        <span class="membro-status ${m.estado}">${rotulo[m.estado]}</span>
                     </div>
-                    <span class="membro-status ${m.on ? 'on' : 'off'}">${m.on ? 'ON' : 'OFF'}</span>
-                </div>
-            `).join('');
+                    ${aberto && emJornada ? `
+                    <div class="membro-equipe">
+                        <i class="fas fa-users"></i>
+                        <div>${htmlEquipeDoMembro(m.equipe_id)}</div>
+                    </div>` : ''}
+                </div>`;
+            }).join('');
         }
+
+        listaMembros.addEventListener('click', (e) => {
+            const botao = e.target.closest('.ver-equipe');
+            if (!botao) return;
+            const pass = botao.dataset.pass;
+            if (equipesAbertas.has(pass)) equipesAbertas.delete(pass); else equipesAbertas.add(pass);
+            renderizarListaMembros();
+        });
 
         async function abrirListaMembros() {
             modalMembros.classList.add('aberto');
             listaMembros.innerHTML = '<div class="membros-vazio">Carregando...</div>';
             resumoMembros.textContent = '';
             try {
-                await Promise.all([carregarMembrosCadastrados(), atualizarMembrosAtivos()]);
+                await Promise.all([carregarDadosLista(), atualizarMembrosAtivos()]);
                 renderizarListaMembros();
             } catch (erro) {
                 console.log('Erro ao carregar lista de membros:', erro);
@@ -697,7 +825,7 @@
             }
             clearInterval(timerListaMembros);
             timerListaMembros = setInterval(() => {
-                carregarMembrosCadastrados().then(renderizarListaMembros).catch(() => {});
+                carregarDadosLista().then(renderizarListaMembros).catch(() => {});
             }, 30000);
         }
 
@@ -717,12 +845,21 @@
             try {
                 const { data, error } = await sb
                     .from('pontos')
-                    .select('passaporte')
-                    .is('saida', null);
+                    .select('passaporte, nome, equipe_id, pausa_inicio, pausa_fim')
+                    .is('saida', null)
+                    .order('entrada', { ascending: false });
                 if (error) throw error;
-                const unicos = new Set((data || []).map(p => String(p.passaporte)));
-                passaportesAtivos = unicos;
-                if (elMembrosAtivos) elMembrosAtivos.textContent = unicos.size;
+                const mapa = new Map();
+                (data || []).forEach(p => {
+                    const pass = String(p.passaporte);
+                    if (mapa.has(pass)) return;
+                    const inicio = Date.parse(p.pausa_inicio);
+                    const fim = Date.parse(p.pausa_fim);
+                    const pausado = !isNaN(inicio) && (isNaN(fim) || inicio > fim);
+                    mapa.set(pass, { nome: p.nome, equipe_id: p.equipe_id, pausado: pausado });
+                });
+                estadoAtivos = mapa;
+                if (elMembrosAtivos) elMembrosAtivos.textContent = mapa.size;
                 if (modalMembros.classList.contains('aberto')) renderizarListaMembros();
             } catch (erro) {
                 console.log('Erro ao contar membros ativos:', erro);
