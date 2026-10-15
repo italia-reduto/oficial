@@ -239,7 +239,7 @@
     <i class="fas fa-clock"></i>
     <div>
       <p class="aviso-texto-linha1">Troca de equipe temporariamente bloqueada</p>
-      <p class="aviso-texto-linha2">Próxima troca em: <span class="contador-destaque" id="contadorRegressivo">01:00</span></p>
+      <p class="aviso-texto-linha2">Próxima troca em: <span class="contador-destaque" id="contadorRegressivo">10:00</span></p>
     </div>
   </div>
 </div>
@@ -262,7 +262,7 @@
 <div id="modalConfirma" class="modal-fundo">
   <div class="modal">
     <h3>Trocar de Equipe</h3>
-    <p>Você vai escolher outra equipe que tenha vagas. Depois da troca, uma nova troca só poderá ser feita após <strong>1 minuto</strong>.</p>
+    <p>Você vai escolher outra equipe que tenha vagas. Depois da troca, uma nova troca só poderá ser feita após <strong>10 minutos</strong>.</p>
     <div class="modal-botoes">
       <button class="btn secundario" onclick="fecharModal('modalConfirma')">Cancelar</button>
       <button class="btn" onclick="abrirEquipesDisponiveis()">Continuar</button>
@@ -281,7 +281,7 @@
   </div>
 </div>
 <!-- FIM PARTE 1/4 -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL = 'https://vclwmikzmnuqfdxobtik.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF';
@@ -306,7 +306,7 @@ let equipesDisponiveis = {};
 
 // ✅ NOVO: Controle de espera via servidor
 let esperaTrocaSeg = 0;
-let tempoInicioContagem = 0;
+let fimEsperaMs = 0;
 let intervaloContagem = null;
 
 /* ---------- SESSÃO ---------- */
@@ -394,19 +394,28 @@ function formatarFuncao(f){
     .map(p => /^venda$/i.test(p) ? 'VENDAS' : p);
   return palavras.join(' ').toUpperCase();
 }
+/* número da equipe: lê o final do nome (ex.: APOIO P1) e, se não achar, o final do tipo (ex.: apoio1) */
+function numeroDaEquipe(eq){
+  const fontes = [eq.nome, eq.tipo];
+  for(const s of fontes){
+    const m = String(s || '').trim().match(/(\d+)\s*$/);
+    if(m) return parseInt(m[1], 10);
+  }
+  return null;
+}
 function posicaoFixa(eq, grupo){
-  const t = String(eq.tipo || '').toLowerCase();
   const f = String(eq.funcao || '').toLowerCase();
+  const n = numeroDaEquipe(eq);
   if(grupo === 'apoio'){
-    if(t.endsWith('1')) return 'P1';
-    if(t.endsWith('2')) return 'P2';
+    if(n === 1) return 'P1';
+    if(n === 2) return 'P2';
     return null;
   }
   if(grupo === 'vendas'){
     if(f.includes('lockpick')) return 'P1';
     if(f.includes('flipper')) return 'P2';
-    if(t.endsWith('1')) return 'P1';
-    if(t.endsWith('2')) return 'P2';
+    if(n === 1) return 'P1';
+    if(n === 2) return 'P2';
   }
   return null;
 }
@@ -456,8 +465,9 @@ async function carregarEsperaServidor() {
   if(!sessao || !sessao.passaporte) return;
   try {
     const { data, error } = await sb.rpc('espera_troca', { p_passaporte: sessao.passaporte });
-    if(!error && data !== null) {
-      esperaTrocaSeg = data;
+    if(!error && data !== null && data !== undefined) {
+      definirEspera(Number(data));
+      return;
     }
   } catch(e) {
     console.log('Sem dados de espera');
@@ -465,20 +475,26 @@ async function carregarEsperaServidor() {
   atualizarExibicaoEspera();
 }
 
-// ✅ NOVO: Iniciar contador com performance.now()
+// ✅ NOVO: Define a espera com prazo fixo (relógio monotônico, não depende da hora do celular)
+function definirEspera(segundos) {
+  esperaTrocaSeg = Math.max(0, Math.ceil(segundos));
+  fimEsperaMs = performance.now() + esperaTrocaSeg * 1000;
+  iniciarContadorServidor();
+  atualizarExibicaoEspera();
+}
+
+// ✅ NOVO: Contador que anda sozinho até o prazo fixo
 function iniciarContadorServidor() {
-  if(intervaloContagem) clearInterval(intervaloContagem);
-  tempoInicioContagem = performance.now();
-  
+  if(intervaloContagem) { clearInterval(intervaloContagem); intervaloContagem = null; }
+  if(esperaTrocaSeg <= 0) return;
   intervaloContagem = setInterval(() => {
-    const decorridoMs = performance.now() - tempoInicioContagem;
-    const decorridoSeg = Math.floor(decorridoMs / 1000);
-    if(esperaTrocaSeg > 0) {
-      esperaTrocaSeg = Math.max(0, esperaTrocaSeg - decorridoSeg);
-    }
-    tempoInicioContagem = performance.now();
+    esperaTrocaSeg = Math.max(0, Math.ceil((fimEsperaMs - performance.now()) / 1000));
     atualizarExibicaoEspera();
-  }, 1000);
+    if(esperaTrocaSeg <= 0) {
+      clearInterval(intervaloContagem);
+      intervaloContagem = null;
+    }
+  }, 250);
 }
 
 // ✅ NOVO: Atualizar exibição visual da espera
@@ -507,16 +523,14 @@ function extrairTempoDoErro(erro) {
     const partes = erro.message.split('|');
     const seg = parseInt(partes[1]);
     if(!isNaN(seg)) {
-      esperaTrocaSeg = seg;
-      tempoInicioContagem = performance.now();
-      atualizarExibicaoEspera();
+      definirEspera(seg);
     }
     return true;
   }
   return false;
 }
 /* FIM PARTE 2/4 */
-  /* ---------- TELAS ---------- */
+    /* ---------- TELAS ---------- */
 function telaSemServico(){
   estado = 'sem';
   assinatura = null;
@@ -766,7 +780,7 @@ async function carregarEDesenhar(forcar){
   const s = document.getElementById('sync');
   if(s) s.textContent = textoSync();
   }
-  /* ---------- TROCAR DE EQUIPE ---------- */
+    /* ---------- TROCAR DE EQUIPE ---------- */
 async function abrirEquipesDisponiveis(){
   fecharModal('modalConfirma');
   abrirModal('modalEquipes');
@@ -830,6 +844,7 @@ async function confirmarTroca(novaId){
     console.error(e);
     if(extrairTempoDoErro(e)) {
       fecharModal('modalEquipes');
+      trocando = false;
       return;
     }
     fecharModal('modalEquipes');
