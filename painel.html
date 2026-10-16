@@ -413,21 +413,28 @@
             flex-shrink: 0;
         }
         
-        .membro-linha {
+        .membro-topo {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 10px;
         }
         
-        .membro-info { flex: 1; min-width: 0; }
-        .membro-nome { font-size: 15px; font-weight: 600; color: #fff; word-break: break-word; }
+        .membro-nome {
+            flex: 1;
+            min-width: 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #fff;
+            word-break: break-word;
+        }
         
         .membro-passaporte {
             display: flex;
             align-items: center;
             flex-wrap: nowrap;
             gap: 8px;
-            margin-top: 4px;
+            margin-top: 8px;
             font-size: 12px;
             color: #94a3b8;
             white-space: nowrap;
@@ -446,7 +453,7 @@
             vertical-align: middle;
         }
         
-        .ver-equipe {
+        .ver-equipe, .ver-tempo {
             flex: 0 0 auto;
             display: inline-flex;
             align-items: center;
@@ -463,8 +470,9 @@
             cursor: pointer;
         }
         
-        .ver-equipe i { font-size: 10px; transition: transform 0.2s ease; }
-        .membro-item.aberto .ver-equipe i { transform: rotate(180deg); }
+        .ver-equipe i, .ver-tempo i { font-size: 10px; transition: transform 0.2s ease; }
+        .membro-item.eq-aberto .ver-equipe i { transform: rotate(180deg); }
+        .membro-item.tempo-aberto .ver-tempo i { transform: rotate(180deg); }
         
         .membro-equipe {
             display: flex;
@@ -480,6 +488,35 @@
         .membro-equipe > i { color: #60a5fa; font-size: 16px; }
         .equipe-mini-nome { font-size: 14px; font-weight: 700; color: #fff; }
         .equipe-mini-funcao { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+        
+        .membro-tempo {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 10px;
+            padding: 10px 12px;
+            background: rgba(2, 6, 23, 0.5);
+            border: 1px solid rgba(96, 165, 250, 0.15);
+            border-radius: 10px;
+        }
+        
+        .tempo-linha {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+        
+        .tempo-linha strong {
+            color: #fff;
+            font-weight: 600;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .tempo-linha.pausa strong { color: #f59e0b; }
         
         .membro-status {
             flex: 0 0 auto;
@@ -515,7 +552,7 @@
             padding: 28px 10px;
         }
         
-        @media (max-width: 340px) {
+        @media (max-width: 380px) {
             .ver-txt { display: none; }
         }
     </style>
@@ -727,10 +764,42 @@
         let membrosCadastrados = null;
         let equipesPorId = {};
         let equipesAbertas = new Set();
+        let temposAbertos = new Set();
         let timerListaMembros = null;
+        let timerCronometros = null;
 
         function escaparHtml(t) {
             return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        }
+
+        function formatarDuracaoSeg(totalSeg) {
+            const s = Math.max(0, Math.floor(totalSeg));
+            const h = Math.floor(s / 3600);
+            const m = Math.floor((s % 3600) / 60);
+            const seg = s % 60;
+            return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(seg).padStart(2, '0');
+        }
+
+        function formatarQuando(ms) {
+            if (isNaN(ms)) return '--:--';
+            const fuso = { timeZone: 'America/Sao_Paulo' };
+            const data = new Date(ms);
+            const hora = data.toLocaleTimeString('pt-BR', { ...fuso, hour: '2-digit', minute: '2-digit' });
+            const dia = data.toLocaleDateString('pt-BR', { ...fuso, day: '2-digit', month: '2-digit' });
+            const hoje = new Date().toLocaleDateString('pt-BR', { ...fuso, day: '2-digit', month: '2-digit' });
+            return (dia === hoje ? 'hoje' : dia) + ' às ' + hora;
+        }
+
+        function calcularTempos(at) {
+            const agora = Date.now();
+            const entrada = Date.parse(at.entrada);
+            const inicio = Date.parse(at.pausa_inicio);
+            const fim = Date.parse(at.pausa_fim);
+            const pausado = !isNaN(inicio) && (isNaN(fim) || inicio > fim);
+            const pausaAtual = pausado ? (agora - inicio) / 1000 : 0;
+            const pausaConcluida = (!pausado && !isNaN(inicio) && !isNaN(fim) && fim > inicio) ? (fim - inicio) / 1000 : 0;
+            const jornada = isNaN(entrada) ? null : (agora - entrada) / 1000 - pausaAtual - pausaConcluida;
+            return { entrada, pausado, pausaAtual, pausaConcluida, jornada };
         }
 
         async function carregarDadosLista() {
@@ -760,6 +829,30 @@
             `;
         }
 
+        function htmlTempoDoMembro(at, pass) {
+            const t = calcularTempos(at);
+            const p = escaparHtml(pass);
+            let html = `
+                <div class="tempo-linha"><span>Iniciou</span><strong>${escaparHtml(formatarQuando(t.entrada))}</strong></div>
+                <div class="tempo-linha"><span>Em serviço há</span><strong data-cron="jornada" data-pass="${p}">${t.jornada == null ? '--:--:--' : formatarDuracaoSeg(t.jornada)}</strong></div>`;
+            if (t.pausado) {
+                html += `<div class="tempo-linha pausa"><span>Pausado há</span><strong data-cron="pausa" data-pass="${p}">${formatarDuracaoSeg(t.pausaAtual)}</strong></div>`;
+            } else if (t.pausaConcluida > 0) {
+                html += `<div class="tempo-linha"><span>Última pausa durou</span><strong>${formatarDuracaoSeg(t.pausaConcluida)}</strong></div>`;
+            }
+            return html;
+        }
+
+        function atualizarCronometros() {
+            listaMembros.querySelectorAll('[data-cron]').forEach(el => {
+                const at = estadoAtivos.get(el.dataset.pass);
+                if (!at) return;
+                const t = calcularTempos(at);
+                const valor = el.dataset.cron === 'pausa' ? t.pausaAtual : t.jornada;
+                el.textContent = valor == null ? '--:--:--' : formatarDuracaoSeg(valor);
+            });
+        }
+
         function renderizarListaMembros() {
             if (!membrosCadastrados) return;
             const cadastrados = new Set(membrosCadastrados.map(m => String(m.passaporte)));
@@ -771,7 +864,7 @@
                     nome: m.nome || 'Sem nome',
                     passaporte: pass,
                     estado: at ? (at.pausado ? 'pausado' : 'on') : 'off',
-                    equipe_id: at ? at.equipe_id : null,
+                    ativo: at || null,
                     semCadastro: false
                 };
             });
@@ -783,7 +876,7 @@
                         nome: at.nome || 'Sem nome',
                         passaporte: pass,
                         estado: at.pausado ? 'pausado' : 'on',
-                        equipe_id: at.equipe_id,
+                        ativo: at,
                         semCadastro: true
                     });
                 }
@@ -806,34 +899,41 @@
 
             const rotulo = { on: 'ON', pausado: 'PAUSADO', off: 'OFF' };
             listaMembros.innerHTML = lista.map(m => {
-                const aberto = equipesAbertas.has(m.passaporte);
                 const emJornada = m.estado !== 'off';
+                const abertoEq = emJornada && equipesAbertas.has(m.passaporte);
+                const abertoTempo = emJornada && temposAbertos.has(m.passaporte);
+                const pEsc = escaparHtml(m.passaporte);
                 return `
-                <div class="membro-item ${aberto && emJornada ? 'aberto' : ''}">
-                    <div class="membro-linha">
-                        <div class="membro-info">
-                            <div class="membro-nome">${escaparHtml(m.nome)}${m.semCadastro ? ' <span class="membro-tag">sem cadastro</span>' : ''}</div>
-                            <div class="membro-passaporte">
-                                <span class="pass-txt">Passaporte ${escaparHtml(m.passaporte)}</span>
-                                ${emJornada ? `<button class="ver-equipe" data-pass="${escaparHtml(m.passaporte)}"><span class="ver-txt">ver </span>equipe <i class="fas fa-chevron-down"></i></button>` : ''}
-                            </div>
-                        </div>
+                <div class="membro-item ${abertoEq ? 'eq-aberto' : ''} ${abertoTempo ? 'tempo-aberto' : ''}">
+                    <div class="membro-topo">
+                        <div class="membro-nome">${escaparHtml(m.nome)}${m.semCadastro ? ' <span class="membro-tag">sem cadastro</span>' : ''}</div>
                         <span class="membro-status ${m.estado}">${rotulo[m.estado]}</span>
                     </div>
-                    ${aberto && emJornada ? `
+                    <div class="membro-passaporte">
+                        <span class="pass-txt">Passaporte ${pEsc}</span>
+                        ${emJornada ? `
+                        <button class="ver-equipe" data-pass="${pEsc}"><span class="ver-txt">ver </span>equipe <i class="fas fa-chevron-down"></i></button>
+                        <button class="ver-tempo" data-pass="${pEsc}">tempo <i class="fas fa-chevron-down"></i></button>` : ''}
+                    </div>
+                    ${abertoEq ? `
                     <div class="membro-equipe">
                         <i class="fas fa-users"></i>
-                        <div>${htmlEquipeDoMembro(m.equipe_id)}</div>
+                        <div>${htmlEquipeDoMembro(m.ativo.equipe_id)}</div>
                     </div>` : ''}
+                    ${abertoTempo ? `
+                    <div class="membro-tempo">${htmlTempoDoMembro(m.ativo, m.passaporte)}</div>` : ''}
                 </div>`;
             }).join('');
         }
 
         listaMembros.addEventListener('click', (e) => {
-            const botao = e.target.closest('.ver-equipe');
+            const botaoEquipe = e.target.closest('.ver-equipe');
+            const botaoTempo = e.target.closest('.ver-tempo');
+            const botao = botaoEquipe || botaoTempo;
             if (!botao) return;
+            const conjunto = botaoEquipe ? equipesAbertas : temposAbertos;
             const pass = botao.dataset.pass;
-            if (equipesAbertas.has(pass)) equipesAbertas.delete(pass); else equipesAbertas.add(pass);
+            if (conjunto.has(pass)) conjunto.delete(pass); else conjunto.add(pass);
             renderizarListaMembros();
         });
 
@@ -852,11 +952,14 @@
             timerListaMembros = setInterval(() => {
                 carregarDadosLista().then(renderizarListaMembros).catch(() => {});
             }, 30000);
+            clearInterval(timerCronometros);
+            timerCronometros = setInterval(atualizarCronometros, 1000);
         }
 
         function fecharListaMembros() {
             modalMembros.classList.remove('aberto');
             clearInterval(timerListaMembros);
+            clearInterval(timerCronometros);
         }
 
         // ========== MEMBROS ATIVOS (TEMPO REAL) ==========
@@ -870,7 +973,7 @@
             try {
                 const { data, error } = await sb
                     .from('pontos')
-                    .select('passaporte, nome, equipe_id, pausa_inicio, pausa_fim')
+                    .select('passaporte, nome, equipe_id, entrada, pausa_inicio, pausa_fim')
                     .is('saida', null)
                     .order('entrada', { ascending: false });
                 if (error) throw error;
@@ -881,7 +984,14 @@
                     const inicio = Date.parse(p.pausa_inicio);
                     const fim = Date.parse(p.pausa_fim);
                     const pausado = !isNaN(inicio) && (isNaN(fim) || inicio > fim);
-                    mapa.set(pass, { nome: p.nome, equipe_id: p.equipe_id, pausado: pausado });
+                    mapa.set(pass, {
+                        nome: p.nome,
+                        equipe_id: p.equipe_id,
+                        entrada: p.entrada,
+                        pausa_inicio: p.pausa_inicio,
+                        pausa_fim: p.pausa_fim,
+                        pausado: pausado
+                    });
                 });
                 estadoAtivos = mapa;
                 if (elMembrosAtivos) elMembrosAtivos.textContent = mapa.size;
