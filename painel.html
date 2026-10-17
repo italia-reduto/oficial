@@ -214,18 +214,25 @@
             <span><i class="fas fa-calendar-alt"></i> <strong id="dataTopo">--/--/----</strong></span>
         </div>
 <!-- FIM PARTE 1/3 -->
-                <div class="grade-cards">
+            <div class="grade-cards">
             <div class="card">
-                <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
-                <p class="card-valor" id="cardMeuStatus">Verificando...</p>
+                <p class="card-titulo">Tickets Abertos <i class="fas fa-ticket"></i></p>
+                <p class="card-valor" id="cardTickets">0</p>
             </div>
             <div class="card">
-                <p class="card-titulo">Minha Equipe <i class="fas fa-users"></i></p>
-                <p class="card-valor" id="cardMinhaEquipe">Nenhuma</p>
+                <p class="card-titulo">Ausências Pendentes <i class="fas fa-calendar-days"></i></p>
+                <p class="card-valor" id="cardAusencias">0</p>
+            </div>
+            <div class="card">
+                <p class="card-titulo">Membros Ativos <i class="fas fa-users"></i></p>
+                <p class="card-valor" id="cardTotalAtivos">0 online</p>
+            </div>
+            <div class="card">
+                <p class="card-titulo">Pontos Hoje <i class="fas fa-clock-rotate-left"></i></p>
+                <p class="card-valor" id="cardPontosHoje">0</p>
             </div>
             <div class="card completo">
-                <p class="card-titulo">Membros Ativos <i class="fas fa-user-check"></i></p>
-                <p class="card-valor" id="cardTotalAtivos">0 online</p>
+                <p class="card-titulo">Membros em Jornada <i class="fas fa-user-check"></i></p>
                 <div class="lista-membros" id="listaMembrosAtivos">
                     <p style="color: #94a3b8; font-size: 13px; text-align: center; padding: 10px;">Nenhum membro em jornada no momento.</p>
                 </div>
@@ -274,7 +281,7 @@
         <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
     </nav>
 <!-- FIM PARTE 2/3 -->
-              <script>
+                    <script>
         const passaporteUsuario = localStorage.getItem('passaporte');
         const dadosUsuarioLocal = JSON.parse(localStorage.getItem('usuario') || '{}');
 
@@ -429,35 +436,14 @@
 
             const cardTotal = document.getElementById('cardTotalAtivos');
             const listaMembros = document.getElementById('listaMembrosAtivos');
-            const cardMeuStatus = document.getElementById('cardMeuStatus');
-            const cardMinhaEquipe = document.getElementById('cardMinhaEquipe');
 
             if (error || !ativos || ativos.length === 0) {
                 cardTotal.textContent = '0 online';
                 listaMembros.innerHTML = `<p style="color: #94a3b8; font-size: 13px; text-align: center; padding: 10px;">Nenhum membro em jornada no momento.</p>`;
-                cardMeuStatus.textContent = 'Fora de Serviço';
-                cardMinhaEquipe.textContent = 'Nenhuma';
                 return;
             }
 
             cardTotal.textContent = `${ativos.length} online`;
-
-            const meuPonto = ativos.find(p => String(p.passaporte) === String(passaporteUsuario));
-            if (meuPonto) {
-                const emPausa = meuPonto.pausa_inicio && !meuPonto.pausa_fim;
-                cardMeuStatus.textContent = emPausa ? 'Em Pausa' : 'Em Jornada';
-                cardMeuStatus.style.color = emPausa ? '#f59e0b' : '#22c55e';
-            } else {
-                cardMeuStatus.textContent = 'Fora de Serviço';
-                cardMeuStatus.style.color = '#fff';
-            }
-
-            if (meuPonto && meuPonto.equipe_id) {
-                const { data: eqData } = await sb.from('equipes').select('nome, funcao').eq('id', meuPonto.equipe_id).single();
-                cardMinhaEquipe.textContent = eqData ? (eqData.nome || eqData.funcao) : 'Atribuída';
-            } else {
-                cardMinhaEquipe.textContent = 'Nenhuma';
-            }
 
             listaMembros.innerHTML = ativos.slice(0, 5).map(p => {
                 const emPausa = p.pausa_inicio && !p.pausa_fim;
@@ -482,4 +468,3 @@
 </body>
 </html>
 <!-- FIM PARTE 3/3 -->
-    
