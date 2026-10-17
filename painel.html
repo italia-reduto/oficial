@@ -98,16 +98,12 @@
             border-radius: 14px; padding: 16px;
             backdrop-filter: blur(8px);
         }
-        /* O card de Membros Ativos agora é interativo ao toque */
         .card.interativo {
-            cursor: pointer;
-            transition: border-color 0.2s, background 0.2s;
+            cursor: pointer; transition: border-color 0.2s, background 0.2s;
         }
         .card.interativo:hover {
-            border-color: rgba(96, 165, 250, 0.35);
-            background: rgba(15, 23, 42, 0.75);
+            border-color: rgba(96, 165, 250, 0.35); background: rgba(15, 23, 42, 0.75);
         }
-
         .card.completo { grid-column: span 2; }
         .card-titulo {
             font-size: 13px; color: #94a3b8; font-weight: 500;
@@ -116,7 +112,6 @@
         .card-titulo i { font-size: 14px; color: #60a5fa; }
         .card-valor { font-size: 20px; font-weight: 700; color: #fff; }
 
-        /* Estilo da Lista dentro do Modal de Membros Ativos */
         .lista-membros-modal { display: flex; flex-direction: column; gap: 10px; max-height: 55vh; overflow-y: auto; padding-right: 4px; }
         .item-membro {
             display: flex; align-items: center; justify-content: space-between;
@@ -125,9 +120,7 @@
         }
         .info-membro p { font-size: 14px; font-weight: 600; color: #fff; }
         .info-membro span { font-size: 12px; color: #94a3b8; }
-        .tag-status {
-            font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px;
-        }
+        .tag-status { font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px; }
         .tag-status.on { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
         .tag-status.pausado { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
 
@@ -140,7 +133,7 @@
         }
         .botao-atalho:hover { background: rgba(59, 130, 246, 0.2); }
 
-        /* Estilo dos Modais */
+        /* Modais */
         .fundo-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
             display: flex; align-items: center; justify-content: center; z-index: 999;
@@ -187,6 +180,7 @@
 
         .aviso-vazio { text-align: center; color: #94a3b8; padding: 30px; font-size: 14px; }
 
+        /* BARRA DE MENU (Restaurada exatamente do original) */
         .barra-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
             background: #000; display: flex; align-items: center; justify-content: space-around;
@@ -240,7 +234,6 @@
                 <p class="card-titulo">Ausências Pendentes <i class="fas fa-calendar-days"></i></p>
                 <p class="card-valor" id="cardAusencias">0</p>
             </div>
-            <!-- Card de Membros Ativos agora é interativo (ao clicar abre a lista em modal) -->
             <div class="card interativo" id="cardAbrirMembrosAtivos">
                 <p class="card-titulo">Membros Ativos <i class="fas fa-users"></i></p>
                 <p class="card-valor" id="cardTotalAtivos">0 online</p>
@@ -263,7 +256,7 @@
         </div>
     </div>
 
-    <!-- Modal da Lista de Membros Ativos (Abre ao tocar no card) -->
+    <!-- Modal da Lista de Membros Ativos -->
     <div class="fundo-modal" id="modalMembrosAtivos">
         <div class="caixa-modal-membros">
             <div class="modal-topo">
@@ -273,12 +266,12 @@
                 <button class="botao-fechar-modal" id="btnFecharModalMembros"><i class="fas fa-times"></i></button>
             </div>
             <div class="lista-membros-modal" id="listaMembrosModalConteudo">
-                <p class="aviso-vazio">A carregar membros...</p>
+                <p class="aviso-vazio">Carregando membros...</p>
             </div>
         </div>
     </div>
 
-    <!-- Modal do Painel Admin (Abre ao clicar no botão do topo) -->
+    <!-- Modal do Painel Admin -->
     <div class="fundo-modal" id="modalAdmin">
         <div class="caixa-modal-admin">
             <div class="modal-topo">
@@ -298,7 +291,7 @@
                         </tr>
                     </thead>
                     <tbody id="listaAdminPontos">
-                        <tr><td colspan="4" class="aviso-vazio">A carregar jornadas ativas...</td></tr>
+                        <tr><td colspan="4" class="aviso-vazio">Carregando jornadas ativas...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -306,12 +299,12 @@
     </div>
 
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item ativo"><i class="fas fa-home"><span>Painel</span></i></a>
-        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"><span>Ponto</span></i></a>
-        <a href="equipe.html" class="menu-item"><i class="fas fa-users"><span>Equipe</span></i></a>
+        <a href="painel.html" class="menu-item ativo"><i class="fas fa-home"></i><span>Painel</span></a>
+        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
     </nav>
 <!-- FIM PARTE 2/3 -->
-        <script>
+                         <script>
         const passaporteUsuario = localStorage.getItem('passaporte');
         const dadosUsuarioLocal = JSON.parse(localStorage.getItem('usuario') || '{}');
 
@@ -319,7 +312,6 @@
             window.location.href = 'login.html';
         }
 
-        // Relógio e Data em tempo real no topo
         function atualizarRelogio() {
             const agora = new Date();
             document.getElementById('relogioTopo').textContent = agora.toLocaleTimeString('pt-BR');
@@ -333,7 +325,6 @@
             window.location.href = 'login.html';
         });
 
-        // Preencher dados do usuário e verificar se é Coordenador no Banco
         async function inicializarPainel() {
             if (dadosUsuarioLocal.nome) {
                 document.querySelector('#saudacaoPainel span').textContent = dadosUsuarioLocal.nome;
@@ -359,11 +350,9 @@
             setInterval(atualizarContadorAtivos, 15000);
         }
 
-        // Gestão dos Modais
         const modalAdmin = document.getElementById('modalAdmin');
         const modalMembrosAtivos = document.getElementById('modalMembrosAtivos');
 
-        // Painel Admin
         document.getElementById('btnAbrirModalAdmin').addEventListener('click', () => {
             modalAdmin.classList.add('aberto');
             carregarPontosAdmin();
@@ -375,7 +364,6 @@
             if (e.target === modalAdmin) modalAdmin.classList.remove('aberto');
         });
 
-        // Lista de Membros Ativos (Abre ao tocar no card)
         document.getElementById('cardAbrirMembrosAtivos').addEventListener('click', () => {
             modalMembrosAtivos.classList.add('aberto');
             carregarListaMembrosModal();
@@ -387,7 +375,6 @@
             if (e.target === modalMembrosAtivos) modalMembrosAtivos.classList.remove('aberto');
         });
 
-        // Atualizar apenas o contador no card principal para manter a tela limpa
         async function atualizarContadorAtivos() {
             const { data: ativos, error } = await sb
                 .from('pontos')
@@ -402,7 +389,6 @@
             cardTotal.textContent = `${ativos.length} online`;
         }
 
-        // Carregar a lista completa de membros ativos dentro do Modal
         async function carregarListaMembrosModal() {
             const { data: ativos, error } = await sb
                 .from('pontos')
@@ -431,7 +417,6 @@
             }).join('');
         }
 
-        // Carregar dados da tabela dentro do Modal Admin
         async function carregarPontosAdmin() {
             const { data: pontosAbertos, error } = await sb
                 .from('pontos')
@@ -521,3 +506,4 @@
 </body>
 </html>
 <!-- FIM PARTE 3/3 -->
+    
