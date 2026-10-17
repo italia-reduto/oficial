@@ -18,1012 +18,468 @@
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
-    
+
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent; outline: none !important;
+        }
+        *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
         html, body {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #000000 0%, #0f172a 100%);
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            padding-bottom: 80px;
+            min-height: 100vh; font-family: 'Inter', sans-serif; color: #fff;
+            padding-bottom: 90px; overflow-x: hidden;
         }
-        
-        .banner-topo {
-            width: 100%;
-            height: 200px;
-            position: relative;
-            overflow: hidden;
+
+        .fundo-pagina {
+            position: fixed; inset: 0;
+            background: linear-gradient(135deg, #000 0%, #0f172a 50%, #1e293b 100%);
+            z-index: -4;
         }
-        
-        .banner-topo::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat;
-            opacity: 0.45;
-            transform: scale(1.05);
+        .fundo-imagem {
+            position: fixed; inset: 0;
+            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center/cover no-repeat;
+            opacity: 0.08; z-index: -3;
         }
-        
-        .banner-topo::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%);
+        .fundo-degrade {
+            position: fixed; inset: 0;
+            background: linear-gradient(to bottom, 
+                rgba(0,0,0,0.3) 0%, 
+                rgba(0,0,0,0.75) 55%, 
+                rgba(15, 23, 42, 0.92) 80%,
+                rgba(30, 64, 175, 0.18) 100%);
+            z-index: -2;
         }
-        
-        .cabecalho-superior {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: flex-end;
-            z-index: 10;
+        .fundo-azul-embaixo {
+            position: fixed; bottom: 0; left: 0; right: 0; height: 220px;
+            background: linear-gradient(to top, 
+                rgba(59, 130, 246, 0.15) 0%, 
+                rgba(59, 130, 246, 0.06) 45%,
+                transparent 100%);
+            pointer-events: none; z-index: -1;
         }
+
+        .conteudo { position: relative; z-index: 1; padding: 24px; max-width: 600px; margin: 0 auto; }
         
+        .cabecalho { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-start; }
+        .titulo-secao h1 { font-size: 28px; font-weight: 800; }
+        .titulo-secao h1 span { color: #60a5fa; }
+        .titulo-secao .dados-usuario { font-size: 14px; color: #94a3b8; margin-top: 6px; display: flex; flex-direction: column; gap: 4px; }
+        .titulo-secao .dados-usuario i { color: #60a5fa; margin-right: 4px; }
+        
+        .topo-acoes { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
         .botao-sair {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(96, 165, 250, 0.18);
-            border-radius: 12px;
-            padding: 10px 18px;
-            color: #f87171;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            backdrop-filter: blur(10px);
+            background: rgba(239, 68, 68, 0.15); border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444; padding: 8px 12px; border-radius: 10px; font-size: 12px;
+            font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+            text-decoration: none; transition: background 0.2s;
         }
-        
-        .botao-sair:hover {
-            background: rgba(248, 113, 113, 0.12);
-            border-color: rgba(248, 113, 113, 0.35);
+        .botao-sair:hover { background: rgba(239, 68, 68, 0.25); }
+
+        /* Botão Admin Discreto no Topo (Visível apenas para o Coordenador) */
+        .botao-admin-topo {
+            background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35);
+            color: #f59e0b; padding: 8px 12px; border-radius: 10px; font-size: 12px;
+            font-weight: 600; cursor: pointer; display: none; align-items: center; gap: 6px;
+            transition: background 0.2s;
         }
-        
-        .conteudo {
-            padding: 24px;
-            margin-top: -30px;
-            position: relative;
-            z-index: 1;
-            transition: filter 0.35s ease;
+        .botao-admin-topo:hover { background: rgba(245, 158, 11, 0.25); }
+
+        .info-tempo-topo {
+            font-size: 13px; color: #94a3b8; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
         }
-        
-        .conteudo.desfocado { filter: blur(6px); }
-        
-        .saudacao {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        
-        .saudacao span { color: #60a5fa; }
-        
-        .linha-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .linha-info i {
-            font-size: 15px;
-            color: #60a5fa;
-            width: 18px;
-            text-align: center;
-        }
-        
-        .info-texto { font-size: 14px; color: #94a3b8; }
-        .info-valor { font-size: 14px; color: #fff; font-weight: 600; }
-        
-        .bloco-tempo {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 18px 0 28px;
-        }
-        
-        .item-tempo { display: flex; align-items: center; gap: 6px; }
-        .item-tempo i { font-size: 14px; color: #60a5fa; }
-        .hora { font-size: 15px; color: #fff; font-weight: 600; font-variant-numeric: tabular-nums; }
-        .data { font-size: 14px; color: #94a3b8; }
-        
+        .info-tempo-topo span { display: inline-flex; align-items: center; gap: 5px; }
+        .info-tempo-topo i { color: #60a5fa; }
+
         .grade-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 14px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 24px;
         }
-        
         .card {
             background: rgba(15, 23, 42, 0.55);
             border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px;
-            padding: 20px;
-            height: 110px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+            border-radius: 14px; padding: 16px;
+            backdrop-filter: blur(8px);
         }
-        
+        .card.completo { grid-column: span 2; }
         .card-titulo {
-            font-size: 13px;
-            color: #94a3b8;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
+            font-size: 13px; color: #94a3b8; font-weight: 500;
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;
         }
-        
         .card-titulo i { font-size: 14px; color: #60a5fa; }
-        .card-valor { font-size: 22px; font-weight: 700; color: #fff; }
-        
-        .card-aviso {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px;
-            padding: 20px;
-            grid-column: 1 / -1;
+        .card-valor { font-size: 20px; font-weight: 700; color: #fff; }
+
+        .lista-membros { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+        .item-membro {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 10px 12px; background: rgba(30, 41, 59, 0.4);
+            border-radius: 10px; border: 1px solid rgba(96, 165, 250, 0.08);
         }
-        
-        .card-clicavel {
-            cursor: pointer;
-            transition: border-color 0.25s ease, background 0.25s ease;
+        .info-membro p { font-size: 14px; font-weight: 600; color: #fff; }
+        .info-membro span { font-size: 12px; color: #94a3b8; }
+        .tag-status {
+            font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 6px;
         }
-        
-        .card-clicavel:hover {
-            border-color: rgba(96, 165, 250, 0.35);
-            background: rgba(30, 64, 175, 0.12);
+        .tag-status.on { background: rgba(34, 197, 94, 0.15); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.3); }
+        .tag-status.pausado { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+        .botoes-atalho { display: flex; gap: 10px; margin-top: 14px; }
+        .botao-atalho {
+            flex: 1; padding: 12px; border-radius: 12px; border: 1px solid rgba(96, 165, 250, 0.2);
+            background: rgba(59, 130, 246, 0.1); color: #60a5fa; font-size: 14px; font-weight: 600;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+            text-decoration: none; transition: background 0.2s;
         }
-        
-        .card-dica {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 4px;
+        .botao-atalho:hover { background: rgba(59, 130, 246, 0.2); }
+
+        /* Estilo do Modal Admin Limpo */
+        .fundo-modal {
+            position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center; z-index: 999;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 16px;
         }
+        .fundo-modal.aberto { opacity: 1; visibility: visible; }
+        .caixa-modal-admin {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 20px;
+            padding: 24px; max-width: 500px; width: 100%; max-height: 85vh;
+            display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-admin-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .modal-admin-titulo { font-size: 18px; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 8px; }
+        .botao-fechar-modal { background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
+        .botao-fechar-modal:hover { color: #fff; }
+
+        .tabela-admin-container { overflow-y: auto; max-height: 55vh; border-radius: 12px; border: 1px solid rgba(96, 165, 250, 0.15); }
+        .tabela-admin { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+        .tabela-admin th { background: rgba(15, 23, 42, 0.9); color: #94a3b8; font-weight: 600; padding: 10px 12px; position: sticky; top: 0; z-index: 10; border-bottom: 1px solid rgba(96, 165, 250, 0.15); }
+        .tabela-admin td { padding: 12px; border-bottom: 1px solid rgba(96, 165, 250, 0.08); vertical-align: middle; background: rgba(15, 23, 42, 0.4); }
+        .tabela-admin tr:last-child td { border-bottom: none; }
         
+        .status-ponto-admin { display: inline-flex; align-items: center; gap: 5px; font-weight: 600; font-size: 12px; }
+        .status-ponto-admin.ativo { color: #22c55e; }
+        .status-ponto-admin.pausado { color: #f59e0b; }
+
+        .botoes-acao-admin { display: flex; gap: 6px; }
+        .btn-acao-admin {
+            border: none; padding: 8px 10px; border-radius: 8px; font-size: 12px; font-weight: 600;
+            cursor: pointer; color: #fff; transition: opacity 0.2s; display: inline-flex; align-items: center; gap: 4px;
+        }
+        .btn-acao-admin.pausar { background: #f59e0b; }
+        .btn-acao-admin.retomar { background: #10b981; }
+        .btn-acao-admin.encerrar { background: #ef4444; }
+        .btn-acao-admin:hover { opacity: 0.85; }
+
+        .aviso-vazio-admin { text-align: center; color: #94a3b8; padding: 30px; font-size: 14px; }
+
         .barra-menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid rgba(96, 165, 250, 0.15);
-            z-index: 100;
+            position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
+            background: #000; display: flex; align-items: center; justify-content: space-around;
+            border-top: 1px solid rgba(96,165,250,0.15); z-index: 100;
         }
-        
         .menu-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 11px;
-            cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; gap: 4px;
+            color: #94a3b8; text-decoration: none; font-size: 11px;
+            cursor: pointer; user-select: none; background: none; border: none;
         }
-        
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
-        
-        .sombra-fundo {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 97;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.35s ease;
-        }
-        
-        .sombra-fundo.visivel { opacity: 1; visibility: visible; }
-        
-        .gaveta {
-            position: fixed;
-            bottom: 70px;
-            right: 0;
-            width: 260px;
-            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
-            border-left: 1px solid rgba(96, 165, 250, 0.15);
-            border-top-left-radius: 16px;
-            z-index: 98;
-            transform: translateY(100%);
-            transition: transform 0.35s ease;
-            padding: 20px 18px;
-            max-height: calc(80vh - 70px);
-            overflow-y: auto;
-        }
-        
-        .gaveta.aberta { transform: translateY(0); }
-        
-        .gaveta-titulo {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 14px;
-        }
-        
-        .gaveta-lista { display: flex; flex-direction: column; gap: 8px; }
-        
-        .gaveta-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 14px;
-            background: rgba(30, 64, 175, 0.08);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 10px;
-            color: #e2e8f0;
-            text-decoration: none;
-        }
-        
-        .gaveta-item:hover {
-            background: rgba(96, 165, 250, 0.15);
-            transform: translateX(-4px);
-        }
-        
-        .gaveta-item-esq { display: flex; align-items: center; gap: 10px; }
-        .gaveta-item-esq i { color: #60a5fa; font-size: 16px; }
-        .gaveta-item-dir { color: #64748b; font-size: 14px; }
-        
-        .botao-fechar {
-            position: absolute;
-            top: 12px;
-            right: 14px;
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        .fundo-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.35s ease;
-            padding: 24px;
-        }
-        
-        .fundo-modal.aberto { opacity: 1; visibility: visible; }
-        
-        .caixa-modal {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            border-radius: 24px;
-            padding: 32px;
-            max-width: 400px;
-            width: 100%;
-        }
-        
-        .icone-modal {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: rgba(248, 113, 113, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-        }
-        
-        .icone-modal i { font-size: 26px; color: #f87171; }
-        .titulo-modal { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 10px; }
-        .texto-modal { font-size: 15px; color: #94a3b8; text-align: center; margin-bottom: 24px; }
-        
-        .botoes-modal { display: flex; gap: 12px; }
-        
-        .botao-cancelar {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(96, 165, 250, 0.18);
-            color: #cbd5e1;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .botao-confirmar {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-            border: none;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        /* ---------- LISTA DE MEMBROS (ON / PAUSADO / OFF) ---------- */
-        #modalMembros { padding: 14px; }
-        
-        .caixa-lista {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            border-radius: 24px;
-            padding: 22px 18px 18px;
-            max-width: 440px;
-            width: 100%;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .lista-topo {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 6px;
-            flex-shrink: 0;
-        }
-        
-        .lista-titulo { font-size: 20px; font-weight: 700; }
-        
-        .lista-fechar {
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
-        
-        .lista-resumo {
-            flex-shrink: 0;
-            text-align: center;
-            font-size: 13px;
-            color: #94a3b8;
-            line-height: 1.6;
-            margin: 4px 0 16px;
-        }
-        
-        .lista-corpo {
-            flex: 1 1 auto;
-            min-height: 0;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-right: 2px;
-        }
-        
-        .membro-item {
-            padding: 12px;
-            background: rgba(30, 64, 175, 0.08);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 12px;
-            flex-shrink: 0;
-        }
-        
-        .membro-topo {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        
-        .membro-nome {
-            flex: 1;
-            min-width: 0;
-            font-size: 15px;
-            font-weight: 600;
-            color: #fff;
-            word-break: break-word;
-        }
-        
-        .membro-passaporte {
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-            gap: 8px;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #94a3b8;
-            white-space: nowrap;
-        }
-        
-        .pass-txt { flex: 0 0 auto; }
-        
-        .membro-tag {
-            font-size: 10px;
-            font-weight: 600;
-            color: #94a3b8;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-            border-radius: 999px;
-            padding: 1px 7px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-        
-        .ver-equipe, .ver-tempo {
-            flex: 0 0 auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 2px 9px;
-            background: rgba(96, 165, 250, 0.12);
-            border: 1px solid rgba(96, 165, 250, 0.3);
-            border-radius: 999px;
-            color: #60a5fa;
-            font-family: inherit;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-        
-        .ver-equipe i, .ver-tempo i { font-size: 10px; transition: transform 0.2s ease; }
-        .membro-item.eq-aberto .ver-equipe i { transform: rotate(180deg); }
-        .membro-item.tempo-aberto .ver-tempo i { transform: rotate(180deg); }
-        
-        .membro-equipe {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 10px;
-            padding: 10px 12px;
-            background: rgba(2, 6, 23, 0.5);
-            border: 1px solid rgba(96, 165, 250, 0.15);
-            border-radius: 10px;
-        }
-        
-        .membro-equipe > i { color: #60a5fa; font-size: 16px; }
-        .equipe-mini-nome { font-size: 14px; font-weight: 700; color: #fff; }
-        .equipe-mini-funcao { font-size: 12px; color: #94a3b8; margin-top: 2px; }
-        
-        .membro-tempo {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 10px;
-            padding: 10px 12px;
-            background: rgba(2, 6, 23, 0.5);
-            border: 1px solid rgba(96, 165, 250, 0.15);
-            border-radius: 10px;
-        }
-        
-        .tempo-linha {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        
-        .tempo-linha strong {
-            color: #fff;
-            font-weight: 600;
-            text-align: right;
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .tempo-linha.pausa strong { color: #f59e0b; }
-        
-        .membro-status {
-            flex: 0 0 auto;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            padding: 5px 10px;
-            border-radius: 999px;
-        }
-        
-        .membro-status.on {
-            color: #22c55e;
-            background: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.35);
-        }
-        
-        .membro-status.pausado {
-            color: #f59e0b;
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid rgba(245, 158, 11, 0.35);
-        }
-        
-        .membro-status.off {
-            color: #94a3b8;
-            background: rgba(148, 163, 184, 0.08);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-        }
-        
-        .membros-vazio {
-            text-align: center;
-            color: #64748b;
-            font-size: 14px;
-            padding: 28px 10px;
-        }
-        
-        @media (max-width: 380px) {
-            .ver-txt { display: none; }
-        }
     </style>
 </head>
 <body>
-    <div class="banner-topo"></div>
-    
-    <div class="cabecalho-superior">
-        <button class="botao-sair" onclick="abrirModal()">
-            <i class="fas fa-sign-out-alt"></i> Sair
-        </button>
-    </div>
+    <div class="fundo-pagina"></div>
+    <div class="fundo-imagem"></div>
+    <div class="fundo-degrade"></div>
+    <div class="fundo-azul-embaixo"></div>
 
-    <div class="conteudo" id="conteudoPrincipal">
-        <h1 class="saudacao">Olá, <span id="nomeUsuario">Membro</span></h1>
-        
-        <div class="linha-info">
-            <i class="fas fa-id-card"></i>
-            <span class="info-texto">Passaporte:</span>
-            <span class="info-valor" id="passaporteUsuario">-</span>
-        </div>
-        
-        <div class="linha-info">
-            <i class="fas fa-shield-alt"></i>
-            <span class="info-texto">Cargo:</span>
-            <span class="info-valor" id="cargoUsuario">—</span>
-        </div>
-        
-        <div class="bloco-tempo">
-            <div class="item-tempo">
-                <i class="fas fa-clock"></i>
-                <span class="hora" id="horaAtual"></span>
+    <div class="conteudo">
+        <div class="cabecalho">
+            <div class="titulo-secao">
+                <h1 id="saudacaoPainel">Olá, <span>—</span></h1>
+                <div class="dados-usuario">
+                    <span><i class="fas fa-id-card"></i> Passaporte: <strong id="txtPassaporte">—</strong></span>
+                    <span><i class="fas fa-shield-alt"></i> Cargo: <strong id="txtCargo">—</strong></span>
+                </div>
             </div>
-            <div class="item-tempo">
-                <i class="fas fa-calendar-alt"></i>
-                <span class="data" id="dataAtual"></span>
+            <div class="topo-acoes">
+                <button class="botao-admin-topo" id="btnAbrirModalAdmin">
+                    <i class="fas fa-user-shield"></i> Painel Admin
+                </button>
+                <button class="botao-sair" id="btnSair">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
             </div>
         </div>
-        
-        <div class="grade-cards">
+
+        <div class="info-tempo-topo">
+            <span><i class="fas fa-clock"></i> <strong id="relogioTopo">--:--:--</strong></span>
+            <span><i class="fas fa-calendar-alt"></i> <strong id="dataTopo">--/--/----</strong></span>
+        </div>
+<!-- FIM PARTE 1/3 -->
+                <div class="grade-cards">
             <div class="card">
-                <div class="card-titulo">Tickets Abertos <i class="fas fa-ticket-alt"></i></div>
-                <div class="card-valor">0</div>
-            </div>
-            <div class="card">
-                <div class="card-titulo">Ausências Pendentes <i class="fas fa-calendar-times"></i></div>
-                <div class="card-valor">0</div>
-            </div>
-            <div class="card card-clicavel" id="cardMembrosAtivos" onclick="abrirListaMembros()">
-                <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
-                <div class="card-valor" id="membrosAtivos">—</div>
-                <div class="card-dica">Toque para ver a lista</div>
+                <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
+                <p class="card-valor" id="cardMeuStatus">Verificando...</p>
             </div>
             <div class="card">
-                <div class="card-titulo">Pontos Hoje <i class="fas fa-clipboard-check"></i></div>
-                <div class="card-valor">0</div>
+                <p class="card-titulo">Minha Equipe <i class="fas fa-users"></i></p>
+                <p class="card-valor" id="cardMinhaEquipe">Nenhuma</p>
             </div>
-            <div class="card-aviso">
-                <div class="card-titulo">Aviso Recente <i class="fas fa-bell"></i></div>
-                <div class="card-valor" style="font-size: 20px;">Nenhum aviso recente no momento.</div>
+            <div class="card completo">
+                <p class="card-titulo">Membros Ativos <i class="fas fa-user-check"></i></p>
+                <p class="card-valor" id="cardTotalAtivos">0 online</p>
+                <div class="lista-membros" id="listaMembrosAtivos">
+                    <p style="color: #94a3b8; font-size: 13px; text-align: center; padding: 10px;">Nenhum membro em jornada no momento.</p>
+                </div>
+                <div class="botoes-atalho">
+                    <button class="botao-atalho" id="btnVerEquipeModal">
+                        <i class="fas fa-users-viewfinder"></i> Ver Equipe
+                    </button>
+                    <button class="botao-atalho" id="btnVerTempoModal">
+                        <i class="fas fa-hourglass-half"></i> Meu Tempo
+                    </button>
+                </div>
             </div>
         </div>
     </div>
-        <div class="sombra-fundo" id="sombraFundo" onclick="fecharGaveta()"></div>
 
-    <div class="gaveta" id="gaveta">
-        <button class="botao-fechar" onclick="fecharGaveta()"><i class="fas fa-times"></i></button>
-        <h3 class="gaveta-titulo">Mais Opções</h3>
-        <div class="gaveta-lista">
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-bell"></i><span>Avisos</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-file-alt"></i><span>Ficha</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-bell"></i><span>Notificações</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-shield-alt"></i><span>Minha Segurança</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
+    <!-- Modal do Painel Admin (Oculto por padrão, abre ao clicar no botão do topo) -->
+    <div class="fundo-modal" id="modalAdmin">
+        <div class="caixa-modal-admin">
+            <div class="modal-admin-topo">
+                <div class="modal-admin-titulo">
+                    <i class="fas fa-shield-alt"></i> Controle de Ponto (Admin)
+                </div>
+                <button class="botao-fechar-modal" id="btnFecharModalAdmin"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="tabela-admin-container">
+                <table class="tabela-admin">
+                    <thead>
+                        <tr>
+                            <th>Player</th>
+                            <th>Equipe</th>
+                            <th>Status</th>
+                            <th style="text-align: right;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaAdminPontos">
+                        <tr><td colspan="4" class="aviso-vazio-admin">Carregando jornadas ativas...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item ativo">
-            <i class="fas fa-home"></i><span>Painel</span>
-        </a>
-        <a href="bate-ponto.html" class="menu-item">
-            <i class="fas fa-clock"></i><span>Ponto</span>
-        </a>
-        <a href="equipe.html" class="menu-item">
-            <i class="fas fa-users"></i><span>Equipe</span>
-        </a>
+        <a href="painel.html" class="menu-item ativo"><i class="fas fa-home"></i><span>Painel</span></a>
+        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
     </nav>
-        <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
-        <div class="caixa-lista">
-            <div class="lista-topo">
-                <h3 class="lista-titulo">Membros</h3>
-                <button class="lista-fechar" onclick="fecharListaMembros()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="lista-resumo" id="resumoMembros"></div>
-            <div class="lista-corpo" id="listaMembros"></div>
-        </div>
-    </div>
+<!-- FIM PARTE 2/3 -->
+              <script>
+        const passaporteUsuario = localStorage.getItem('passaporte');
+        const dadosUsuarioLocal = JSON.parse(localStorage.getItem('usuario') || '{}');
 
-    <div class="fundo-modal" id="modalSair">
-        <div class="caixa-modal">
-            <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
-            <h3 class="titulo-modal">Deseja sair?</h3>
-            <p class="texto-modal">Você voltará para a tela de acesso.</p>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" onclick="fecharModal()">Cancelar</button>
-                <button class="botao-confirmar" onclick="confirmarSaida()">Sair</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // ========== RELÓGIO ==========
-        function atualizarRelogio() {
-            const agora = new Date();
-            const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-            const dia = String(brasilia.getDate()).padStart(2, '0');
-            const mes = String(brasilia.getMonth() + 1).padStart(2, '0');
-            const ano = brasilia.getFullYear();
-            const h = String(brasilia.getHours()).padStart(2, '0');
-            const m = String(brasilia.getMinutes()).padStart(2, '0');
-            const s = String(brasilia.getSeconds()).padStart(2, '0');
-            document.getElementById('horaAtual').textContent = `${h}:${m}:${s}`;
-            document.getElementById('dataAtual').textContent = `${dia}/${mes}/${ano}`;
-        }
-        atualizarRelogio();
-        setInterval(atualizarRelogio, 1000);
-
-        // ========== GAVETA ==========
-        const gaveta = document.getElementById('gaveta');
-        const sombraFundo = document.getElementById('sombraFundo');
-        const conteudoPrincipal = document.getElementById('conteudoPrincipal');
-        const modal = document.getElementById('modalSair');
-
-        function alternarGaveta(e) {
-            e?.preventDefault();
-            gaveta.classList.toggle('aberta');
-            sombraFundo.classList.toggle('visivel');
-            conteudoPrincipal.classList.toggle('desfocado');
-        }
-
-        function fecharGaveta() {
-            gaveta.classList.remove('aberta');
-            sombraFundo.classList.remove('visivel');
-            conteudoPrincipal.classList.remove('desfocado');
-        }
-
-        // ========== MODAL SAIR ==========
-        function abrirModal() { modal.classList.add('aberto'); }
-        function fecharModal() { modal.classList.remove('aberto'); }
-        function confirmarSaida() {
-            localStorage.removeItem('passaporte');
-            localStorage.removeItem('usuario');
+        if (!passaporteUsuario) {
             window.location.href = 'login.html';
         }
 
-        // ========== BUSCAR DADOS ==========
-        async function carregarDadosUsuario() {
-            const passaporteSalvo = localStorage.getItem('passaporte');
-            
-            if (!passaporteSalvo) {
-                window.location.href = 'login.html';
-                return;
+        // Relógio e Data em tempo real no topo
+        function atualizarRelogio() {
+            const agora = new Date();
+            document.getElementById('relogioTopo').textContent = agora.toLocaleTimeString('pt-BR');
+            document.getElementById('dataTopo').textContent = agora.toLocaleDateString('pt-BR');
+        }
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+
+        document.getElementById('btnSair').addEventListener('click', () => {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        });
+
+        // Preencher dados do usuário e verificar se é Coordenador no Banco
+        async function inicializarPainel() {
+            if (dadosUsuarioLocal.nome) {
+                document.querySelector('#saudacaoPainel span').textContent = dadosUsuarioLocal.nome;
+                document.getElementById('txtPassaporte').textContent = dadosUsuarioLocal.passaporte;
+                document.getElementById('txtCargo').textContent = dadosUsuarioLocal.cargo || 'Membro';
             }
 
+            // Verificação de segurança adicional consultando o Supabase para o botão Admin
             try {
-                const { data, error } = await sb
+                const { data: membroDb, error } = await sb
                     .from('membros')
-                    .select('nome, passaporte, cargo')
-                    .eq('passaporte', passaporteSalvo)
+                    .select('cargo')
+                    .eq('passaporte', passaporteUsuario)
                     .single();
 
-                if (error) throw error;
-
-                if (data) {
-                    document.getElementById('nomeUsuario').textContent = data.nome || 'Membro';
-                    document.getElementById('passaporteUsuario').textContent = data.passaporte || '-';
-                    document.getElementById('cargoUsuario').textContent = data.cargo || '—';
+                if (!error && membroDb && membroDb.cargo && membroDb.cargo.toLowerCase().includes('coordenador')) {
+                    // Exibir botão admin apenas para o Coordenador
+                    document.getElementById('btnAbrirModalAdmin').style.display = 'inline-flex';
                 }
-            } catch (erro) {
-                console.log('Erro ao buscar:', erro);
-                const salvo = localStorage.getItem('usuario');
-                if (salvo) {
-                    const usuario = JSON.parse(salvo);
-                    document.getElementById('nomeUsuario').textContent = usuario.nome || 'Membro';
-                    document.getElementById('cargoUsuario').textContent = usuario.cargo || '—';
-                }
+            } catch (e) {
+                console.error('Erro ao verificar cargo:', e);
             }
+
+            carregarCardMembrosAtivos();
+            setInterval(carregarCardMembrosAtivos, 10000);
         }
 
-        carregarDadosUsuario();
+        // Abertura e fechamento do Modal Admin
+        const modalAdmin = document.getElementById('modalAdmin');
+        document.getElementById('btnAbrirModalAdmin').addEventListener('click', () => {
+            modalAdmin.classList.add('aberto');
+            carregarPontosAdmin();
+        });
+        document.getElementById('btnFecharModalAdmin').addEventListener('click', () => {
+            modalAdmin.classList.remove('aberto');
+        });
+        modalAdmin.addEventListener('click', (e) => {
+            if (e.target === modalAdmin) modalAdmin.classList.remove('aberto');
+        });
 
-        // ========== LISTA DE MEMBROS (ON / PAUSADO / OFF) ==========
-        const modalMembros = document.getElementById('modalMembros');
-        const listaMembros = document.getElementById('listaMembros');
-        const resumoMembros = document.getElementById('resumoMembros');
-        let estadoAtivos = new Map();
-        let membrosCadastrados = null;
-        let equipesPorId = {};
-        let equipesAbertas = new Set();
-        let temposAbertos = new Set();
-        let timerListaMembros = null;
-        let timerCronometros = null;
+        // Carregar dados da tabela dentro do Modal Admin
+        async function carregarPontosAdmin() {
+            const { data: pontosAbertos, error } = await sb
+                .from('pontos')
+                .select('*')
+                .is('saida', null)
+                .order('entrada', { ascending: false });
 
-        function escaparHtml(t) {
-            return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        }
-
-        function formatarDuracaoSeg(totalSeg) {
-            const s = Math.max(0, Math.floor(totalSeg));
-            const h = Math.floor(s / 3600);
-            const m = Math.floor((s % 3600) / 60);
-            const seg = s % 60;
-            return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(seg).padStart(2, '0');
-        }
-
-        function formatarQuando(ms) {
-            if (isNaN(ms)) return '--:--';
-            const fuso = { timeZone: 'America/Sao_Paulo' };
-            const data = new Date(ms);
-            const hora = data.toLocaleTimeString('pt-BR', { ...fuso, hour: '2-digit', minute: '2-digit' });
-            const dia = data.toLocaleDateString('pt-BR', { ...fuso, day: '2-digit', month: '2-digit' });
-            const hoje = new Date().toLocaleDateString('pt-BR', { ...fuso, day: '2-digit', month: '2-digit' });
-            return (dia === hoje ? 'hoje' : dia) + ' às ' + hora;
-        }
-
-        function calcularTempos(at) {
-            const agora = Date.now();
-            const entrada = Date.parse(at.entrada);
-            const inicio = Date.parse(at.pausa_inicio);
-            const fim = Date.parse(at.pausa_fim);
-            const pausado = !isNaN(inicio) && (isNaN(fim) || inicio > fim);
-            const pausaAtual = pausado ? (agora - inicio) / 1000 : 0;
-            const pausaConcluida = (!pausado && !isNaN(inicio) && !isNaN(fim) && fim > inicio) ? (fim - inicio) / 1000 : 0;
-            const jornada = isNaN(entrada) ? null : (agora - entrada) / 1000 - pausaAtual - pausaConcluida;
-            return { entrada, pausado, pausaAtual, pausaConcluida, jornada };
-        }
-
-        async function carregarDadosLista() {
-            const [resMembros, resEquipes] = await Promise.all([
-                sb.from('membros').select('nome, passaporte'),
-                sb.from('equipes').select('*')
-            ]);
-            if (resMembros.error) throw resMembros.error;
-            membrosCadastrados = resMembros.data || [];
-            equipesPorId = {};
-            if (!resEquipes.error) {
-                (resEquipes.data || []).forEach(e => { equipesPorId[String(e.id)] = e; });
-            }
-        }
-
-        function htmlEquipeDoMembro(equipeId) {
-            if (equipeId === null || equipeId === undefined) {
-                return '<div class="equipe-mini-nome">Sem equipe definida</div>';
-            }
-            const eq = equipesPorId[String(equipeId)];
-            if (!eq) {
-                return '<div class="equipe-mini-nome">Equipe não encontrada</div>';
-            }
-            return `
-                <div class="equipe-mini-nome">${escaparHtml(eq.nome || 'Equipe')}</div>
-                ${eq.funcao ? `<div class="equipe-mini-funcao">${escaparHtml(eq.funcao)}</div>` : ''}
-            `;
-        }
-
-        function htmlTempoDoMembro(at, pass) {
-            const t = calcularTempos(at);
-            const p = escaparHtml(pass);
-            let html = `
-                <div class="tempo-linha"><span>Iniciou</span><strong>${escaparHtml(formatarQuando(t.entrada))}</strong></div>
-                <div class="tempo-linha"><span>Em serviço há</span><strong data-cron="jornada" data-pass="${p}">${t.jornada == null ? '--:--:--' : formatarDuracaoSeg(t.jornada)}</strong></div>`;
-            if (t.pausado) {
-                html += `<div class="tempo-linha pausa"><span>Pausado há</span><strong data-cron="pausa" data-pass="${p}">${formatarDuracaoSeg(t.pausaAtual)}</strong></div>`;
-            } else if (t.pausaConcluida > 0) {
-                html += `<div class="tempo-linha"><span>Última pausa durou</span><strong>${formatarDuracaoSeg(t.pausaConcluida)}</strong></div>`;
-            }
-            return html;
-        }
-
-        function atualizarCronometros() {
-            listaMembros.querySelectorAll('[data-cron]').forEach(el => {
-                const at = estadoAtivos.get(el.dataset.pass);
-                if (!at) return;
-                const t = calcularTempos(at);
-                const valor = el.dataset.cron === 'pausa' ? t.pausaAtual : t.jornada;
-                el.textContent = valor == null ? '--:--:--' : formatarDuracaoSeg(valor);
-            });
-        }
-
-        function renderizarListaMembros() {
-            if (!membrosCadastrados) return;
-            const cadastrados = new Set(membrosCadastrados.map(m => String(m.passaporte)));
-
-            const lista = membrosCadastrados.map(m => {
-                const pass = String(m.passaporte);
-                const at = estadoAtivos.get(pass);
-                return {
-                    nome: m.nome || 'Sem nome',
-                    passaporte: pass,
-                    estado: at ? (at.pausado ? 'pausado' : 'on') : 'off',
-                    ativo: at || null,
-                    semCadastro: false
-                };
-            });
-
-            // quem está com jornada aberta mas não aparece na tabela membros também entra na lista
-            estadoAtivos.forEach((at, pass) => {
-                if (!cadastrados.has(pass)) {
-                    lista.push({
-                        nome: at.nome || 'Sem nome',
-                        passaporte: pass,
-                        estado: at.pausado ? 'pausado' : 'on',
-                        ativo: at,
-                        semCadastro: true
-                    });
-                }
-            });
-
-            const ordem = { on: 0, pausado: 1, off: 2 };
-            lista.sort((a, b) => (ordem[a.estado] - ordem[b.estado]) || a.nome.localeCompare(b.nome, 'pt-BR'));
-
-            const qtdOn = lista.filter(m => m.estado === 'on').length;
-            const qtdPausado = lista.filter(m => m.estado === 'pausado').length;
-            const qtdOff = lista.filter(m => m.estado === 'off').length;
-            resumoMembros.innerHTML =
-                '<div>' + (qtdOn + qtdPausado) + ' em jornada · ' + qtdOn + ' ON · ' + qtdPausado + ' pausado</div>' +
-                '<div>' + qtdOff + ' OFF · ' + membrosCadastrados.length + ' cadastrados</div>';
-
-            if (!lista.length) {
-                listaMembros.innerHTML = '<div class="membros-vazio">Nenhum membro cadastrado.</div>';
+            const tbody = document.getElementById('listaAdminPontos');
+            if (error || !pontosAbertos || pontosAbertos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="aviso-vazio-admin">Nenhum player em jornada ativa no momento.</td></tr>`;
                 return;
             }
 
-            const rotulo = { on: 'ON', pausado: 'PAUSADO', off: 'OFF' };
-            listaMembros.innerHTML = lista.map(m => {
-                const emJornada = m.estado !== 'off';
-                const abertoEq = emJornada && equipesAbertas.has(m.passaporte);
-                const abertoTempo = emJornada && temposAbertos.has(m.passaporte);
-                const pEsc = escaparHtml(m.passaporte);
+            const { data: equipes } = await sb.from('equipes').select('id, nome, funcao');
+            const mapaEquipes = {};
+            (equipes || []).forEach(e => { mapaEquipes[e.id] = e.nome || e.funcao || 'Equipe'; });
+
+            tbody.innerHTML = pontosAbertos.map(p => {
+                const emPausa = p.pausa_inicio && !p.pausa_fim;
+                const statusTexto = emPausa ? 'Pausado' : 'Em jornada';
+                const statusClasse = emPausa ? 'pausado' : 'ativo';
+                const iconeStatus = emPausa ? 'fa-coffee' : 'fa-circle-play';
+                const nomeEquipe = p.equipe_id ? (mapaEquipes[p.equipe_id] || 'Atribuída') : 'Sem equipe';
+
+                const minutos = Math.floor((Date.now() - new Date(p.entrada).getTime()) / 60000);
+                const tempoStr = minutos < 60 ? `${minutos}m` : `${Math.floor(minutos/60)}h ${minutos%60}m`;
+
                 return `
-                <div class="membro-item ${abertoEq ? 'eq-aberto' : ''} ${abertoTempo ? 'tempo-aberto' : ''}">
-                    <div class="membro-topo">
-                        <div class="membro-nome">${escaparHtml(m.nome)}${m.semCadastro ? ' <span class="membro-tag">sem cadastro</span>' : ''}</div>
-                        <span class="membro-status ${m.estado}">${rotulo[m.estado]}</span>
-                    </div>
-                    <div class="membro-passaporte">
-                        <span class="pass-txt">Passaporte ${pEsc}</span>
-                        ${emJornada ? `
-                        <button class="ver-equipe" data-pass="${pEsc}"><span class="ver-txt">ver </span>equipe <i class="fas fa-chevron-down"></i></button>
-                        <button class="ver-tempo" data-pass="${pEsc}">tempo <i class="fas fa-chevron-down"></i></button>` : ''}
-                    </div>
-                    ${abertoEq ? `
-                    <div class="membro-equipe">
-                        <i class="fas fa-users"></i>
-                        <div>${htmlEquipeDoMembro(m.ativo.equipe_id)}</div>
-                    </div>` : ''}
-                    ${abertoTempo ? `
-                    <div class="membro-tempo">${htmlTempoDoMembro(m.ativo, m.passaporte)}</div>` : ''}
-                </div>`;
+                    <tr>
+                        <td><strong>${p.nome || 'Player'}</strong><br><span style="color: #94a3b8; font-size: 11px;">Pass: ${p.passaporte}</span></td>
+                        <td>${nomeEquipe}</td>
+                        <td>
+                            <span class="status-ponto-admin ${statusClasse}"><i class="fas ${iconeStatus}"></i> ${statusTexto}</span>
+                            <br><span style="color: #94a3b8; font-size: 11px;">Há ${tempoStr}</span>
+                        </td>
+                        <td style="text-align: right;">
+                            <div class="botoes-acao-admin" style="justify-content: flex-end;">
+                                ${emPausa ? 
+                                    `<button class="btn-acao-admin retomar" title="Retomar" onclick="executarAcaoAdmin('${p.passaporte}', 'retomar')"><i class="fas fa-play"></i></button>` :
+                                    `<button class="btn-acao-admin pausar" title="Pausar" onclick="executarAcaoAdmin('${p.passaporte}', 'pausar')"><i class="fas fa-pause"></i></button>`
+                                }
+                                <button class="btn-acao-admin encerrar" title="Encerrar" onclick="confirmarEncerrarAdmin('${p.passaporte}', '${p.nome || 'Player'}')"><i class="fas fa-stop"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
             }).join('');
         }
 
-        listaMembros.addEventListener('click', (e) => {
-            const botaoEquipe = e.target.closest('.ver-equipe');
-            const botaoTempo = e.target.closest('.ver-tempo');
-            const botao = botaoEquipe || botaoTempo;
-            if (!botao) return;
-            const conjunto = botaoEquipe ? equipesAbertas : temposAbertos;
-            const pass = botao.dataset.pass;
-            if (conjunto.has(pass)) conjunto.delete(pass); else conjunto.add(pass);
-            renderizarListaMembros();
-        });
-
-        async function abrirListaMembros() {
-            modalMembros.classList.add('aberto');
-            listaMembros.innerHTML = '<div class="membros-vazio">Carregando...</div>';
-            resumoMembros.textContent = '';
-            try {
-                await Promise.all([carregarDadosLista(), atualizarMembrosAtivos()]);
-                renderizarListaMembros();
-            } catch (erro) {
-                console.log('Erro ao carregar lista de membros:', erro);
-                listaMembros.innerHTML = '<div class="membros-vazio">Não foi possível carregar a lista.</div>';
+        async function confirmarEncerrarAdmin(passaporte, nome) {
+            if (confirm(`Deseja realmente encerrar a jornada do player ${nome} (Passaporte: ${passaporte})?`)) {
+                await executarAcaoAdmin(passaporte, 'encerrar');
             }
-            clearInterval(timerListaMembros);
-            timerListaMembros = setInterval(() => {
-                carregarDadosLista().then(renderizarListaMembros).catch(() => {});
-            }, 30000);
-            clearInterval(timerCronometros);
-            timerCronometros = setInterval(atualizarCronometros, 1000);
         }
 
-        function fecharListaMembros() {
-            modalMembros.classList.remove('aberto');
-            clearInterval(timerListaMembros);
-            clearInterval(timerCronometros);
-        }
+        // Executar ação de admin via função RPC segura no Supabase
+        async function executarAcaoAdmin(playerPassaporte, acao) {
+            const senhaAdmin = prompt('Digite sua senha de Coordenador para autorizar esta ação:');
+            if (!senhaAdmin) return;
 
-        // ========== MEMBROS ATIVOS (TEMPO REAL) ==========
-        const elMembrosAtivos = document.getElementById('membrosAtivos');
-        let contandoAtivos = false;
-        let atualizarDeNovo = false;
-
-        async function atualizarMembrosAtivos() {
-            if (contandoAtivos) { atualizarDeNovo = true; return; }
-            contandoAtivos = true;
             try {
-                const { data, error } = await sb
-                    .from('pontos')
-                    .select('passaporte, nome, equipe_id, entrada, pausa_inicio, pausa_fim')
-                    .is('saida', null)
-                    .order('entrada', { ascending: false });
-                if (error) throw error;
-                const mapa = new Map();
-                (data || []).forEach(p => {
-                    const pass = String(p.passaporte);
-                    if (mapa.has(pass)) return;
-                    const inicio = Date.parse(p.pausa_inicio);
-                    const fim = Date.parse(p.pausa_fim);
-                    const pausado = !isNaN(inicio) && (isNaN(fim) || inicio > fim);
-                    mapa.set(pass, {
-                        nome: p.nome,
-                        equipe_id: p.equipe_id,
-                        entrada: p.entrada,
-                        pausa_inicio: p.pausa_inicio,
-                        pausa_fim: p.pausa_fim,
-                        pausado: pausado
-                    });
+                const { data, error } = await sb.rpc('admin_gerenciar_ponto', {
+                    p_admin_passaporte: passaporteUsuario,
+                    p_admin_senha: senhaAdmin,
+                    p_player_passaporte: playerPassaporte,
+                    p_acao: acao
                 });
-                estadoAtivos = mapa;
-                if (elMembrosAtivos) elMembrosAtivos.textContent = mapa.size;
-                if (modalMembros.classList.contains('aberto')) renderizarListaMembros();
-            } catch (erro) {
-                console.log('Erro ao contar membros ativos:', erro);
-            } finally {
-                contandoAtivos = false;
-                if (atualizarDeNovo) {
-                    atualizarDeNovo = false;
-                    atualizarMembrosAtivos();
+
+                if (error) throw error;
+
+                if (data && data.sucesso) {
+                    carregarPontosAdmin();
+                    carregarCardMembrosAtivos();
+                } else {
+                    alert(data?.erro || 'Erro ao executar ação.');
                 }
+            } catch (err) {
+                alert('Erro de comunicação com o servidor: ' + err.message);
             }
         }
 
-        atualizarMembrosAtivos();
-        setInterval(() => {
-            if (document.visibilityState === 'visible') atualizarMembrosAtivos();
-        }, 10000);
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') atualizarMembrosAtivos();
-        });
-        window.addEventListener('focus', atualizarMembrosAtivos);
-        window.addEventListener('pageshow', (e) => { if (e.persisted) atualizarMembrosAtivos(); });
+        // Card normal de Membros Ativos do painel
+        async function carregarCardMembrosAtivos() {
+            const { data: ativos, error } = await sb
+                .from('pontos')
+                .select('*')
+                .is('saida', null)
+                .order('entrada', { ascending: false });
 
-        try {
-            sb.channel('membros-ativos-pontos')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'pontos' }, () => atualizarMembrosAtivos())
-                .subscribe();
-        } catch (erro) {
-            console.log('Tempo real indisponível, usando atualização a cada 10s.');
+            const cardTotal = document.getElementById('cardTotalAtivos');
+            const listaMembros = document.getElementById('listaMembrosAtivos');
+            const cardMeuStatus = document.getElementById('cardMeuStatus');
+            const cardMinhaEquipe = document.getElementById('cardMinhaEquipe');
+
+            if (error || !ativos || ativos.length === 0) {
+                cardTotal.textContent = '0 online';
+                listaMembros.innerHTML = `<p style="color: #94a3b8; font-size: 13px; text-align: center; padding: 10px;">Nenhum membro em jornada no momento.</p>`;
+                cardMeuStatus.textContent = 'Fora de Serviço';
+                cardMinhaEquipe.textContent = 'Nenhuma';
+                return;
+            }
+
+            cardTotal.textContent = `${ativos.length} online`;
+
+            const meuPonto = ativos.find(p => String(p.passaporte) === String(passaporteUsuario));
+            if (meuPonto) {
+                const emPausa = meuPonto.pausa_inicio && !meuPonto.pausa_fim;
+                cardMeuStatus.textContent = emPausa ? 'Em Pausa' : 'Em Jornada';
+                cardMeuStatus.style.color = emPausa ? '#f59e0b' : '#22c55e';
+            } else {
+                cardMeuStatus.textContent = 'Fora de Serviço';
+                cardMeuStatus.style.color = '#fff';
+            }
+
+            if (meuPonto && meuPonto.equipe_id) {
+                const { data: eqData } = await sb.from('equipes').select('nome, funcao').eq('id', meuPonto.equipe_id).single();
+                cardMinhaEquipe.textContent = eqData ? (eqData.nome || eqData.funcao) : 'Atribuída';
+            } else {
+                cardMinhaEquipe.textContent = 'Nenhuma';
+            }
+
+            listaMembros.innerHTML = ativos.slice(0, 5).map(p => {
+                const emPausa = p.pausa_inicio && !p.pausa_fim;
+                const statusTag = emPausa ? `<span class="tag-status pausado">Pausado</span>` : `<span class="tag-status on">ON</span>`;
+                return `
+                    <div class="item-membro">
+                        <div class="info-membro">
+                            <p>${p.nome || 'Membro'}</p>
+                            <span>Passaporte: ${p.passaporte}</span>
+                        </div>
+                        ${statusTag}
+                    </div>
+                `;
+            }).join('');
         }
+
+        document.getElementById('btnVerEquipeModal').onclick = () => window.location.href = 'equipe.html';
+        document.getElementById('btnVerTempoModal').onclick = () => window.location.href = 'bate-ponto.html';
+
+        inicializarPainel();
     </script>
 </body>
 </html>
+<!-- FIM PARTE 3/3 -->
+    
