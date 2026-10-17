@@ -740,6 +740,133 @@ async function inicializar() {
     await renderizarHistorico();
 }
 inicializar();
+                // ========== ATUALIZAÇÃO AUTOMÁTICA QUANDO UM ADMIN PAUSA / RETOMA / ENCERRA ==========
+        (function () {
+            if (window.__syncAdminAtivo) return;
+            window.__syncAdminAtivo = true;
+
+            let ultimaAcaoPropria = 0;
+            let ultimoCliqueIniciar = 0;
+            let sincronizandoRemoto = false;
+            let realtimeConectado = false;
+            let timerSincRemoto = null;
+            let timerAvisoRemoto = null;
+
+            // protege contra toque duplo em "Iniciar Jornada" e marca as ações do próprio membro
+            document.addEventListener('click', function (e) {
+                const alvo = e.target && e.target.closest
+                    ? e.target.closest('#btnIniciar, #btnPausar, #btnRetomar, #botaoConfirmarEncerrar')
+                    : null;
+                if (!alvo) return;
+                if (alvo.id === 'btnIniciar') {
+                    if (Date.now() - ultimoCliqueIniciar < 4000) {
+                        e.stopImmediatePropagation();
+                        e.preventDefault();
+                        return;
+                    }
+                    ultimoCliqueIniciar = Date.now();
+                }
+                ultimaAcaoPropria = Date.now();
+            }, true);
+
+            function avisarRemoto(msg) {
+                let el = document.getElementById('avisoRemoto');
+                if (!el) {
+                    el = document.createElement('div');
+                    el.id = 'avisoRemoto';
+                    el.style.cssText = 'position:fixed;top:96px;left:50%;transform:translateX(-50%);z-index:1000;' +
+                        'max-width:90%;width:360px;padding:14px 18px;border-radius:12px;' +
+                        'background:linear-gradient(135deg,rgba(15,23,42,.97),rgba(30,41,59,.97));' +
+                        'border:1px solid rgba(96,165,250,.35);color:#fff;font-size:14px;font-weight:600;' +
+                        'text-align:center;box-shadow:0 4px 20px rgba(0,0,0,.4);display:none;';
+                    document.body.appendChild(el);
+                }
+                el.textContent = msg;
+                el.style.display = 'block';
+                clearTimeout(timerAvisoRemoto);
+                timerAvisoRemoto = setTimeout(function () { el.style.display = 'none'; }, 6000);
+            }
+
+            // depois de um encerramento feito por admin, mostra a espera do servidor
+            async function aplicarEsperaDoServidor() {
+                try {
+                    const res = await sb.rpc('espera_jornada', { p_passaporte: String(passaporteUsuario) });
+                    const seg = Number(res.data);
+                    if (!res.error && seg > 0 && typeof iniciarContagemRegressiva === 'function') {
+                        bloqueadoAte = Date.now() + seg * 1000;
+                        localStorage.setItem('bloqueadoAte', bloqueadoAte);
+                        iniciarContagemRegressiva();
+                    }
+                } catch (erro) { /* sem espera */ }
+            }
+
+            async function sincronizarComServidor() {
+                if (!passaporteUsuario || sincronizandoRemoto) return;
+                if (typeof verificarRegistroAtivo !== 'function' || typeof atualizarInterface !== 'function') return;
+                if (Date.now() - ultimaAcaoPropria < 6000) return;
+                sincronizandoRemoto = true;
+                try {
+                    const tinhaJornada = !!registroAtivo;
+                    const estavaPausado = !!momentoInicioPausa;
+                    const idAntes = registroAtivo ? registroAtivo.id : null;
+
+                    await verificarRegistroAtivo();
+
+                    const temJornada = !!registroAtivo;
+                    const estaPausado = !!momentoInicioPausa;
+                    const idDepois = registroAtivo ? registroAtivo.id : null;
+
+                    if (tinhaJornada && !temJornada) {
+                        // encerrado por um admin
+                        totalPausas = 0;
+                        tempoPausadoAcumulado = 0;
+                        momentoInicioPausa = null;
+                        if (typeof fecharModais === 'function') fecharModais();
+                        await aplicarEsperaDoServidor();
+                        atualizarInterface();
+                        avisarRemoto('Seu ponto foi encerrado por um administrador.');
+                        if (typeof renderizarHistorico === 'function') await renderizarHistorico();
+                    } else if (tinhaJornada && temJornada && idAntes === idDepois && estavaPausado !== estaPausado) {
+                        // pausado ou retomado por um admin
+                        atualizarInterface();
+                        avisarRemoto(estaPausado
+                            ? 'Seu ponto foi pausado por um administrador.'
+                            : 'Seu ponto foi retomado por um administrador.');
+                    } else if (!tinhaJornada && temJornada) {
+                        atualizarInterface();
+                    }
+                } catch (erro) {
+                    console.log('Erro ao sincronizar com o servidor:', erro);
+                } finally {
+                    sincronizandoRemoto = false;
+                }
+            }
+
+            function agendarSincronizacao() {
+                clearTimeout(timerSincRemoto);
+                timerSincRemoto = setTimeout(async function () {
+                    if (document.visibilityState === 'visible') await sincronizarComServidor();
+                    agendarSincronizacao();
+                }, realtimeConectado ? 20000 : 5000);
+            }
+
+            // tempo real: avisa na hora quando a linha do ponto deste membro muda
+            try {
+                sb.channel('meu-ponto-' + passaporteUsuario)
+                    .on('postgres_changes',
+                        { event: '*', schema: 'public', table: 'pontos', filter: 'passaporte=eq.' + passaporteUsuario },
+                        function () { sincronizarComServidor(); })
+                    .subscribe(function (status) { realtimeConectado = (status === 'SUBSCRIBED'); });
+            } catch (erro) { /* usa só a verificação periódica */ }
+
+            document.addEventListener('visibilitychange', function () {
+                if (document.visibilityState === 'visible') sincronizarComServidor();
+            });
+            window.addEventListener('focus', sincronizarComServidor);
+            window.addEventListener('pageshow', function (e) { if (e.persisted) sincronizarComServidor(); });
+
+            agendarSincronizacao();
+        })();
 </script>
 </body>
 </html>
