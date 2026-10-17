@@ -552,12 +552,81 @@
             padding: 28px 10px;
         }
         
+        /* ---------- ADMIN: PAUSAR / RETORNAR / ENCERRAR ---------- */
+        .membro-acoes {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .btn-admin {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        
+        .btn-admin:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .btn-admin.pausar {
+            color: #f59e0b;
+            background: rgba(245, 158, 11, 0.12);
+            border-color: rgba(245, 158, 11, 0.35);
+        }
+        
+        .btn-admin.retomar {
+            color: #22c55e;
+            background: rgba(34, 197, 94, 0.12);
+            border-color: rgba(34, 197, 94, 0.35);
+        }
+        
+        .btn-admin.encerrar {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.12);
+            border-color: rgba(248, 113, 113, 0.35);
+        }
+        
+        .toast-admin {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            right: 16px;
+            max-width: 420px;
+            margin: 0 auto;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1500;
+            display: none;
+        }
+        
+        .toast-admin.sucesso {
+            background: #0b1f14;
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #86efac;
+        }
+        
+        .toast-admin.erro {
+            background: #2a1212;
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+        }
+        
         @media (max-width: 380px) {
             .ver-txt { display: none; }
         }
     </style>
-</head>
-<body>
+        </head>
+        <body>
     <div class="banner-topo"></div>
     
     <div class="cabecalho-superior">
@@ -675,6 +744,20 @@
         </div>
     </div>
 
+    <div class="fundo-modal" id="modalAdminConfirma" onclick="if(event.target === this) fecharConfirmacaoAdmin()">
+        <div class="caixa-modal">
+            <div class="icone-modal"><i class="fas fa-power-off"></i></div>
+            <h3 class="titulo-modal">Encerrar ponto?</h3>
+            <p class="texto-modal" id="textoAdminConfirma"></p>
+            <div class="botoes-modal">
+                <button class="botao-cancelar" onclick="fecharConfirmacaoAdmin()">Cancelar</button>
+                <button class="botao-confirmar" onclick="confirmarEncerrarAdmin()">Encerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastAdmin" class="toast-admin"></div>
+
     <script>
         // ========== RELÓGIO ==========
         function atualizarRelogio() {
@@ -760,6 +843,8 @@
         const modalMembros = document.getElementById('modalMembros');
         const listaMembros = document.getElementById('listaMembros');
         const resumoMembros = document.getElementById('resumoMembros');
+        const modalAdminConfirma = document.getElementById('modalAdminConfirma');
+        const textoAdminConfirma = document.getElementById('textoAdminConfirma');
         let estadoAtivos = new Map();
         let membrosCadastrados = null;
         let equipesPorId = {};
@@ -767,6 +852,11 @@
         let temposAbertos = new Set();
         let timerListaMembros = null;
         let timerCronometros = null;
+        let souAdmin = false;
+        let acoesEmAndamento = new Set();
+        let listaAtual = [];
+        let adminAlvoPendente = null;
+        let timerToastAdmin = null;
 
         function escaparHtml(t) {
             return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -799,7 +889,7 @@
             const pausaAtual = pausado ? (agora - inicio) / 1000 : 0;
             const pausaConcluida = (!pausado && !isNaN(inicio) && !isNaN(fim) && fim > inicio) ? (fim - inicio) / 1000 : 0;
             const jornada = isNaN(entrada) ? null : (agora - entrada) / 1000 - pausaAtual - pausaConcluida;
-            return { entrada, pausado, pausaAtual, pausaConcluida, jornada };
+            return { entrada, inicio, fim, pausado, pausaAtual, pausaConcluida, jornada };
         }
 
         async function carregarDadosLista() {
@@ -833,7 +923,16 @@
             const t = calcularTempos(at);
             const p = escaparHtml(pass);
             let html = `
-                <div class="tempo-linha"><span>Iniciou</span><strong>${escaparHtml(formatarQuando(t.entrada))}</strong></div>
+                <div class="tempo-linha"><span>Iniciou</span><strong>${escaparHtml(formatarQuando(t.entrada))}</strong></div>`;
+            if (souAdmin) {
+                if (!isNaN(t.inicio)) {
+                    html += `<div class="tempo-linha"><span>Pausou</span><strong>${escaparHtml(formatarQuando(t.inicio))}</strong></div>`;
+                }
+                if (!isNaN(t.inicio) && !isNaN(t.fim) && t.fim > t.inicio) {
+                    html += `<div class="tempo-linha"><span>Retornou</span><strong>${escaparHtml(formatarQuando(t.fim))}</strong></div>`;
+                }
+            }
+            html += `
                 <div class="tempo-linha"><span>Em serviço há</span><strong data-cron="jornada" data-pass="${p}">${t.jornada == null ? '--:--:--' : formatarDuracaoSeg(t.jornada)}</strong></div>`;
             if (t.pausado) {
                 html += `<div class="tempo-linha pausa"><span>Pausado há</span><strong data-cron="pausa" data-pass="${p}">${formatarDuracaoSeg(t.pausaAtual)}</strong></div>`;
@@ -851,6 +950,11 @@
                 const valor = el.dataset.cron === 'pausa' ? t.pausaAtual : t.jornada;
                 el.textContent = valor == null ? '--:--:--' : formatarDuracaoSeg(valor);
             });
+        }
+
+        function htmlBotaoAdmin(pass, acao, rotulo, icone) {
+            const ocupado = Array.from(acoesEmAndamento).some(k => k.startsWith(pass + ':'));
+            return `<button class="btn-admin ${acao}" data-pass="${escaparHtml(pass)}" data-acao="${acao}" ${ocupado ? 'disabled' : ''}><i class="fas ${icone}"></i> ${rotulo}</button>`;
         }
 
         function renderizarListaMembros() {
@@ -884,6 +988,7 @@
 
             const ordem = { on: 0, pausado: 1, off: 2 };
             lista.sort((a, b) => (ordem[a.estado] - ordem[b.estado]) || a.nome.localeCompare(b.nome, 'pt-BR'));
+            listaAtual = lista;
 
             const qtdOn = lista.filter(m => m.estado === 'on').length;
             const qtdPausado = lista.filter(m => m.estado === 'pausado').length;
@@ -915,6 +1020,13 @@
                         <button class="ver-equipe" data-pass="${pEsc}"><span class="ver-txt">ver </span>equipe <i class="fas fa-chevron-down"></i></button>
                         <button class="ver-tempo" data-pass="${pEsc}">tempo <i class="fas fa-chevron-down"></i></button>` : ''}
                     </div>
+                    ${emJornada && souAdmin ? `
+                    <div class="membro-acoes">
+                        ${m.estado === 'pausado'
+                            ? htmlBotaoAdmin(m.passaporte, 'retomar', 'Retornar', 'fa-play')
+                            : htmlBotaoAdmin(m.passaporte, 'pausar', 'Pausar', 'fa-pause')}
+                        ${htmlBotaoAdmin(m.passaporte, 'encerrar', 'Encerrar', 'fa-stop')}
+                    </div>` : ''}
                     ${abertoEq ? `
                     <div class="membro-equipe">
                         <i class="fas fa-users"></i>
@@ -925,8 +1037,90 @@
                 </div>`;
             }).join('');
         }
+                // ========== ADMIN: PAUSAR / RETORNAR / ENCERRAR (somente cargos autorizados) ==========
+        function mostrarToastAdmin(msg, tipo) {
+            const el = document.getElementById('toastAdmin');
+            if (!el) return;
+            el.textContent = msg;
+            el.className = 'toast-admin ' + (tipo === 'sucesso' ? 'sucesso' : 'erro');
+            el.style.display = 'block';
+            clearTimeout(timerToastAdmin);
+            timerToastAdmin = setTimeout(() => { el.style.display = 'none'; }, 4000);
+        }
+
+        async function verificarAdmin() {
+            const pass = localStorage.getItem('passaporte');
+            if (!pass) { souAdmin = false; return; }
+            try {
+                const { data, error } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                souAdmin = !error && data === true;
+            } catch (erro) {
+                souAdmin = false;
+            }
+            if (modalMembros.classList.contains('aberto')) renderizarListaMembros();
+        }
+
+        function mensagemRespostaAdmin(codigo) {
+            const mapa = {
+                JA_PAUSADO: 'Esse ponto já está pausado.',
+                NAO_PAUSADO: 'Esse ponto não está pausado.',
+                SEM_JORNADA: 'Esse membro não tem jornada aberta.',
+                ACAO_INVALIDA: 'Ação inválida.'
+            };
+            return mapa[codigo] || 'Não foi possível concluir a ação.';
+        }
+
+        async function executarAcaoAdmin(pass, acao) {
+            const chave = pass + ':' + acao;
+            if (acoesEmAndamento.has(chave)) return;
+            acoesEmAndamento.add(chave);
+            renderizarListaMembros();
+            try {
+                const { data, error } = await sb.rpc('admin_ponto_acao', {
+                    p_admin: String(localStorage.getItem('passaporte') || ''),
+                    p_alvo: String(pass),
+                    p_acao: acao
+                });
+                if (error) throw error;
+                const textos = { pausar: 'Ponto pausado.', retomar: 'Ponto retomado.', encerrar: 'Ponto encerrado.' };
+                if (data === 'OK') mostrarToastAdmin(textos[acao], 'sucesso');
+                else mostrarToastAdmin(mensagemRespostaAdmin(data), 'erro');
+            } catch (erro) {
+                const msg = String((erro && erro.message) || '');
+                mostrarToastAdmin(msg.includes('SEM_PERMISSAO') ? 'Você não tem permissão para isso.' : 'Não foi possível concluir a ação.', 'erro');
+            }
+            acoesEmAndamento.delete(chave);
+            await atualizarMembrosAtivos();
+            renderizarListaMembros();
+        }
+
+        function abrirConfirmacaoAdmin(pass) {
+            const item = listaAtual.find(m => m.passaporte === pass);
+            adminAlvoPendente = pass;
+            textoAdminConfirma.textContent = 'Encerrar o ponto de ' + (item ? item.nome : pass) + '? A jornada dele será finalizada agora.';
+            modalAdminConfirma.classList.add('aberto');
+        }
+
+        function fecharConfirmacaoAdmin() {
+            modalAdminConfirma.classList.remove('aberto');
+            adminAlvoPendente = null;
+        }
+
+        function confirmarEncerrarAdmin() {
+            const pass = adminAlvoPendente;
+            fecharConfirmacaoAdmin();
+            if (pass) executarAcaoAdmin(pass, 'encerrar');
+        }
 
         listaMembros.addEventListener('click', (e) => {
+            const botaoAdmin = e.target.closest('.btn-admin');
+            if (botaoAdmin) {
+                const pass = botaoAdmin.dataset.pass;
+                const acao = botaoAdmin.dataset.acao;
+                if (acao === 'encerrar') abrirConfirmacaoAdmin(pass);
+                else executarAcaoAdmin(pass, acao);
+                return;
+            }
             const botaoEquipe = e.target.closest('.ver-equipe');
             const botaoTempo = e.target.closest('.ver-tempo');
             const botao = botaoEquipe || botaoTempo;
@@ -942,7 +1136,7 @@
             listaMembros.innerHTML = '<div class="membros-vazio">Carregando...</div>';
             resumoMembros.textContent = '';
             try {
-                await Promise.all([carregarDadosLista(), atualizarMembrosAtivos()]);
+                await Promise.all([carregarDadosLista(), atualizarMembrosAtivos(), verificarAdmin()]);
                 renderizarListaMembros();
             } catch (erro) {
                 console.log('Erro ao carregar lista de membros:', erro);
@@ -1008,6 +1202,7 @@
         }
 
         atualizarMembrosAtivos();
+        verificarAdmin();
         setInterval(() => {
             if (document.visibilityState === 'visible') atualizarMembrosAtivos();
         }, 10000);
