@@ -75,7 +75,6 @@
         }
         .botao-sair:hover { background: rgba(239, 68, 68, 0.25); }
 
-        /* Botão Admin Discreto no Topo (Visível apenas para o Coordenador) */
         .botao-admin-topo {
             background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.35);
             color: #f59e0b; padding: 8px 12px; border-radius: 10px; font-size: 12px;
@@ -99,6 +98,16 @@
             border-radius: 14px; padding: 16px;
             backdrop-filter: blur(8px);
         }
+        /* O card de Membros Ativos agora é interativo ao toque */
+        .card.interativo {
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .card.interativo:hover {
+            border-color: rgba(96, 165, 250, 0.35);
+            background: rgba(15, 23, 42, 0.75);
+        }
+
         .card.completo { grid-column: span 2; }
         .card-titulo {
             font-size: 13px; color: #94a3b8; font-weight: 500;
@@ -107,11 +116,12 @@
         .card-titulo i { font-size: 14px; color: #60a5fa; }
         .card-valor { font-size: 20px; font-weight: 700; color: #fff; }
 
-        .lista-membros { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
+        /* Estilo da Lista dentro do Modal de Membros Ativos */
+        .lista-membros-modal { display: flex; flex-direction: column; gap: 10px; max-height: 55vh; overflow-y: auto; padding-right: 4px; }
         .item-membro {
             display: flex; align-items: center; justify-content: space-between;
-            padding: 10px 12px; background: rgba(30, 41, 59, 0.4);
-            border-radius: 10px; border: 1px solid rgba(96, 165, 250, 0.08);
+            padding: 12px 14px; background: rgba(30, 41, 59, 0.5);
+            border-radius: 12px; border: 1px solid rgba(96, 165, 250, 0.1);
         }
         .info-membro p { font-size: 14px; font-weight: 600; color: #fff; }
         .info-membro span { font-size: 12px; color: #94a3b8; }
@@ -130,7 +140,7 @@
         }
         .botao-atalho:hover { background: rgba(59, 130, 246, 0.2); }
 
-        /* Estilo do Modal Admin Limpo */
+        /* Estilo dos Modais */
         .fundo-modal {
             position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
             display: flex; align-items: center; justify-content: center; z-index: 999;
@@ -143,8 +153,15 @@
             padding: 24px; max-width: 500px; width: 100%; max-height: 85vh;
             display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .modal-admin-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-        .modal-admin-titulo { font-size: 18px; font-weight: 700; color: #f59e0b; display: flex; align-items: center; gap: 8px; }
+        .caixa-modal-membros {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border: 1px solid rgba(96, 165, 250, 0.3); border-radius: 20px;
+            padding: 24px; max-width: 460px; width: 100%; max-height: 85vh;
+            display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .modal-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .modal-titulo { font-size: 18px; font-weight: 700; color: #fff; display: flex; align-items: center; gap: 8px; }
+        .modal-titulo.admin { color: #f59e0b; }
         .botao-fechar-modal { background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
         .botao-fechar-modal:hover { color: #fff; }
 
@@ -168,7 +185,7 @@
         .btn-acao-admin.encerrar { background: #ef4444; }
         .btn-acao-admin:hover { opacity: 0.85; }
 
-        .aviso-vazio-admin { text-align: center; color: #94a3b8; padding: 30px; font-size: 14px; }
+        .aviso-vazio { text-align: center; color: #94a3b8; padding: 30px; font-size: 14px; }
 
         .barra-menu {
             position: fixed; bottom: 0; left: 0; right: 0; height: 70px;
@@ -214,7 +231,7 @@
             <span><i class="fas fa-calendar-alt"></i> <strong id="dataTopo">--/--/----</strong></span>
         </div>
 <!-- FIM PARTE 1/3 -->
-            <div class="grade-cards">
+                <div class="grade-cards">
             <div class="card">
                 <p class="card-titulo">Tickets Abertos <i class="fas fa-ticket"></i></p>
                 <p class="card-valor" id="cardTickets">0</p>
@@ -223,20 +240,18 @@
                 <p class="card-titulo">Ausências Pendentes <i class="fas fa-calendar-days"></i></p>
                 <p class="card-valor" id="cardAusencias">0</p>
             </div>
-            <div class="card">
+            <!-- Card de Membros Ativos agora é interativo (ao clicar abre a lista em modal) -->
+            <div class="card interativo" id="cardAbrirMembrosAtivos">
                 <p class="card-titulo">Membros Ativos <i class="fas fa-users"></i></p>
                 <p class="card-valor" id="cardTotalAtivos">0 online</p>
+                <span style="font-size: 11px; color: #94a3b8; display: block; margin-top: 4px;">Toque para ver a lista</span>
             </div>
             <div class="card">
                 <p class="card-titulo">Pontos Hoje <i class="fas fa-clock-rotate-left"></i></p>
                 <p class="card-valor" id="cardPontosHoje">0</p>
             </div>
             <div class="card completo">
-                <p class="card-titulo">Membros em Jornada <i class="fas fa-user-check"></i></p>
-                <div class="lista-membros" id="listaMembrosAtivos">
-                    <p style="color: #94a3b8; font-size: 13px; text-align: center; padding: 10px;">Nenhum membro em jornada no momento.</p>
-                </div>
-                <div class="botoes-atalho">
+                <div class="botoes-atalho" style="margin-top: 0;">
                     <button class="botao-atalho" id="btnVerEquipeModal">
                         <i class="fas fa-users-viewfinder"></i> Ver Equipe
                     </button>
@@ -248,11 +263,26 @@
         </div>
     </div>
 
-    <!-- Modal do Painel Admin (Oculto por padrão, abre ao clicar no botão do topo) -->
+    <!-- Modal da Lista de Membros Ativos (Abre ao tocar no card) -->
+    <div class="fundo-modal" id="modalMembrosAtivos">
+        <div class="caixa-modal-membros">
+            <div class="modal-topo">
+                <div class="modal-titulo">
+                    <i class="fas fa-user-check"></i> Membros em Jornada
+                </div>
+                <button class="botao-fechar-modal" id="btnFecharModalMembros"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="lista-membros-modal" id="listaMembrosModalConteudo">
+                <p class="aviso-vazio">A carregar membros...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do Painel Admin (Abre ao clicar no botão do topo) -->
     <div class="fundo-modal" id="modalAdmin">
         <div class="caixa-modal-admin">
-            <div class="modal-admin-topo">
-                <div class="modal-admin-titulo">
+            <div class="modal-topo">
+                <div class="modal-titulo admin">
                     <i class="fas fa-shield-alt"></i> Controle de Ponto (Admin)
                 </div>
                 <button class="botao-fechar-modal" id="btnFecharModalAdmin"><i class="fas fa-times"></i></button>
@@ -268,7 +298,7 @@
                         </tr>
                     </thead>
                     <tbody id="listaAdminPontos">
-                        <tr><td colspan="4" class="aviso-vazio-admin">Carregando jornadas ativas...</td></tr>
+                        <tr><td colspan="4" class="aviso-vazio">A carregar jornadas ativas...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -276,12 +306,12 @@
     </div>
 
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item ativo"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+        <a href="painel.html" class="menu-item ativo"><i class="fas fa-home"><span>Painel</span></i></a>
+        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"><span>Ponto</span></i></a>
+        <a href="equipe.html" class="menu-item"><i class="fas fa-users"><span>Equipe</span></i></a>
     </nav>
 <!-- FIM PARTE 2/3 -->
-                    <script>
+        <script>
         const passaporteUsuario = localStorage.getItem('passaporte');
         const dadosUsuarioLocal = JSON.parse(localStorage.getItem('usuario') || '{}');
 
@@ -311,7 +341,6 @@
                 document.getElementById('txtCargo').textContent = dadosUsuarioLocal.cargo || 'Membro';
             }
 
-            // Verificação de segurança adicional consultando o Supabase para o botão Admin
             try {
                 const { data: membroDb, error } = await sb
                     .from('membros')
@@ -320,19 +349,21 @@
                     .single();
 
                 if (!error && membroDb && membroDb.cargo && membroDb.cargo.toLowerCase().includes('coordenador')) {
-                    // Exibir botão admin apenas para o Coordenador
                     document.getElementById('btnAbrirModalAdmin').style.display = 'inline-flex';
                 }
             } catch (e) {
                 console.error('Erro ao verificar cargo:', e);
             }
 
-            carregarCardMembrosAtivos();
-            setInterval(carregarCardMembrosAtivos, 10000);
+            atualizarContadorAtivos();
+            setInterval(atualizarContadorAtivos, 15000);
         }
 
-        // Abertura e fechamento do Modal Admin
+        // Gestão dos Modais
         const modalAdmin = document.getElementById('modalAdmin');
+        const modalMembrosAtivos = document.getElementById('modalMembrosAtivos');
+
+        // Painel Admin
         document.getElementById('btnAbrirModalAdmin').addEventListener('click', () => {
             modalAdmin.classList.add('aberto');
             carregarPontosAdmin();
@@ -344,6 +375,62 @@
             if (e.target === modalAdmin) modalAdmin.classList.remove('aberto');
         });
 
+        // Lista de Membros Ativos (Abre ao tocar no card)
+        document.getElementById('cardAbrirMembrosAtivos').addEventListener('click', () => {
+            modalMembrosAtivos.classList.add('aberto');
+            carregarListaMembrosModal();
+        });
+        document.getElementById('btnFecharModalMembros').addEventListener('click', () => {
+            modalMembrosAtivos.classList.remove('aberto');
+        });
+        modalMembrosAtivos.addEventListener('click', (e) => {
+            if (e.target === modalMembrosAtivos) modalMembrosAtivos.classList.remove('aberto');
+        });
+
+        // Atualizar apenas o contador no card principal para manter a tela limpa
+        async function atualizarContadorAtivos() {
+            const { data: ativos, error } = await sb
+                .from('pontos')
+                .select('passaporte')
+                .is('saida', null);
+
+            const cardTotal = document.getElementById('cardTotalAtivos');
+            if (error || !ativos) {
+                cardTotal.textContent = '0 online';
+                return;
+            }
+            cardTotal.textContent = `${ativos.length} online`;
+        }
+
+        // Carregar a lista completa de membros ativos dentro do Modal
+        async function carregarListaMembrosModal() {
+            const { data: ativos, error } = await sb
+                .from('pontos')
+                .select('*')
+                .is('saida', null)
+                .order('entrada', { ascending: false });
+
+            const listaModal = document.getElementById('listaMembrosModalConteudo');
+            if (error || !ativos || ativos.length === 0) {
+                listaModal.innerHTML = `<p class="aviso-vazio">Nenhum membro em jornada no momento.</p>`;
+                return;
+            }
+
+            listaModal.innerHTML = ativos.map(p => {
+                const emPausa = p.pausa_inicio && !p.pausa_fim;
+                const statusTag = emPausa ? `<span class="tag-status pausado">Pausado</span>` : `<span class="tag-status on">ON</span>`;
+                return `
+                    <div class="item-membro">
+                        <div class="info-membro">
+                            <p>${p.nome || 'Membro'}</p>
+                            <span>Passaporte: ${p.passaporte}</span>
+                        </div>
+                        ${statusTag}
+                    </div>
+                `;
+            }).join('');
+        }
+
         // Carregar dados da tabela dentro do Modal Admin
         async function carregarPontosAdmin() {
             const { data: pontosAbertos, error } = await sb
@@ -354,7 +441,7 @@
 
             const tbody = document.getElementById('listaAdminPontos');
             if (error || !pontosAbertos || pontosAbertos.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" class="aviso-vazio-admin">Nenhum player em jornada ativa no momento.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="4" class="aviso-vazio">Nenhum player em jornada ativa no momento.</td></tr>`;
                 return;
             }
 
@@ -400,7 +487,6 @@
             }
         }
 
-        // Executar ação de admin via função RPC segura no Supabase
         async function executarAcaoAdmin(playerPassaporte, acao) {
             const senhaAdmin = prompt('Digite sua senha de Coordenador para autorizar esta ação:');
             if (!senhaAdmin) return;
@@ -417,47 +503,14 @@
 
                 if (data && data.sucesso) {
                     carregarPontosAdmin();
-                    carregarCardMembrosAtivos();
+                    carregarListaMembrosModal();
+                    atualizarContadorAtivos();
                 } else {
                     alert(data?.erro || 'Erro ao executar ação.');
                 }
             } catch (err) {
                 alert('Erro de comunicação com o servidor: ' + err.message);
             }
-        }
-
-        // Card normal de Membros Ativos do painel
-        async function carregarCardMembrosAtivos() {
-            const { data: ativos, error } = await sb
-                .from('pontos')
-                .select('*')
-                .is('saida', null)
-                .order('entrada', { ascending: false });
-
-            const cardTotal = document.getElementById('cardTotalAtivos');
-            const listaMembros = document.getElementById('listaMembrosAtivos');
-
-            if (error || !ativos || ativos.length === 0) {
-                cardTotal.textContent = '0 online';
-                listaMembros.innerHTML = `<p style="color: #94a3b8; font-size: 13px; text-align: center; padding: 10px;">Nenhum membro em jornada no momento.</p>`;
-                return;
-            }
-
-            cardTotal.textContent = `${ativos.length} online`;
-
-            listaMembros.innerHTML = ativos.slice(0, 5).map(p => {
-                const emPausa = p.pausa_inicio && !p.pausa_fim;
-                const statusTag = emPausa ? `<span class="tag-status pausado">Pausado</span>` : `<span class="tag-status on">ON</span>`;
-                return `
-                    <div class="item-membro">
-                        <div class="info-membro">
-                            <p>${p.nome || 'Membro'}</p>
-                            <span>Passaporte: ${p.passaporte}</span>
-                        </div>
-                        ${statusTag}
-                    </div>
-                `;
-            }).join('');
         }
 
         document.getElementById('btnVerEquipeModal').onclick = () => window.location.href = 'equipe.html';
