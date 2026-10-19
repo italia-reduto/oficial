@@ -1220,5 +1220,308 @@
             console.log('Tempo real indisponível, usando atualização a cada 10s.');
         }
     </script>
+           <script>
+// ========== FREQUÊNCIA (cards Frequência e Faltas e Presenças) ==========
+(function () {
+    if (window.__freqAtivo) return;
+    window.__freqAtivo = true;
+
+    const TZ = 'America/Sao_Paulo';
+
+    // ---------- estilos ----------
+    const css = `
+    #modalFreq, #modalFaltas { padding: 14px; }
+    .fq-busca { display:flex; align-items:center; gap:10px; background:rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin:6px 0 12px; flex-shrink:0; }
+    .fq-busca i { color:#60a5fa; }
+    .fq-busca input { flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark; }
+    .fq-grupo { font-size:13px; font-weight:700; letter-spacing:.04em; color:#cbd5e1; margin:10px 2px 2px; display:flex; justify-content:space-between; }
+    .fq-grupo span { color:#64748b; font-weight:600; }
+    .fq-pfj { display:flex; gap:6px; flex:0 0 auto; }
+    .fq-btn { width:34px; height:34px; border-radius:10px; border:1px solid; background:transparent; font-family:inherit; font-size:13px; font-weight:800; cursor:pointer; }
+    .fq-btn.P { color:#22c55e; border-color:rgba(34,197,94,.45); }
+    .fq-btn.P.on { background:#22c55e; color:#04210f; border-color:#22c55e; }
+    .fq-btn.F { color:#ef4444; border-color:rgba(239,68,68,.45); }
+    .fq-btn.F.on { background:#ef4444; color:#fff; border-color:#ef4444; }
+    .fq-btn.J { color:#f59e0b; border-color:rgba(245,158,11,.45); }
+    .fq-btn.J.on { background:#f59e0b; color:#1f1300; border-color:#f59e0b; }
+    .fq-sessao-titulo { font-size:11px; font-weight:700; color:#60a5fa; letter-spacing:.06em; margin-top:4px; }
+    .fq-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:6px 0 14px; flex-shrink:0; }
+    .fq-stat { border-radius:12px; padding:12px 6px; text-align:center; border:1px solid; }
+    .fq-stat b { display:block; font-size:24px; font-weight:800; }
+    .fq-stat span { font-size:11px; font-weight:600; }
+    .fq-stat.P { color:#22c55e; background:rgba(34,197,94,.1); border-color:rgba(34,197,94,.35); }
+    .fq-stat.F { color:#ef4444; background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.35); }
+    .fq-stat.J { color:#f59e0b; background:rgba(245,158,11,.1); border-color:rgba(245,158,11,.35); }
+    .fq-selo { font-size:11px; font-weight:700; padding:5px 10px; border-radius:999px; border:1px solid; flex:0 0 auto; }
+    .fq-selo.P { color:#22c55e; background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.35); }
+    .fq-selo.F { color:#ef4444; background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.35); }
+    .fq-selo.J { color:#f59e0b; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.35); }
+    .fq-selo.N { color:#94a3b8; background:rgba(148,163,184,.08); border-color:rgba(148,163,184,.25); }
+    `;
+    const st = document.createElement('style');
+    st.textContent = css;
+    document.head.appendChild(st);
+
+    // ---------- janelas ----------
+    const caixa = document.createElement('div');
+    caixa.innerHTML = `
+    <div class="fundo-modal" id="modalFreq">
+        <div class="caixa-lista">
+            <div class="lista-topo">
+                <h3 class="lista-titulo" id="freqTitulo">Frequência</h3>
+                <button class="lista-fechar" id="freqFechar"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="fq-busca"><i class="fas fa-calendar-day"></i><input type="date" id="freqData"></div>
+            <div class="lista-resumo" id="freqResumo"></div>
+            <div class="lista-corpo" id="freqCorpo"></div>
+        </div>
+    </div>
+    <div class="fundo-modal" id="modalFaltas">
+        <div class="caixa-lista">
+            <div class="lista-topo">
+                <h3 class="lista-titulo">Faltas e Presenças</h3>
+                <button class="lista-fechar" id="faltasFechar"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="lista-resumo" id="faltasResumo"></div>
+            <div class="lista-corpo" id="faltasCorpo"></div>
+        </div>
+    </div>`;
+    while (caixa.firstChild) document.body.appendChild(caixa.firstChild);
+
+    const modalFreq = document.getElementById('modalFreq');
+    const modalFaltas = document.getElementById('modalFaltas');
+    const freqData = document.getElementById('freqData');
+    const freqCorpo = document.getElementById('freqCorpo');
+    const freqResumo = document.getElementById('freqResumo');
+    const faltasCorpo = document.getElementById('faltasCorpo');
+    const faltasResumo = document.getElementById('faltasResumo');
+
+    let ehAdmin = false;
+    let dataSel = '';
+    let dadosDia = [];
+    let dadosMembro = null;
+
+    // ---------- formatação ----------
+    function esc(t) {
+        return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function hojeISO() { return new Date().toLocaleDateString('en-CA', { timeZone: TZ }); }
+    function dataBR(iso) { const p = String(iso).slice(0, 10).split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
+    function diaSemana(iso) {
+        const p = String(iso).slice(0, 10).split('-').map(Number);
+        const s = new Date(p[0], p[1] - 1, p[2]).toLocaleDateString('pt-BR', { weekday: 'long' });
+        return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+    function hora(v) {
+        if (!v) return '—';
+        const d = new Date(v);
+        return isNaN(d) ? '—' : d.toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
+    }
+    function nomeStatus(s) { return s === 'P' ? 'Presença' : s === 'F' ? 'Falta' : s === 'J' ? 'Justificado' : 'Não marcado'; }
+    function toast(msg, tipo) { if (typeof mostrarToastAdmin === 'function') mostrarToastAdmin(msg, tipo); }
+    function meuPass() { return String(localStorage.getItem('passaporte') || ''); }
+
+    function htmlSessoes(pontos) {
+        return pontos.map((p, i) => {
+            const ini = Date.parse(p.pausa_inicio);
+            const fim = Date.parse(p.pausa_fim);
+            let retorno = '—';
+            if (!isNaN(ini)) retorno = (!isNaN(fim) && fim > ini) ? hora(p.pausa_fim) : 'pausado agora';
+            return `
+            <div class="membro-tempo">
+                ${pontos.length > 1 ? `<div class="fq-sessao-titulo">JORNADA ${i + 1}</div>` : ''}
+                <div class="tempo-linha"><span>Data</span><strong>${esc(diaSemana(dataSel))} · ${esc(dataBR(dataSel))}</strong></div>
+                <div class="tempo-linha"><span>Início</span><strong>${esc(hora(p.entrada))}</strong></div>
+                <div class="tempo-linha"><span>Pausa</span><strong>${esc(isNaN(ini) ? '—' : hora(p.pausa_inicio))}</strong></div>
+                <div class="tempo-linha"><span>Retorno</span><strong>${esc(retorno)}</strong></div>
+                <div class="tempo-linha"><span>Encerrou</span><strong>${esc(p.saida ? hora(p.saida) : 'em andamento')}</strong></div>
+            </div>`;
+        }).join('');
+    }
+
+    // ---------- janela de frequência: ADMIN ----------
+    function renderAdmin() {
+        const bateu = dadosDia.filter(m => m.pontos.length);
+        const nao = dadosDia.filter(m => !m.pontos.length);
+        freqResumo.innerHTML = '<div>' + esc(diaSemana(dataSel)) + ' · ' + esc(dataBR(dataSel)) + '</div>' +
+            '<div>' + bateu.length + ' em serviço · ' + nao.length + ' sem registro · ' + dadosDia.length + ' membros</div>';
+
+        const item = m => `
+        <div class="membro-item">
+            <div class="membro-topo">
+                <div class="membro-nome">${esc(m.nome || 'Sem nome')}</div>
+                <div class="fq-pfj">
+                    ${['P', 'F', 'J'].map(s => `<button class="fq-btn ${s} ${m.status === s ? 'on' : ''}" data-pass="${esc(m.passaporte)}" data-st="${s}">${s}</button>`).join('')}
+                </div>
+            </div>
+            <div class="membro-passaporte"><span class="pass-txt">Passaporte ${esc(m.passaporte)}</span></div>
+            ${m.pontos.length ? htmlSessoes(m.pontos) : ''}
+        </div>`;
+
+        freqCorpo.innerHTML =
+            `<div class="fq-grupo">Estiveram em serviço <span>${bateu.length}</span></div>` +
+            (bateu.length ? bateu.map(item).join('') : '<div class="membros-vazio">Ninguém bateu ponto nesse dia.</div>') +
+            `<div class="fq-grupo">Sem registro de ponto <span>${nao.length}</span></div>` +
+            (nao.length ? nao.map(item).join('') : '<div class="membros-vazio">Todos bateram ponto nesse dia.</div>');
+    }
+
+    // ---------- janela de frequência: MEMBRO (só o próprio) ----------
+    function renderMembro() {
+        const d = dadosMembro || { status: null, pontos: [] };
+        const s = d.status || 'N';
+        freqResumo.innerHTML = '<div>' + esc(diaSemana(dataSel)) + ' · ' + esc(dataBR(dataSel)) + '</div>';
+        freqCorpo.innerHTML = `
+        <div class="membro-item">
+            <div class="membro-topo">
+                <div class="membro-nome">Seu status nesse dia</div>
+                <span class="fq-selo ${s}">${esc(nomeStatus(d.status))}</span>
+            </div>
+        </div>` + (d.pontos.length ? htmlSessoes(d.pontos) : '<div class="membros-vazio">Você não bateu ponto nesse dia.</div>');
+    }
+
+    async function carregarDia() {
+        if (!dataSel) return;
+        freqCorpo.innerHTML = '<div class="membros-vazio">Carregando...</div>';
+        try {
+            if (ehAdmin) {
+                const r = await sb.rpc('freq_dia_admin', { p_admin: meuPass(), p_data: dataSel });
+                if (r.error) throw r.error;
+                dadosDia = Array.isArray(r.data) ? r.data : [];
+                renderAdmin();
+            } else {
+                const r = await sb.rpc('freq_membro', { p_passaporte: meuPass(), p_data: dataSel });
+                if (r.error) throw r.error;
+                dadosMembro = r.data;
+                renderMembro();
+            }
+        } catch (e) {
+            console.log('Erro na frequência:', e);
+            freqResumo.textContent = '';
+            freqCorpo.innerHTML = '<div class="membros-vazio">Não foi possível carregar. Tente de novo.</div>';
+        }
+    }
+
+    async function abrirFreq() {
+        modalFreq.classList.add('aberto');
+        try { if (typeof verificarAdmin === 'function') await verificarAdmin(); } catch (e) {}
+        ehAdmin = (typeof souAdmin !== 'undefined') && souAdmin === true;
+        document.getElementById('freqTitulo').textContent = ehAdmin ? 'Frequência da equipe' : 'Meu ponto';
+        dataSel = hojeISO();
+        freqData.max = dataSel;
+        freqData.value = dataSel;
+        carregarDia();
+    }
+
+    async function marcar(pass, status) {
+        const item = dadosDia.find(m => m.passaporte === pass);
+        if (!item) return;
+        const antes = item.status;
+        item.status = (antes === status) ? null : status;
+        renderAdmin();
+        try {
+            const r = await sb.rpc('marcar_presenca', {
+                p_admin: meuPass(), p_data: dataSel, p_passaporte: pass, p_status: item.status || 'X'
+            });
+            if (r.error || r.data !== 'OK') throw (r.error || new Error('falha'));
+            carregarResumo();
+        } catch (e) {
+            item.status = antes;
+            renderAdmin();
+            toast('Não foi possível salvar a marcação.', 'erro');
+        }
+    }
+
+    // ---------- janela de faltas e presenças (do próprio membro) ----------
+    function renderFaltas(d) {
+        const dias = Array.isArray(d.dias) ? d.dias : [];
+        faltasResumo.textContent = '';
+        faltasCorpo.innerHTML = `
+        <div class="fq-stats">
+            <div class="fq-stat P"><b>${d.p || 0}</b><span>Presenças</span></div>
+            <div class="fq-stat F"><b>${d.f || 0}</b><span>Faltas</span></div>
+            <div class="fq-stat J"><b>${d.j || 0}</b><span>Justificadas</span></div>
+        </div>
+        <div class="fq-grupo">Dias marcados <span>${dias.length}</span></div>` +
+        (dias.length ? dias.map(x => `
+        <div class="membro-item">
+            <div class="membro-topo">
+                <div class="membro-nome">${esc(diaSemana(x.data))} · ${esc(dataBR(x.data))}</div>
+                <span class="fq-selo ${esc(x.status)}">${esc(nomeStatus(x.status))}</span>
+            </div>
+        </div>`).join('') : '<div class="membros-vazio">Nenhum dia marcado ainda.</div>');
+    }
+
+    async function abrirFaltas() {
+        modalFaltas.classList.add('aberto');
+        faltasCorpo.innerHTML = '<div class="membros-vazio">Carregando...</div>';
+        try {
+            const r = await sb.rpc('resumo_membro', { p_passaporte: meuPass() });
+            if (r.error) throw r.error;
+            renderFaltas(r.data || {});
+        } catch (e) {
+            faltasCorpo.innerHTML = '<div class="membros-vazio">Não foi possível carregar. Tente de novo.</div>';
+        }
+    }
+
+    // ---------- cards ----------
+    function acharCard(texto) {
+        return Array.from(document.querySelectorAll('.grade-cards .card')).find(c => {
+            const t = c.querySelector('.card-titulo');
+            return t && t.textContent.indexOf(texto) !== -1;
+        });
+    }
+
+    const cardPontos = acharCard('Pontos Hoje') || document.getElementById('cardFrequencia');
+    const cardAus = acharCard('Ausências Pendentes') || document.getElementById('cardFaltas');
+    let valorPontos = null;
+    let valorFaltas = null;
+
+    if (cardPontos) {
+        cardPontos.id = 'cardFrequencia';
+        cardPontos.classList.add('card-clicavel');
+        cardPontos.querySelector('.card-titulo').innerHTML = 'Frequência <i class="fas fa-calendar-check"></i>';
+        valorPontos = cardPontos.querySelector('.card-valor');
+        valorPontos.textContent = '—';
+        cardPontos.insertAdjacentHTML('beforeend', '<div class="card-dica">Toque para ver o histórico</div>');
+        cardPontos.addEventListener('click', abrirFreq);
+    }
+    if (cardAus) {
+        cardAus.id = 'cardFaltas';
+        cardAus.classList.add('card-clicavel');
+        cardAus.querySelector('.card-titulo').innerHTML = 'Faltas e Presenças <i class="fas fa-user-check"></i>';
+        valorFaltas = cardAus.querySelector('.card-valor');
+        valorFaltas.style.fontSize = '18px';
+        valorFaltas.textContent = '—';
+        cardAus.addEventListener('click', abrirFaltas);
+    }
+
+    async function carregarResumo() {
+        try {
+            const r = await sb.rpc('pontos_hoje_qtd');
+            if (!r.error && r.data !== null && valorPontos) valorPontos.textContent = r.data;
+        } catch (e) {}
+        try {
+            const r = await sb.rpc('resumo_membro', { p_passaporte: meuPass() });
+            if (!r.error && r.data && valorFaltas) {
+                valorFaltas.textContent = (r.data.p || 0) + 'P · ' + (r.data.f || 0) + 'F · ' + (r.data.j || 0) + 'J';
+            }
+        } catch (e) {}
+    }
+
+    // ---------- eventos ----------
+    freqData.addEventListener('change', () => { dataSel = freqData.value || hojeISO(); carregarDia(); });
+    document.getElementById('freqFechar').addEventListener('click', () => modalFreq.classList.remove('aberto'));
+    document.getElementById('faltasFechar').addEventListener('click', () => modalFaltas.classList.remove('aberto'));
+    modalFreq.addEventListener('click', e => { if (e.target === modalFreq) modalFreq.classList.remove('aberto'); });
+    modalFaltas.addEventListener('click', e => { if (e.target === modalFaltas) modalFaltas.classList.remove('aberto'); });
+    freqCorpo.addEventListener('click', e => {
+        const b = e.target.closest('.fq-btn');
+        if (b) marcar(b.dataset.pass, b.dataset.st);
+    });
+
+    carregarResumo();
+    setInterval(() => { if (document.visibilityState === 'visible') carregarResumo(); }, 30000);
+})();
+    </script> 
 </body>
 </html>
