@@ -880,6 +880,296 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
     </script>
+    <!-- ========== SISTEMA DE SUPORTE BLINDADO ========== -->
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .msg-card { display: flex; gap: 12px; background: #1e293b; border: 1px solid #334155; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    .msg-card.admin { border-left-color: #22c55e; }
+    .msg-avatar { width: 40px; height: 40px; border-radius: 50%; background: #334155; color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+    .msg-content { flex: 1; display: flex; flex-direction: column; }
+    .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .msg-nome { font-size: 14px; font-weight: 700; color: #60a5fa; }
+    .msg-card.admin .msg-nome { color: #22c55e; }
+    .msg-tag { font-size: 10px; background: #334155; color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .msg-card.admin .msg-tag { background: #166534; color: #86efac; }
+    .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
+    .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
+    .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+    .fundo-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
+    .fundo-modal.aberto { opacity: 1; visibility: visible; }
+</style>
+
+<div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <h3 style="font-size: 20px; font-weight: 700; color: #fff;" id="titulo-modal-suporte">Central de Suporte</h3>
+            <button onclick="fecharModalTickets()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+            <div style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;" id="resumoTickets"></div>
+            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+
+            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start;">
+                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
+                    <span><strong>Aviso:</strong> Para denúncias ou bugs, anexe prints/gravações no chat.</span>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span>
+                    </button>
+                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span>
+                    </button>
+                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
+                        <i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span>
+                    </button>
+                </div>
+                <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
+                    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold; color: white; border: none;" onclick="criarTicket()">Enviar Ticket</button>
+                </div>
+            </div>
+
+            <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
+                <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
+            </div>
+        </div>
+
+        <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
+                    <div>
+                        <h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4>
+                        <span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span>
+                    </div>
+                </div>
+                <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                    <i class="fas fa-check"></i> Finalizar
+                </button>
+            </div>
+            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
+            <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
+                <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;">
+                    <i class="fas fa-paperclip"></i>
+                </label>
+                <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
+                <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
+                <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="fundo-modal" id="modalConfirmarAcao" onclick="if(event.target === this) fecharModalConfirmacao()">
+    <div class="caixa-modal" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.2); border-radius: 18px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center;">
+        <div style="width: 56px; height: 56px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+            <i class="fas fa-question-circle" style="font-size: 24px; color: #3b82f6;"></i>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff;">Confirmação</h3>
+        <p style="font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6;" id="texto-modal-confirma"></p>
+        <div style="display: flex; gap: 12px;">
+            <button onclick="fecharModalConfirmacao()" style="flex: 1; padding: 14px; border: 1px solid rgba(96,165,250,0.2); background: transparent; color: #94a3b8; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;">Cancelar</button>
+            <button id="btn-confirmar-acao" style="flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; color: #fff; background: linear-gradient(135deg, #3b82f6, #2563eb);">Sim, confirmar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// BLINDAGEM: Tudo aqui dentro fica isolado do cronômetro
+(function() {
+    let categoriaSelecionada = null;
+    let ticketAtualChatId = null;
+
+    window.abrirModalTickets = function() {
+        document.getElementById('modalTickets').classList.add('aberto');
+        window.voltarParaListaTickets();
+        document.getElementById('input-ticket').value = '';
+        categoriaSelecionada = null;
+        document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+        document.getElementById('div-descricao').style.display = 'none';
+        carregarTickets();
+    };
+
+    window.fecharModalTickets = function() { document.getElementById('modalTickets').classList.remove('aberto'); };
+    window.fecharModalConfirmacao = function() { document.getElementById('modalConfirmarAcao').classList.remove('aberto'); };
+
+    window.selecionarCategoria = function(cat) {
+        if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
+        else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
+        document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+        if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
+    };
+
+    window.criarTicket = async function() {
+        const texto = document.getElementById('input-ticket').value;
+        const pass = localStorage.getItem('passaporte');
+        const nome = document.getElementById('exibeNome').textContent;
+        if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
+        const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
+        const { error } = await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
+        if(error) { alert("Erro: " + error.message); } 
+        else {
+            document.getElementById('tela-abertura-ticket').style.display = 'none';
+            document.getElementById('tela-espera-ticket').style.display = 'flex';
+            carregarTickets();
+        }
+        btn.innerText = "Enviar Ticket"; btn.disabled = false;
+    };
+
+    async function carregarTickets() {
+        const corpo = document.getElementById('corpoTickets');
+        const pass = localStorage.getItem('passaporte');
+        const nomeEu = document.getElementById('exibeNome').textContent;
+        corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        const ehLider = isAdmin === true;
+        let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
+        if (!ehLider) query = query.eq('passaporte', pass);
+        const { data, error } = await query;
+        if (error) { corpo.innerHTML = '<div style="color: red;">Erro: ' + error.message + '</div>'; return; }
+        if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
+        corpo.innerHTML = data.map(t => {
+            const isAberto = t.status === 'aberto';
+            const isAtendimento = t.status === 'atendimento';
+            const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
+            const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+            return `
+            <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor} (${t.passaporte})</div>
+                    <span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span>
+                </div>
+                <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
+                ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;"><i class="fas fa-user-shield"></i> Atendido por: ${t.lider_assumiu}</div>` : ''}
+                <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
+                ${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-hand-paper"></i> Assumir Ticket</button>` : ''}
+                ${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    window.assumirTicket = async function(id) {
+        document.getElementById('modalConfirmarAcao').classList.add('aberto');
+        document.getElementById('texto-modal-confirma').innerText = "Deseja realmente assumir este ticket?";
+        document.getElementById('btn-confirmar-acao').onclick = async function() {
+            window.fecharModalConfirmacao();
+            const nome = `Líder (${document.getElementById('exibeNome').textContent})`;
+            const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
+            if(!error) { document.getElementById('tela-espera-ticket').style.display = 'none'; document.getElementById('tela-abertura-ticket').style.display = 'flex'; carregarTickets(); }
+        };
+    };
+
+    window.voltarParaListaTickets = function() {
+        document.getElementById('tela-chat-ticket').style.display = 'none';
+        document.getElementById('tela-lista-tickets').style.display = 'flex';
+        document.getElementById('titulo-modal-suporte').innerText = "Central de Suporte";
+        document.getElementById('btn-resolver-chat').style.display = 'none';
+        document.getElementById('tela-espera-ticket').style.display = 'none';
+        document.getElementById('tela-abertura-ticket').style.display = 'flex';
+        ticketAtualChatId = null;
+        carregarTickets();
+    };
+
+    window.abrirChatTicket = async function(id, nomeAutor, passaporte) {
+        ticketAtualChatId = id;
+        document.getElementById('tela-lista-tickets').style.display = 'none';
+        document.getElementById('tela-chat-ticket').style.display = 'flex';
+        document.getElementById('titulo-modal-suporte').innerText = "Atendimento";
+        document.getElementById('chat-titulo').innerText = "Ticket #" + id;
+        document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
+        document.getElementById('input-chat-msg').value = "";
+        const pass = localStorage.getItem('passaporte');
+        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        if (isAdmin === true) document.getElementById('btn-resolver-chat').style.display = 'block';
+        else document.getElementById('btn-resolver-chat').style.display = 'none';
+        await carregarMensagens();
+    };
+
+    async function carregarMensagens() {
+        if(!ticketAtualChatId) return;
+        const chatBox = document.getElementById('chat-mensagens');
+        const { data, error } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
+        if (error) { chatBox.innerHTML = `<div style="color:red; font-size:12px;">Erro.</div>`; return; }
+        if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem.</div>`; } 
+        else {
+            chatBox.innerHTML = data.map(m => {
+                const isLider = m.autor.includes("Líder"); 
+                const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                let anexo = '';
+                if (m.imagem_url) {
+                    if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) anexo = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
+                    else anexo = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
+                }
+                return `
+                    <div class="msg-card ${isLider ? 'admin' : ''}">
+                        <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
+                        <div class="msg-content">
+                            <div class="msg-header">
+                                <span class="msg-nome">${m.autor}</span>
+                               ${isLider ? '<span class="msg-tag">LIDERANÇA</span>' : '<span class="msg-tag">MEMBRO</span>'}
+                                <span class="msg-hora">${hora}</span>
+                            </div>
+                            <div class="msg-body">${m.mensagem ? m.mensagem : ''}${anexo}</div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+        setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+    }
+
+    window.enviarMensagemChat = async function() {
+        const input = document.getElementById('input-chat-msg');
+        const texto = input.value.trim();
+        if(!texto || !ticketAtualChatId) return;
+        const nomeEu = document.getElementById('exibeNome').textContent;
+        const pass = localStorage.getItem('passaporte');
+        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
+        input.value = ""; 
+        const { error } = await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
+        if (!error) carregarMensagens();
+    };
+
+    window.enviarArquivoChat = async function(input) {
+        const file = input.files[0];
+        if (!file || !ticketAtualChatId) return;
+        if (file.size > 20 * 1024 * 1024) { alert("Max 20MB."); input.value = ""; return; }
+        const nomeEu = document.getElementById('exibeNome').textContent;
+        const pass = localStorage.getItem('passaporte');
+        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
+        const label = document.querySelector('label[for="input-arquivo-chat"]');
+        const iconeAntigo = label.innerHTML; label.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        try {
+            const ext = file.name.split('.').pop();
+            const nomeArquivo = `${ticketAtualChatId}_${Date.now()}.${ext}`;
+            const { error: upErr } = await sb.storage.from('midia_tickets').upload(nomeArquivo, file);
+            if (upErr) throw upErr;
+            const { data: urlData } = sb.storage.from('midia_tickets').getPublicUrl(nomeArquivo);
+            await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, imagem_url: urlData.publicUrl }]);
+            carregarMensagens();
+        } catch (err) { alert("Erro: " + err.message); } 
+        finally { label.innerHTML = iconeAntigo; input.value = ""; }
+    };
+
+    window.resolverTicketChat = async function() {
+        document.getElementById('modalConfirmarAcao').classList.add('aberto');
+        document.getElementById('texto-modal-confirma').innerText = "Deseja finalizar este atendimento? O ticket sumirá.";
+        document.getElementById('btn-confirmar-acao').onclick = async function() {
+            window.fecharModalConfirmacao();
+            const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+            if (!error) window.voltarParaListaTickets();
+        };
+    };
+
+    document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
+})();
+</script>
 </body>
 </html>
 <!-- FIM PARTE 3/3 -->
