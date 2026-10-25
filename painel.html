@@ -1803,16 +1803,17 @@ async function carregarRanking() {
 }
 </script>
 <!-- ========== FIM DO RANKING ========== -->          
+
 </script>
-            <!-- ========== SISTEMA DE TICKETS (SUPORTE) ========== -->
+            <!-- ========== SISTEMA DE TICKETS (SUPORTE) COMPLETO ========== -->
+<!-- 1. O Botão no Menu -->
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Cria o botão no menu
     const barraMenu = document.querySelector('.barra-menu');
-    if (barraMenu) {
+    if (barraMenu && !document.querySelector('.menu-suporte')) {
         const btnSuporte = document.createElement('a');
         btnSuporte.href = "#";
-        btnSuporte.className = "menu-item";
+        btnSuporte.className = "menu-item menu-suporte";
         btnSuporte.innerHTML = '<i class="fas fa-headset"></i><span>Suporte</span>';
         btnSuporte.onclick = function(e) {
             e.preventDefault();
@@ -1821,7 +1822,7 @@ document.addEventListener("DOMContentLoaded", () => {
         barraMenu.appendChild(btnSuporte);
     }
 
-    // 2. Cria a janelinha de Tickets
+    // Cria a janelinha no final do body
     const modal = document.createElement('div');
     modal.innerHTML = `
     <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
@@ -1836,51 +1837,52 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 40vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
                 <div class="membros-vazio">Carregando...</div>
             </div>
-<!-- NOVA TELA DE ABERTURA DE TICKET -->
-<div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-    
-    <!-- Aviso Importante -->
-    <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 10px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start;">
-        <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
-        <span><strong>Atenção:</strong> Tenha prints ou gravações (clipes) do ocorrido. Isso agiliza o atendimento e ajuda a liderança a tomar a decisão correta.</span>
+
+            <!-- TELA DE ABERTURA -->
+            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: none; flex-direction: column; gap: 10px;">
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 10px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start;">
+                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
+                    <span><strong>Atenção:</strong> Tenha prints ou gravações. Isso ajuda a liderança.</span>
+                </div>
+                <p style="font-size: 13px; color: #94a3b8; font-weight: 600;">Qual o motivo do seu ticket?</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-bug" style="font-size: 18px; color: #60a5fa;"></i> Bug</button>
+                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-user-shield" style="font-size: 18px; color: #f87171;"></i> Player</button>
+                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-file-alt" style="font-size: 18px; color: #f59e0b;"></i> Justificar</button>
+                </div>
+                <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px;">
+                    <textarea id="input-ticket" placeholder="Descreva com detalhes..." style="width: 100%; height: 80px; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
+                    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="criarTicket()">Abrir Ticket</button>
+                </div>
+            </div>
+
+            <!-- TELA DE ESPERA -->
+            <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
+                <button onclick="fecharModalTickets()" style="background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
+            </div>
+        </div>
     </div>
-
-    <p style="font-size: 13px; color: #94a3b8; font-weight: 600; margin-top: 5px;">Qual o motivo do seu ticket?</p>
-
-    <!-- Botões de Categoria -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
-        <button onclick="selecionarCategoria('Bug')" class="btn-categoria" id="btn-cat-Bug" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-            <i class="fas fa-bug" style="font-size: 18px; color: #60a5fa;"></i> Bug
-        </button>
-        <button onclick="selecionarCategoria('Player')" class="btn-categoria" id="btn-cat-Player" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-            <i class="fas fa-user-shield" style="font-size: 18px; color: #f87171;"></i> Player
-        </button>
-        <button onclick="selecionarCategoria('Justificativa')" class="btn-categoria" id="btn-cat-Justificativa" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-            <i class="fas fa-file-alt" style="font-size: 18px; color: #f59e0b;"></i> Justificar
-        </button>
-    </div>
-
-    <!-- Caixa de texto (só aparece depois que escolhe a categoria) -->
-    <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px;">
-        <textarea id="input-ticket" placeholder="Descreva seu problema com o máximo de detalhes..." style="width: 100%; height: 80px; padding: 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; resize: none;"></textarea>
-        <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="criarTicket()">Abrir Ticket</button>
-    </div>
-</div>
-
-<!-- TELA DE ESPERA (Enquanto nenhum líder assume) -->
-<div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
-    <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-    <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
-    <p style="font-size: 13px; color: #94a3b8;">Seu ticket foi enviado para a fila de atendimento. Por favor, aguarde.</p>
-    <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
-</div>
-
-<style>
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .btn-categoria.selecionado { border-color: #60a5fa !important; background: rgba(96, 165, 250, 0.1) !important; }
-</style>
+    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>`;
     document.body.appendChild(modal.firstElementChild);
 });
+</script>
+
+<!-- 2. A Lógica -->
+<script>
+let categoriaSelecionada = null;
+
+function selecionarCategoria(cat) {
+    categoriaSelecionada = cat;
+    document.querySelectorAll('.btn-categoria').forEach(b => {
+        b.style.borderColor = '#334155';
+        b.style.background = '#1e293b';
+    });
+    document.getElementById('btn-cat-' + cat).style.borderColor = '#60a5fa';
+    document.getElementById('btn-cat-' + cat).style.background = 'rgba(96, 165, 250, 0.1)';
+    document.getElementById('div-descricao').style.display = 'flex';
+}
 
 function fecharModalTickets() {
     document.getElementById('modalTickets').classList.remove('aberto');
@@ -1888,7 +1890,11 @@ function fecharModalTickets() {
 
 function abrirModalTickets() {
     document.getElementById('modalTickets').classList.add('aberto');
-    document.getElementById('input-ticket').value = "";
+    document.getElementById('tela-abertura-ticket').style.display = 'flex';
+    document.getElementById('tela-espera-ticket').style.display = 'none';
+    document.getElementById('div-descricao').style.display = 'none';
+    document.getElementById('input-ticket').value = '';
+    categoriaSelecionada = null;
     carregarTickets();
 }
 
@@ -1897,12 +1903,9 @@ async function criarTicket() {
     const pass = localStorage.getItem('passaporte');
     const nome = document.getElementById('nomeUsuario').textContent;
 
-    if(!texto || texto.trim() === "") {
-        alert("Descreva o seu problema antes de abrir o ticket.");
-        return;
-    }
+    if(!categoriaSelecionada) { alert("Escolha uma categoria primeiro."); return; }
+    if(!texto || texto.trim() === "") { alert("Descreva o seu problema."); return; }
 
-    // Desativa o botão para não clicar duas vezes
     const btn = event.target;
     btn.innerText = "Enviando...";
     btn.disabled = true;
@@ -1910,55 +1913,47 @@ async function criarTicket() {
     const { error } = await sb.from('tickets').insert([{ 
         passaporte: pass, 
         nome_autor: nome, 
-        mensagem: texto 
+        mensagem: texto,
+        categoria: categoriaSelecionada
     }]);
 
     if(error) {
-        alert("Erro ao abrir ticket: " + error.message);
+        alert("Erro: " + error.message);
         btn.innerText = "Abrir Ticket";
         btn.disabled = false;
     } else {
-        document.getElementById('input-ticket').value = "";
+        // Muda para a tela de espera
+        document.getElementById('tela-abertura-ticket').style.display = 'none';
+        document.getElementById('tela-espera-ticket').style.display = 'flex';
         btn.innerText = "Abrir Ticket";
         btn.disabled = false;
         carregarTickets();
-        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ticket aberto com sucesso!", "sucesso");
     }
 }
 
 async function carregarTickets() {
     const corpo = document.getElementById('corpoTickets');
-    const resumo = document.getElementById('resumoTickets');
     const pass = localStorage.getItem('passaporte');
-    
-    corpo.innerHTML = '<div class="membros-vazio">Buscando tickets...</div>';
-
-    // Puxa todos os tickets do banco
     const { data, error } = await sb.from('tickets').select('*').order('criado_em', { ascending: false });
 
     if (error) {
-        // Se der erro, mostra o motivo na tela
-        corpo.innerHTML = '<div class="membros-vazio" style="color: red;">Erro: ' + error.message + '</div>';
+        corpo.innerHTML = '<div style="color: red;">Erro: ' + error.message + '</div>';
         return;
     }
-
-    resumo.innerHTML = '<span>Seus tickets recentes.</span>';
 
     if (data.length === 0) {
-        corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket encontrado.</div>';
+        corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket recente.</div>';
         return;
     }
 
-    // Desenha os tickets na tela
     corpo.innerHTML = data.map(t => `
-        <div class="membro-item" style="border-left: 3px solid ${t.status === 'aberto' ? '#f59e0b' : '#22c55e'};">
-            <div class="membro-topo" style="margin-bottom: 8px;">
+        <div class="membro-item" style="border-left: 3px solid ${t.status === 'aberto' ? '#f59e0b' : '#22c55e'}; margin-bottom: 8px;">
+            <div class="membro-topo" style="margin-bottom: 5px;">
                 <div class="membro-nome" style="font-size: 13px;">${t.nome_autor}</div>
-                <span class="membro-status ${t.status === 'aberto' ? 'pausado' : 'on'}">${t.status === 'aberto' ? 'ABERTO' : 'RESOLVIDO'}</span>
+                <span class="membro-status ${t.status === 'aberto' ? 'pausado' : 'on'}">${t.status.toUpperCase()}</span>
             </div>
-            <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                ${t.mensagem}
-            </div>
+            <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
+            <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
         </div>
     `).join('');
 }
