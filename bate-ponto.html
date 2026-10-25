@@ -868,6 +868,18 @@ inicializar();
             agendarSincronizacao();
         })();
 </script>
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    const menu = document.querySelector('.barra-menu');
+    if(menu && !document.querySelector('.menu-suporte')) {
+        const btn = document.createElement('a');
+        btn.href = "painel.html?abrir=suporte";
+        btn.className = "menu-item menu-suporte";
+        btn.innerHTML = '<i class="fas fa-headset"></i><span>Suporte</span>';
+        menu.appendChild(btn);
+    }
+});
+    </script>
 </body>
 </html>
 <!-- FIM PARTE 3/3 -->
