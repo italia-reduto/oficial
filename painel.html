@@ -1803,5 +1803,35 @@ async function carregarRanking() {
 }
 </script>
 <!-- ========== FIM DO RANKING ========== -->
+            <!-- ========== INÍCIO DO BOTÃO DE SUPORTE NO MENU ========== -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // Procura a barra de menu lá embaixo
+    const barraMenu = document.querySelector('.barra-menu');
+    
+    if (barraMenu) {
+        // Cria o novo botão de Suporte
+        const btnSuporte = document.createElement('a');
+        btnSuporte.href = "#";
+        btnSuporte.className = "menu-item";
+        btnSuporte.innerHTML = '<i class="fas fa-headset"></i><span>Suporte</span>';
+        
+        // Diz o que acontece quando clica (vai abrir a janelinha)
+        btnSuporte.onclick = function(e) {
+            e.preventDefault();
+            abrirModalTickets();
+        };
+        
+        // Coloca o botão no final da barra
+        barraMenu.appendChild(btnSuporte);
+    }
+});
+
+// ESSA É A JANELINHA DE TICKETS
+function abrirModalTickets() {
+    alert("O botão funcionou! A janelinha de tickets vai ser colocada na próxima etapa.");
+}
+</script>
+<!-- ========== FIM DO BOTÃO DE SUPORTE ========== -->
 </body>
 </html>
