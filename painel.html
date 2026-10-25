@@ -1819,15 +1819,33 @@ async function carregarRanking() {
 <!-- ========== FIM DO RANKING ========== -->          
             
 </script>
-<!-- ========== SISTEMA DE TICKETS DEFINITIVO ========== -->
+            <!-- ========== SISTEMA DE TICKETS DEFINITIVO ========== -->
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
     
-    /* Estilos do Chat */
-    .msg-bubble { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
-    .msg-lider { align-self: flex-end; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #bfdbfe; border-bottom-right-radius: 2px; }
-    .msg-player { align-self: flex-start; background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #e2e8f0; border-bottom-left-radius: 2px; }
-    .msg-nome { font-size: 10px; opacity: 0.7; margin-bottom: 4px; display: block; }
+    /* --- ESTILOS DO CHAT (ESTILO WHATSAPP) --- */
+    .msg-wrapper { display: flex; flex-direction: column; width: 100%; margin-bottom: 5px; }
+    .msg-wrapper.lider { align-items: flex-end; }
+    .msg-wrapper.player { align-items: flex-start; }
+    
+    .msg-content { display: flex; align-items: flex-end; gap: 8px; max-width: 85%; }
+    .msg-wrapper.lider .msg-content { flex-direction: row-reverse; }
+    
+    .msg-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
+    .msg-avatar.lider { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
+    .msg-avatar.player { background: #334155; color: #cbd5e1; }
+    
+    .msg-bubble { padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-wrap: break-word; position: relative; }
+    .msg-wrapper.lider .msg-bubble { background: #1e3a8a; color: #e0e7ff; border-bottom-right-radius: 2px; }
+    .msg-wrapper.player .msg-bubble { background: #1e293b; color: #e2e8f0; border-bottom-left-radius: 2px; }
+    
+    .msg-nome { font-size: 10px; font-weight: 700; margin-bottom: 4px; display: block; }
+    .msg-wrapper.lider .msg-nome { color: #93c5fd; text-align: right; }
+    .msg-wrapper.player .msg-nome { color: #94a3b8; }
+    
+    .msg-hora { font-size: 9px; color: #94a3b8; margin-top: 4px; display: block; text-align: right; }
+    
+    .msg-img { max-width: 100%; border-radius: 8px; margin-top: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
 </style>
 
 <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
@@ -1842,30 +1860,31 @@ async function carregarRanking() {
         <!-- TELA 1: LISTA DE TICKETS E ABERTURA -->
         <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
             <div class="lista-resumo" id="resumoTickets" style="margin-bottom: 10px;"></div>
-            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 40vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+            
+            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
                 <div class="membros-vazio">Carregando...</div>
             </div>
 
-            <!-- TELA DE ABERTURA -->
-            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: none; flex-direction: column; gap: 10px;">
+            <!-- TELA DE ABERTURA (Sempre visível para novos tickets) -->
+            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
                 <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4;">
                     <i class="fas fa-exclamation-triangle" style="margin-top: 2px; font-size: 14px;"></i>
-                    <span><strong>Aviso Importante:</strong> Para denúncias ou reportes de bugs, é <strong>obrigatório</strong> anexar prints ou gravações. Caso contrário, o ticket poderá ser recusado.</span>
+                    <span><strong>Aviso Importante:</strong> Para denúncias ou bugs, anexe prints/gravações.</span>
                 </div>
-                <p style="font-size: 13px; color: #cbd5e1; font-weight: 600; margin-top: 5px;">Selecione o setor responsável:</p>
+                <p style="font-size: 13px; color: #cbd5e1; font-weight: 600; margin-top: 5px;">Abrir novo ticket:</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                        <i class="fas fa-code" style="font-size: 20px; color: #60a5fa;"></i> <span>Reportar Bug</span>
+                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                        <i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span>
                     </button>
-                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                        <i class="fas fa-shield-alt" style="font-size: 20px; color: #f87171;"></i> <span>Denunciar Jogador</span>
+                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                        <i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span>
                     </button>
-                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                        <i class="fas fa-file-signature" style="font-size: 20px; color: #f59e0b;"></i> <span>Justificar Ausência</span>
+                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                        <i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span>
                     </button>
                 </div>
                 <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 80px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none; font-size: 13px;"></textarea>
+                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none; font-size: 13px;"></textarea>
                     <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold;" onclick="criarTicket()">Enviar Ticket</button>
                 </div>
             </div>
@@ -1879,7 +1898,7 @@ async function carregarRanking() {
         </div>
 
         <!-- TELA 2: CHAT -->
-        <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 55vh; max-height: 500px;">
+        <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
             
             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -1894,7 +1913,7 @@ async function carregarRanking() {
                 </button>
             </div>
             
-            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;"></div>
+            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; padding-bottom: 10px;"></div>
             
             <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
                 <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;">
@@ -1976,6 +1995,7 @@ function abrirModalTickets() {
     document.getElementById('input-ticket').value = '';
     categoriaSelecionada = null;
     document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+    document.getElementById('div-descricao').style.display = 'none';
     carregarTickets();
 }
 
@@ -2008,21 +2028,22 @@ async function carregarTickets() {
     const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
     const ehLider = isAdmin === true;
 
-    let query = sb.from('tickets').select('*').order('criado_em', { ascending: false });
+    // O SEGREDO AQUI: Filtra para pegar APENAS tickets 'aberto' e 'atendimento' (ignora os resolvidos)
+    let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
     if (!ehLider) query = query.eq('passaporte', pass);
 
     const { data, error } = await query;
     if (error) { corpo.innerHTML = '<div style="color: red;">Erro: ' + error.message + '</div>'; return; }
-    if (data.length === 0) { corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket.</div>'; return; }
+    if (data.length === 0) { corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket ativo.</div>'; return; }
 
     corpo.innerHTML = data.map(t => {
         const isAberto = t.status === 'aberto';
         const isAtendimento = t.status === 'atendimento';
         return `
-        <div class="membro-item" style="border-left: 3px solid ${isAberto ? '#f59e0b' : isAtendimento ? '#3b82f6' : '#22c55e'}; margin-bottom: 8px;">
+        <div class="membro-item" style="border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; margin-bottom: 8px;">
             <div class="membro-topo" style="margin-bottom: 5px;">
                 <div class="membro-nome" style="font-size: 13px;">${t.nome_autor} (${t.passaporte})</div>
-                <span class="membro-status ${isAberto ? 'pausado' : isAtendimento ? 'on' : 'off'}">${t.status.toUpperCase()}</span>
+                <span class="membro-status ${isAberto ? 'pausado' : 'on'}">${t.status.toUpperCase()}</span>
             </div>
             <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
             <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
@@ -2052,6 +2073,8 @@ function voltarParaListaTickets() {
     document.getElementById('tela-lista-tickets').style.display = 'flex';
     document.getElementById('titulo-modal-suporte').innerText = "Central de Suporte";
     document.getElementById('btn-resolver-chat').style.display = 'none';
+    document.getElementById('tela-espera-ticket').style.display = 'none';
+    document.getElementById('tela-abertura-ticket').style.display = 'flex'; // Mostra o form de abrir ticket de novo
     ticketAtualChatId = null;
     carregarTickets();
 }
@@ -2095,23 +2118,96 @@ async function carregarMensagens() {
         chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem ainda. Diga um "Olá"!</div>`;
     } else {
         chatBox.innerHTML = data.map(m => {
-            const isLider = m.autor !== "Jogador"; 
-            const classes = isLider ? 'msg-lider' : 'msg-player';
+            const isLider = m.autor.includes("Líder"); 
             
+            // Pega a hora que foi enviada
+            const dataObj = new Date(m.criado_em);
+            const horaFormatada = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            // Define o avatar com base em quem mandou
+            const avatarIcon = isLider ? '<i class="fas fa-user-shield"></i>' : '<i class="fas fa-user"></i>';
+            const avatarClass = isLider ? 'lider' : 'player';
+            const wrapperClass = isLider ? 'lider' : 'player';
+
             let anexoHtml = '';
             if (m.imagem_url) {
                 if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) {
                     anexoHtml = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
                 } else {
-                    anexoHtml = `<img src="${m.imagem_url}" style="max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer;" onclick="window.open(this.src)">`;
+                    anexoHtml = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
                 }
             }
 
             return `
-                <div class="msg-bubble ${classes}">
-                    <span class="msg-nome">${m.autor}</span>
-                    ${m.mensagem ? m.mensagem : ''}
-                    ${anexoHtml}
+                <div class="msg-wrapper ${wrapperClass}">
+                    <div class="msg-content">
+                        <div class="msg-avatar ${avatarClass}">${avatarIcon}</div>
+                        <div class="msg-bubble">
+                            <span class="msg-nome">${m.autor}</span>
+                            ${m.mensagem ? m.mensagem : ''}
+                            ${anexoHtml}
+                            <span class="msg-hora">${horaFormatada}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+}
+
+async function enviarMensagemChat() {
+    const input = document.getElementById('input-chat-msg');
+    const texto = input.value.trim();
+    if(!ticketAtualChatId) return;
+        const chatBox = document.getElementById('chat-mensagens');
+    
+    const { data, error } = await sb.from('mensagens_ticket')
+        .select('*')
+        .eq('ticket_id', ticketAtualChatId)
+        .order('criado_em', { ascending: true });
+
+    if (error) {
+        chatBox.innerHTML = `<div style="color:red; font-size:12px;">Erro ao carregar mensagens.</div>`;
+        return;
+    }
+
+    if (data.length === 0) {
+        chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem ainda. Diga um "Olá"!</div>`;
+    } else {
+        chatBox.innerHTML = data.map(m => {
+            const isLider = m.autor.includes("Líder"); 
+            
+            // Pega a hora que foi enviada
+            const dataObj = new Date(m.criado_em);
+            const horaFormatada = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            
+            // Define o avatar com base em quem mandou
+            const avatarIcon = isLider ? '<i class="fas fa-user-shield"></i>' : '<i class="fas fa-user"></i>';
+            const avatarClass = isLider ? 'lider' : 'player';
+            const wrapperClass = isLider ? 'lider' : 'player';
+
+            let anexoHtml = '';
+            if (m.imagem_url) {
+                if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) {
+                    anexoHtml = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
+                } else {
+                    anexoHtml = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
+                }
+            }
+
+            return `
+                <div class="msg-wrapper ${wrapperClass}">
+                    <div class="msg-content">
+                        <div class="msg-avatar ${avatarClass}">${avatarIcon}</div>
+                        <div class="msg-bubble">
+                            <span class="msg-nome">${m.autor}</span>
+                            ${m.mensagem ? m.mensagem : ''}
+                            ${anexoHtml}
+                            <span class="msg-hora">${horaFormatada}</span>
+                        </div>
+                    </div>
                 </div>
             `;
         }).join('');
@@ -2174,9 +2270,9 @@ async function enviarArquivoChat(input) {
         await sb.from('mensagens_ticket').insert([{
             ticket_id: ticketAtualChatId,
             autor: autorExibicao,
-            mensagem: `[Arquivo Enviado]`,
+            mensagem: ``,
             imagem_url: urlData.publicUrl
-                }]);
+        }]);
 
         carregarMensagens();
     } catch (err) {
@@ -2188,8 +2284,9 @@ async function enviarArquivoChat(input) {
 }
 
 async function resolverTicketChat() {
-    if(!confirm("Tem certeza que deseja finalizar este atendimento? O ticket será marcado como Resolvido.")) return;
+    if(!confirm("Tem certeza que deseja finalizar este atendimento? O ticket será marcado como Resolvido e sumirá da lista.")) return;
     
+    // Muda o status para 'resolvido'
     const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
     
     if (!error) {
