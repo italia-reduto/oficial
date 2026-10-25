@@ -1724,5 +1724,84 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000);
 </script>
 <!-- ========== FIM DO MURAL DE AVISOS ========== -->
+            <!-- ========== INÍCIO DO RANKING ========== -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Adiciona o botão "Top da Semana" dentro da janela de Membros existente
+    const listaTopo = document.querySelector('#modalMembros .lista-topo');
+    if (listaTopo) {
+        const btnRanking = document.createElement('button');
+        btnRanking.innerHTML = '🏆 Top Semana';
+        btnRanking.className = 'botao-confirmar';
+        btnRanking.style.cssText = 'padding: 8px 12px; font-size: 12px; margin-right: 10px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px;';
+        btnRanking.onclick = abrirRanking;
+        listaTopo.insertBefore(btnRanking, listaTopo.querySelector('.lista-fechar'));
+    }
+
+    // 2. Cria a janelinha do Ranking
+    const modalRank = document.createElement('div');
+    modalRank.innerHTML = `
+    <div class="fundo-modal" id="modalRanking" onclick="if(event.target === this) fecharRanking()">
+        <div class="caixa-lista">
+            <div class="lista-topo">
+                <h3 class="lista-titulo">🏆 Top da Semana</h3>
+                <button class="lista-fechar" onclick="fecharRanking()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="lista-resumo">Os membros que mais cumpriram jornada nos últimos 7 dias.</div>
+            <div class="lista-corpo" id="rankingCorpo" style="display: flex; flex-direction: column; gap: 10px;">
+                <div class="membros-vazio">Carregando ranking...</div>
+            </div>
+        </div>
+    </div>`;
+    document.body.appendChild(modalRank.firstElementChild);
+});
+
+function abrirRanking() {
+    document.getElementById('modalRanking').classList.add('aberto');
+    carregarRanking();
+}
+
+function fecharRanking() {
+    document.getElementById('modalRanking').classList.remove('aberto');
+}
+
+async function carregarRanking() {
+    const corpo = document.getElementById('rankingCorpo');
+    corpo.innerHTML = '<div class="membros-vazio">Calculando tempos...</div>';
+
+    // Chama a função que criamos no Supabase
+    const { data, error } = await sb.rpc('ranking_semana');
+
+    if (error || !data || data.length === 0) {
+        corpo.innerHTML = '<div class="membros-vazio">Nenhum ponto registrado essa semana.</div>';
+        return;
+    }
+
+    // Formata o tempo para Horas e Minutos
+    function formatarTempo(segundos) {
+        const h = Math.floor(segundos / 3600);
+        const m = Math.floor((segundos % 3600) / 60);
+        return `${h}h ${m}m`;
+    }
+
+    const medalhas = ['🥇', '🥈', '🥉', '🏅', '🏅'];
+
+    corpo.innerHTML = data.map((item, index) => `
+        <div class="membro-item" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border-left: 4px solid ${index === 0 ? '#f59e0b' : index === 1 ? '#94a3b8' : index === 2 ? '#b45309' : '#334155'};">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 24px;">${medalhas[index]}</span>
+                <div>
+                    <div class="membro-nome" style="margin-bottom: 2px;">${item.nome}</div>
+                    <div class="membro-passaporte" style="margin-top: 0;">Passaporte ${item.passaporte}</div>
+                </div>
+            </div>
+            <div style="font-size: 16px; font-weight: 700; color: #22c55e; font-variant-numeric: tabular-nums;">
+                ${formatarTempo(item.total_segundos)}
+            </div>
+        </div>
+    `).join('');
+}
+</script>
+<!-- ========== FIM DO RANKING ========== -->
 </body>
 </html>
