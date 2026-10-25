@@ -1616,5 +1616,113 @@
     })();
 </script>
 <!-- ========== FIM DO SISTEMA DE PERFIL ========== -->
+            <!-- ========== INÍCIO DO MURAL DE AVISOS ========== -->
+<style>
+    /* Esse estilo esconde o card antigo para não ficar duplicado */
+    .card-aviso:not(#novo-card-aviso) { display: none !important; }
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Cria o novo Card de Aviso (substituindo o antigo visualmente)
+    const grade = document.querySelector('.grade-cards');
+    if (grade) {
+        const novoCard = document.createElement('div');
+        novoCard.id = 'novo-card-aviso';
+        novoCard.className = 'card-aviso';
+        novoCard.style.position = 'relative';
+        novoCard.innerHTML = `
+            <div class="card-titulo">
+                Aviso Recente 
+                <div>
+                    <i class="fas fa-pen" id="btn-editar-aviso" style="cursor: pointer; display: none; margin-right: 8px; color: #60a5fa;" onclick="abrirModalAviso()"></i>
+                    <i class="fas fa-bell"></i>
+                </div>
+            </div>
+            <div class="card-valor" id="texto-aviso" style="font-size: 20px; line-height: 1.4;">Carregando avisos...</div>
+        `;
+        grade.appendChild(novoCard);
+    }
+
+    // 2. Cria a Janelinha de edição no final do body
+    const modal = document.createElement('div');
+    modal.innerHTML = `
+    <div class="fundo-modal" id="modalAviso" onclick="if(event.target === this) fecharModalAviso()">
+        <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
+            <h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3>
+            <label style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 5px;">O que você quer avisar?</label>
+            <textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; resize: none;"></textarea>
+            <div class="botoes-modal">
+                <button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button>
+                <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button>
+            </div>
+        </div>
+    </div>`;
+    document.body.appendChild(modal.firstElementChild);
+});
+</script>
+
+<script>
+    // ========== LÓGICA DO AVISO ==========
+    
+    async function verificarPermissaoAviso() {
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+        const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        if(data === true) {
+            const btn = document.getElementById('btn-editar-aviso');
+            if(btn) btn.style.display = 'inline-block';
+        }
+    }
+
+    async function carregarAvisoRecente() {
+        const { data, error } = await sb.from('avisos').select('texto').order('criado_em', { ascending: false }).limit(1).single();
+        const el = document.getElementById('texto-aviso');
+        if(el) {
+            if(data && !error) {
+                el.textContent = data.texto;
+                if(data.texto.length > 40) el.style.fontSize = '16px';
+            } else {
+                el.textContent = 'Nenhum aviso recente no momento.';
+            }
+        }
+    }
+
+    function abrirModalAviso() {
+        document.getElementById('input-aviso').value = "";
+        document.getElementById('modalAviso').classList.add('aberto');
+    }
+    
+    function fecharModalAviso() {
+        document.getElementById('modalAviso').classList.remove('aberto');
+    }
+
+    async function salvarAviso() {
+        const texto = document.getElementById('input-aviso').value;
+        const nome = document.getElementById('nomeUsuario').textContent;
+
+        if(!texto || texto.trim() === "") {
+            alert("Digite um aviso antes de publicar!");
+            return;
+        }
+
+        const { error } = await sb.from('avisos').insert([{ texto: texto, autor: nome }]);
+
+        if(error) {
+            alert("Erro ao publicar: " + error.message);
+        } else {
+            fecharModalAviso();
+            carregarAvisoRecente();
+            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Aviso publicado!", "sucesso");
+        }
+    }
+
+    // Roda as funções quando a página carrega
+    setTimeout(() => {
+        verificarPermissaoAviso();
+        carregarAvisoRecente();
+    }, 1000);
+</script>
+<!-- ========== FIM DO MURAL DE AVISOS ========== -->
 </body>
 </html>
