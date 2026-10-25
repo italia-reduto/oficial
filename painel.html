@@ -1804,11 +1804,68 @@ async function carregarRanking() {
 </script>
 <!-- ========== FIM DO RANKING ========== -->          
             
-</script>
-            <!-- ========== SISTEMA DE TICKETS (SUPORTE) COMPLETO ========== -->
-<!-- 1. O Botão no Menu -->
+</script>   
+            <!-- ========== SISTEMA DE TICKETS DEFINITIVO ========== -->
+<style>
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+</style>
+
+<div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
+    <div class="caixa-lista">
+        <div class="lista-topo">
+            <h3 class="lista-titulo">Central de Suporte</h3>
+            <button class="lista-fechar" onclick="fecharModalTickets()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="lista-resumo" id="resumoTickets" style="margin-bottom: 10px;"></div>
+        
+        <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 40vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+            <div class="membros-vazio">Carregando...</div>
+        </div>
+
+        <!-- TELA DE ABERTURA -->
+        <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: none; flex-direction: column; gap: 10px;">
+            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4;">
+                <i class="fas fa-exclamation-triangle" style="margin-top: 2px; font-size: 14px;"></i>
+                <span><strong>Aviso Importante:</strong> Para denúncias ou reportes de bugs, é <strong>obrigatório</strong> anexar prints ou gravações. Caso contrário, o ticket poderá ser recusado.</span>
+            </div>
+            
+            <p style="font-size: 13px; color: #cbd5e1; font-weight: 600; margin-top: 5px;">Selecione o setor responsável:</p>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                    <i class="fas fa-code" style="font-size: 20px; color: #60a5fa;"></i> 
+                    <span>Reportar Bug</span>
+                </button>
+                <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                    <i class="fas fa-shield-alt" style="font-size: 20px; color: #f87171;"></i> 
+                    <span>Denunciar Jogador</span>
+                </button>
+                <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                    <i class="fas fa-file-signature" style="font-size: 20px; color: #f59e0b;"></i> 
+                    <span>Justificar Ausência</span>
+                </button>
+            </div>
+            <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                <textarea id="input-ticket" placeholder="Descreva sua solicitação com o máximo de detalhes possível..." style="width: 100%; height: 90px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none; font-size: 13px;"></textarea>
+                <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold;" onclick="criarTicket()">Enviar Ticket</button>
+            </div>
+        </div>
+
+        <!-- TELA DE ESPERA -->
+        <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
+            <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
+            <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
+        </div>
+    </div>
+</div>
+
 <script>
+let categoriaSelecionada = null;
+
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. Cria o botão de Suporte no menu
     const barraMenu = document.querySelector('.barra-menu');
     if (barraMenu && !document.querySelector('.menu-suporte')) {
         const btnSuporte = document.createElement('a');
@@ -1822,75 +1879,29 @@ document.addEventListener("DOMContentLoaded", () => {
         barraMenu.appendChild(btnSuporte);
     }
 
-    // Cria a janelinha no final do body
-    const modal = document.createElement('div');
-    modal.innerHTML = `
-    <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
-        <div class="caixa-lista">
-            <div class="lista-topo">
-                <h3 class="lista-titulo">Central de Suporte</h3>
-                <button class="lista-fechar" onclick="fecharModalTickets()"><i class="fas fa-times"></i></button>
-            </div>
-            
-            <div class="lista-resumo" id="resumoTickets" style="margin-bottom: 10px;"></div>
-            
-            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 40vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
-                <div class="membros-vazio">Carregando...</div>
-            </div>
+    // 2. Deixa o Card "Tickets Abertos" clicável e atualiza o número
+    const cards = document.querySelectorAll('.grade-cards .card');
+    cards.forEach(card => {
+        if (card.innerText.includes("Tickets Abertos")) {
+            card.classList.add('card-clicavel');
+            card.onclick = abrirModalTickets;
+            card.querySelector('.card-valor').id = 'valor-tickets-painel';
+        }
+    });
 
-            <!-- TELA DE ABERTURA -->
-            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: none; flex-direction: column; gap: 10px;">
-                
-                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4;">
-                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px; font-size: 14px;"></i>
-                    <span><strong>Aviso Importante:</strong> Para denúncias ou reportes de bugs, é <strong>obrigatório</strong> anexar prints ou gravações do ocorrido. Caso contrário, o ticket poderá ser recusado pela Liderança.</span>
-                </div>
-                
-                <p style="font-size: 13px; color: #cbd5e1; font-weight: 600; margin-top: 5px;">Selecione o setor responsável:</p>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                        <i class="fas fa-code" style="font-size: 20px; color: #60a5fa;"></i> 
-                        <span>Reportar Bug</span>
-                    </button>
-                    
-                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                        <i class="fas fa-shield-alt" style="font-size: 20px; color: #f87171;"></i> 
-                        <span>Denunciar Jogador</span>
-                    </button>
-                    
-                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                        <i class="fas fa-file-signature" style="font-size: 20px; color: #f59e0b;"></i> 
-                        <span>Justificar Ausência</span>
-                    </button>
-                </div>
-
-                <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                    <textarea id="input-ticket" placeholder="Descreva sua solicitação com o máximo de detalhes possível..." style="width: 100%; height: 90px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none; font-size: 13px;"></textarea>
-                    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold;" onclick="criarTicket()">Enviar Ticket</button>
-                </div>
-            </div>
-
-            <!-- TELA DE ESPERA -->
-            <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
-                <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
-                <p style="font-size: 13px; color: #94a3b8;">Seu ticket está na fila. Por favor, aguarde.</p>
-                <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
-            </div>
-        </div>
-    </div>
-    <style>@keyframes spin { 100% { transform: rotate(360deg); } }</style>`;
-    document.body.appendChild(modal.firstElementChild);
+    atualizarContadorTickets();
+    setInterval(atualizarContadorTickets, 15000);
 });
-</script>
 
-<!-- 2. A Lógica -->
-<script>
-let categoriaSelecionada = null;
+async function atualizarContadorTickets() {
+    const elValor = document.getElementById('valor-tickets-painel');
+    if (!elValor) return;
+    const { count } = await sb.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'aberto');
+    elValor.textContent = count || 0;
+    elValor.style.color = count > 0 ? '#f87171' : '#fff';
+}
 
 function selecionarCategoria(cat) {
-    // Se clicar na mesma categoria que já está selecionada, ele desmarca
     if (categoriaSelecionada === cat) {
         categoriaSelecionada = null;
         document.getElementById('div-descricao').style.display = 'none';
@@ -1898,14 +1909,10 @@ function selecionarCategoria(cat) {
         categoriaSelecionada = cat;
         document.getElementById('div-descricao').style.display = 'flex';
     }
-
-    // Limpa a cor de todos os botões
     document.querySelectorAll('.btn-categoria').forEach(b => {
         b.style.borderColor = '#334155';
         b.style.background = '#1e293b';
     });
-
-    // Pinta o botão selecionado
     if (categoriaSelecionada) {
         const btnAtivo = document.getElementById('btn-cat-' + categoriaSelecionada);
         if (btnAtivo) {
@@ -1926,13 +1933,10 @@ function abrirModalTickets() {
     document.getElementById('div-descricao').style.display = 'none';
     document.getElementById('input-ticket').value = '';
     categoriaSelecionada = null;
-    
-    // Limpa as cores
     document.querySelectorAll('.btn-categoria').forEach(b => {
         b.style.borderColor = '#334155';
         b.style.background = '#1e293b';
     });
-
     carregarTickets();
 }
 
@@ -1940,68 +1944,42 @@ async function criarTicket() {
     const texto = document.getElementById('input-ticket').value;
     const pass = localStorage.getItem('passaporte');
     const nome = document.getElementById('nomeUsuario').textContent;
-
-    if(!categoriaSelecionada) { alert("Escolha um setor primeiro."); return; }
-    if(!texto || texto.trim() === "") { alert("Descreva o seu problema."); return; }
-
+    if(!categoriaSelecionada || !texto.trim()) { alert("Preencha tudo."); return; }
+    
     const btn = event.target;
-    btn.innerText = "Enviando...";
-    btn.disabled = true;
+    btn.innerText = "Enviando..."; btn.disabled = true;
 
-    const { error } = await sb.from('tickets').insert([{ 
-        passaporte: pass, 
-        nome_autor: nome, 
-        mensagem: texto,
-        categoria: categoriaSelecionada
-    }]);
-
+    const { error } = await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
+    
     if(error) {
         alert("Erro: " + error.message);
-        btn.innerText = "Enviar Ticket";
-        btn.disabled = false;
     } else {
         document.getElementById('tela-abertura-ticket').style.display = 'none';
         document.getElementById('tela-espera-ticket').style.display = 'flex';
-        btn.innerText = "Enviar Ticket";
-        btn.disabled = false;
         carregarTickets();
+        atualizarContadorTickets();
     }
+    btn.innerText = "Enviar Ticket"; btn.disabled = false;
 }
+
 async function carregarTickets() {
     const corpo = document.getElementById('corpoTickets');
     const pass = localStorage.getItem('passaporte');
-    
-    corpo.innerHTML = '<div class="membros-vazio">Buscando tickets...</div>';
+    corpo.innerHTML = '<div class="membros-vazio">Buscando...</div>';
 
-    // 1. Verifica no Supabase se você é da Liderança
     const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
     const ehLider = isAdmin === true;
 
-    // 2. Puxa os tickets
     let query = sb.from('tickets').select('*').order('criado_em', { ascending: false });
-    
-    // Se for jogador comum, só vê os dele.
-    if (!ehLider) {
-        query = query.eq('passaporte', pass);
-    }
+    if (!ehLider) query = query.eq('passaporte', pass);
 
     const { data, error } = await query;
+    if (error) { corpo.innerHTML = '<div style="color: red;">Erro: ' + error.message + '</div>'; return; }
+    if (data.length === 0) { corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket.</div>'; return; }
 
-    if (error) {
-        corpo.innerHTML = '<div style="color: red;">Erro: ' + error.message + '</div>';
-        return;
-    }
-
-    if (data.length === 0) {
-        corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket recente.</div>';
-        return;
-    }
-
-    // 3. Desenha os tickets na tela (Com os botões de Admin)
     corpo.innerHTML = data.map(t => {
         const isAberto = t.status === 'aberto';
         const isAtendimento = t.status === 'atendimento';
-        
         return `
         <div class="membro-item" style="border-left: 3px solid ${isAberto ? '#f59e0b' : isAtendimento ? '#3b82f6' : '#22c55e'}; margin-bottom: 8px;">
             <div class="membro-topo" style="margin-bottom: 5px;">
@@ -2010,42 +1988,22 @@ async function carregarTickets() {
             </div>
             <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
             <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
-            
-            <!-- BOTÃO DE ASSUMIR (Só aparece para Líder e se o ticket estiver Aberto) -->
-            ${(ehLider && isAberto) ? `
-                <button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">
-                    <i class="fas fa-hand-paper"></i> Assumir Ticket
-                </button>
-            ` : ''}
-            
-            <!-- BOTÃO DE ABRIR CHAT (Se estiver em atendimento) -->
-            ${(isAtendimento && (ehLider || t.passaporte === pass)) ? `
-                <button onclick="abrirChatTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">
-                    <i class="fas fa-comments"></i> Abrir Chat
-                </button>
-            ` : ''}
+            ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-hand-paper"></i> Assumir Ticket</button>` : ''}
         </div>`;
     }).join('');
 }
 
-// Função do Líder para Assumir o Ticket
 async function assumirTicket(id) {
-    if(!confirm("Deseja assumir este ticket? Você será o responsável pelo atendimento.")) return;
-
+    if(!confirm("Assumir este ticket?")) return;
     const nome = document.getElementById('nomeUsuario').textContent;
-
-    const { error } = await sb.from('tickets').update({ 
-        status: 'atendimento', 
-        lider_assumiu: nome 
-    }).eq('id', id);
-
+    const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
     if(!error) {
-        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Você assumiu o ticket!", "sucesso");
-        carregarTickets(); // Atualiza a lista
-    } else {
-        alert("Erro ao assumir: " + error.message);
+        mostrarToastAdmin("Ticket assumido!", "sucesso");
+        carregarTickets();
+        atualizarContadorTickets();
     }
-    }
+}
+</script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
 </body>
 </html>
