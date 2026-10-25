@@ -1898,70 +1898,34 @@ async function carregarTickets() {
     
     corpo.innerHTML = '<div class="membros-vazio">Buscando tickets...</div>';
 
-    // Verifica se é admin (usa a mesma regra do resto do site)
-    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    const ehLider = isAdmin === true;
-
-    let query = sb.from('tickets').select('*').order('criado_em', { ascending: false });
-    
-    // Se não for líder, só vê os tickets dele mesmo
-    if (!ehLider) {
-        query = query.eq('passaporte', pass);
-    }
-
-    const { data, error } = await query;
+    // Puxa todos os tickets do banco
+    const { data, error } = await sb.from('tickets').select('*').order('criado_em', { ascending: false });
 
     if (error) {
-        corpo.innerHTML = '<div class="membros-vazio">Erro ao carregar tickets. Verifique o banco.</div>';
+        // Se der erro, mostra o motivo na tela
+        corpo.innerHTML = '<div class="membros-vazio" style="color: red;">Erro: ' + error.message + '</div>';
         return;
     }
 
-    resumo.innerHTML = ehLider 
-        ? '<span style="color:#60a5fa;">👑 Visão de Líder: Você vê todos os tickets.</span>' 
-        : '<span>Mostrando apenas os seus tickets.</span>';
+    resumo.innerHTML = '<span>Seus tickets recentes.</span>';
 
     if (data.length === 0) {
         corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket encontrado.</div>';
         return;
     }
 
-    corpo.innerHTML = data.map(t => {
-        const isAberto = t.status === 'aberto';
-        const dataFormatada = new Date(t.criado_em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-        
-        return `
-        <div class="membro-item" style="border-left: 3px solid ${isAberto ? '#f59e0b' : '#22c55e'};">
+    // Desenha os tickets na tela
+    corpo.innerHTML = data.map(t => `
+        <div class="membro-item" style="border-left: 3px solid ${t.status === 'aberto' ? '#f59e0b' : '#22c55e'};">
             <div class="membro-topo" style="margin-bottom: 8px;">
-                <div class="membro-nome" style="font-size: 13px;">${t.nome_autor} <span style="font-weight: normal; color: #64748b; font-size: 11px;">(${dataFormatada})</span></div>
-                <span class="membro-status ${isAberto ? 'pausado' : 'on'}">${isAberto ? 'ABERTO' : 'RESOLVIDO'}</span>
+                <div class="membro-nome" style="font-size: 13px;">${t.nome_autor}</div>
+                <span class="membro-status ${t.status === 'aberto' ? 'pausado' : 'on'}">${t.status === 'aberto' ? 'ABERTO' : 'RESOLVIDO'}</span>
             </div>
             <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
                 ${t.mensagem}
             </div>
-            ${(ehLider && isAberto) ? `
-                <button onclick="resolverTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">
-                    <i class="fas fa-check"></i> Marcar como Resolvido
-                </button>
-            ` : ''}
-        </div>`;
-    }).join('');
-}
-
-async function resolverTicket(id) {
-    // Desativa o botão clicado para evitar duplo clique
-    event.target.disabled = true;
-    event.target.innerText = "Resolvendo...";
-
-    const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', id);
-    
-    if (!error) {
-        carregarTickets();
-        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ticket resolvido!", "sucesso");
-    } else {
-        alert("Erro ao resolver o ticket.");
-        event.target.disabled = false;
-        event.target.innerText = "Marcar como Resolvido";
-    }
+        </div>
+    `).join('');
 }
 </script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
