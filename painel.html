@@ -1817,47 +1817,35 @@ async function carregarRanking() {
 }
 </script>
 <!-- ========== FIM DO RANKING ========== -->          
-            
-<!-- ========== PARTE 1: VISUAL DO SUPORTE ========== -->
+        </script>
+            <!-- ========== PARTE 1: VISUAL DO SUPORTE ========== -->
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
     
-    /* ESTILO EMBED (CARD ÚNICO) */
+    /* ESTILO EMBED (CARD DE MENSAGEM) */
     .msg-card { 
-        display: flex; 
-        gap: 12px; 
-        background: #1e293b; 
-        border: 1px solid #334155; 
-        border-left: 4px solid #3b82f6; /* Detalhe azul na esquerda */
-        border-radius: 8px; 
-        padding: 12px; 
-        margin-bottom: 10px;
+        display: flex; gap: 12px; background: #1e293b; 
+        border: 1px solid #334155; border-left: 4px solid #3b82f6; 
+        border-radius: 8px; padding: 12px; margin-bottom: 10px;
         box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
-    .msg-card.admin { border-left-color: #22c55e; } /* Verde se for líder */
-    
+    .msg-card.admin { border-left-color: #22c55e; }
     .msg-avatar { 
-        width: 40px; height: 40px; border-radius: 50%; 
-        background: #334155; color: white;
-        display: flex; align-items: center; justify-content: center; 
-        font-size: 18px; flex-shrink: 0; 
+        width: 40px; height: 40px; border-radius: 50%; background: #334155; color: white;
+        display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; 
     }
-    
     .msg-content { flex: 1; display: flex; flex-direction: column; }
-    
     .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
     .msg-nome { font-size: 14px; font-weight: 700; color: #60a5fa; }
     .msg-card.admin .msg-nome { color: #22c55e; }
-    
     .msg-tag { font-size: 10px; background: #334155; color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
     .msg-card.admin .msg-tag { background: #166534; color: #86efac; }
-    
     .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
-    
     .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
     .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
 </style>
 
+<!-- JANELA PRINCIPAL DO SUPORTE -->
 <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
     <div class="caixa-lista">
         <div class="lista-topo">
@@ -1928,12 +1916,28 @@ async function carregarRanking() {
         </div>
     </div>
 </div>
-            <!-- ========== PARTE 2: LÓGICA DA LISTA ========== -->
+
+<!-- MODAL DE CONFIRMAÇÃO PERSONALIZADO -->
+<div class="fundo-modal" id="modalConfirmarAcao" onclick="if(event.target === this) fecharModalConfirmacao()">
+    <div class="caixa-modal">
+        <div class="icone-modal" style="background: rgba(59, 130, 246, 0.1);">
+            <i class="fas fa-question-circle" style="color: #3b82f6;"></i>
+        </div>
+        <h3 class="titulo-modal">Confirmação</h3>
+        <p class="texto-modal" id="texto-modal-confirma"></p>
+        <div class="botoes-modal">
+            <button class="botao-cancelar" onclick="fecharModalConfirmacao()">Cancelar</button>
+            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" id="btn-confirmar-acao">Sim, confirmar</button>
+        </div>
+    </div>
+</div>
+            <!-- ========== PARTE 2: LÓGICA DA LISTA E DO MENU ========== -->
 <script>
 let categoriaSelecionada = null;
 let ticketAtualChatId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Cria o botão de Suporte no menu se ele não existir
     const barraMenu = document.querySelector('.barra-menu');
     if (barraMenu && !document.querySelector('.menu-suporte')) {
         const btnSuporte = document.createElement('a');
@@ -1943,6 +1947,8 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSuporte.onclick = function(e) { e.preventDefault(); abrirModalTickets(); };
         barraMenu.appendChild(btnSuporte);
     }
+    
+    // Torna o Card "Tickets Abertos" do painel clicável
     const cards = document.querySelectorAll('.grade-cards .card');
     cards.forEach(card => {
         if (card.innerText.includes("Tickets Abertos")) {
@@ -1951,6 +1957,7 @@ document.addEventListener("DOMContentLoaded", () => {
             card.querySelector('.card-valor').id = 'valor-tickets-painel';
         }
     });
+    
     atualizarContadorTickets();
     setInterval(atualizarContadorTickets, 15000);
 });
@@ -1971,10 +1978,16 @@ function selecionarCategoria(cat) {
         categoriaSelecionada = cat;
         document.getElementById('div-descricao').style.display = 'flex';
     }
-    document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+    document.querySelectorAll('.btn-categoria').forEach(b => { 
+        b.style.borderColor = '#334155'; 
+        b.style.background = '#1e293b'; 
+    });
     if (categoriaSelecionada) {
         const btnAtivo = document.getElementById('btn-cat-' + categoriaSelecionada);
-        if (btnAtivo) { btnAtivo.style.borderColor = '#60a5fa'; btnAtivo.style.background = 'rgba(96, 165, 250, 0.1)'; }
+        if (btnAtivo) { 
+            btnAtivo.style.borderColor = '#60a5fa'; 
+            btnAtivo.style.background = 'rgba(96, 165, 250, 0.1)'; 
+        }
     }
 }
 
@@ -1997,6 +2010,7 @@ async function criarTicket() {
     const texto = document.getElementById('input-ticket').value;
     const pass = localStorage.getItem('passaporte');
     const nome = document.getElementById('nomeUsuario').textContent;
+    
     if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
     
     const btn = event.target;
@@ -2004,8 +2018,9 @@ async function criarTicket() {
 
     const { error } = await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
     
-    if(error) { alert("Erro: " + error.message); } 
-    else {
+    if(error) { 
+        alert("Erro: " + error.message); 
+    } else {
         document.getElementById('tela-abertura-ticket').style.display = 'none';
         document.getElementById('tela-espera-ticket').style.display = 'flex';
         carregarTickets();
@@ -2035,7 +2050,6 @@ async function carregarTickets() {
         const isAtendimento = t.status === 'atendimento';
         const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
         
-        // TRAVA DE SEGURANÇA: Mostra o chat só pra quem assumiu ou pra quem abriu o ticket
         const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
 
         return `
@@ -2046,7 +2060,6 @@ async function carregarTickets() {
             </div>
             <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
             
-            <!-- MOSTRA QUEM ASSUMIU -->
             ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;"><i class="fas fa-user-shield"></i> Atendido por: ${t.lider_assumiu}</div>` : ''}
             
             <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
@@ -2059,11 +2072,10 @@ async function carregarTickets() {
 }
 
 async function assumirTicket(id) {
-    // 1. Abre o nosso modal bonito em vez do alerta do navegador
+    // Abre o modal personalizado que criamos na Parte 1
     document.getElementById('modalConfirmarAcao').classList.add('aberto');
     document.getElementById('texto-modal-confirma').innerText = "Deseja realmente assumir este ticket? Você será o responsável pelo atendimento.";
     
-    // 2. Quando clicar em "Confirmar", executa a ação
     document.getElementById('btn-confirmar-acao').onclick = async function() {
         fecharModalConfirmacao();
         
@@ -2083,6 +2095,7 @@ async function assumirTicket(id) {
 function fecharModalConfirmacao() {
     document.getElementById('modalConfirmarAcao').classList.remove('aberto');
 }
+        </script>
             <!-- ========== PARTE 3: LÓGICA DO CHAT ========== -->
 <script>
 function voltarParaListaTickets() {
@@ -2108,6 +2121,7 @@ async function abrirChatTicket(id, nomeAutor, passaporte) {
     const pass = localStorage.getItem('passaporte');
     const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
     
+    // Só mostra o botão finalizar para líderes
     if (isAdmin === true) {
         document.getElementById('btn-resolver-chat').style.display = 'block';
     } else {
@@ -2148,7 +2162,6 @@ async function carregarMensagens() {
                 }
             }
 
-            // VISUAL EMBED: Todos os cards são iguais, só muda a cor da borda e a tag se for líder
             return `
                 <div class="msg-card ${isLider ? 'admin' : ''}">
                     <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
@@ -2229,22 +2242,9 @@ async function resolverTicketChat() {
         }
     };
 }
+
 document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
 </script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
-<!-- MODAL DE CONFIRMAÇÃO PERSONALIZADO -->
-<div class="fundo-modal" id="modalConfirmarAcao" onclick="if(event.target === this) fecharModalConfirmacao()">
-    <div class="caixa-modal">
-        <div class="icone-modal" style="background: rgba(59, 130, 246, 0.1);">
-            <i class="fas fa-question-circle" style="color: #3b82f6;"></i>
-        </div>
-        <h3 class="titulo-modal">Confirmação</h3>
-        <p class="texto-modal" id="texto-modal-confirma"></p>
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalConfirmacao()">Cancelar</button>
-            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" id="btn-confirmar-acao">Sim, confirmar</button>
-        </div>
-    </div>
-</div>            
 </body>
 </html>
