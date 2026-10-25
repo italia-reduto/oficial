@@ -2227,5 +2227,19 @@ async function resolverTicketChat() {
 document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
 </script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
+<!-- MODAL DE CONFIRMAÇÃO PERSONALIZADO -->
+<div class="fundo-modal" id="modalConfirmarAcao" onclick="if(event.target === this) fecharModalConfirmacao()">
+    <div class="caixa-modal">
+        <div class="icone-modal" style="background: rgba(59, 130, 246, 0.1);">
+            <i class="fas fa-question-circle" style="color: #3b82f6;"></i>
+        </div>
+        <h3 class="titulo-modal">Confirmação</h3>
+        <p class="texto-modal" id="texto-modal-confirma"></p>
+        <div class="botoes-modal">
+            <button class="botao-cancelar" onclick="fecharModalConfirmacao()">Cancelar</button>
+            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" id="btn-confirmar-acao">Sim, confirmar</button>
+        </div>
+    </div>
+</div>            
 </body>
 </html>
