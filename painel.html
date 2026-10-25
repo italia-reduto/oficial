@@ -1521,8 +1521,8 @@
 
     carregarResumo();
     setInterval(() => { if (document.visibilityState === 'visible') carregarResumo(); }, 30000);
-})();
-    </script> 
+})();            
+</script>
             <!-- ========== INÍCIO DO SISTEMA DE PERFIL ========== -->
 <div class="avatar-container" onclick="abrirModalPerfil()" style="position: absolute; top: 20px; left: 20px; z-index: 10; cursor: pointer;">
     <img id="img-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #6b7280; object-fit: cover; background-color: #374151;">
@@ -1531,10 +1531,13 @@
 <div class="fundo-modal" id="modalPerfil" onclick="if(event.target === this) fecharModalPerfil()">
     <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
         <h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3>
-        <label style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 5px;">Link da sua Foto (URL)</label>
-        <input type="text" id="input-foto" placeholder="https://..." style="width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit;">
+        
+        <label style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 5px;">Sua Foto</label>
+        <input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit;">
+        
         <label style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 5px;">Sua Frase</label>
         <input type="text" id="input-frase" placeholder="Ex: O melhor de lockpick" style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit;">
+        
         <div class="botoes-modal">
             <button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button>
             <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button>
@@ -1543,13 +1546,22 @@
 </div>
 
 <script>
+    // Variável para guardar a foto em texto (Base64) temporariamente
+    let fotoBase64Temp = "";
+
     function abrirModalPerfil() {
         const pass = localStorage.getItem('passaporte');
         if(!pass) return;
+        
+        // Limpa o campo de arquivo toda vez que abre
+        document.getElementById('input-foto-arquivo').value = "";
+        fotoBase64Temp = "";
+
         sb.from('membros').select('foto_url, frase_status').eq('passaporte', pass).single().then(({data}) => {
             if(data) {
-                document.getElementById('input-foto').value = data.foto_url || '';
                 document.getElementById('input-frase').value = data.frase_status || '';
+                // Se ele já tiver foto salva, coloca na variável temporária
+                if(data.foto_url) fotoBase64Temp = data.foto_url;
             }
         });
         document.getElementById('modalPerfil').classList.add('aberto');
@@ -1559,16 +1571,36 @@
         document.getElementById('modalPerfil').classList.remove('aberto');
     }
 
+    // Lê a foto que o usuário escolheu do celular e transforma em Base64
+    document.getElementById('input-foto-arquivo').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                // O e.target.result é a foto pronta para ir para o banco
+                fotoBase64Temp = e.target.result; 
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
     async function salvarPerfil() {
         const pass = localStorage.getItem('passaporte');
-        const foto = document.getElementById('input-foto').value;
         const frase = document.getElementById('input-frase').value;
+        
         if (!pass) return;
-        const { error } = await sb.from('membros').update({ foto_url: foto, frase_status: frase }).eq('passaporte', pass);
+
+        // Se não escolheu foto nova, mantém a antiga (fotoBase64Temp)
+        const { error } = await sb.from('membros').update({ 
+            foto_url: fotoBase64Temp, 
+            frase_status: frase 
+        }).eq('passaporte', pass);
+
         if (error) {
             alert("Erro ao salvar: " + error.message);
         } else {
-            document.getElementById('img-avatar').src = foto || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            // Atualiza a bolinha na tela
+            if(fotoBase64Temp) document.getElementById('img-avatar').src = fotoBase64Temp;
             fecharModalPerfil();
             if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Perfil atualizado!", "sucesso");
         }
