@@ -2059,21 +2059,30 @@ async function carregarTickets() {
 }
 
 async function assumirTicket(id) {
-    if(!confirm("Assumir este ticket?")) return;
-    const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
+    // 1. Abre o nosso modal bonito em vez do alerta do navegador
+    document.getElementById('modalConfirmarAcao').classList.add('aberto');
+    document.getElementById('texto-modal-confirma').innerText = "Deseja realmente assumir este ticket? Você será o responsável pelo atendimento.";
     
-    const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
-    
-    if(!error) {
-        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ticket assumido!", "sucesso");
-        // CORREÇÃO DO BUG: Esconde a tela de espera na hora
-        document.getElementById('tela-espera-ticket').style.display = 'none'; 
-        document.getElementById('tela-abertura-ticket').style.display = 'flex';
-        carregarTickets();
-        atualizarContadorTickets();
-    }
+    // 2. Quando clicar em "Confirmar", executa a ação
+    document.getElementById('btn-confirmar-acao').onclick = async function() {
+        fecharModalConfirmacao();
+        
+        const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
+        const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
+        
+        if(!error) {
+            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ticket assumido!", "sucesso");
+            document.getElementById('tela-espera-ticket').style.display = 'none'; 
+            document.getElementById('tela-abertura-ticket').style.display = 'flex';
+            carregarTickets();
+            atualizarContadorTickets();
+        }
+    };
 }
-        </script>
+
+function fecharModalConfirmacao() {
+    document.getElementById('modalConfirmarAcao').classList.remove('aberto');
+}
             <!-- ========== PARTE 3: LÓGICA DO CHAT ========== -->
 <script>
 function voltarParaListaTickets() {
