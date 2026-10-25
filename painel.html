@@ -19,16 +19,30 @@
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
     
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        html, body {
-            min-height: 100vh;
-            background: linear-gradient(180deg, #000000 0%, #0f172a 100%);
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            padding-bottom: 80px;
-        }
+   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    /* Remove a seleção azul feia em celulares */
+    * {
+        -webkit-tap-highlight-color: transparent !important;
+    }
+    
+    /* Impede que o texto dos botões e menus fique selecionado ao clicar */
+    button, a, .btn-categoria, .menu-item, .card-clicavel, .membro-nome, .membro-status {
+        user-select: none !important;
+        -webkit-user-select: none !important;
+        -moz-user-select: none !important;
+        -ms-user-select: none !important;
+        outline: none !important;
+    }
+
+     html, body {
+        min-height: 100vh;
+        background: linear-gradient(180deg, #000000 0%, #0f172a 100%);
+        color: #ffffff;
+        font-family: 'Inter', sans-serif;
+        padding-bottom: 80px;
+    }
         
         .banner-topo {
             width: 100%;
