@@ -1819,7 +1819,7 @@ async function carregarRanking() {
 <!-- ========== FIM DO RANKING ========== -->          
             
 </script>
-<!-- ========== SISTEMA DE TICKETS DEFINITIVO COM CHAT ========== -->
+<!-- ========== SISTEMA DE TICKETS DEFINITIVO ========== -->
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
     
@@ -1832,6 +1832,8 @@ async function carregarRanking() {
 
 <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
     <div class="caixa-lista">
+        
+        <!-- CABEÇALHO DA JANELA -->
         <div class="lista-topo">
             <h3 class="lista-titulo" id="titulo-modal-suporte">Central de Suporte</h3>
             <button class="lista-fechar" onclick="fecharModalTickets()"><i class="fas fa-times"></i></button>
@@ -1876,21 +1878,33 @@ async function carregarRanking() {
             </div>
         </div>
 
-        <!-- TELA 2: CHAT (Estilo WhatsApp) -->
+        <!-- TELA 2: CHAT -->
         <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 55vh; max-height: 500px;">
-            <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
-                <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
-                <div>
-                    <h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4>
-                    <span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span>
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
+                    <div>
+                        <h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4>
+                        <span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span>
+                    </div>
                 </div>
+                <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">
+                    <i class="fas fa-check"></i> Finalizar
+                </button>
             </div>
             
             <div id="chat-mensagens" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;"></div>
             
-            <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0;">
+            <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
+                <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;">
+                    <i class="fas fa-paperclip"></i>
+                </label>
+                <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
+
                 <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
-                <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; padding: 0 18px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
+                
+                <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
@@ -1969,7 +1983,7 @@ async function criarTicket() {
     const texto = document.getElementById('input-ticket').value;
     const pass = localStorage.getItem('passaporte');
     const nome = document.getElementById('nomeUsuario').textContent;
-    if(!categoriaSelecionada || !texto.trim()) { alert("Preencha tudo."); return; }
+    if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
     
     const btn = event.target;
     btn.innerText = "Enviando..."; btn.disabled = true;
@@ -2007,7 +2021,7 @@ async function carregarTickets() {
         return `
         <div class="membro-item" style="border-left: 3px solid ${isAberto ? '#f59e0b' : isAtendimento ? '#3b82f6' : '#22c55e'}; margin-bottom: 8px;">
             <div class="membro-topo" style="margin-bottom: 5px;">
-                <div class="membro-nome" style="font-size: 13px;">${t.nome_autor}</div>
+                <div class="membro-nome" style="font-size: 13px;">${t.nome_autor} (${t.passaporte})</div>
                 <span class="membro-status ${isAberto ? 'pausado' : isAtendimento ? 'on' : 'off'}">${t.status.toUpperCase()}</span>
             </div>
             <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
@@ -2015,7 +2029,7 @@ async function carregarTickets() {
             
             ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-hand-paper"></i> Assumir Ticket</button>` : ''}
             
-            ${(isAtendimento && (ehLider || t.passaporte === pass)) ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
+            ${(isAtendimento && (ehLider || t.passaporte === pass)) ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
         </div>`;
     }).join('');
 }
@@ -2037,18 +2051,28 @@ function voltarParaListaTickets() {
     document.getElementById('tela-chat-ticket').style.display = 'none';
     document.getElementById('tela-lista-tickets').style.display = 'flex';
     document.getElementById('titulo-modal-suporte').innerText = "Central de Suporte";
+    document.getElementById('btn-resolver-chat').style.display = 'none';
     ticketAtualChatId = null;
     carregarTickets();
 }
 
-async function abrirChatTicket(id, nomeAutor) {
+async function abrirChatTicket(id, nomeAutor, passaporte) {
     ticketAtualChatId = id;
     document.getElementById('tela-lista-tickets').style.display = 'none';
     document.getElementById('tela-chat-ticket').style.display = 'flex';
     document.getElementById('titulo-modal-suporte').innerText = "Atendimento";
     document.getElementById('chat-titulo').innerText = "Ticket #" + id;
-    document.getElementById('chat-subtitulo').innerText = "Solicitante: " + nomeAutor;
+    document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (Passaporte: ${passaporte})`;
     document.getElementById('input-chat-msg').value = "";
+    
+    const pass = localStorage.getItem('passaporte');
+    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+    
+    if (isAdmin === true) {
+        document.getElementById('btn-resolver-chat').style.display = 'block';
+    } else {
+        document.getElementById('btn-resolver-chat').style.display = 'none';
+    }
     
     await carregarMensagens();
 }
@@ -2070,20 +2094,29 @@ async function carregarMensagens() {
     if (data.length === 0) {
         chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem ainda. Diga um "Olá"!</div>`;
     } else {
-        const meuNome = document.getElementById('nomeUsuario').textContent;
         chatBox.innerHTML = data.map(m => {
-            const isLider = m.autor !== "Jogador"; // Se quem mandou não for o player
+            const isLider = m.autor !== "Jogador"; 
             const classes = isLider ? 'msg-lider' : 'msg-player';
+            
+            let anexoHtml = '';
+            if (m.imagem_url) {
+                if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) {
+                    anexoHtml = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
+                } else {
+                    anexoHtml = `<img src="${m.imagem_url}" style="max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer;" onclick="window.open(this.src)">`;
+                }
+            }
+
             return `
                 <div class="msg-bubble ${classes}">
                     <span class="msg-nome">${m.autor}</span>
-                    ${m.mensagem}
+                    ${m.mensagem ? m.mensagem : ''}
+                    ${anexoHtml}
                 </div>
             `;
         }).join('');
     }
     
-    // Rola para o final
     setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
 }
 
@@ -2095,26 +2128,79 @@ async function enviarMensagemChat() {
     const meuNome = document.getElementById('nomeUsuario').textContent;
     const pass = localStorage.getItem('passaporte');
     
-    // Verifica se é admin para marcar a mensagem
     const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
     const autorExibicao = isAdmin === true ? `Líder (${meuNome})` : "Jogador";
 
-    input.value = ""; // Limpa o input na hora
+    input.value = ""; 
+    const { error } = await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autorExibicao, mensagem: texto }]);
 
-    const { error } = await sb.from('mensagens_ticket').insert([{
-        ticket_id: ticketAtualChatId,
-        autor: autorExibicao,
-        mensagem: texto
-    }]);
+    if (!error) carregarMensagens();
+    else alert("Erro ao enviar: " + error.message);
+}
 
-    if (!error) {
+async function enviarArquivoChat(input) {
+    const file = input.files[0];
+    if (!file || !ticketAtualChatId) return;
+
+    if (file.size > 20 * 1024 * 1024) {
+        alert("O arquivo é muito grande! Envie algo menor que 20MB.");
+        input.value = "";
+        return;
+    }
+
+    const meuNome = document.getElementById('nomeUsuario').textContent;
+    const pass = localStorage.getItem('passaporte');
+    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+    const autorExibicao = isAdmin === true ? `Líder (${meuNome})` : "Jogador";
+
+    const labelAnexo = document.querySelector('label[for="input-arquivo-chat"]');
+    const iconeOriginal = labelAnexo.innerHTML;
+    labelAnexo.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+    try {
+        const extensao = file.name.split('.').pop();
+        const nomeArquivo = `${ticketAtualChatId}_${Date.now()}.${extensao}`;
+
+        const { data: uploadData, error: uploadError } = await sb.storage
+            .from('midia_tickets')
+            .upload(nomeArquivo, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = sb.storage
+            .from('midia_tickets')
+            .getPublicUrl(nomeArquivo);
+
+        await sb.from('mensagens_ticket').insert([{
+            ticket_id: ticketAtualChatId,
+            autor: autorExibicao,
+            mensagem: `[Arquivo Enviado]`,
+            imagem_url: urlData.publicUrl
+                }]);
+
         carregarMensagens();
-    } else {
-        alert("Erro ao enviar: " + error.message);
+    } catch (err) {
+        alert("Erro ao enviar arquivo: " + err.message);
+    } finally {
+        labelAnexo.innerHTML = iconeOriginal;
+        input.value = "";
     }
 }
 
-// Permitir enviar com a tecla "Enter"
+async function resolverTicketChat() {
+    if(!confirm("Tem certeza que deseja finalizar este atendimento? O ticket será marcado como Resolvido.")) return;
+    
+    const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+    
+    if (!error) {
+        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Atendimento finalizado!", "sucesso");
+        voltarParaListaTickets();
+        atualizarContadorTickets();
+    } else {
+        alert("Erro ao resolver o ticket: " + error.message);
+    }
+}
+
 document.getElementById('input-chat-msg')?.addEventListener('keypress', function (e) {
     if (e.key === 'Enter') enviarMensagemChat();
 });
