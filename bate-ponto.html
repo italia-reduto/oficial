@@ -133,22 +133,10 @@
         </div>
 
         <div class="grade-cards">
-            <div class="card">
-                <p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p>
-                <p class="card-valor" id="exibeSituacao">Carregando...</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></p>
-                <p class="card-valor" id="exibeHoje">0m</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Pausas <i class="fas fa-coffee"></i></p>
-                <p class="card-valor" id="exibePausas">0</p>
-            </div>
-            <div class="card">
-                <p class="card-titulo">Semana <i class="fas fa-calendar-week"></i></p>
-                <p class="card-valor" id="exibeSemana">0m</p>
-            </div>
+            <div class="card"><p class="card-titulo">Meu Status <i class="fas fa-clock"></i></p><p class="card-valor" id="exibeSituacao">Carregando...</p></div>
+            <div class="card"><p class="card-titulo">Hoje <i class="fas fa-calendar-day"></i></p><p class="card-valor" id="exibeHoje">0m</p></div>
+            <div class="card"><p class="card-titulo">Pausas <i class="fas fa-coffee"></i></p><p class="card-valor" id="exibePausas">0</p></div>
+            <div class="card"><p class="card-titulo">Semana <i class="fas fa-calendar-week"></i></p><p class="card-valor" id="exibeSemana">0m</p></div>
         </div>
 
         <div class="card-abas">
@@ -164,9 +152,7 @@
                     </div>
                     <p class="legenda-tempo">Tempo de jornada</p>
                     <div class="botoes-cronometro" id="areaBotoes">
-                        <button class="botao-acao iniciar" id="btnIniciar">
-                            <i class="fas fa-play"></i> Iniciar Jornada
-                        </button>
+                        <button class="botao-acao iniciar" id="btnIniciar"><i class="fas fa-play"></i> Iniciar Jornada</button>
                     </div>
                 </div>
             </div>
@@ -178,9 +164,7 @@
 
     <div class="fundo-modal" id="modalEncerrar">
         <div class="caixa-modal">
-            <div class="icone-modal">
-                <i class="fas fa-info-circle"></i>
-            </div>
+            <div class="icone-modal"><i class="fas fa-info-circle"></i></div>
             <h3 class="titulo-modal">Encerrar Jornada</h3>
             <p class="texto-modal">Ao confirmar, aguarde 5 minutos para reiniciar. Isso garante o registro correto.</p>
             <div class="botoes-modal">
@@ -189,15 +173,14 @@
             </div>
         </div>
     </div>
-
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <!-- BOTÃO SUPORTE ADICIONADO AQUI -->
-        <a href="#" class="menu-item" onclick="abrirModalTickets(); return false;"><i class="fas fa-headset"></i><span>Suporte</span></a>
-    </nav>
-    <!-- MODAIS DO SUPORTE -->
+    <a href="painel.html" class="menu-item"><i class="fas fa-home"></i><span>Painel</span></a>
+    <a href="bate-ponto.html" class="menu-item ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
+    <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="#" class="menu-item" onclick="abrirModalTickets(); return false;"><i class="fas fa-headset"></i><span>Suporte</span></a>
+</nav>
+
+<!-- ========== SISTEMA DE SUPORTE (HTML E CSS) ========== -->
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
     .msg-card { display: flex; gap: 12px; background: #1e293b; border: 1px solid #334155; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 12px; margin-bottom: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
@@ -231,15 +214,9 @@
                     <span><strong>Aviso:</strong> Para denúncias ou bugs, anexe prints/gravações no chat.</span>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span>
-                    </button>
-                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span>
-                    </button>
-                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span>
-                    </button>
+                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span></button>
+                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span></button>
+                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span></button>
                 </div>
                 <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
                     <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
@@ -258,20 +235,13 @@
             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
-                    <div>
-                        <h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4>
-                        <span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span>
-                    </div>
+                    <div><h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4><span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span></div>
                 </div>
-                <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                    <i class="fas fa-check"></i> Finalizar
-                </button>
+                <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;"><i class="fas fa-check"></i> Finalizar</button>
             </div>
             <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
             <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
-                <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;">
-                    <i class="fas fa-paperclip"></i>
-                </label>
+                <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;"><i class="fas fa-paperclip"></i></label>
                 <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
                 <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
                 <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
@@ -282,9 +252,7 @@
 
 <div class="fundo-modal" id="modalConfirmarAcao" onclick="if(event.target === this) fecharModalConfirmacao()">
     <div class="caixa-modal">
-        <div class="icone-modal" style="background: rgba(59, 130, 246, 0.1);">
-            <i class="fas fa-question-circle" style="color: #3b82f6;"></i>
-        </div>
+        <div class="icone-modal" style="background: rgba(59, 130, 246, 0.1);"><i class="fas fa-question-circle" style="color: #3b82f6;"></i></div>
         <h3 class="titulo-modal">Confirmação</h3>
         <p class="texto-modal" id="texto-modal-confirma"></p>
         <div class="botoes-modal">
@@ -292,8 +260,8 @@
             <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" id="btn-confirmar-acao">Sim, confirmar</button>
         </div>
     </div>
-                        </div>
-                        <script>
+</div>
+<script>
     const exibeNome = document.getElementById('exibeNome');
     const exibePassaporte = document.getElementById('exibePassaporte');
     const exibeSituacao = document.getElementById('exibeSituacao');
@@ -403,7 +371,8 @@
         }
         return false;
     }
-
+</script>
+<script>
     async function carregarDadosUsuario() {
         if (!passaporteUsuario) { exibeNome.textContent = 'Não identificado'; exibePassaporte.textContent = '—'; return; }
         const { data, error } = await sb.from('membros').select('nome, passaporte').eq('passaporte', passaporteUsuario).single();
@@ -484,7 +453,8 @@
         registroAtivo = null; totalPausas = 0; tempoPausadoAcumulado = 0; avisoEmJornada.style.display = 'none';
         await carregarEsperasServidor(); atualizarInterface(); await renderizarHistorico();
     }
-
+</script>
+<script>
     function atualizarInterface() {
         const bloqueado = esperaJornadaSeg > 0;
         if (!registroAtivo) {
@@ -577,6 +547,197 @@
         window.addEventListener('focus', sincronizarComServidor); window.addEventListener('pageshow', function (e) { if (e.persisted) sincronizarComServidor(); });
         agendarSincronizacao();
     })();
-                        </script>
-                        </body>
+</script>
+    <script>
+        // SCRIPT DO SUPORTE BLINDADO
+        (function() {
+            let categoriaSelecionada = null;
+            let ticketAtualChatId = null;
+
+            window.abrirModalTickets = function() {
+                document.getElementById('modalTickets').classList.add('aberto');
+                window.voltarParaListaTickets();
+                document.getElementById('input-ticket').value = '';
+                categoriaSelecionada = null;
+                document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+                document.getElementById('div-descricao').style.display = 'none';
+                carregarTickets();
+            };
+
+            window.fecharModalTickets = function() { document.getElementById('modalTickets').classList.remove('aberto'); };
+            window.fecharModalConfirmacao = function() { document.getElementById('modalConfirmarAcao').classList.remove('aberto'); };
+
+            window.selecionarCategoria = function(cat) {
+                if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
+                else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
+                document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+                if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
+            };
+
+            window.criarTicket = async function() {
+                const texto = document.getElementById('input-ticket').value;
+                const pass = localStorage.getItem('passaporte');
+                const nome = document.getElementById('exibeNome').textContent;
+                if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
+                const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
+                const { error } = await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
+                if(error) { alert("Erro: " + error.message); } 
+                else {
+                    document.getElementById('tela-abertura-ticket').style.display = 'none';
+                    document.getElementById('tela-espera-ticket').style.display = 'flex';
+                    carregarTickets();
+                }
+                btn.innerText = "Enviar Ticket"; btn.disabled = false;
+            };
+
+            async function carregarTickets() {
+                const corpo = document.getElementById('corpoTickets');
+                const pass = localStorage.getItem('passaporte');
+                const nomeEu = document.getElementById('exibeNome').textContent;
+                corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                const ehLider = isAdmin === true;
+                let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
+                if (!ehLider) query = query.eq('passaporte', pass);
+                const { data, error } = await query;
+                if (error) { corpo.innerHTML = '<div style="color: red;">Erro: ' + error.message + '</div>'; return; }
+                if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
+                corpo.innerHTML = data.map(t => {
+                    const isAberto = t.status === 'aberto';
+                    const isAtendimento = t.status === 'atendimento';
+                    const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
+                    const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+                    return `
+                    <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                            <div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor} (${t.passaporte})</div>
+                            <span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span>
+                        </div>
+                        <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
+                        ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;"><i class="fas fa-user-shield"></i> Atendido por: ${t.lider_assumiu}</div>` : ''}
+                        <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
+                        ${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-hand-paper"></i> Assumir Ticket</button>` : ''}
+                        ${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
+                    </div>`;
+                }).join('');
+            }
+
+            window.assumirTicket = async function(id) {
+                document.getElementById('modalConfirmarAcao').classList.add('aberto');
+                document.getElementById('texto-modal-confirma').innerText = "Deseja realmente assumir este ticket?";
+                document.getElementById('btn-confirmar-acao').onclick = async function() {
+                    window.fecharModalConfirmacao();
+                    const nome = `Líder (${document.getElementById('exibeNome').textContent})`;
+                    const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
+                    if(!error) { document.getElementById('tela-espera-ticket').style.display = 'none'; document.getElementById('tela-abertura-ticket').style.display = 'flex'; carregarTickets(); }
+                };
+            };
+
+            window.voltarParaListaTickets = function() {
+                document.getElementById('tela-chat-ticket').style.display = 'none';
+                document.getElementById('tela-lista-tickets').style.display = 'flex';
+                document.getElementById('titulo-modal-suporte').innerText = "Central de Suporte";
+                document.getElementById('btn-resolver-chat').style.display = 'none';
+                document.getElementById('tela-espera-ticket').style.display = 'none';
+                document.getElementById('tela-abertura-ticket').style.display = 'flex';
+                ticketAtualChatId = null;
+                carregarTickets();
+            };
+
+            window.abrirChatTicket = async function(id, nomeAutor, passaporte) {
+                ticketAtualChatId = id;
+                document.getElementById('tela-lista-tickets').style.display = 'none';
+                document.getElementById('tela-chat-ticket').style.display = 'flex';
+                document.getElementById('titulo-modal-suporte').innerText = "Atendimento";
+                document.getElementById('chat-titulo').innerText = "Ticket #" + id;
+                document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
+                document.getElementById('input-chat-msg').value = "";
+                const pass = localStorage.getItem('passaporte');
+                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                if (isAdmin === true) document.getElementById('btn-resolver-chat').style.display = 'block';
+                else document.getElementById('btn-resolver-chat').style.display = 'none';
+                await carregarMensagens();
+            };
+
+            async function carregarMensagens() {
+                if(!ticketAtualChatId) return;
+                const chatBox = document.getElementById('chat-mensagens');
+                const { data, error } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
+                if (error) { chatBox.innerHTML = `<div style="color:red; font-size:12px;">Erro.</div>`; return; }
+                if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem.</div>`; } 
+                else {
+                    chatBox.innerHTML = data.map(m => {
+                        const isLider = m.autor.includes("Líder"); 
+                        const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                        let anexo = '';
+                        if (m.imagem_url) {
+                            if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) anexo = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
+                            else anexo = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
+                        }
+                        return `
+                            <div class="msg-card ${isLider ? 'admin' : ''}">
+                                <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
+                                <div class="msg-content">
+                                    <div class="msg-header">
+                                        <span class="msg-nome">${m.autor}</span>
+                                        ${isLider ? '<span class="msg-tag">LIDERANÇA</span>' : '<span class="msg-tag">MEMBRO</span>'}
+                                        <span class="msg-hora">${hora}</span>
+                                    </div>
+                                    <div class="msg-body">${m.mensagem ? m.mensagem : ''}${anexo}</div>
+                                </div>
+                            </div>`;
+                    }).join('');
+                }
+                setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+            }
+
+            window.enviarMensagemChat = async function() {
+                const input = document.getElementById('input-chat-msg');
+                const texto = input.value.trim();
+                if(!texto || !ticketAtualChatId) return;
+                const nomeEu = document.getElementById('exibeNome').textContent;
+                const pass = localStorage.getItem('passaporte');
+                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
+                input.value = ""; 
+                const { error } = await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
+                if (!error) carregarMensagens();
+            };
+
+            window.enviarArquivoChat = async function(input) {
+                const file = input.files[0];
+                if (!file || !ticketAtualChatId) return;
+                if (file.size > 20 * 1024 * 1024) { alert("Max 20MB."); input.value = ""; return; }
+                const nomeEu = document.getElementById('exibeNome').textContent;
+                const pass = localStorage.getItem('passaporte');
+                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
+                const label = document.querySelector('label[for="input-arquivo-chat"]');
+                const iconeAntigo = label.innerHTML; label.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                try {
+                    const ext = file.name.split('.').pop();
+                    const nomeArquivo = `${ticketAtualChatId}_${Date.now()}.${ext}`;
+                    const { error: upErr } = await sb.storage.from('midia_tickets').upload(nomeArquivo, file);
+                    if (upErr) throw upErr;
+                    const { data: urlData } = sb.storage.from('midia_tickets').getPublicUrl(nomeArquivo);
+                    await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, imagem_url: urlData.publicUrl }]);
+                    carregarMensagens();
+                } catch (err) { alert("Erro: " + err.message); } 
+                finally { label.innerHTML = iconeAntigo; input.value = ""; }
+            };
+
+            window.resolverTicketChat = async function() {
+                document.getElementById('modalConfirmarAcao').classList.add('aberto');
+                document.getElementById('texto-modal-confirma').innerText = "Deseja finalizar este atendimento? O ticket sumirá.";
+                document.getElementById('btn-confirmar-acao').onclick = async function() {
+                    window.fecharModalConfirmacao();
+                    const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+                    if (!error) window.voltarParaListaTickets();
+                };
+            };
+
+            document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
+        })();
+    </script>
+</body>
 </html>
