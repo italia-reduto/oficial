@@ -1818,82 +1818,100 @@ async function carregarRanking() {
 </script>
 <!-- ========== FIM DO RANKING ========== -->          
             
-</script>   
-            <!-- ========== SISTEMA DE TICKETS DEFINITIVO ========== -->
+</script>
+<!-- ========== SISTEMA DE TICKETS DEFINITIVO COM CHAT ========== -->
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
+    
+    /* Estilos do Chat */
+    .msg-bubble { max-width: 80%; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
+    .msg-lider { align-self: flex-end; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.4); color: #bfdbfe; border-bottom-right-radius: 2px; }
+    .msg-player { align-self: flex-start; background: rgba(30, 41, 59, 0.8); border: 1px solid #334155; color: #e2e8f0; border-bottom-left-radius: 2px; }
+    .msg-nome { font-size: 10px; opacity: 0.7; margin-bottom: 4px; display: block; }
 </style>
 
 <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
     <div class="caixa-lista">
         <div class="lista-topo">
-            <h3 class="lista-titulo">Central de Suporte</h3>
+            <h3 class="lista-titulo" id="titulo-modal-suporte">Central de Suporte</h3>
             <button class="lista-fechar" onclick="fecharModalTickets()"><i class="fas fa-times"></i></button>
         </div>
         
-        <div class="lista-resumo" id="resumoTickets" style="margin-bottom: 10px;"></div>
-        
-        <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 40vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
-            <div class="membros-vazio">Carregando...</div>
+        <!-- TELA 1: LISTA DE TICKETS E ABERTURA -->
+        <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+            <div class="lista-resumo" id="resumoTickets" style="margin-bottom: 10px;"></div>
+            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 40vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
+                <div class="membros-vazio">Carregando...</div>
+            </div>
+
+            <!-- TELA DE ABERTURA -->
+            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: none; flex-direction: column; gap: 10px;">
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4;">
+                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px; font-size: 14px;"></i>
+                    <span><strong>Aviso Importante:</strong> Para denúncias ou reportes de bugs, é <strong>obrigatório</strong> anexar prints ou gravações. Caso contrário, o ticket poderá ser recusado.</span>
+                </div>
+                <p style="font-size: 13px; color: #cbd5e1; font-weight: 600; margin-top: 5px;">Selecione o setor responsável:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                        <i class="fas fa-code" style="font-size: 20px; color: #60a5fa;"></i> <span>Reportar Bug</span>
+                    </button>
+                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                        <i class="fas fa-shield-alt" style="font-size: 20px; color: #f87171;"></i> <span>Denunciar Jogador</span>
+                    </button>
+                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                        <i class="fas fa-file-signature" style="font-size: 20px; color: #f59e0b;"></i> <span>Justificar Ausência</span>
+                    </button>
+                </div>
+                <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 80px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none; font-size: 13px;"></textarea>
+                    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold;" onclick="criarTicket()">Enviar Ticket</button>
+                </div>
+            </div>
+
+            <!-- TELA DE ESPERA -->
+            <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
+                <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
+            </div>
         </div>
 
-        <!-- TELA DE ABERTURA -->
-        <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: none; flex-direction: column; gap: 10px;">
-            <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4;">
-                <i class="fas fa-exclamation-triangle" style="margin-top: 2px; font-size: 14px;"></i>
-                <span><strong>Aviso Importante:</strong> Para denúncias ou reportes de bugs, é <strong>obrigatório</strong> anexar prints ou gravações. Caso contrário, o ticket poderá ser recusado.</span>
+        <!-- TELA 2: CHAT (Estilo WhatsApp) -->
+        <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 55vh; max-height: 500px;">
+            <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
+                <div>
+                    <h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4>
+                    <span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span>
+                </div>
             </div>
             
-            <p style="font-size: 13px; color: #cbd5e1; font-weight: 600; margin-top: 5px;">Selecione o setor responsável:</p>
+            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px;"></div>
             
-            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                    <i class="fas fa-code" style="font-size: 20px; color: #60a5fa;"></i> 
-                    <span>Reportar Bug</span>
-                </button>
-                <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                    <i class="fas fa-shield-alt" style="font-size: 20px; color: #f87171;"></i> 
-                    <span>Denunciar Jogador</span>
-                </button>
-                <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 15px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
-                    <i class="fas fa-file-signature" style="font-size: 20px; color: #f59e0b;"></i> 
-                    <span>Justificar Ausência</span>
-                </button>
-            </div>
-            <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                <textarea id="input-ticket" placeholder="Descreva sua solicitação com o máximo de detalhes possível..." style="width: 100%; height: 90px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none; font-size: 13px;"></textarea>
-                <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold;" onclick="criarTicket()">Enviar Ticket</button>
+            <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0;">
+                <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
+                <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; padding: 0 18px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
 
-        <!-- TELA DE ESPERA -->
-        <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
-            <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-            <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
-            <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
-        </div>
     </div>
 </div>
 
 <script>
 let categoriaSelecionada = null;
+let ticketAtualChatId = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. Cria o botão de Suporte no menu
     const barraMenu = document.querySelector('.barra-menu');
     if (barraMenu && !document.querySelector('.menu-suporte')) {
         const btnSuporte = document.createElement('a');
         btnSuporte.href = "#";
         btnSuporte.className = "menu-item menu-suporte";
         btnSuporte.innerHTML = '<i class="fas fa-headset"></i><span>Suporte</span>';
-        btnSuporte.onclick = function(e) {
-            e.preventDefault();
-            abrirModalTickets();
-        };
+        btnSuporte.onclick = function(e) { e.preventDefault(); abrirModalTickets(); };
         barraMenu.appendChild(btnSuporte);
     }
 
-    // 2. Deixa o Card "Tickets Abertos" clicável e atualiza o número
     const cards = document.querySelectorAll('.grade-cards .card');
     cards.forEach(card => {
         if (card.innerText.includes("Tickets Abertos")) {
@@ -1929,28 +1947,21 @@ function selecionarCategoria(cat) {
     });
     if (categoriaSelecionada) {
         const btnAtivo = document.getElementById('btn-cat-' + categoriaSelecionada);
-        if (btnAtivo) {
-            btnAtivo.style.borderColor = '#60a5fa';
-            btnAtivo.style.background = 'rgba(96, 165, 250, 0.1)';
-        }
+        if (btnAtivo) { btnAtivo.style.borderColor = '#60a5fa'; btnAtivo.style.background = 'rgba(96, 165, 250, 0.1)'; }
     }
 }
 
 function fecharModalTickets() {
     document.getElementById('modalTickets').classList.remove('aberto');
+    setTimeout(voltarParaListaTickets, 300);
 }
 
 function abrirModalTickets() {
     document.getElementById('modalTickets').classList.add('aberto');
-    document.getElementById('tela-abertura-ticket').style.display = 'flex';
-    document.getElementById('tela-espera-ticket').style.display = 'none';
-    document.getElementById('div-descricao').style.display = 'none';
+    voltarParaListaTickets();
     document.getElementById('input-ticket').value = '';
     categoriaSelecionada = null;
-    document.querySelectorAll('.btn-categoria').forEach(b => {
-        b.style.borderColor = '#334155';
-        b.style.background = '#1e293b';
-    });
+    document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
     carregarTickets();
 }
 
@@ -1965,9 +1976,8 @@ async function criarTicket() {
 
     const { error } = await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
     
-    if(error) {
-        alert("Erro: " + error.message);
-    } else {
+    if(error) { alert("Erro: " + error.message); } 
+    else {
         document.getElementById('tela-abertura-ticket').style.display = 'none';
         document.getElementById('tela-espera-ticket').style.display = 'flex';
         carregarTickets();
@@ -2002,7 +2012,10 @@ async function carregarTickets() {
             </div>
             <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
             <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
+            
             ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-hand-paper"></i> Assumir Ticket</button>` : ''}
+            
+            ${(isAtendimento && (ehLider || t.passaporte === pass)) ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
         </div>`;
     }).join('');
 }
@@ -2012,11 +2025,99 @@ async function assumirTicket(id) {
     const nome = document.getElementById('nomeUsuario').textContent;
     const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
     if(!error) {
-        mostrarToastAdmin("Ticket assumido!", "sucesso");
+        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ticket assumido!", "sucesso");
         carregarTickets();
         atualizarContadorTickets();
     }
 }
+
+// ================= CHAT =================
+
+function voltarParaListaTickets() {
+    document.getElementById('tela-chat-ticket').style.display = 'none';
+    document.getElementById('tela-lista-tickets').style.display = 'flex';
+    document.getElementById('titulo-modal-suporte').innerText = "Central de Suporte";
+    ticketAtualChatId = null;
+    carregarTickets();
+}
+
+async function abrirChatTicket(id, nomeAutor) {
+    ticketAtualChatId = id;
+    document.getElementById('tela-lista-tickets').style.display = 'none';
+    document.getElementById('tela-chat-ticket').style.display = 'flex';
+    document.getElementById('titulo-modal-suporte').innerText = "Atendimento";
+    document.getElementById('chat-titulo').innerText = "Ticket #" + id;
+    document.getElementById('chat-subtitulo').innerText = "Solicitante: " + nomeAutor;
+    document.getElementById('input-chat-msg').value = "";
+    
+    await carregarMensagens();
+}
+
+async function carregarMensagens() {
+    if(!ticketAtualChatId) return;
+    const chatBox = document.getElementById('chat-mensagens');
+    
+    const { data, error } = await sb.from('mensagens_ticket')
+        .select('*')
+        .eq('ticket_id', ticketAtualChatId)
+        .order('criado_em', { ascending: true });
+
+    if (error) {
+        chatBox.innerHTML = `<div style="color:red; font-size:12px;">Erro ao carregar mensagens.</div>`;
+        return;
+    }
+
+    if (data.length === 0) {
+        chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem ainda. Diga um "Olá"!</div>`;
+    } else {
+        const meuNome = document.getElementById('nomeUsuario').textContent;
+        chatBox.innerHTML = data.map(m => {
+            const isLider = m.autor !== "Jogador"; // Se quem mandou não for o player
+            const classes = isLider ? 'msg-lider' : 'msg-player';
+            return `
+                <div class="msg-bubble ${classes}">
+                    <span class="msg-nome">${m.autor}</span>
+                    ${m.mensagem}
+                </div>
+            `;
+        }).join('');
+    }
+    
+    // Rola para o final
+    setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+}
+
+async function enviarMensagemChat() {
+    const input = document.getElementById('input-chat-msg');
+    const texto = input.value.trim();
+    if(!texto || !ticketAtualChatId) return;
+
+    const meuNome = document.getElementById('nomeUsuario').textContent;
+    const pass = localStorage.getItem('passaporte');
+    
+    // Verifica se é admin para marcar a mensagem
+    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+    const autorExibicao = isAdmin === true ? `Líder (${meuNome})` : "Jogador";
+
+    input.value = ""; // Limpa o input na hora
+
+    const { error } = await sb.from('mensagens_ticket').insert([{
+        ticket_id: ticketAtualChatId,
+        autor: autorExibicao,
+        mensagem: texto
+    }]);
+
+    if (!error) {
+        carregarMensagens();
+    } else {
+        alert("Erro ao enviar: " + error.message);
+    }
+}
+
+// Permitir enviar com a tecla "Enter"
+document.getElementById('input-chat-msg')?.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') enviarMensagemChat();
+});
 </script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
 </body>
