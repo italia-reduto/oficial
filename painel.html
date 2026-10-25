@@ -1818,46 +1818,53 @@ async function carregarRanking() {
 </script>
 <!-- ========== FIM DO RANKING ========== -->          
             
-</script>
-            <!-- ========== SISTEMA DE TICKETS DEFINITIVO ========== -->
+<!-- ========== PARTE 1: VISUAL DO SUPORTE ========== -->
 <style>
     @keyframes spin { 100% { transform: rotate(360deg); } }
     
-    /* --- ESTILOS DO CHAT (ESTILO WHATSAPP) --- */
-    .msg-wrapper { display: flex; flex-direction: column; width: 100%; margin-bottom: 5px; }
-    .msg-wrapper.lider { align-items: flex-end; }
-    .msg-wrapper.player { align-items: flex-start; }
+    /* ESTILO EMBED (CARD ÚNICO) */
+    .msg-card { 
+        display: flex; 
+        gap: 12px; 
+        background: #1e293b; 
+        border: 1px solid #334155; 
+        border-left: 4px solid #3b82f6; /* Detalhe azul na esquerda */
+        border-radius: 8px; 
+        padding: 12px; 
+        margin-bottom: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .msg-card.admin { border-left-color: #22c55e; } /* Verde se for líder */
     
-    .msg-content { display: flex; align-items: flex-end; gap: 8px; max-width: 85%; }
-    .msg-wrapper.lider .msg-content { flex-direction: row-reverse; }
+    .msg-avatar { 
+        width: 40px; height: 40px; border-radius: 50%; 
+        background: #334155; color: white;
+        display: flex; align-items: center; justify-content: center; 
+        font-size: 18px; flex-shrink: 0; 
+    }
     
-    .msg-avatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; }
-    .msg-avatar.lider { background: linear-gradient(135deg, #3b82f6, #2563eb); color: white; }
-    .msg-avatar.player { background: #334155; color: #cbd5e1; }
+    .msg-content { flex: 1; display: flex; flex-direction: column; }
     
-    .msg-bubble { padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; word-wrap: break-word; position: relative; }
-    .msg-wrapper.lider .msg-bubble { background: #1e3a8a; color: #e0e7ff; border-bottom-right-radius: 2px; }
-    .msg-wrapper.player .msg-bubble { background: #1e293b; color: #e2e8f0; border-bottom-left-radius: 2px; }
+    .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .msg-nome { font-size: 14px; font-weight: 700; color: #60a5fa; }
+    .msg-card.admin .msg-nome { color: #22c55e; }
     
-    .msg-nome { font-size: 10px; font-weight: 700; margin-bottom: 4px; display: block; }
-    .msg-wrapper.lider .msg-nome { color: #93c5fd; text-align: right; }
-    .msg-wrapper.player .msg-nome { color: #94a3b8; }
+    .msg-tag { font-size: 10px; background: #334155; color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+    .msg-card.admin .msg-tag { background: #166534; color: #86efac; }
     
-    .msg-hora { font-size: 9px; color: #94a3b8; margin-top: 4px; display: block; text-align: right; }
+    .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
     
-    .msg-img { max-width: 100%; border-radius: 8px; margin-top: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+    .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
+    .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
 </style>
 
 <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
     <div class="caixa-lista">
-        
-        <!-- CABEÇALHO DA JANELA -->
         <div class="lista-topo">
             <h3 class="lista-titulo" id="titulo-modal-suporte">Central de Suporte</h3>
             <button class="lista-fechar" onclick="fecharModalTickets()"><i class="fas fa-times"></i></button>
         </div>
         
-        <!-- TELA 1: LISTA DE TICKETS E ABERTURA -->
         <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
             <div class="lista-resumo" id="resumoTickets" style="margin-bottom: 10px;"></div>
             
@@ -1865,31 +1872,28 @@ async function carregarRanking() {
                 <div class="membros-vazio">Carregando...</div>
             </div>
 
-            <!-- TELA DE ABERTURA (Sempre visível para novos tickets) -->
             <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start; line-height: 1.4;">
-                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px; font-size: 14px;"></i>
-                    <span><strong>Aviso Importante:</strong> Para denúncias ou bugs, anexe prints/gravações.</span>
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start;">
+                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
+                    <span><strong>Aviso:</strong> Para denúncias ou bugs, anexe prints/gravações no chat.</span>
                 </div>
-                <p style="font-size: 13px; color: #cbd5e1; font-weight: 600; margin-top: 5px;">Abrir novo ticket:</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
                         <i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span>
                     </button>
-                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
                         <i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span>
                     </button>
-                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: 0.2s;">
+                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
                         <i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span>
                     </button>
                 </div>
                 <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none; font-size: 13px;"></textarea>
+                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
                     <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold;" onclick="criarTicket()">Enviar Ticket</button>
                 </div>
             </div>
 
-            <!-- TELA DE ESPERA -->
             <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
                 <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
                 <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
@@ -1897,9 +1901,7 @@ async function carregarRanking() {
             </div>
         </div>
 
-        <!-- TELA 2: CHAT -->
         <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
-            
             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
@@ -1913,23 +1915,20 @@ async function carregarRanking() {
                 </button>
             </div>
             
-            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 5px; padding-bottom: 10px;"></div>
+            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
             
             <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
                 <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;">
                     <i class="fas fa-paperclip"></i>
                 </label>
                 <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
-
                 <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
-                
                 <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
-
     </div>
 </div>
-
+            <!-- ========== PARTE 2: LÓGICA DA LISTA ========== -->
 <script>
 let categoriaSelecionada = null;
 let ticketAtualChatId = null;
@@ -1944,7 +1943,6 @@ document.addEventListener("DOMContentLoaded", () => {
         btnSuporte.onclick = function(e) { e.preventDefault(); abrirModalTickets(); };
         barraMenu.appendChild(btnSuporte);
     }
-
     const cards = document.querySelectorAll('.grade-cards .card');
     cards.forEach(card => {
         if (card.innerText.includes("Tickets Abertos")) {
@@ -1953,7 +1951,6 @@ document.addEventListener("DOMContentLoaded", () => {
             card.querySelector('.card-valor').id = 'valor-tickets-painel';
         }
     });
-
     atualizarContadorTickets();
     setInterval(atualizarContadorTickets, 15000);
 });
@@ -1974,10 +1971,7 @@ function selecionarCategoria(cat) {
         categoriaSelecionada = cat;
         document.getElementById('div-descricao').style.display = 'flex';
     }
-    document.querySelectorAll('.btn-categoria').forEach(b => {
-        b.style.borderColor = '#334155';
-        b.style.background = '#1e293b';
-    });
+    document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
     if (categoriaSelecionada) {
         const btnAtivo = document.getElementById('btn-cat-' + categoriaSelecionada);
         if (btnAtivo) { btnAtivo.style.borderColor = '#60a5fa'; btnAtivo.style.background = 'rgba(96, 165, 250, 0.1)'; }
@@ -2023,12 +2017,12 @@ async function criarTicket() {
 async function carregarTickets() {
     const corpo = document.getElementById('corpoTickets');
     const pass = localStorage.getItem('passaporte');
+    const nomeEu = document.getElementById('nomeUsuario').textContent;
     corpo.innerHTML = '<div class="membros-vazio">Buscando...</div>';
 
     const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
     const ehLider = isAdmin === true;
 
-    // O SEGREDO AQUI: Filtra para pegar APENAS tickets 'aberto' e 'atendimento' (ignora os resolvidos)
     let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
     if (!ehLider) query = query.eq('passaporte', pass);
 
@@ -2039,6 +2033,11 @@ async function carregarTickets() {
     corpo.innerHTML = data.map(t => {
         const isAberto = t.status === 'aberto';
         const isAtendimento = t.status === 'atendimento';
+        const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
+        
+        // TRAVA DE SEGURANÇA: Mostra o chat só pra quem assumiu ou pra quem abriu o ticket
+        const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+
         return `
         <div class="membro-item" style="border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; margin-bottom: 8px;">
             <div class="membro-topo" style="margin-bottom: 5px;">
@@ -2046,35 +2045,44 @@ async function carregarTickets() {
                 <span class="membro-status ${isAberto ? 'pausado' : 'on'}">${t.status.toUpperCase()}</span>
             </div>
             <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
+            
+            <!-- MOSTRA QUEM ASSUMIU -->
+            ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;"><i class="fas fa-user-shield"></i> Atendido por: ${t.lider_assumiu}</div>` : ''}
+            
             <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
             
             ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-hand-paper"></i> Assumir Ticket</button>` : ''}
             
-            ${(isAtendimento && (ehLider || t.passaporte === pass)) ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
+            ${podeAbrirChat ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
         </div>`;
     }).join('');
 }
 
 async function assumirTicket(id) {
     if(!confirm("Assumir este ticket?")) return;
-    const nome = document.getElementById('nomeUsuario').textContent;
+    const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
+    
     const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
+    
     if(!error) {
         if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ticket assumido!", "sucesso");
+        // CORREÇÃO DO BUG: Esconde a tela de espera na hora
+        document.getElementById('tela-espera-ticket').style.display = 'none'; 
+        document.getElementById('tela-abertura-ticket').style.display = 'flex';
         carregarTickets();
         atualizarContadorTickets();
     }
 }
-
-// ================= CHAT =================
-
+        </script>
+            <!-- ========== PARTE 3: LÓGICA DO CHAT ========== -->
+<script>
 function voltarParaListaTickets() {
     document.getElementById('tela-chat-ticket').style.display = 'none';
     document.getElementById('tela-lista-tickets').style.display = 'flex';
     document.getElementById('titulo-modal-suporte').innerText = "Central de Suporte";
     document.getElementById('btn-resolver-chat').style.display = 'none';
     document.getElementById('tela-espera-ticket').style.display = 'none';
-    document.getElementById('tela-abertura-ticket').style.display = 'flex'; // Mostra o form de abrir ticket de novo
+    document.getElementById('tela-abertura-ticket').style.display = 'flex';
     ticketAtualChatId = null;
     carregarTickets();
 }
@@ -2119,100 +2127,37 @@ async function carregarMensagens() {
     } else {
         chatBox.innerHTML = data.map(m => {
             const isLider = m.autor.includes("Líder"); 
-            
-            // Pega a hora que foi enviada
             const dataObj = new Date(m.criado_em);
-            const horaFormatada = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            const hora = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
             
-            // Define o avatar com base em quem mandou
-            const avatarIcon = isLider ? '<i class="fas fa-user-shield"></i>' : '<i class="fas fa-user"></i>';
-            const avatarClass = isLider ? 'lider' : 'player';
-            const wrapperClass = isLider ? 'lider' : 'player';
-
-            let anexoHtml = '';
+            let anexo = '';
             if (m.imagem_url) {
                 if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) {
-                    anexoHtml = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
+                    anexo = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
                 } else {
-                    anexoHtml = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
+                    anexo = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
                 }
             }
 
+            // VISUAL EMBED: Todos os cards são iguais, só muda a cor da borda e a tag se for líder
             return `
-                <div class="msg-wrapper ${wrapperClass}">
+                <div class="msg-card ${isLider ? 'admin' : ''}">
+                    <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
                     <div class="msg-content">
-                        <div class="msg-avatar ${avatarClass}">${avatarIcon}</div>
-                        <div class="msg-bubble">
+                        <div class="msg-header">
                             <span class="msg-nome">${m.autor}</span>
+                            ${isLider ? '<span class="msg-tag">LIDERANÇA</span>' : '<span class="msg-tag">MEMBRO</span>'}
+                            <span class="msg-hora">${hora}</span>
+                        </div>
+                        <div class="msg-body">
                             ${m.mensagem ? m.mensagem : ''}
-                            ${anexoHtml}
-                            <span class="msg-hora">${horaFormatada}</span>
+                            ${anexo}
                         </div>
                     </div>
                 </div>
             `;
         }).join('');
     }
-    
-    setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
-}
-
-async function enviarMensagemChat() {
-    const input = document.getElementById('input-chat-msg');
-    const texto = input.value.trim();
-    if(!ticketAtualChatId) return;
-        const chatBox = document.getElementById('chat-mensagens');
-    
-    const { data, error } = await sb.from('mensagens_ticket')
-        .select('*')
-        .eq('ticket_id', ticketAtualChatId)
-        .order('criado_em', { ascending: true });
-
-    if (error) {
-        chatBox.innerHTML = `<div style="color:red; font-size:12px;">Erro ao carregar mensagens.</div>`;
-        return;
-    }
-
-    if (data.length === 0) {
-        chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem ainda. Diga um "Olá"!</div>`;
-    } else {
-        chatBox.innerHTML = data.map(m => {
-            const isLider = m.autor.includes("Líder"); 
-            
-            // Pega a hora que foi enviada
-            const dataObj = new Date(m.criado_em);
-            const horaFormatada = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            
-            // Define o avatar com base em quem mandou
-            const avatarIcon = isLider ? '<i class="fas fa-user-shield"></i>' : '<i class="fas fa-user"></i>';
-            const avatarClass = isLider ? 'lider' : 'player';
-            const wrapperClass = isLider ? 'lider' : 'player';
-
-            let anexoHtml = '';
-            if (m.imagem_url) {
-                if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) {
-                    anexoHtml = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
-                } else {
-                    anexoHtml = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
-                }
-            }
-
-            return `
-                <div class="msg-wrapper ${wrapperClass}">
-                    <div class="msg-content">
-                        <div class="msg-avatar ${avatarClass}">${avatarIcon}</div>
-                        <div class="msg-bubble">
-                            <span class="msg-nome">${m.autor}</span>
-                            ${m.mensagem ? m.mensagem : ''}
-                            ${anexoHtml}
-                            <span class="msg-hora">${horaFormatada}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-    
     setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
 }
 
@@ -2221,86 +2166,56 @@ async function enviarMensagemChat() {
     const texto = input.value.trim();
     if(!texto || !ticketAtualChatId) return;
 
-    const meuNome = document.getElementById('nomeUsuario').textContent;
+    const nomeEu = document.getElementById('nomeUsuario').textContent;
     const pass = localStorage.getItem('passaporte');
-    
     const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    const autorExibicao = isAdmin === true ? `Líder (${meuNome})` : "Jogador";
+    const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
 
     input.value = ""; 
-    const { error } = await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autorExibicao, mensagem: texto }]);
-
+    const { error } = await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
     if (!error) carregarMensagens();
-    else alert("Erro ao enviar: " + error.message);
 }
 
 async function enviarArquivoChat(input) {
     const file = input.files[0];
     if (!file || !ticketAtualChatId) return;
+    if (file.size > 20 * 1024 * 1024) { alert("Arquivo muito grande (Max 20MB)."); input.value = ""; return; }
 
-    if (file.size > 20 * 1024 * 1024) {
-        alert("O arquivo é muito grande! Envie algo menor que 20MB.");
-        input.value = "";
-        return;
-    }
-
-    const meuNome = document.getElementById('nomeUsuario').textContent;
+    const nomeEu = document.getElementById('nomeUsuario').textContent;
     const pass = localStorage.getItem('passaporte');
     const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    const autorExibicao = isAdmin === true ? `Líder (${meuNome})` : "Jogador";
+    const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
 
-    const labelAnexo = document.querySelector('label[for="input-arquivo-chat"]');
-    const iconeOriginal = labelAnexo.innerHTML;
-    labelAnexo.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+    const label = document.querySelector('label[for="input-arquivo-chat"]');
+    const iconeAntigo = label.innerHTML;
+    label.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
     try {
-        const extensao = file.name.split('.').pop();
-        const nomeArquivo = `${ticketAtualChatId}_${Date.now()}.${extensao}`;
+        const ext = file.name.split('.').pop();
+        const nomeArquivo = `${ticketAtualChatId}_${Date.now()}.${ext}`;
+        
+        const { error: upErr } = await sb.storage.from('midia_tickets').upload(nomeArquivo, file);
+        if (upErr) throw upErr;
 
-        const { data: uploadData, error: uploadError } = await sb.storage
-            .from('midia_tickets')
-            .upload(nomeArquivo, file);
+        const { data: urlData } = sb.storage.from('midia_tickets').getPublicUrl(nomeArquivo);
 
-        if (uploadError) throw uploadError;
-
-        const { data: urlData } = sb.storage
-            .from('midia_tickets')
-            .getPublicUrl(nomeArquivo);
-
-        await sb.from('mensagens_ticket').insert([{
-            ticket_id: ticketAtualChatId,
-            autor: autorExibicao,
-            mensagem: ``,
-            imagem_url: urlData.publicUrl
-        }]);
-
+        await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, imagem_url: urlData.publicUrl }]);
         carregarMensagens();
-    } catch (err) {
-        alert("Erro ao enviar arquivo: " + err.message);
-    } finally {
-        labelAnexo.innerHTML = iconeOriginal;
-        input.value = "";
-    }
+    } catch (err) { alert("Erro: " + err.message); } 
+    finally { label.innerHTML = iconeAntigo; input.value = ""; }
 }
 
 async function resolverTicketChat() {
-    if(!confirm("Tem certeza que deseja finalizar este atendimento? O ticket será marcado como Resolvido e sumirá da lista.")) return;
-    
-    // Muda o status para 'resolvido'
+    if(!confirm("Finalizar atendimento? O ticket sumirá da lista.")) return;
     const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
-    
     if (!error) {
         if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Atendimento finalizado!", "sucesso");
         voltarParaListaTickets();
         atualizarContadorTickets();
-    } else {
-        alert("Erro ao resolver o ticket: " + error.message);
     }
 }
 
-document.getElementById('input-chat-msg')?.addEventListener('keypress', function (e) {
-    if (e.key === 'Enter') enviarMensagemChat();
-});
+document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
 </script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
 </body>
