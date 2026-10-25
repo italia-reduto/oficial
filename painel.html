@@ -2215,15 +2215,20 @@ async function enviarArquivoChat(input) {
 }
 
 async function resolverTicketChat() {
-    if(!confirm("Finalizar atendimento? O ticket sumirá da lista.")) return;
-    const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
-    if (!error) {
-        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Atendimento finalizado!", "sucesso");
-        voltarParaListaTickets();
-        atualizarContadorTickets();
-    }
+    document.getElementById('modalConfirmarAcao').classList.add('aberto');
+    document.getElementById('texto-modal-confirma').innerText = "Deseja finalizar este atendimento? O ticket será marcado como Resolvido e sumirá da lista.";
+    
+    document.getElementById('btn-confirmar-acao').onclick = async function() {
+        fecharModalConfirmacao();
+        
+        const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+        if (!error) {
+            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Atendimento finalizado!", "sucesso");
+            voltarParaListaTickets();
+            atualizarContadorTickets();
+        }
+    };
 }
-
 document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
 </script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
