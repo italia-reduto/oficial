@@ -572,5 +572,159 @@
 
         document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
     </script>
+    <!-- ========== ATUALIZAÇÃO DO CARD DE MEMBROS ========== -->
+<script>
+    // Sobrescreve a função antiga para aplicar as novas regras (Equipe, Pausa e Auto-Encerramento)
+    window.carregarMembrosAtivos = async function() {
+        const lista = document.getElementById('listaMembros');
+        const passLogado = localStorage.getItem('passaporte');
+        if(!lista) return;
+        
+        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+
+        // Verifica se é admin (Liderança)
+        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
+        window.souAdminMembros = (checkAdmin === true);
+
+        // Puxa os pontos abertos e as equipes
+        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome, equipe_id, pausa_inicio, pausa_fim').is('saida', null);
+        const { data: equipes } = await sb.from('equipes').select('id, nome');
+        
+        if (error) {
+            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar membros.</div>';
+            return;
+        }
+
+        const equipesMap = {};
+        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
+
+        const agora = new Date();
+        let atualizouBanco = false;
+
+        // 1. Lógica do Auto-Encerramento (30 mins)
+        for (let m of ativos) {
+            if (m.pausa_inicio && !m.pausa_fim) {
+                const inicioPausa = new Date(m.pausa_inicio);
+                const minutosPausado = (agora - inicioPausa) / 1000 / 60;
+                
+                if (minutosPausado >= 30) {
+                    // Encerra automaticamente no banco
+                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
+                    atualizouBanco = true;
+                }
+            }
+        }
+
+        if(atualizouBanco) {
+            return window.carregarMembrosAtivos(); // Recarrega a lista se encerrou alguém
+        }
+
+        // Atualiza o numerozinho do painel
+        document.getElementById('membrosAtivos').textContent = ativos.length;
+
+        if (ativos.length === 0) {
+            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
+            return;
+        }
+
+        // 2. Renderiza os cartões
+        window.renderizarCartoesMembros = function() {
+            if (!document.getElementById('listaMembros')) return;
+            
+            lista.innerHTML = ativos.map(m => {
+                let botoes = '';
+                const isPausado = (m.pausa_inicio && !m.pausa_fim);
+
+                if (window.souAdminMembros) {
+                    botoes = `
+                        <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
+                            <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:12px; font-weight:bold; cursor:pointer;">
+                                <i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}
+                            </button>
+                            <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
+                        </div>
+                    `;
+                }
+
+                let timerPausa = '';
+                let tagPausa = '';
+                if (isPausado) {
+                    const diffMs = Date.now() - new Date(m.pausa_inicio).getTime();
+                    const min = Math.floor(diffMs / 60000);
+                    const seg = Math.floor((diffMs % 60000) / 1000);
+                    timerPausa = `<div style="font-size:11px; color:#f59e0b; margin-top:6px; background:rgba(245,158,11,0.1); padding:4px; border-radius:4px; text-align:center;"><i class="fas fa-hourglass-half"></i> Pausado há: <b id="timer-pausa-${m.passaporte}">${min}m ${seg}s</b> / 30:00</div>`;
+                    tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px; margin-left:8px;">PAUSADO</span>`;
+                } else {
+                    tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px; margin-left:8px;">ON</span>`;
+                }
+
+                const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
+
+                return `
+                <div class="card-membro" style="${isPausado ? 'border-color: rgba(245,158,11,0.4);' : ''}">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome} ${tagPausa}</div>
+                    </div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                        <i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: <b>${nomeEquipe}</b>
+                    </div>
+                    ${timerPausa}
+                    ${botoes}
+                </div>`;
+            }).join('');
+        }
+
+        window.renderizarCartoesMembros();
+
+        // 3. Loop do cronômetro em tempo real
+        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
+        window.loopTimerMembros = setInterval(() => {
+            ativos.forEach(m => {
+                if (m.pausa_inicio && !m.pausa_fim) {
+                    const el = document.getElementById('timer-pausa-' + m.passaporte);
+                    if (el) {
+                        const diffMs = Date.now() - new Date(m.pausa_inicio).getTime();
+                        const min = Math.floor(diffMs / 60000);
+                        const seg = Math.floor((diffMs % 60000) / 1000);
+                        el.textContent = `${min}m ${seg}s`;
+                        
+                        // Se chegar a 30 minutos com a tela aberta, atualiza para auto-encerrar
+                        if (min >= 30) {
+                            clearInterval(window.loopTimerMembros);
+                            window.carregarMembrosAtivos();
+                        }
+                    }
+                }
+            });
+        }, 1000);
+    }
+
+    // Ação de Pausar, Retomar e Encerrar da Liderança
+    window.adminAcaoPonto = async function(passAlvo, acao) {
+        if (!confirm(`Deseja ${acao} o ponto do passaporte ${passAlvo}?`)) return;
+
+        const agora = new Date().toISOString();
+        let updateData = {};
+
+        if (acao === 'pausar') updateData = { pausa_inicio: agora };
+        if (acao === 'retomar') updateData = { pausa_fim: agora };
+        if (acao === 'encerrar') updateData = { saida: agora };
+
+        const { error } = await sb.from('pontos').update(updateData).eq('passaporte', passAlvo).is('saida', null);
+
+        if (error) {
+            alert("Erro ao executar ação: " + error.message);
+        } else {
+            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ação executada!", "sucesso");
+            window.carregarMembrosAtivos(); 
+        }
+    }
+
+    // Limpar o timer quando fechar a janelinha
+    window.fecharListaMembros = function() {
+        document.getElementById('modalMembros').classList.remove('aberto');
+        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
+    }
+</script>
 </body>
 </html>
