@@ -1300,5 +1300,66 @@
         }
     };
     </script>
+    <!-- MUDANÇA DE NOME E BOTÃO DE XP -->
+<script>
+    // 1. Troca o "Meu Dossiê" para "Meu Perfil"
+    document.addEventListener("DOMContentLoaded", () => {
+        const tituloGaveta = document.querySelector('#gavetaPerfil .gaveta-topo h3');
+        if(tituloGaveta) tituloGaveta.innerText = "Meu Perfil";
+    });
+
+    // 2. Adiciona o botão de "+ XP" na lista de membros
+    // Salvamos a função antiga para não apagar
+    const funcaoAntigaMembros = window.carregarMembrosAtivos;
+
+    window.carregarMembrosAtivos = async function() {
+        await funcaoAntigaMembros(); // Executa o código antigo
+        
+        // Depois que o código antigo termina, a gente adiciona o botão "+ XP" nos cartões
+        const lista = document.getElementById('listaMembros');
+        const cartoes = lista.querySelectorAll('.card-membro');
+        
+        cartoes.forEach(cartao => {
+            // Verifica se é admin e se o botão já não existe
+            if(window.souAdminMembros && !cartao.querySelector('.btn-dar-xp')) {
+                // Pega o passaporte do membro que está no texto
+                const textoPass = cartao.querySelector('div[style*="margin-top: 4px"]').innerText;
+                const passaporteAlvo = textoPass.split('Pass: ')[1].split(' ')[0];
+                const nomeAlvo = cartao.querySelector('div[style*="font-weight: 700"]').innerText.split(' ')[0];
+
+                const btnXp = document.createElement('button');
+                btnXp.className = 'btn-dar-xp';
+                btnXp.innerHTML = '<i class="fas fa-star"></i> Dar XP';
+                btnXp.style.cssText = 'width:100%; margin-top:8px; padding:6px; border-radius:6px; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); font-size:11px; font-weight:bold; cursor:pointer;';
+                btnXp.onclick = () => window.darXP(passaporteAlvo, nomeAlvo);
+
+                // Coloca o botão no final do cartão
+                cartao.appendChild(btnXp);
+            }
+        });
+    };
+
+    // 3. A função que abre a caixinha de dar XP
+    window.darXP = async function(passAlvo, nomeAlvo) {
+        const qtdStr = prompt(`Dar quanto de XP para ${nomeAlvo}?\n(Ex: 50, 100, 300)`, "50");
+        if (qtdStr === null) return;
+
+        const qtd = parseInt(qtdStr);
+        if (isNaN(qtd) || qtd <= 0) { alert("Digite um número válido."); return; }
+
+        const motivo = prompt(`Motivo do bônus de +${qtd} XP:`, "Ato de bravura");
+        if (motivo === null) return;
+
+        const { data } = await sb.from('membros').select('xp_total').eq('passaporte', passAlvo).single();
+        if (data) {
+            const novoXP = (data.xp_total || 0) + qtd;
+            await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', passAlvo);
+            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP dado para ${nomeAlvo}!`, "sucesso");
+            
+            // Atualiza na hora se o cara que recebeu for você mesmo
+            if(localStorage.getItem('passaporte') === passAlvo) window.abrirGaveta();
+        }
+    };
+</script>
 </body>
 </html>
