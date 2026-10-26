@@ -1617,5 +1617,99 @@
     // Se o modal de DarXP antigo ainda estiver sendo chamado em outro lugar, mapeamos ele para cá também
     window.abrirModalDarXp = window.acaoDarXp;
 </script>
+    <!-- ========== FORÇAR MODAL AZUL EM TODOS OS BOTÕES ========== -->
+<script>
+    // 1. Garantir que o modal bonito exista na tela
+    if (!document.getElementById('modalAcao')) {
+        const modalHTML = `
+        <style>
+            .modal-acao { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
+            .modal-acao.aberto { opacity: 1; visibility: visible; }
+            .caixa-acao { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.3); border-radius: 18px; padding: 24px; max-width: 360px; width: 100%; text-align: center; transform: translateY(10px); transition: transform 0.3s ease; }
+            .modal-acao.aberto .caixa-acao { transform: translateY(0); }
+            .caixa-acao h3 { font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff; }
+            .caixa-acao p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+            .caixa-acao input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none; }
+            .caixa-acao input:focus { border-color: #3b82f6; }
+            .botoes-acao { display: flex; gap: 12px; margin-top: 10px; }
+            .btn-acao-cancelar { flex: 1; padding: 12px; border: 1px solid rgba(96,165,250,0.2); background: transparent; color: #94a3b8; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+            .btn-acao-confirmar { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; color: #fff; background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        </style>
+        <div class="modal-acao" id="modalAcao">
+            <div class="caixa-acao">
+                <h3 id="acao-titulo">Ação</h3>
+                <p>Membro: <b id="acao-nome-alvo" style="color:#60a5fa;">---</b></p>
+                <div id="campo-quantidade-box"><input type="number" id="acao-quantidade" placeholder="Quantidade de XP" value="50" min="1"></div>
+                <input type="text" id="acao-motivo" placeholder="Digite o motivo..." value="">
+                <div class="botoes-acao">
+                    <button class="btn-acao-cancelar" onclick="window.fecharModalAcao()">Cancelar</button>
+                    <button class="btn-acao-confirmar" id="btn-acao-confirmar" onclick="window.confirmarAcao()">Confirmar</button>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+    }
+
+    // 2. Forçar a sobrescrita global
+    window.tipoAcaoAtual = null;
+    window.passAlvoAtual = null;
+    window.funcaoPosAcao = null;
+
+    window.abrirModalAcao = function(tipo, passAlvo, nomeAlvo, callback) {
+        window.tipoAcaoAtual = tipo;
+        window.passAlvoAtual = passAlvo;
+        window.funcaoPosAcao = callback;
+        
+        document.getElementById('acao-nome-alvo').innerText = nomeAlvo;
+        document.getElementById('btn-acao-confirmar').disabled = false;
+        document.getElementById('btn-acao-confirmar').innerText = "Confirmar";
+
+        if (tipo === 'xp') {
+            document.getElementById('acao-titulo').innerText = "Enviar Recompensa (XP)";
+            document.getElementById('campo-quantidade-box').style.display = 'block';
+            document.getElementById('acao-quantidade').value = "50";
+            document.getElementById('acao-motivo').value = "Ato de bravura";
+            document.getElementById('btn-acao-confirmar').style.background = "linear-gradient(135deg, #3b82f6, #2563eb)";
+        } else if (tipo === 'advertencia') {
+            document.getElementById('acao-titulo').innerText = "Aplicar Advertência";
+            document.getElementById('campo-quantidade-box').style.display = 'none'; 
+            document.getElementById('acao-motivo').value = "Quebra de regras";
+            document.getElementById('btn-acao-confirmar').style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+        }
+        document.getElementById('modalAcao').classList.add('aberto');
+    };
+
+    window.fecharModalAcao = function() { document.getElementById('modalAcao').classList.remove('aberto'); };
+
+    window.confirmarAcao = async function() {
+        const motivo = document.getElementById('acao-motivo').value || "Não informado";
+        const btn = document.getElementById('btn-acao-confirmar');
+        btn.innerText = "Processando..."; btn.disabled = true;
+
+        if (window.tipoAcaoAtual === 'xp') {
+            const qtd = parseInt(document.getElementById('acao-quantidade').value);
+            if (isNaN(qtd) || qtd <= 0) { alert("XP inválido."); btn.innerText = "Confirmar"; btn.disabled = false; return; }
+            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
+            if (data) {
+                await sb.from('membros').update({ xp_total: (data.xp_total || 0) + qtd }).eq('passaporte', window.passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP enviado!`, "sucesso");
+                if(localStorage.getItem('passaporte') === window.passAlvoAtual) window.abrirGaveta();
+            }
+        } else if (window.tipoAcaoAtual === 'advertencia') {
+            const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', window.passAlvoAtual).single();
+            if (data) {
+                await sb.from('membros').update({ xp_total: Math.floor((data.xp_total || 0) * 0.8), advertencias: (data.advertencias || 0) + 1 }).eq('passaporte', window.passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`Advertência aplicada!`, "erro");
+            }
+        }
+        if(typeof window.funcaoPosAcao === 'function') window.funcaoPosAcao();
+        window.fecharModalAcao();
+    };
+
+    // SOBRESCREVENDO O BOTÃO DE MEMBROS ATIVOS E GERENCIAR
+    window.darXP = function(passAlvo, nomeAlvo) { window.abrirModalAcao('xp', passAlvo, nomeAlvo, () => { if(typeof window.carregarMembrosAtivos === 'function') window.carregarMembrosAtivos(); if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros(); }); };
+    window.acaoDarXp = window.darXP; // Aponta as duas funções para o mesmo modal
+    window.acaoAdvertir = function(passAlvo, nomeAlvo) { window.abrirModalAcao('advertencia', passAlvo, nomeAlvo, () => { if(typeof window.carregarMembrosAtivos === 'function') window.carregarMembrosAtivos(); if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros(); }); };
+</script>
 </body>
 </html>
