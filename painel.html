@@ -19,2374 +19,433 @@
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
     
-   <style>
-       /* ========== ESTILOS DA GAVETA DE PERFIL ========== */
-.fundo-gaveta {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
-    backdrop-filter: blur(4px); z-index: 1000;
-    opacity: 0; visibility: hidden; transition: all 0.3s ease;
-}
-.fundo-gaveta.aberto { opacity: 1; visibility: visible; }
-
-.gaveta-perfil {
-    position: fixed; top: 0; left: 0; bottom: 0; width: 80%; max-width: 340px;
-    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
-    border-right: 1px solid rgba(96, 165, 250, 0.2);
-    z-index: 1001; transform: translateX(-100%); transition: transform 0.3s ease;
-    display: flex; flex-direction: column; padding: 24px;
-}
-.gaveta-perfil.aberta { transform: translateX(0); }
-
-.gaveta-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-.gaveta-topo h3 { font-size: 18px; font-weight: 700; color: #fff; }
-.gaveta-topo button { background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
-
-.gaveta-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover; margin: 0 auto 16px; background: #1e293b; display: block; }
-
-.gaveta-info { text-align: center; margin-bottom: 24px; }
-.gaveta-nome { font-size: 20px; font-weight: 700; color: #fff; }
-.gaveta-cargo { font-size: 14px; color: #60a5fa; font-weight: 600; margin-top: 4px; }
-
-.gaveta-xp-box { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
-.gaveta-xp-texto { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px; }
-.gaveta-barra-fundo { width: 100%; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; }
-.gaveta-barra-preenchida { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 999px; transition: width 1s ease; width: 0%; }
-
-/* Estilo do novo cabeçalho com avatar */
-.cabecalho-saudacao { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-.cabecalho-saudacao .avatar-mini { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; background: #1e293b; cursor: pointer; transition: transform 0.2s ease; }
-.cabecalho-saudacao .avatar-mini:hover { transform: scale(1.05); }
-.cabecalho-saudacao .saudacao { margin-bottom: 0; }
-       /* Correção do botão na gaveta */
-#gavetaPerfil button {
-    height: 48px !important;
-    flex-shrink: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin-bottom: 15px !important;
-       }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    /* Remove a seleção azul feia em celulares */
-    * {
-        -webkit-tap-highlight-color: transparent !important;
-    }
-    
-    /* Impede que o texto dos botões e menus fique selecionado ao clicar */
-    button, a, .btn-categoria, .menu-item, .card-clicavel, .membro-nome, .membro-status {
-        user-select: none !important;
-        -webkit-user-select: none !important;
-        -moz-user-select: none !important;
-        -ms-user-select: none !important;
-        outline: none !important;
-    }
-
-     html, body {
-        min-height: 100vh;
-        background: linear-gradient(180deg, #000000 0%, #0f172a 100%);
-        color: #ffffff;
-        font-family: 'Inter', sans-serif;
-        padding-bottom: 80px;
-    }
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none !important; }
+        *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
+        html, body { min-height: 100vh; background: linear-gradient(180deg, #000000 0%, #0f172a 100%); color: #ffffff; font-family: 'Inter', sans-serif; padding-bottom: 80px; }
         
-        .banner-topo {
-            width: 100%;
-            height: 200px;
-            position: relative;
-            overflow: hidden;
-        }
+        .banner-topo { width: 100%; height: 200px; position: relative; overflow: hidden; }
+        .banner-topo::before { content: ""; position: absolute; inset: 0; background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat; opacity: 0.45; transform: scale(1.05); }
+        .banner-topo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%); }
         
-        .banner-topo::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: url("https://wallpapers.com/images/featured/fundo-de-fivem-zt0lohk29h4faehq.jpg") center top / cover no-repeat;
-            opacity: 0.45;
-            transform: scale(1.05);
-        }
+        .cabecalho-superior { position: absolute; top: 0; left: 0; right: 0; padding: 20px 24px; display: flex; justify-content: flex-end; z-index: 10; }
+        .botao-sair { display: flex; align-items: center; gap: 8px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(96, 165, 250, 0.18); border-radius: 12px; padding: 10px 18px; color: #f87171; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; backdrop-filter: blur(10px); }
         
-        .banner-topo::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0) 0%, #000000 100%);
-        }
-        
-        .cabecalho-superior {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 20px 24px;
-            display: flex;
-            justify-content: flex-end;
-            z-index: 10;
-        }
-        
-        .botao-sair {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(96, 165, 250, 0.18);
-            border-radius: 12px;
-            padding: 10px 18px;
-            color: #f87171;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.25s ease;
-            backdrop-filter: blur(10px);
-        }
-        
-        .botao-sair:hover {
-            background: rgba(248, 113, 113, 0.12);
-            border-color: rgba(248, 113, 113, 0.35);
-        }
-        
-        .conteudo {
-            padding: 24px;
-            margin-top: -30px;
-            position: relative;
-            z-index: 1;
-            transition: filter 0.35s ease;
-        }
-        
+        .conteudo { padding: 24px; margin-top: -30px; position: relative; z-index: 1; transition: filter 0.35s ease; }
         .conteudo.desfocado { filter: blur(6px); }
         
-        .saudacao {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 12px;
-        }
-        
+        .cabecalho-saudacao { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+        .cabecalho-saudacao .avatar-mini { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; background: #1e293b; cursor: pointer; transition: transform 0.2s ease; }
+        .saudacao { font-size: 28px; font-weight: 700; margin-bottom: 0; }
         .saudacao span { color: #60a5fa; }
         
-        .linha-info {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-        
-        .linha-info i {
-            font-size: 15px;
-            color: #60a5fa;
-            width: 18px;
-            text-align: center;
-        }
-        
+        .linha-info { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+        .linha-info i { font-size: 15px; color: #60a5fa; width: 18px; text-align: center; }
         .info-texto { font-size: 14px; color: #94a3b8; }
         .info-valor { font-size: 14px; color: #fff; font-weight: 600; }
         
-        .bloco-tempo {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin: 18px 0 28px;
-        }
-        
+        .bloco-tempo { display: flex; align-items: center; gap: 16px; margin: 18px 0 28px; }
         .item-tempo { display: flex; align-items: center; gap: 6px; }
         .item-tempo i { font-size: 14px; color: #60a5fa; }
-        .hora { font-size: 15px; color: #fff; font-weight: 600; font-variant-numeric: tabular-nums; }
+        .hora { font-size: 15px; color: #fff; font-weight: 600; }
         .data { font-size: 14px; color: #94a3b8; }
         
-        .grade-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 14px;
-        }
-        
-        .card {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px;
-            padding: 20px;
-            height: 110px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-        
-        .card-titulo {
-            font-size: 13px;
-            color: #94a3b8;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-        
+        .grade-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; }
+        .card { background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 14px; padding: 20px; height: 110px; display: flex; flex-direction: column; justify-content: center; }
+        .card-titulo { font-size: 13px; color: #94a3b8; font-weight: 500; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .card-titulo i { font-size: 14px; color: #60a5fa; }
         .card-valor { font-size: 22px; font-weight: 700; color: #fff; }
         
-        .card-aviso {
-            background: rgba(15, 23, 42, 0.55);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 14px;
-            padding: 20px;
-            grid-column: 1 / -1;
-        }
+        .card-aviso { background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 14px; padding: 20px; grid-column: 1 / -1; }
+        .card-clicavel { cursor: pointer; transition: border-color 0.25s ease; }
+        .card-dica { font-size: 11px; color: #64748b; margin-top: 4px; }
+                /* ========== GAVETA E MENUS ========== */
+        .fundo-gaveta { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+        .fundo-gaveta.aberto { opacity: 1; visibility: visible; }
+        .gaveta-perfil { position: fixed; top: 0; left: 0; bottom: 0; width: 80%; max-width: 340px; background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border-right: 1px solid rgba(96, 165, 250, 0.2); z-index: 1001; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; }
+        .gaveta-perfil.aberta { transform: translateX(0); }
+        .gaveta-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0; }
+        .gaveta-topo h3 { font-size: 18px; font-weight: 700; color: #fff; }
+        .gaveta-topo button { background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
+        .gaveta-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover; margin: 0 auto 16px; background: #1e293b; display: block; flex-shrink: 0; }
+        .gaveta-info { text-align: center; margin-bottom: 24px; flex-shrink: 0; }
+        .gaveta-nome { font-size: 20px; font-weight: 700; color: #fff; }
+        .gaveta-cargo { font-size: 14px; color: #60a5fa; font-weight: 600; margin-top: 4px; }
+        .gaveta-xp-box { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 24px; flex-shrink: 0; }
+        .gaveta-xp-texto { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px; }
+        .gaveta-barra-fundo { width: 100%; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; }
+        .gaveta-barra-preenchida { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 999px; transition: width 1s ease; width: 0%; }
+        .btn-gaveta { width: 100%; height: 48px; flex-shrink: 0; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid #334155; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .gaveta-footer { margin-top: auto; padding-top: 20px; text-align: center; font-size: 12px; color: #64748b; flex-shrink: 0; }
+
+        .fundo-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
+        .fundo-modal.aberto { opacity: 1; visibility: visible; }
+        .caixa-modal { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.2); border-radius: 18px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center; transform: translateY(10px); transition: transform 0.3s ease; }
+        .fundo-modal.aberto .caixa-modal { transform: translateY(0); }
+        .icone-modal { width: 56px; height: 56px; border-radius: 50%; background: rgba(96,165,250,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .icone-modal i { font-size: 24px; color: #60a5fa; }
+        .titulo-modal { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
+        .texto-modal { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
+        .botoes-modal { display: flex; gap: 12px; }
+        .botao-cancelar { flex: 1; padding: 14px; border: 1px solid rgba(96,165,250,0.2); background: transparent; color: #94a3b8; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
+        .botao-confirmar { flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; color: #fff; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
         
-        .card-clicavel {
-            cursor: pointer;
-            transition: border-color 0.25s ease, background 0.25s ease;
-        }
-        
-        .card-clicavel:hover {
-            border-color: rgba(96, 165, 250, 0.35);
-            background: rgba(30, 64, 175, 0.12);
-        }
-        
-        .card-dica {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 4px;
-        }
-        
-        .barra-menu {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            background: #000;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            border-top: 1px solid rgba(96, 165, 250, 0.15);
-            z-index: 100;
-        }
-        
-        .menu-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            color: #94a3b8;
-            text-decoration: none;
-            font-size: 11px;
-            cursor: pointer;
-        }
-        
+        .barra-menu { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: #000; display: flex; align-items: center; justify-content: space-around; border-top: 1px solid rgba(96,165,250,0.15); z-index: 100; }
+        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 11px; cursor: pointer; background: none; border: none; }
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
         
-        .sombra-fundo {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 97;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.35s ease;
-        }
-        
-        .sombra-fundo.visivel { opacity: 1; visibility: visible; }
-        
-        .gaveta {
-            position: fixed;
-            bottom: 70px;
-            right: 0;
-            width: 260px;
-            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
-            border-left: 1px solid rgba(96, 165, 250, 0.15);
-            border-top-left-radius: 16px;
-            z-index: 98;
-            transform: translateY(100%);
-            transition: transform 0.35s ease;
-            padding: 20px 18px;
-            max-height: calc(80vh - 70px);
-            overflow-y: auto;
-        }
-        
-        .gaveta.aberta { transform: translateY(0); }
-        
-        .gaveta-titulo {
-            font-size: 17px;
-            font-weight: 700;
-            margin-bottom: 14px;
-        }
-        
-        .gaveta-lista { display: flex; flex-direction: column; gap: 8px; }
-        
-        .gaveta-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 14px;
-            background: rgba(30, 64, 175, 0.08);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 10px;
-            color: #e2e8f0;
-            text-decoration: none;
-        }
-        
-        .gaveta-item:hover {
-            background: rgba(96, 165, 250, 0.15);
-            transform: translateX(-4px);
-        }
-        
-        .gaveta-item-esq { display: flex; align-items: center; gap: 10px; }
-        .gaveta-item-esq i { color: #60a5fa; font-size: 16px; }
-        .gaveta-item-dir { color: #64748b; font-size: 14px; }
-        
-        .botao-fechar {
-            position: absolute;
-            top: 12px;
-            right: 14px;
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        
-        .fundo-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(2, 6, 23, 0.8);
-            backdrop-filter: blur(12px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.35s ease;
-            padding: 24px;
-        }
-        
-        .fundo-modal.aberto { opacity: 1; visibility: visible; }
-        
-        .caixa-modal {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            border-radius: 24px;
-            padding: 32px;
-            max-width: 400px;
-            width: 100%;
-        }
-        
-        .icone-modal {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: rgba(248, 113, 113, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-        }
-        
-        .icone-modal i { font-size: 26px; color: #f87171; }
-        .titulo-modal { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 10px; }
-        .texto-modal { font-size: 15px; color: #94a3b8; text-align: center; margin-bottom: 24px; }
-        
-        .botoes-modal { display: flex; gap: 12px; }
-        
-        .botao-cancelar {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            background: rgba(30, 41, 59, 0.5);
-            border: 1px solid rgba(96, 165, 250, 0.18);
-            color: #cbd5e1;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        .botao-confirmar {
-            flex: 1;
-            padding: 14px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #ef4444, #b91c1c);
-            border: none;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        
-        /* ---------- LISTA DE MEMBROS (ON / PAUSADO / OFF) ---------- */
-        #modalMembros { padding: 14px; }
-        
-        .caixa-lista {
-            background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92));
-            border: 1px solid rgba(96, 165, 250, 0.2);
-            border-radius: 24px;
-            padding: 22px 18px 18px;
-            max-width: 440px;
-            width: 100%;
-            max-height: 80vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .lista-topo {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 6px;
-            flex-shrink: 0;
-        }
-        
-        .lista-titulo { font-size: 20px; font-weight: 700; }
-        
-        .lista-fechar {
-            background: transparent;
-            border: none;
-            color: #94a3b8;
-            font-size: 20px;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
-        
-        .lista-resumo {
-            flex-shrink: 0;
-            text-align: center;
-            font-size: 13px;
-            color: #94a3b8;
-            line-height: 1.6;
-            margin: 4px 0 16px;
-        }
-        
-        .lista-corpo {
-            flex: 1 1 auto;
-            min-height: 0;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            padding-right: 2px;
-        }
-        
-        .membro-item {
-            padding: 12px;
-            background: rgba(30, 64, 175, 0.08);
-            border: 1px solid rgba(96, 165, 250, 0.12);
-            border-radius: 12px;
-            flex-shrink: 0;
-        }
-        
-        .membro-topo {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-        }
-        
-        .membro-nome {
-            flex: 1;
-            min-width: 0;
-            font-size: 15px;
-            font-weight: 600;
-            color: #fff;
-            word-break: break-word;
-        }
-        
-        .membro-passaporte {
-            display: flex;
-            align-items: center;
-            flex-wrap: nowrap;
-            gap: 8px;
-            margin-top: 8px;
-            font-size: 12px;
-            color: #94a3b8;
-            white-space: nowrap;
-        }
-        
-        .pass-txt { flex: 0 0 auto; }
-        
-        .membro-tag {
-            font-size: 10px;
-            font-weight: 600;
-            color: #94a3b8;
-            border: 1px solid rgba(148, 163, 184, 0.3);
-            border-radius: 999px;
-            padding: 1px 7px;
-            margin-left: 6px;
-            vertical-align: middle;
-        }
-        
-        .ver-equipe, .ver-tempo {
-            flex: 0 0 auto;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            padding: 2px 9px;
-            background: rgba(96, 165, 250, 0.12);
-            border: 1px solid rgba(96, 165, 250, 0.3);
-            border-radius: 999px;
-            color: #60a5fa;
-            font-family: inherit;
-            font-size: 11px;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-        }
-        
-        .ver-equipe i, .ver-tempo i { font-size: 10px; transition: transform 0.2s ease; }
-        .membro-item.eq-aberto .ver-equipe i { transform: rotate(180deg); }
-        .membro-item.tempo-aberto .ver-tempo i { transform: rotate(180deg); }
-        
-        .membro-equipe {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 10px;
-            padding: 10px 12px;
-            background: rgba(2, 6, 23, 0.5);
-            border: 1px solid rgba(96, 165, 250, 0.15);
-            border-radius: 10px;
-        }
-        
-        .membro-equipe > i { color: #60a5fa; font-size: 16px; }
-        .equipe-mini-nome { font-size: 14px; font-weight: 700; color: #fff; }
-        .equipe-mini-funcao { font-size: 12px; color: #94a3b8; margin-top: 2px; }
-        
-        .membro-tempo {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            margin-top: 10px;
-            padding: 10px 12px;
-            background: rgba(2, 6, 23, 0.5);
-            border: 1px solid rgba(96, 165, 250, 0.15);
-            border-radius: 10px;
-        }
-        
-        .tempo-linha {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-        
-        .tempo-linha strong {
-            color: #fff;
-            font-weight: 600;
-            text-align: right;
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .tempo-linha.pausa strong { color: #f59e0b; }
-        
-        .membro-status {
-            flex: 0 0 auto;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            padding: 5px 10px;
-            border-radius: 999px;
-        }
-        
-        .membro-status.on {
-            color: #22c55e;
-            background: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.35);
-        }
-        
-        .membro-status.pausado {
-            color: #f59e0b;
-            background: rgba(245, 158, 11, 0.12);
-            border: 1px solid rgba(245, 158, 11, 0.35);
-        }
-        
-        .membro-status.off {
-            color: #94a3b8;
-            background: rgba(148, 163, 184, 0.08);
-            border: 1px solid rgba(148, 163, 184, 0.25);
-        }
-        
-        .membros-vazio {
-            text-align: center;
-            color: #64748b;
-            font-size: 14px;
-            padding: 28px 10px;
-        }
-        
-        /* ---------- ADMIN: PAUSAR / RETORNAR / ENCERRAR ---------- */
-        .membro-acoes {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        
-        .btn-admin {
-            flex: 1;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            padding: 8px 10px;
-            border-radius: 10px;
-            border: 1px solid transparent;
-            font-family: inherit;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        
-        .btn-admin:disabled { opacity: 0.5; cursor: not-allowed; }
-        
-        .btn-admin.pausar {
-            color: #f59e0b;
-            background: rgba(245, 158, 11, 0.12);
-            border-color: rgba(245, 158, 11, 0.35);
-        }
-        
-        .btn-admin.retomar {
-            color: #22c55e;
-            background: rgba(34, 197, 94, 0.12);
-            border-color: rgba(34, 197, 94, 0.35);
-        }
-        
-        .btn-admin.encerrar {
-            color: #f87171;
-            background: rgba(248, 113, 113, 0.12);
-            border-color: rgba(248, 113, 113, 0.35);
-        }
-        
-        .toast-admin {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            right: 16px;
-            max-width: 420px;
-            margin: 0 auto;
-            padding: 12px 16px;
-            border-radius: 12px;
-            font-size: 14px;
-            font-weight: 500;
-            z-index: 1500;
-            display: none;
-        }
-        
-        .toast-admin.sucesso {
-            background: #0b1f14;
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            color: #86efac;
-        }
-        
-        .toast-admin.erro {
-            background: #2a1212;
-            border: 1px solid rgba(239, 68, 68, 0.4);
-            color: #fca5a5;
-        }
-        
-        @media (max-width: 380px) {
-            .ver-txt { display: none; }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .msg-card { display: flex; gap: 12px; background: #1e293b; border: 1px solid #334155; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
+        .msg-card.admin { border-left-color: #22c55e; }
+        .msg-avatar { width: 40px; height: 40px; border-radius: 50%; background: #334155; color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+        .msg-content { flex: 1; display: flex; flex-direction: column; }
+        .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+        .msg-nome { font-size: 14px; font-weight: 700; color: #60a5fa; }
+        .msg-card.admin .msg-nome { color: #22c55e; }
+        .msg-tag { font-size: 10px; background: #334155; color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .msg-card.admin .msg-tag { background: #166534; color: #86efac; }
+        .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
+        .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
+        .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
     </style>
-        </head>
-        <body>
+</head>
+<body>
     <div class="banner-topo"></div>
-    
     <div class="cabecalho-superior">
-        <button class="botao-sair" onclick="abrirModal()">
-            <i class="fas fa-sign-out-alt"></i> Sair
-        </button>
+        <button class="botao-sair" onclick="abrirModalSair()"><i class="fas fa-sign-out-alt"></i> Sair</button>
     </div>
 
     <div class="conteudo" id="conteudoPrincipal">
-        <h1 class="saudacao">Olá, <span id="nomeUsuario">Membro</span></h1>
-        
-        <div class="linha-info">
-            <i class="fas fa-id-card"></i>
-            <span class="info-texto">Passaporte:</span>
-            <span class="info-valor" id="passaporteUsuario">-</span>
+        <div class="cabecalho-saudacao">
+            <img id="img-avatar-mini" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="avatar-mini" onclick="abrirGaveta()" alt="Perfil">
+            <h1 class="saudacao">Olá, <span id="nomeUsuario">Membro</span></h1>
         </div>
         
-        <div class="linha-info">
-            <i class="fas fa-shield-alt"></i>
-            <span class="info-texto">Cargo:</span>
-            <span class="info-valor" id="cargoUsuario">—</span>
-        </div>
+        <div class="linha-info"><i class="fas fa-id-card"></i><span class="info-texto">Passaporte:</span><span class="info-valor" id="passaporteUsuario">-</span></div>
+        <div class="linha-info"><i class="fas fa-shield-alt"></i><span class="info-texto">Cargo:</span><span class="info-valor" id="cargoUsuario">—</span></div>
         
         <div class="bloco-tempo">
-            <div class="item-tempo">
-                <i class="fas fa-clock"></i>
-                <span class="hora" id="horaAtual"></span>
-            </div>
-            <div class="item-tempo">
-                <i class="fas fa-calendar-alt"></i>
-                <span class="data" id="dataAtual"></span>
-            </div>
+            <div class="item-tempo"><i class="fas fa-clock"></i><span class="hora" id="horaAtual"></span></div>
+            <div class="item-tempo"><i class="fas fa-calendar-alt"></i><span class="data" id="dataAtual"></span></div>
         </div>
         
         <div class="grade-cards">
-            <div class="card">
+            <div class="card card-clicavel" onclick="abrirModalTickets()">
                 <div class="card-titulo">Tickets Abertos <i class="fas fa-ticket-alt"></i></div>
-                <div class="card-valor">0</div>
+                <div class="card-valor" id="valor-tickets-painel">0</div>
+                <div class="card-dica">Toque para abrir suporte</div>
             </div>
-            <div class="card">
-                <div class="card-titulo">Ausências Pendentes <i class="fas fa-calendar-times"></i></div>
-                <div class="card-valor">0</div>
+            <div class="card card-clicavel" onclick="abrirModalFaltas()">
+                <div class="card-titulo">Faltas e Presenças <i class="fas fa-user-check"></i></div>
+                <div class="card-valor" style="font-size: 18px;" id="valor-presencas">0P · 0F · 0J</div>
             </div>
-            <div class="card card-clicavel" id="cardMembrosAtivos" onclick="abrirListaMembros()">
+            <div class="card card-clicavel" onclick="abrirListaMembros()">
                 <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
                 <div class="card-valor" id="membrosAtivos">—</div>
                 <div class="card-dica">Toque para ver a lista</div>
             </div>
-            <div class="card">
-                <div class="card-titulo">Pontos Hoje <i class="fas fa-clipboard-check"></i></div>
-                <div class="card-valor">0</div>
+            <div class="card card-clicavel" onclick="abrirFrequencia()">
+                <div class="card-titulo">Frequência <i class="fas fa-calendar-check"></i></div>
+                <div class="card-valor" id="pontosHoje">0</div>
+                <div class="card-dica">Toque para ver histórico</div>
             </div>
-            <div class="card-aviso">
-                <div class="card-titulo">Aviso Recente <i class="fas fa-bell"></i></div>
-                <div class="card-valor" style="font-size: 20px;">Nenhum aviso recente no momento.</div>
+            <div class="card-aviso" style="position: relative;">
+                <div class="card-titulo">Aviso Recente <div><i class="fas fa-pen" id="btn-editar-aviso" style="cursor: pointer; display: none; margin-right: 8px; color: #60a5fa;" onclick="abrirModalAviso()"></i><i class="fas fa-bell"></i></div></div>
+                <div class="card-valor" id="texto-aviso" style="font-size: 20px; line-height: 1.4;">Carregando avisos...</div>
             </div>
         </div>
     </div>
-        <div class="sombra-fundo" id="sombraFundo" onclick="fecharGaveta()"></div>
 
-    <div class="gaveta" id="gaveta">
-        <button class="botao-fechar" onclick="fecharGaveta()"><i class="fas fa-times"></i></button>
-        <h3 class="gaveta-titulo">Mais Opções</h3>
-        <div class="gaveta-lista">
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-bell"></i><span>Avisos</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-file-alt"></i><span>Ficha</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-bell"></i><span>Notificações</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
-            <a href="#" class="gaveta-item">
-                <div class="gaveta-item-esq"><i class="fas fa-shield-alt"></i><span>Minha Segurança</span></div>
-                <i class="fas fa-chevron-right gaveta-item-dir"></i>
-            </a>
+    <div class="fundo-gaveta" id="fundoGaveta" onclick="fecharGaveta()"></div>
+    <div class="gaveta-perfil" id="gavetaPerfil">
+        <div class="gaveta-topo"><h3>Meu Dossiê</h3><button onclick="fecharGaveta()"><i class="fas fa-times"></i></button></div>
+        <img id="img-avatar-gaveta" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="gaveta-avatar">
+        <div class="gaveta-info"><div class="gaveta-nome" id="gavetaNome">Membro</div><div class="gaveta-cargo" id="gavetaCargo">Cargo</div></div>
+        <div class="gaveta-xp-box">
+            <div class="gaveta-xp-texto"><span>Respeito (XP)</span><span id="gavetaXpTexto">0 / 1.000</span></div>
+            <div class="gaveta-barra-fundo"><div class="gaveta-barra-preenchida" id="gavetaXpBarra"></div></div>
+            <p style="font-size: 11px; color: #64748b; margin-top: 8px; text-align: center;">Próximo Nível: <span id="gavetaProximoNivel">Executor</span></p>
         </div>
+        <button class="btn-gaveta" onclick="fecharGaveta(); abrirModalEditarPerfil();">Editar Perfil</button>
+        <div class="gaveta-footer"><i class="fas fa-id-card"></i> Passaporte: <span id="gavetaPassaporte">---</span></div>
     </div>
+
+    <div class="fundo-modal" id="modalSair" onclick="if(event.target === this) fecharModalSair()"><div class="caixa-modal"><div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div><h3 class="titulo-modal">Deseja sair?</h3><p class="texto-modal">Você voltará para a tela de acesso.</p><div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalSair()">Cancelar</button><button class="botao-confirmar" onclick="confirmarSaida()">Sair</button></div></div></div>
+    <div class="fundo-modal" id="modalAviso" onclick="if(event.target === this) fecharModalAviso()"><div class="caixa-modal" style="max-width: 400px; padding: 24px;"><h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3><textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea><div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button></div></div></div>
+    <div class="fundo-modal" id="modalPerfil" onclick="if(event.target === this) fecharModalPerfil()"><div class="caixa-modal" style="max-width: 400px; padding: 24px;"><h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3><input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;"><input type="text" id="input-frase" placeholder="Sua frase..." style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;"><div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button></div></div></div>
 
     <nav class="barra-menu">
-        <a href="painel.html" class="menu-item ativo">
-            <i class="fas fa-home"></i><span>Painel</span>
-        </a>
-        <a href="bate-ponto.html" class="menu-item">
-            <i class="fas fa-clock"></i><span>Ponto</span>
-        </a>
-        <a href="equipe.html" class="menu-item">
-            <i class="fas fa-users"></i><span>Equipe</span>
-        </a>
-    </nav>
-        <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
-        <div class="caixa-lista">
-            <div class="lista-topo">
-                <h3 class="lista-titulo">Membros</h3>
-                <button class="lista-fechar" onclick="fecharListaMembros()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="lista-resumo" id="resumoMembros"></div>
-            <div class="lista-corpo" id="listaMembros"></div>
-        </div>
-    </div>
-
-    <div class="fundo-modal" id="modalSair">
-        <div class="caixa-modal">
-            <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
-            <h3 class="titulo-modal">Deseja sair?</h3>
-            <p class="texto-modal">Você voltará para a tela de acesso.</p>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" onclick="fecharModal()">Cancelar</button>
-                <button class="botao-confirmar" onclick="confirmarSaida()">Sair</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="fundo-modal" id="modalAdminConfirma" onclick="if(event.target === this) fecharConfirmacaoAdmin()">
-        <div class="caixa-modal">
-            <div class="icone-modal"><i class="fas fa-power-off"></i></div>
-            <h3 class="titulo-modal">Encerrar ponto?</h3>
-            <p class="texto-modal" id="textoAdminConfirma"></p>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" onclick="fecharConfirmacaoAdmin()">Cancelar</button>
-                <button class="botao-confirmar" onclick="confirmarEncerrarAdmin()">Encerrar</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toastAdmin" class="toast-admin"></div>
-
-    <script>
-        // ========== RELÓGIO ==========
-        function atualizarRelogio() {
-            const agora = new Date();
-            const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-            const dia = String(brasilia.getDate()).padStart(2, '0');
-            const mes = String(brasilia.getMonth() + 1).padStart(2, '0');
-            const ano = brasilia.getFullYear();
-            const h = String(brasilia.getHours()).padStart(2, '0');
-            const m = String(brasilia.getMinutes()).padStart(2, '0');
-            const s = String(brasilia.getSeconds()).padStart(2, '0');
-            document.getElementById('horaAtual').textContent = `${h}:${m}:${s}`;
-            document.getElementById('dataAtual').textContent = `${dia}/${mes}/${ano}`;
-        }
-        atualizarRelogio();
-        setInterval(atualizarRelogio, 1000);
-
-        // ========== GAVETA ==========
-        const gaveta = document.getElementById('gaveta');
-        const sombraFundo = document.getElementById('sombraFundo');
-        const conteudoPrincipal = document.getElementById('conteudoPrincipal');
-        const modal = document.getElementById('modalSair');
-
-        function alternarGaveta(e) {
-            e?.preventDefault();
-            gaveta.classList.toggle('aberta');
-            sombraFundo.classList.toggle('visivel');
-            conteudoPrincipal.classList.toggle('desfocado');
-        }
-
-        function fecharGaveta() {
-            gaveta.classList.remove('aberta');
-            sombraFundo.classList.remove('visivel');
-            conteudoPrincipal.classList.remove('desfocado');
-        }
-
-        // ========== MODAL SAIR ==========
-        function abrirModal() { modal.classList.add('aberto'); }
-        function fecharModal() { modal.classList.remove('aberto'); }
-        function confirmarSaida() {
-            localStorage.removeItem('passaporte');
-            localStorage.removeItem('usuario');
-            window.location.href = 'login.html';
-        }
-
-        // ========== BUSCAR DADOS ==========
-        async function carregarDadosUsuario() {
-            const passaporteSalvo = localStorage.getItem('passaporte');
-            
-            if (!passaporteSalvo) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            try {
-                const { data, error } = await sb
-                    .from('membros')
-                    .select('nome, passaporte, cargo')
-                    .eq('passaporte', passaporteSalvo)
-                    .single();
-
-                if (error) throw error;
-
-                if (data) {
-                    document.getElementById('nomeUsuario').textContent = data.nome || 'Membro';
-                    document.getElementById('passaporteUsuario').textContent = data.passaporte || '-';
-                    document.getElementById('cargoUsuario').textContent = data.cargo || '—';
-                }
-            } catch (erro) {
-                console.log('Erro ao buscar:', erro);
-                const salvo = localStorage.getItem('usuario');
-                if (salvo) {
-                    const usuario = JSON.parse(salvo);
-                    document.getElementById('nomeUsuario').textContent = usuario.nome || 'Membro';
-                    document.getElementById('cargoUsuario').textContent = usuario.cargo || '—';
-                }
-            }
-        }
-
-        carregarDadosUsuario();
-
-        // ========== LISTA DE MEMBROS (ON / PAUSADO / OFF) ==========
-        const modalMembros = document.getElementById('modalMembros');
-        const listaMembros = document.getElementById('listaMembros');
-        const resumoMembros = document.getElementById('resumoMembros');
-        const modalAdminConfirma = document.getElementById('modalAdminConfirma');
-        const textoAdminConfirma = document.getElementById('textoAdminConfirma');
-        let estadoAtivos = new Map();
-        let membrosCadastrados = null;
-        let equipesPorId = {};
-        let equipesAbertas = new Set();
-        let temposAbertos = new Set();
-        let timerListaMembros = null;
-        let timerCronometros = null;
-        let souAdmin = false;
-        let acoesEmAndamento = new Set();
-        let listaAtual = [];
-        let adminAlvoPendente = null;
-        let timerToastAdmin = null;
-
-        function escaparHtml(t) {
-            return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-        }
-
-        function formatarDuracaoSeg(totalSeg) {
-            const s = Math.max(0, Math.floor(totalSeg));
-            const h = Math.floor(s / 3600);
-            const m = Math.floor((s % 3600) / 60);
-            const seg = s % 60;
-            return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(seg).padStart(2, '0');
-        }
-
-        function formatarQuando(ms) {
-            if (isNaN(ms)) return '--:--';
-            const fuso = { timeZone: 'America/Sao_Paulo' };
-            const data = new Date(ms);
-            const hora = data.toLocaleTimeString('pt-BR', { ...fuso, hour: '2-digit', minute: '2-digit' });
-            const dia = data.toLocaleDateString('pt-BR', { ...fuso, day: '2-digit', month: '2-digit' });
-            const hoje = new Date().toLocaleDateString('pt-BR', { ...fuso, day: '2-digit', month: '2-digit' });
-            return (dia === hoje ? 'hoje' : dia) + ' às ' + hora;
-        }
-
-        function calcularTempos(at) {
-            const agora = Date.now();
-            const entrada = Date.parse(at.entrada);
-            const inicio = Date.parse(at.pausa_inicio);
-            const fim = Date.parse(at.pausa_fim);
-            const pausado = !isNaN(inicio) && (isNaN(fim) || inicio > fim);
-            const pausaAtual = pausado ? (agora - inicio) / 1000 : 0;
-            const pausaConcluida = (!pausado && !isNaN(inicio) && !isNaN(fim) && fim > inicio) ? (fim - inicio) / 1000 : 0;
-            const jornada = isNaN(entrada) ? null : (agora - entrada) / 1000 - pausaAtual - pausaConcluida;
-            return { entrada, inicio, fim, pausado, pausaAtual, pausaConcluida, jornada };
-        }
-
-        async function carregarDadosLista() {
-            const [resMembros, resEquipes] = await Promise.all([
-                sb.from('membros').select('nome, passaporte'),
-                sb.from('equipes').select('*')
-            ]);
-            if (resMembros.error) throw resMembros.error;
-            membrosCadastrados = resMembros.data || [];
-            equipesPorId = {};
-            if (!resEquipes.error) {
-                (resEquipes.data || []).forEach(e => { equipesPorId[String(e.id)] = e; });
-            }
-        }
-
-        function htmlEquipeDoMembro(equipeId) {
-            if (equipeId === null || equipeId === undefined) {
-                return '<div class="equipe-mini-nome">Sem equipe definida</div>';
-            }
-            const eq = equipesPorId[String(equipeId)];
-            if (!eq) {
-                return '<div class="equipe-mini-nome">Equipe não encontrada</div>';
-            }
-            return `
-                <div class="equipe-mini-nome">${escaparHtml(eq.nome || 'Equipe')}</div>
-                ${eq.funcao ? `<div class="equipe-mini-funcao">${escaparHtml(eq.funcao)}</div>` : ''}
-            `;
-        }
-
-        function htmlTempoDoMembro(at, pass) {
-            const t = calcularTempos(at);
-            const p = escaparHtml(pass);
-            let html = `
-                <div class="tempo-linha"><span>Iniciou</span><strong>${escaparHtml(formatarQuando(t.entrada))}</strong></div>`;
-            if (souAdmin) {
-                if (!isNaN(t.inicio)) {
-                    html += `<div class="tempo-linha"><span>Pausou</span><strong>${escaparHtml(formatarQuando(t.inicio))}</strong></div>`;
-                }
-                if (!isNaN(t.inicio) && !isNaN(t.fim) && t.fim > t.inicio) {
-                    html += `<div class="tempo-linha"><span>Retornou</span><strong>${escaparHtml(formatarQuando(t.fim))}</strong></div>`;
-                }
-            }
-            html += `
-                <div class="tempo-linha"><span>Em serviço há</span><strong data-cron="jornada" data-pass="${p}">${t.jornada == null ? '--:--:--' : formatarDuracaoSeg(t.jornada)}</strong></div>`;
-            if (t.pausado) {
-                html += `<div class="tempo-linha pausa"><span>Pausado há</span><strong data-cron="pausa" data-pass="${p}">${formatarDuracaoSeg(t.pausaAtual)}</strong></div>`;
-            } else if (t.pausaConcluida > 0) {
-                html += `<div class="tempo-linha"><span>Última pausa durou</span><strong>${formatarDuracaoSeg(t.pausaConcluida)}</strong></div>`;
-            }
-            return html;
-        }
-
-        function atualizarCronometros() {
-            listaMembros.querySelectorAll('[data-cron]').forEach(el => {
-                const at = estadoAtivos.get(el.dataset.pass);
-                if (!at) return;
-                const t = calcularTempos(at);
-                const valor = el.dataset.cron === 'pausa' ? t.pausaAtual : t.jornada;
-                el.textContent = valor == null ? '--:--:--' : formatarDuracaoSeg(valor);
-            });
-        }
-
-        function htmlBotaoAdmin(pass, acao, rotulo, icone) {
-            const ocupado = Array.from(acoesEmAndamento).some(k => k.startsWith(pass + ':'));
-            return `<button class="btn-admin ${acao}" data-pass="${escaparHtml(pass)}" data-acao="${acao}" ${ocupado ? 'disabled' : ''}><i class="fas ${icone}"></i> ${rotulo}</button>`;
-        }
-
-        function renderizarListaMembros() {
-            if (!membrosCadastrados) return;
-            const cadastrados = new Set(membrosCadastrados.map(m => String(m.passaporte)));
-
-            const lista = membrosCadastrados.map(m => {
-                const pass = String(m.passaporte);
-                const at = estadoAtivos.get(pass);
-                return {
-                    nome: m.nome || 'Sem nome',
-                    passaporte: pass,
-                    estado: at ? (at.pausado ? 'pausado' : 'on') : 'off',
-                    ativo: at || null,
-                    semCadastro: false
-                };
-            });
-
-            // quem está com jornada aberta mas não aparece na tabela membros também entra na lista
-            estadoAtivos.forEach((at, pass) => {
-                if (!cadastrados.has(pass)) {
-                    lista.push({
-                        nome: at.nome || 'Sem nome',
-                        passaporte: pass,
-                        estado: at.pausado ? 'pausado' : 'on',
-                        ativo: at,
-                        semCadastro: true
-                    });
-                }
-            });
-
-            const ordem = { on: 0, pausado: 1, off: 2 };
-            lista.sort((a, b) => (ordem[a.estado] - ordem[b.estado]) || a.nome.localeCompare(b.nome, 'pt-BR'));
-            listaAtual = lista;
-
-            const qtdOn = lista.filter(m => m.estado === 'on').length;
-            const qtdPausado = lista.filter(m => m.estado === 'pausado').length;
-            const qtdOff = lista.filter(m => m.estado === 'off').length;
-            resumoMembros.innerHTML =
-                '<div>' + (qtdOn + qtdPausado) + ' em jornada · ' + qtdOn + ' ON · ' + qtdPausado + ' pausado</div>' +
-                '<div>' + qtdOff + ' OFF · ' + membrosCadastrados.length + ' cadastrados</div>';
-
-            if (!lista.length) {
-                listaMembros.innerHTML = '<div class="membros-vazio">Nenhum membro cadastrado.</div>';
-                return;
-            }
-
-            const rotulo = { on: 'ON', pausado: 'PAUSADO', off: 'OFF' };
-            listaMembros.innerHTML = lista.map(m => {
-                const emJornada = m.estado !== 'off';
-                const abertoEq = emJornada && equipesAbertas.has(m.passaporte);
-                const abertoTempo = emJornada && temposAbertos.has(m.passaporte);
-                const pEsc = escaparHtml(m.passaporte);
-                return `
-                <div class="membro-item ${abertoEq ? 'eq-aberto' : ''} ${abertoTempo ? 'tempo-aberto' : ''}">
-                    <div class="membro-topo">
-                        <div class="membro-nome">${escaparHtml(m.nome)}${m.semCadastro ? ' <span class="membro-tag">sem cadastro</span>' : ''}</div>
-                        <span class="membro-status ${m.estado}">${rotulo[m.estado]}</span>
-                    </div>
-                    <div class="membro-passaporte">
-                        <span class="pass-txt">Passaporte ${pEsc}</span>
-                        ${emJornada ? `
-                        <button class="ver-equipe" data-pass="${pEsc}"><span class="ver-txt">ver </span>equipe <i class="fas fa-chevron-down"></i></button>
-                        <button class="ver-tempo" data-pass="${pEsc}">tempo <i class="fas fa-chevron-down"></i></button>` : ''}
-                    </div>
-                    ${emJornada && souAdmin ? `
-                    <div class="membro-acoes">
-                        ${m.estado === 'pausado'
-                            ? htmlBotaoAdmin(m.passaporte, 'retomar', 'Retornar', 'fa-play')
-                            : htmlBotaoAdmin(m.passaporte, 'pausar', 'Pausar', 'fa-pause')}
-                        ${htmlBotaoAdmin(m.passaporte, 'encerrar', 'Encerrar', 'fa-stop')}
-                    </div>` : ''}
-                    ${abertoEq ? `
-                    <div class="membro-equipe">
-                        <i class="fas fa-users"></i>
-                        <div>${htmlEquipeDoMembro(m.ativo.equipe_id)}</div>
-                    </div>` : ''}
-                    ${abertoTempo ? `
-                    <div class="membro-tempo">${htmlTempoDoMembro(m.ativo, m.passaporte)}</div>` : ''}
-                </div>`;
-            }).join('');
-        }
-                // ========== ADMIN: PAUSAR / RETORNAR / ENCERRAR (somente cargos autorizados) ==========
-        function mostrarToastAdmin(msg, tipo) {
-            const el = document.getElementById('toastAdmin');
-            if (!el) return;
-            el.textContent = msg;
-            el.className = 'toast-admin ' + (tipo === 'sucesso' ? 'sucesso' : 'erro');
-            el.style.display = 'block';
-            clearTimeout(timerToastAdmin);
-            timerToastAdmin = setTimeout(() => { el.style.display = 'none'; }, 4000);
-        }
-
-        async function verificarAdmin() {
-            const pass = localStorage.getItem('passaporte');
-            if (!pass) { souAdmin = false; return; }
-            try {
-                const { data, error } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-                souAdmin = !error && data === true;
-            } catch (erro) {
-                souAdmin = false;
-            }
-            if (modalMembros.classList.contains('aberto')) renderizarListaMembros();
-        }
-
-        function mensagemRespostaAdmin(codigo) {
-            const mapa = {
-                JA_PAUSADO: 'Esse ponto já está pausado.',
-                NAO_PAUSADO: 'Esse ponto não está pausado.',
-                SEM_JORNADA: 'Esse membro não tem jornada aberta.',
-                ACAO_INVALIDA: 'Ação inválida.'
-            };
-            return mapa[codigo] || 'Não foi possível concluir a ação.';
-        }
-
-        async function executarAcaoAdmin(pass, acao) {
-            const chave = pass + ':' + acao;
-            if (acoesEmAndamento.has(chave)) return;
-            acoesEmAndamento.add(chave);
-            renderizarListaMembros();
-            try {
-                const { data, error } = await sb.rpc('admin_ponto_acao', {
-                    p_admin: String(localStorage.getItem('passaporte') || ''),
-                    p_alvo: String(pass),
-                    p_acao: acao
-                });
-                if (error) throw error;
-                const textos = { pausar: 'Ponto pausado.', retomar: 'Ponto retomado.', encerrar: 'Ponto encerrado.' };
-                if (data === 'OK') mostrarToastAdmin(textos[acao], 'sucesso');
-                else mostrarToastAdmin(mensagemRespostaAdmin(data), 'erro');
-            } catch (erro) {
-                const msg = String((erro && erro.message) || '');
-                mostrarToastAdmin(msg.includes('SEM_PERMISSAO') ? 'Você não tem permissão para isso.' : 'Não foi possível concluir a ação.', 'erro');
-            }
-            acoesEmAndamento.delete(chave);
-            await atualizarMembrosAtivos();
-            renderizarListaMembros();
-        }
-
-        function abrirConfirmacaoAdmin(pass) {
-            const item = listaAtual.find(m => m.passaporte === pass);
-            adminAlvoPendente = pass;
-            textoAdminConfirma.textContent = 'Encerrar o ponto de ' + (item ? item.nome : pass) + '? A jornada dele será finalizada agora.';
-            modalAdminConfirma.classList.add('aberto');
-        }
-
-        function fecharConfirmacaoAdmin() {
-            modalAdminConfirma.classList.remove('aberto');
-            adminAlvoPendente = null;
-        }
-
-        function confirmarEncerrarAdmin() {
-            const pass = adminAlvoPendente;
-            fecharConfirmacaoAdmin();
-            if (pass) executarAcaoAdmin(pass, 'encerrar');
-        }
-
-        listaMembros.addEventListener('click', (e) => {
-            const botaoAdmin = e.target.closest('.btn-admin');
-            if (botaoAdmin) {
-                const pass = botaoAdmin.dataset.pass;
-                const acao = botaoAdmin.dataset.acao;
-                if (acao === 'encerrar') abrirConfirmacaoAdmin(pass);
-                else executarAcaoAdmin(pass, acao);
-                return;
-            }
-            const botaoEquipe = e.target.closest('.ver-equipe');
-            const botaoTempo = e.target.closest('.ver-tempo');
-            const botao = botaoEquipe || botaoTempo;
-            if (!botao) return;
-            const conjunto = botaoEquipe ? equipesAbertas : temposAbertos;
-            const pass = botao.dataset.pass;
-            if (conjunto.has(pass)) conjunto.delete(pass); else conjunto.add(pass);
-            renderizarListaMembros();
-        });
-
-        async function abrirListaMembros() {
-            modalMembros.classList.add('aberto');
-            listaMembros.innerHTML = '<div class="membros-vazio">Carregando...</div>';
-            resumoMembros.textContent = '';
-            try {
-                await Promise.all([carregarDadosLista(), atualizarMembrosAtivos(), verificarAdmin()]);
-                renderizarListaMembros();
-            } catch (erro) {
-                console.log('Erro ao carregar lista de membros:', erro);
-                listaMembros.innerHTML = '<div class="membros-vazio">Não foi possível carregar a lista.</div>';
-            }
-            clearInterval(timerListaMembros);
-            timerListaMembros = setInterval(() => {
-                carregarDadosLista().then(renderizarListaMembros).catch(() => {});
-            }, 30000);
-            clearInterval(timerCronometros);
-            timerCronometros = setInterval(atualizarCronometros, 1000);
-        }
-
-        function fecharListaMembros() {
-            modalMembros.classList.remove('aberto');
-            clearInterval(timerListaMembros);
-            clearInterval(timerCronometros);
-        }
-
-        // ========== MEMBROS ATIVOS (TEMPO REAL) ==========
-        const elMembrosAtivos = document.getElementById('membrosAtivos');
-        let contandoAtivos = false;
-        let atualizarDeNovo = false;
-
-        async function atualizarMembrosAtivos() {
-            if (contandoAtivos) { atualizarDeNovo = true; return; }
-            contandoAtivos = true;
-            try {
-                const { data, error } = await sb
-                    .from('pontos')
-                    .select('passaporte, nome, equipe_id, entrada, pausa_inicio, pausa_fim')
-                    .is('saida', null)
-                    .order('entrada', { ascending: false });
-                if (error) throw error;
-                const mapa = new Map();
-                (data || []).forEach(p => {
-                    const pass = String(p.passaporte);
-                    if (mapa.has(pass)) return;
-                    const inicio = Date.parse(p.pausa_inicio);
-                    const fim = Date.parse(p.pausa_fim);
-                    const pausado = !isNaN(inicio) && (isNaN(fim) || inicio > fim);
-                    mapa.set(pass, {
-                        nome: p.nome,
-                        equipe_id: p.equipe_id,
-                        entrada: p.entrada,
-                        pausa_inicio: p.pausa_inicio,
-                        pausa_fim: p.pausa_fim,
-                        pausado: pausado
-                    });
-                });
-                estadoAtivos = mapa;
-                if (elMembrosAtivos) elMembrosAtivos.textContent = mapa.size;
-                if (modalMembros.classList.contains('aberto')) renderizarListaMembros();
-            } catch (erro) {
-                console.log('Erro ao contar membros ativos:', erro);
-            } finally {
-                contandoAtivos = false;
-                if (atualizarDeNovo) {
-                    atualizarDeNovo = false;
-                    atualizarMembrosAtivos();
-                }
-            }
-        }
-
-        atualizarMembrosAtivos();
-        verificarAdmin();
-        setInterval(() => {
-            if (document.visibilityState === 'visible') atualizarMembrosAtivos();
-        }, 10000);
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible') atualizarMembrosAtivos();
-        });
-        window.addEventListener('focus', atualizarMembrosAtivos);
-        window.addEventListener('pageshow', (e) => { if (e.persisted) atualizarMembrosAtivos(); });
-
-        try {
-            sb.channel('membros-ativos-pontos')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'pontos' }, () => atualizarMembrosAtivos())
-                .subscribe();
-        } catch (erro) {
-            console.log('Tempo real indisponível, usando atualização a cada 10s.');
-        }
-    </script>
-           <script>
-// ========== FREQUÊNCIA (cards Frequência e Faltas e Presenças) ==========
-(function () {
-    if (window.__freqAtivo) return;
-    window.__freqAtivo = true;
-
-    const TZ = 'America/Sao_Paulo';
-
-    // ---------- estilos ----------
-    const css = `
-    #modalFreq, #modalFaltas { padding: 14px; }
-    .fq-busca { display:flex; align-items:center; gap:10px; background:rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin:6px 0 12px; flex-shrink:0; }
-    .fq-busca i { color:#60a5fa; }
-    .fq-busca input { flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark; }
-    .fq-grupo { font-size:13px; font-weight:700; letter-spacing:.04em; color:#cbd5e1; margin:10px 2px 2px; display:flex; justify-content:space-between; }
-    .fq-grupo span { color:#64748b; font-weight:600; }
-    .fq-pfj { display:flex; gap:6px; flex:0 0 auto; }
-    .fq-btn { width:34px; height:34px; border-radius:10px; border:1px solid; background:transparent; font-family:inherit; font-size:13px; font-weight:800; cursor:pointer; }
-    .fq-btn.P { color:#22c55e; border-color:rgba(34,197,94,.45); }
-    .fq-btn.P.on { background:#22c55e; color:#04210f; border-color:#22c55e; }
-    .fq-btn.F { color:#ef4444; border-color:rgba(239,68,68,.45); }
-    .fq-btn.F.on { background:#ef4444; color:#fff; border-color:#ef4444; }
-    .fq-btn.J { color:#f59e0b; border-color:rgba(245,158,11,.45); }
-    .fq-btn.J.on { background:#f59e0b; color:#1f1300; border-color:#f59e0b; }
-    .fq-sessao-titulo { font-size:11px; font-weight:700; color:#60a5fa; letter-spacing:.06em; margin-top:4px; }
-    .fq-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:6px 0 14px; flex-shrink:0; }
-    .fq-stat { border-radius:12px; padding:12px 6px; text-align:center; border:1px solid; }
-    .fq-stat b { display:block; font-size:24px; font-weight:800; }
-    .fq-stat span { font-size:11px; font-weight:600; }
-    .fq-stat.P { color:#22c55e; background:rgba(34,197,94,.1); border-color:rgba(34,197,94,.35); }
-    .fq-stat.F { color:#ef4444; background:rgba(239,68,68,.1); border-color:rgba(239,68,68,.35); }
-    .fq-stat.J { color:#f59e0b; background:rgba(245,158,11,.1); border-color:rgba(245,158,11,.35); }
-    .fq-selo { font-size:11px; font-weight:700; padding:5px 10px; border-radius:999px; border:1px solid; flex:0 0 auto; }
-    .fq-selo.P { color:#22c55e; background:rgba(34,197,94,.12); border-color:rgba(34,197,94,.35); }
-    .fq-selo.F { color:#ef4444; background:rgba(239,68,68,.12); border-color:rgba(239,68,68,.35); }
-    .fq-selo.J { color:#f59e0b; background:rgba(245,158,11,.12); border-color:rgba(245,158,11,.35); }
-    .fq-selo.N { color:#94a3b8; background:rgba(148,163,184,.08); border-color:rgba(148,163,184,.25); }
-    `;
-    const st = document.createElement('style');
-    st.textContent = css;
-    document.head.appendChild(st);
-
-    // ---------- janelas ----------
-    const caixa = document.createElement('div');
-    caixa.innerHTML = `
-    <div class="fundo-modal" id="modalFreq">
-        <div class="caixa-lista">
-            <div class="lista-topo">
-                <h3 class="lista-titulo" id="freqTitulo">Frequência</h3>
-                <button class="lista-fechar" id="freqFechar"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="fq-busca"><i class="fas fa-calendar-day"></i><input type="date" id="freqData"></div>
-            <div class="lista-resumo" id="freqResumo"></div>
-            <div class="lista-corpo" id="freqCorpo"></div>
-        </div>
-    </div>
-    <div class="fundo-modal" id="modalFaltas">
-        <div class="caixa-lista">
-            <div class="lista-topo">
-                <h3 class="lista-titulo">Faltas e Presenças</h3>
-                <button class="lista-fechar" id="faltasFechar"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="lista-resumo" id="faltasResumo"></div>
-            <div class="lista-corpo" id="faltasCorpo"></div>
-        </div>
-    </div>`;
-    while (caixa.firstChild) document.body.appendChild(caixa.firstChild);
-
-    const modalFreq = document.getElementById('modalFreq');
-    const modalFaltas = document.getElementById('modalFaltas');
-    const freqData = document.getElementById('freqData');
-    const freqCorpo = document.getElementById('freqCorpo');
-    const freqResumo = document.getElementById('freqResumo');
-    const faltasCorpo = document.getElementById('faltasCorpo');
-    const faltasResumo = document.getElementById('faltasResumo');
-
-    let ehAdmin = false;
-    let dataSel = '';
-    let dadosDia = [];
-    let dadosMembro = null;
-
-    // ---------- formatação ----------
-    function esc(t) {
-        return String(t == null ? '' : t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+        <a href="painel.html" class="menu-item ativo"><i class="fas fa-home"></i><span>Painel</span></a>
+        <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
+        <a href="#" class="menu-item" onclick="abrirModalTickets(); return false;"><i class="fas fa-headset"></i><span>Suporte</span></a>
+                </nav>
+                <script>
+    function atualizarRelogio() {
+        const agora = new Date(); const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+        document.getElementById('horaAtual').textContent = `${String(brasilia.getHours()).padStart(2, '0')}:${String(brasilia.getMinutes()).padStart(2, '0')}:${String(brasilia.getSeconds()).padStart(2, '0')}`;
+        document.getElementById('dataAtual').textContent = `${String(brasilia.getDate()).padStart(2, '0')}/${String(brasilia.getMonth() + 1).padStart(2, '0')}/${brasilia.getFullYear()}`;
     }
-    function hojeISO() { return new Date().toLocaleDateString('en-CA', { timeZone: TZ }); }
-    function dataBR(iso) { const p = String(iso).slice(0, 10).split('-'); return p[2] + '/' + p[1] + '/' + p[0]; }
-    function diaSemana(iso) {
-        const p = String(iso).slice(0, 10).split('-').map(Number);
-        const s = new Date(p[0], p[1] - 1, p[2]).toLocaleDateString('pt-BR', { weekday: 'long' });
-        return s.charAt(0).toUpperCase() + s.slice(1);
-    }
-    function hora(v) {
-        if (!v) return '—';
-        const d = new Date(v);
-        return isNaN(d) ? '—' : d.toLocaleTimeString('pt-BR', { timeZone: TZ, hour: '2-digit', minute: '2-digit' });
-    }
-    function nomeStatus(s) { return s === 'P' ? 'Presença' : s === 'F' ? 'Falta' : s === 'J' ? 'Justificado' : 'Não marcado'; }
-    function toast(msg, tipo) { if (typeof mostrarToastAdmin === 'function') mostrarToastAdmin(msg, tipo); }
-    function meuPass() { return String(localStorage.getItem('passaporte') || ''); }
+    atualizarRelogio(); setInterval(atualizarRelogio, 1000);
 
-    function htmlSessoes(pontos) {
-        return pontos.map((p, i) => {
-            const ini = Date.parse(p.pausa_inicio);
-            const fim = Date.parse(p.pausa_fim);
-            let retorno = '—';
-            if (!isNaN(ini)) retorno = (!isNaN(fim) && fim > ini) ? hora(p.pausa_fim) : 'pausado agora';
-            return `
-            <div class="membro-tempo">
-                ${pontos.length > 1 ? `<div class="fq-sessao-titulo">JORNADA ${i + 1}</div>` : ''}
-                <div class="tempo-linha"><span>Data</span><strong>${esc(diaSemana(dataSel))} · ${esc(dataBR(dataSel))}</strong></div>
-                <div class="tempo-linha"><span>Início</span><strong>${esc(hora(p.entrada))}</strong></div>
-                <div class="tempo-linha"><span>Pausa</span><strong>${esc(isNaN(ini) ? '—' : hora(p.pausa_inicio))}</strong></div>
-                <div class="tempo-linha"><span>Retorno</span><strong>${esc(retorno)}</strong></div>
-                <div class="tempo-linha"><span>Encerrou</span><strong>${esc(p.saida ? hora(p.saida) : 'em andamento')}</strong></div>
-            </div>`;
-        }).join('');
+    function abrirGaveta() {
+        document.getElementById('fundoGaveta').classList.add('aberto'); document.getElementById('gavetaPerfil').classList.add('aberta');
+        setTimeout(() => { document.getElementById('gavetaXpBarra').style.width = `65%`; }, 100); // Exemplo visual
+    }
+    function fecharGaveta() {
+        document.getElementById('fundoGaveta').classList.remove('aberto'); document.getElementById('gavetaPerfil').classList.remove('aberta');
     }
 
-    // ---------- janela de frequência: ADMIN ----------
-    function renderAdmin() {
-        const bateu = dadosDia.filter(m => m.pontos.length);
-        const nao = dadosDia.filter(m => !m.pontos.length);
-        freqResumo.innerHTML = '<div>' + esc(diaSemana(dataSel)) + ' · ' + esc(dataBR(dataSel)) + '</div>' +
-            '<div>' + bateu.length + ' em serviço · ' + nao.length + ' sem registro · ' + dadosDia.length + ' membros</div>';
+    function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
+    function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
+    function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
 
-        const item = m => `
-        <div class="membro-item">
-            <div class="membro-topo">
-                <div class="membro-nome">${esc(m.nome || 'Sem nome')}</div>
-                <div class="fq-pfj">
-                    ${['P', 'F', 'J'].map(s => `<button class="fq-btn ${s} ${m.status === s ? 'on' : ''}" data-pass="${esc(m.passaporte)}" data-st="${s}">${s}</button>`).join('')}
-                </div>
-            </div>
-            <div class="membro-passaporte"><span class="pass-txt">Passaporte ${esc(m.passaporte)}</span></div>
-            ${m.pontos.length ? htmlSessoes(m.pontos) : ''}
-        </div>`;
-
-        freqCorpo.innerHTML =
-            `<div class="fq-grupo">Estiveram em serviço <span>${bateu.length}</span></div>` +
-            (bateu.length ? bateu.map(item).join('') : '<div class="membros-vazio">Ninguém bateu ponto nesse dia.</div>') +
-            `<div class="fq-grupo">Sem registro de ponto <span>${nao.length}</span></div>` +
-            (nao.length ? nao.map(item).join('') : '<div class="membros-vazio">Todos bateram ponto nesse dia.</div>');
-    }
-
-    // ---------- janela de frequência: MEMBRO (só o próprio) ----------
-    function renderMembro() {
-        const d = dadosMembro || { status: null, pontos: [] };
-        const s = d.status || 'N';
-        freqResumo.innerHTML = '<div>' + esc(diaSemana(dataSel)) + ' · ' + esc(dataBR(dataSel)) + '</div>';
-        freqCorpo.innerHTML = `
-        <div class="membro-item">
-            <div class="membro-topo">
-                <div class="membro-nome">Seu status nesse dia</div>
-                <span class="fq-selo ${s}">${esc(nomeStatus(d.status))}</span>
-            </div>
-        </div>` + (d.pontos.length ? htmlSessoes(d.pontos) : '<div class="membros-vazio">Você não bateu ponto nesse dia.</div>');
-    }
-
-    async function carregarDia() {
-        if (!dataSel) return;
-        freqCorpo.innerHTML = '<div class="membros-vazio">Carregando...</div>';
-        try {
-            if (ehAdmin) {
-                const r = await sb.rpc('freq_dia_admin', { p_admin: meuPass(), p_data: dataSel });
-                if (r.error) throw r.error;
-                dadosDia = Array.isArray(r.data) ? r.data : [];
-                renderAdmin();
-            } else {
-                const r = await sb.rpc('freq_membro', { p_passaporte: meuPass(), p_data: dataSel });
-                if (r.error) throw r.error;
-                dadosMembro = r.data;
-                renderMembro();
-            }
-        } catch (e) {
-            console.log('Erro na frequência:', e);
-            freqResumo.textContent = '';
-            freqCorpo.innerHTML = '<div class="membros-vazio">Não foi possível carregar. Tente de novo.</div>';
+    async function carregarDadosUsuario() {
+        const pass = localStorage.getItem('passaporte');
+        if (!pass) { window.location.href = 'login.html'; return; }
+        const { data } = await sb.from('membros').select('nome, passaporte, cargo, foto_url').eq('passaporte', pass).single();
+        if (data) {
+            document.getElementById('nomeUsuario').textContent = data.nome || 'Membro'; document.getElementById('passaporteUsuario').textContent = data.passaporte; document.getElementById('cargoUsuario').textContent = data.cargo || '—';
+            document.getElementById('gavetaNome').textContent = data.nome || 'Membro'; document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo'; document.getElementById('gavetaPassaporte').textContent = data.passaporte;
+            const fotoFinal = data.foto_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            document.getElementById('img-avatar-mini').src = fotoFinal; document.getElementById('img-avatar-gaveta').src = fotoFinal;
         }
     }
+    carregarDadosUsuario();
 
-    async function abrirFreq() {
-        modalFreq.classList.add('aberto');
-        try { if (typeof verificarAdmin === 'function') await verificarAdmin(); } catch (e) {}
-        ehAdmin = (typeof souAdmin !== 'undefined') && souAdmin === true;
-        document.getElementById('freqTitulo').textContent = ehAdmin ? 'Frequência da equipe' : 'Meu ponto';
-        dataSel = hojeISO();
-        freqData.max = dataSel;
-        freqData.value = dataSel;
-        carregarDia();
-    }
-
-    async function marcar(pass, status) {
-        const item = dadosDia.find(m => m.passaporte === pass);
-        if (!item) return;
-        const antes = item.status;
-        item.status = (antes === status) ? null : status;
-        renderAdmin();
-        try {
-            const r = await sb.rpc('marcar_presenca', {
-                p_admin: meuPass(), p_data: dataSel, p_passaporte: pass, p_status: item.status || 'X'
-            });
-            if (r.error || r.data !== 'OK') throw (r.error || new Error('falha'));
-            carregarResumo();
-        } catch (e) {
-            item.status = antes;
-            renderAdmin();
-            toast('Não foi possível salvar a marcação.', 'erro');
-        }
-    }
-
-    // ---------- janela de faltas e presenças (do próprio membro) ----------
-    function renderFaltas(d) {
-        const dias = Array.isArray(d.dias) ? d.dias : [];
-        faltasResumo.textContent = '';
-        faltasCorpo.innerHTML = `
-        <div class="fq-stats">
-            <div class="fq-stat P"><b>${d.p || 0}</b><span>Presenças</span></div>
-            <div class="fq-stat F"><b>${d.f || 0}</b><span>Faltas</span></div>
-            <div class="fq-stat J"><b>${d.j || 0}</b><span>Justificadas</span></div>
-        </div>
-        <div class="fq-grupo">Dias marcados <span>${dias.length}</span></div>` +
-        (dias.length ? dias.map(x => `
-        <div class="membro-item">
-            <div class="membro-topo">
-                <div class="membro-nome">${esc(diaSemana(x.data))} · ${esc(dataBR(x.data))}</div>
-                <span class="fq-selo ${esc(x.status)}">${esc(nomeStatus(x.status))}</span>
-            </div>
-        </div>`).join('') : '<div class="membros-vazio">Nenhum dia marcado ainda.</div>');
-    }
-
-    async function abrirFaltas() {
-        modalFaltas.classList.add('aberto');
-        faltasCorpo.innerHTML = '<div class="membros-vazio">Carregando...</div>';
-        try {
-            const r = await sb.rpc('resumo_membro', { p_passaporte: meuPass() });
-            if (r.error) throw r.error;
-            renderFaltas(r.data || {});
-        } catch (e) {
-            faltasCorpo.innerHTML = '<div class="membros-vazio">Não foi possível carregar. Tente de novo.</div>';
-        }
-    }
-
-    // ---------- cards ----------
-    function acharCard(texto) {
-        return Array.from(document.querySelectorAll('.grade-cards .card')).find(c => {
-            const t = c.querySelector('.card-titulo');
-            return t && t.textContent.indexOf(texto) !== -1;
-        });
-    }
-
-    const cardPontos = acharCard('Pontos Hoje') || document.getElementById('cardFrequencia');
-    const cardAus = acharCard('Ausências Pendentes') || document.getElementById('cardFaltas');
-    let valorPontos = null;
-    let valorFaltas = null;
-
-    if (cardPontos) {
-        cardPontos.id = 'cardFrequencia';
-        cardPontos.classList.add('card-clicavel');
-        cardPontos.querySelector('.card-titulo').innerHTML = 'Frequência <i class="fas fa-calendar-check"></i>';
-        valorPontos = cardPontos.querySelector('.card-valor');
-        valorPontos.textContent = '—';
-        cardPontos.insertAdjacentHTML('beforeend', '<div class="card-dica">Toque para ver o histórico</div>');
-        cardPontos.addEventListener('click', abrirFreq);
-    }
-    if (cardAus) {
-        cardAus.id = 'cardFaltas';
-        cardAus.classList.add('card-clicavel');
-        cardAus.querySelector('.card-titulo').innerHTML = 'Faltas e Presenças <i class="fas fa-user-check"></i>';
-        valorFaltas = cardAus.querySelector('.card-valor');
-        valorFaltas.style.fontSize = '18px';
-        valorFaltas.textContent = '—';
-        cardAus.addEventListener('click', abrirFaltas);
-    }
-
-    async function carregarResumo() {
-        try {
-            const r = await sb.rpc('pontos_hoje_qtd');
-            if (!r.error && r.data !== null && valorPontos) valorPontos.textContent = r.data;
-        } catch (e) {}
-        try {
-            const r = await sb.rpc('resumo_membro', { p_passaporte: meuPass() });
-            if (!r.error && r.data && valorFaltas) {
-                valorFaltas.textContent = (r.data.p || 0) + 'P · ' + (r.data.f || 0) + 'F · ' + (r.data.j || 0) + 'J';
-            }
-        } catch (e) {}
-    }
-
-    // ---------- eventos ----------
-    freqData.addEventListener('change', () => { dataSel = freqData.value || hojeISO(); carregarDia(); });
-    document.getElementById('freqFechar').addEventListener('click', () => modalFreq.classList.remove('aberto'));
-    document.getElementById('faltasFechar').addEventListener('click', () => modalFaltas.classList.remove('aberto'));
-    modalFreq.addEventListener('click', e => { if (e.target === modalFreq) modalFreq.classList.remove('aberto'); });
-    modalFaltas.addEventListener('click', e => { if (e.target === modalFaltas) modalFaltas.classList.remove('aberto'); });
-    freqCorpo.addEventListener('click', e => {
-        const b = e.target.closest('.fq-btn');
-        if (b) marcar(b.dataset.pass, b.dataset.st);
-    });
-
-    carregarResumo();
-    setInterval(() => { if (document.visibilityState === 'visible') carregarResumo(); }, 30000);
-})();            
-</script>
-            <!-- ========== INÍCIO DO SISTEMA DE PERFIL ========== -->
-<div class="avatar-container" onclick="abrirModalPerfil()" style="position: absolute; top: 20px; left: 20px; z-index: 10; cursor: pointer;">
-    <img id="img-avatar" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid #6b7280; object-fit: cover; background-color: #374151;">
-</div>
-
-<div class="fundo-modal" id="modalPerfil" onclick="if(event.target === this) fecharModalPerfil()">
-    <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
-        <h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3>
-        
-        <label style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 5px;">Sua Foto</label>
-        <input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit;">
-        
-        <label style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 5px;">Sua Frase</label>
-        <input type="text" id="input-frase" placeholder="Ex: O melhor de lockpick" style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit;">
-        
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button>
-            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button>
-        </div>
-    </div>
-</div>
-
-<script>
-    // Variável para guardar a foto em texto (Base64) temporariamente
     let fotoBase64Temp = "";
-
-    function abrirModalPerfil() {
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-        
-        // Limpa o campo de arquivo toda vez que abre
-        document.getElementById('input-foto-arquivo').value = "";
-        fotoBase64Temp = "";
-
-        sb.from('membros').select('foto_url, frase_status').eq('passaporte', pass).single().then(({data}) => {
-            if(data) {
-                document.getElementById('input-frase').value = data.frase_status || '';
-                // Se ele já tiver foto salva, coloca na variável temporária
-                if(data.foto_url) fotoBase64Temp = data.foto_url;
-            }
-        });
-        document.getElementById('modalPerfil').classList.add('aberto');
-    }
-
-    function fecharModalPerfil() {
-        document.getElementById('modalPerfil').classList.remove('aberto');
-    }
-
-    // Lê a foto que o usuário escolheu do celular e transforma em Base64
+    function abrirModalEditarPerfil() { document.getElementById('modalPerfil').classList.add('aberto'); }
+    function fecharModalPerfil() { document.getElementById('modalPerfil').classList.remove('aberto'); }
     document.getElementById('input-foto-arquivo').addEventListener('change', function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                // O e.target.result é a foto pronta para ir para o banco
-                fotoBase64Temp = e.target.result; 
-            };
-            reader.readAsDataURL(file);
-        }
+        const reader = new FileReader(); reader.onload = function(e) { fotoBase64Temp = e.target.result; }; reader.readAsDataURL(event.target.files[0]);
     });
-
     async function salvarPerfil() {
-        const pass = localStorage.getItem('passaporte');
-        const frase = document.getElementById('input-frase').value;
-        
-        if (!pass) return;
-
-        // Se não escolheu foto nova, mantém a antiga (fotoBase64Temp)
-        const { error } = await sb.from('membros').update({ 
-            foto_url: fotoBase64Temp, 
-            frase_status: frase 
-        }).eq('passaporte', pass);
-
-        if (error) {
-            alert("Erro ao salvar: " + error.message);
-        } else {
-            // Atualiza a bolinha na tela
-            if(fotoBase64Temp) document.getElementById('img-avatar').src = fotoBase64Temp;
-            fecharModalPerfil();
-            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Perfil atualizado!", "sucesso");
-        }
+        const pass = localStorage.getItem('passaporte'); const frase = document.getElementById('input-frase').value;
+        await sb.from('membros').update({ foto_url: fotoBase64Temp, frase_status: frase }).eq('passaporte', pass);
+        if(fotoBase64Temp) { document.getElementById('img-avatar-mini').src = fotoBase64Temp; document.getElementById('img-avatar-gaveta').src = fotoBase64Temp; }
+        fecharModalPerfil(); alert("Perfil atualizado!");
     }
-
-    (async function carregarAvatar() {
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-        const { data } = await sb.from('membros').select('foto_url').eq('passaporte', pass).single();
-        if(data && data.foto_url) {
-            document.getElementById('img-avatar').src = data.foto_url;
-        }
-    })();
-</script>
-<!-- ========== FIM DO SISTEMA DE PERFIL ========== -->
-            <!-- ========== INÍCIO DO MURAL DE AVISOS ========== -->
-<style>
-    /* Esse estilo esconde o card antigo para não ficar duplicado */
-    .card-aviso:not(#novo-card-aviso) { display: none !important; }
-</style>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. Cria o novo Card de Aviso (substituindo o antigo visualmente)
-    const grade = document.querySelector('.grade-cards');
-    if (grade) {
-        const novoCard = document.createElement('div');
-        novoCard.id = 'novo-card-aviso';
-        novoCard.className = 'card-aviso';
-        novoCard.style.position = 'relative';
-        novoCard.innerHTML = `
-            <div class="card-titulo">
-                Aviso Recente 
-                <div>
-                    <i class="fas fa-pen" id="btn-editar-aviso" style="cursor: pointer; display: none; margin-right: 8px; color: #60a5fa;" onclick="abrirModalAviso()"></i>
-                    <i class="fas fa-bell"></i>
-                </div>
-            </div>
-            <div class="card-valor" id="texto-aviso" style="font-size: 20px; line-height: 1.4;">Carregando avisos...</div>
-        `;
-        grade.appendChild(novoCard);
-    }
-
-    // 2. Cria a Janelinha de edição no final do body
-    const modal = document.createElement('div');
-    modal.innerHTML = `
-    <div class="fundo-modal" id="modalAviso" onclick="if(event.target === this) fecharModalAviso()">
-        <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
-            <h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3>
-            <label style="display:block; font-size: 12px; color: #94a3b8; margin-bottom: 5px;">O que você quer avisar?</label>
-            <textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; resize: none;"></textarea>
-            <div class="botoes-modal">
-                <button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button>
-                <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button>
-            </div>
-        </div>
-    </div>`;
-    document.body.appendChild(modal.firstElementChild);
-});
-</script>
-
-<script>
-    // ========== LÓGICA DO AVISO ==========
-    
-    async function verificarPermissaoAviso() {
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-        const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-        if(data === true) {
-            const btn = document.getElementById('btn-editar-aviso');
-            if(btn) btn.style.display = 'inline-block';
-        }
-    }
-
+                </script>
+                <script>
+    function abrirModalAviso() { document.getElementById('modalAviso').classList.add('aberto'); }
+    function fecharModalAviso() { document.getElementById('modalAviso').classList.remove('aberto'); }
     async function carregarAvisoRecente() {
-        const { data, error } = await sb.from('avisos').select('texto').order('criado_em', { ascending: false }).limit(1).single();
-        const el = document.getElementById('texto-aviso');
-        if(el) {
-            if(data && !error) {
-                el.textContent = data.texto;
-                if(data.texto.length > 40) el.style.fontSize = '16px';
-            } else {
-                el.textContent = 'Nenhum aviso recente no momento.';
-            }
-        }
+        const { data } = await sb.from('avisos').select('texto').order('criado_em', { ascending: false }).limit(1).single();
+        if (data) document.getElementById('texto-aviso').textContent = data.texto;
     }
-
-    function abrirModalAviso() {
-        document.getElementById('input-aviso').value = "";
-        document.getElementById('modalAviso').classList.add('aberto');
-    }
-    
-    function fecharModalAviso() {
-        document.getElementById('modalAviso').classList.remove('aberto');
-    }
-
     async function salvarAviso() {
         const texto = document.getElementById('input-aviso').value;
-        const nome = document.getElementById('nomeUsuario').textContent;
-
-        if(!texto || texto.trim() === "") {
-            alert("Digite um aviso antes de publicar!");
-            return;
-        }
-
-        const { error } = await sb.from('avisos').insert([{ texto: texto, autor: nome }]);
-
-        if(error) {
-            alert("Erro ao publicar: " + error.message);
-        } else {
-            fecharModalAviso();
-            carregarAvisoRecente();
-            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Aviso publicado!", "sucesso");
-        }
+        await sb.from('avisos').insert([{ texto: texto, autor: document.getElementById('nomeUsuario').textContent }]);
+        fecharModalAviso(); carregarAvisoRecente();
     }
-
-    // Roda as funções quando a página carrega
-    setTimeout(() => {
-        verificarPermissaoAviso();
-        carregarAvisoRecente();
-    }, 1000);
-</script>
-<!-- ========== FIM DO MURAL DE AVISOS ========== -->
-            <!-- ========== INÍCIO DO RANKING ========== -->
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. Adiciona o botão "Top da Semana" dentro da janela de Membros existente
-    const listaTopo = document.querySelector('#modalMembros .lista-topo');
-    if (listaTopo) {
-        const btnRanking = document.createElement('button');
-        btnRanking.innerHTML = '🏆 Top Semana';
-        btnRanking.className = 'botao-confirmar';
-        btnRanking.style.cssText = 'padding: 8px 12px; font-size: 12px; margin-right: 10px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px;';
-        btnRanking.onclick = abrirRanking;
-        listaTopo.insertBefore(btnRanking, listaTopo.querySelector('.lista-fechar'));
-    }
-
-    // 2. Cria a janelinha do Ranking
-    const modalRank = document.createElement('div');
-    modalRank.innerHTML = `
-    <div class="fundo-modal" id="modalRanking" onclick="if(event.target === this) fecharRanking()">
-        <div class="caixa-lista">
-            <div class="lista-topo">
-                <h3 class="lista-titulo">🏆 Top da Semana</h3>
-                <button class="lista-fechar" onclick="fecharRanking()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="lista-resumo">Os membros que mais cumpriram jornada nos últimos 7 dias.</div>
-            <div class="lista-corpo" id="rankingCorpo" style="display: flex; flex-direction: column; gap: 10px;">
-                <div class="membros-vazio">Carregando ranking...</div>
-            </div>
-        </div>
-    </div>`;
-    document.body.appendChild(modalRank.firstElementChild);
-});
-
-function abrirRanking() {
-    document.getElementById('modalRanking').classList.add('aberto');
-    carregarRanking();
-}
-
-function fecharRanking() {
-    document.getElementById('modalRanking').classList.remove('aberto');
-}
-
-async function carregarRanking() {
-    const corpo = document.getElementById('rankingCorpo');
-    corpo.innerHTML = '<div class="membros-vazio">Calculando tempos...</div>';
-
-    // Chama a função que criamos no Supabase
-    const { data, error } = await sb.rpc('ranking_semana');
-
-    if (error || !data || data.length === 0) {
-        corpo.innerHTML = '<div class="membros-vazio">Nenhum ponto registrado essa semana.</div>';
-        return;
-    }
-
-    // Formata o tempo para Horas e Minutos
-    function formatarTempo(segundos) {
-        const h = Math.floor(segundos / 3600);
-        const m = Math.floor((segundos % 3600) / 60);
-        return `${h}h ${m}m`;
-    }
-
-    const medalhas = ['🥇', '🥈', '🥉', '🏅', '🏅'];
-
-    corpo.innerHTML = data.map((item, index) => `
-        <div class="membro-item" style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border-left: 4px solid ${index === 0 ? '#f59e0b' : index === 1 ? '#94a3b8' : index === 2 ? '#b45309' : '#334155'};">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 24px;">${medalhas[index]}</span>
-                <div>
-                    <div class="membro-nome" style="margin-bottom: 2px;">${item.nome}</div>
-                    <div class="membro-passaporte" style="margin-top: 0;">Passaporte ${item.passaporte}</div>
-                </div>
-            </div>
-            <div style="font-size: 16px; font-weight: 700; color: #22c55e; font-variant-numeric: tabular-nums;">
-                ${formatarTempo(item.total_segundos)}
-            </div>
-        </div>
-    `).join('');
-}
-</script>
-<!-- ========== FIM DO RANKING ========== -->          
-        </script>
-            <!-- ========== PARTE 1: VISUAL DO SUPORTE ========== -->
-<style>
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    
-    /* ESTILO EMBED (CARD DE MENSAGEM) */
-    .msg-card { 
-        display: flex; gap: 12px; background: #1e293b; 
-        border: 1px solid #334155; border-left: 4px solid #3b82f6; 
-        border-radius: 8px; padding: 12px; margin-bottom: 10px;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    }
-    .msg-card.admin { border-left-color: #22c55e; }
-    .msg-avatar { 
-        width: 40px; height: 40px; border-radius: 50%; background: #334155; color: white;
-        display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; 
-    }
-    .msg-content { flex: 1; display: flex; flex-direction: column; }
-    .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-    .msg-nome { font-size: 14px; font-weight: 700; color: #60a5fa; }
-    .msg-card.admin .msg-nome { color: #22c55e; }
-    .msg-tag { font-size: 10px; background: #334155; color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-    .msg-card.admin .msg-tag { background: #166534; color: #86efac; }
-    .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
-    .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
-    .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-</style>
-
-<!-- JANELA PRINCIPAL DO SUPORTE -->
-<div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
-    <div class="caixa-lista">
-        <div class="lista-topo">
-            <h3 class="lista-titulo" id="titulo-modal-suporte">Central de Suporte</h3>
-            <button class="lista-fechar" onclick="fecharModalTickets()"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
-            <div class="lista-resumo" id="resumoTickets" style="margin-bottom: 10px;"></div>
-            
-            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;">
-                <div class="membros-vazio">Carregando...</div>
-            </div>
-
-            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start;">
-                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
-                    <span><strong>Aviso:</strong> Para denúncias ou bugs, anexe prints/gravações no chat.</span>
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span>
-                    </button>
-                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span>
-                    </button>
-                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;">
-                        <i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span>
-                    </button>
-                </div>
-                <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
-                    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold;" onclick="criarTicket()">Enviar Ticket</button>
-                </div>
-            </div>
-
-            <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
-                <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
-                <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
-            </div>
-        </div>
-
-        <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
-                    <div>
-                        <h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4>
-                        <span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span>
-                    </div>
-                </div>
-                <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;">
-                    <i class="fas fa-check"></i> Finalizar
-                </button>
-            </div>
-            
-            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
-            
-            <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
-                <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;">
-                    <i class="fas fa-paperclip"></i>
-                </label>
-                <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
-                <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
-                <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DE CONFIRMAÇÃO PERSONALIZADO -->
-<div class="fundo-modal" id="modalConfirmarAcao" onclick="if(event.target === this) fecharModalConfirmacao()">
-    <div class="caixa-modal">
-        <div class="icone-modal" style="background: rgba(59, 130, 246, 0.1);">
-            <i class="fas fa-question-circle" style="color: #3b82f6;"></i>
-        </div>
-        <h3 class="titulo-modal">Confirmação</h3>
-        <p class="texto-modal" id="texto-modal-confirma"></p>
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalConfirmacao()">Cancelar</button>
-            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" id="btn-confirmar-acao">Sim, confirmar</button>
-        </div>
-    </div>
-</div>
-            <!-- ========== PARTE 2: LÓGICA DA LISTA E DO MENU ========== -->
-<script>
-let categoriaSelecionada = null;
-let ticketAtualChatId = null;
-
-document.addEventListener("DOMContentLoaded", () => {
-    // Cria o botão de Suporte no menu se ele não existir
-    const barraMenu = document.querySelector('.barra-menu');
-    if (barraMenu && !document.querySelector('.menu-suporte')) {
-        const btnSuporte = document.createElement('a');
-        btnSuporte.href = "#";
-        btnSuporte.className = "menu-item menu-suporte";
-        btnSuporte.innerHTML = '<i class="fas fa-headset"></i><span>Suporte</span>';
-        btnSuporte.onclick = function(e) { e.preventDefault(); abrirModalTickets(); };
-        barraMenu.appendChild(btnSuporte);
-    }
-    
-    // Torna o Card "Tickets Abertos" do painel clicável
-    const cards = document.querySelectorAll('.grade-cards .card');
-    cards.forEach(card => {
-        if (card.innerText.includes("Tickets Abertos")) {
-            card.classList.add('card-clicavel');
-            card.onclick = abrirModalTickets;
-            card.querySelector('.card-valor').id = 'valor-tickets-painel';
-        }
-    });
-    
-    atualizarContadorTickets();
-    setInterval(atualizarContadorTickets, 15000);
-});
-
-async function atualizarContadorTickets() {
-    const elValor = document.getElementById('valor-tickets-painel');
-    if (!elValor) return;
-    const { count } = await sb.from('tickets').select('*', { count: 'exact', head: true }).eq('status', 'aberto');
-    elValor.textContent = count || 0;
-    elValor.style.color = count > 0 ? '#f87171' : '#fff';
-}
-
-function selecionarCategoria(cat) {
-    if (categoriaSelecionada === cat) {
-        categoriaSelecionada = null;
-        document.getElementById('div-descricao').style.display = 'none';
-    } else {
-        categoriaSelecionada = cat;
-        document.getElementById('div-descricao').style.display = 'flex';
-    }
-    document.querySelectorAll('.btn-categoria').forEach(b => { 
-        b.style.borderColor = '#334155'; 
-        b.style.background = '#1e293b'; 
-    });
-    if (categoriaSelecionada) {
-        const btnAtivo = document.getElementById('btn-cat-' + categoriaSelecionada);
-        if (btnAtivo) { 
-            btnAtivo.style.borderColor = '#60a5fa'; 
-            btnAtivo.style.background = 'rgba(96, 165, 250, 0.1)'; 
-        }
-    }
-}
-
-function fecharModalTickets() {
-    document.getElementById('modalTickets').classList.remove('aberto');
-    setTimeout(voltarParaListaTickets, 300);
-}
-
-function abrirModalTickets() {
-    document.getElementById('modalTickets').classList.add('aberto');
-    voltarParaListaTickets();
-    document.getElementById('input-ticket').value = '';
-    categoriaSelecionada = null;
-    document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-    document.getElementById('div-descricao').style.display = 'none';
-    carregarTickets();
-}
-
-async function criarTicket() {
-    const texto = document.getElementById('input-ticket').value;
-    const pass = localStorage.getItem('passaporte');
-    const nome = document.getElementById('nomeUsuario').textContent;
-    
-    if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
-    
-    const btn = event.target;
-    btn.innerText = "Enviando..."; btn.disabled = true;
-
-    const { error } = await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
-    
-    if(error) { 
-        alert("Erro: " + error.message); 
-    } else {
-        document.getElementById('tela-abertura-ticket').style.display = 'none';
-        document.getElementById('tela-espera-ticket').style.display = 'flex';
-        carregarTickets();
-        atualizarContadorTickets();
-    }
-    btn.innerText = "Enviar Ticket"; btn.disabled = false;
-}
-
-async function carregarTickets() {
-    const corpo = document.getElementById('corpoTickets');
-    const pass = localStorage.getItem('passaporte');
-    const nomeEu = document.getElementById('nomeUsuario').textContent;
-    corpo.innerHTML = '<div class="membros-vazio">Buscando...</div>';
-
-    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    const ehLider = isAdmin === true;
-
-    let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
-    if (!ehLider) query = query.eq('passaporte', pass);
-
-    const { data, error } = await query;
-    if (error) { corpo.innerHTML = '<div style="color: red;">Erro: ' + error.message + '</div>'; return; }
-    if (data.length === 0) { corpo.innerHTML = '<div class="membros-vazio">Nenhum ticket ativo.</div>'; return; }
-
-    corpo.innerHTML = data.map(t => {
-        const isAberto = t.status === 'aberto';
-        const isAtendimento = t.status === 'atendimento';
-        const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
-        
-        const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
-
-        return `
-        <div class="membro-item" style="border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; margin-bottom: 8px;">
-            <div class="membro-topo" style="margin-bottom: 5px;">
-                <div class="membro-nome" style="font-size: 13px;">${t.nome_autor} (${t.passaporte})</div>
-                <span class="membro-status ${isAberto ? 'pausado' : 'on'}">${t.status.toUpperCase()}</span>
-            </div>
-            <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria || 'Geral'} ]</div>
-            
-            ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;"><i class="fas fa-user-shield"></i> Atendido por: ${t.lider_assumiu}</div>` : ''}
-            
-            <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
-            
-            ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-hand-paper"></i> Assumir Ticket</button>` : ''}
-            
-            ${podeAbrirChat ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;"><i class="fas fa-comments"></i> Abrir Chat</button>` : ''}
-        </div>`;
-    }).join('');
-}
-
-async function assumirTicket(id) {
-    // Abre o modal personalizado que criamos na Parte 1
-    document.getElementById('modalConfirmarAcao').classList.add('aberto');
-    document.getElementById('texto-modal-confirma').innerText = "Deseja realmente assumir este ticket? Você será o responsável pelo atendimento.";
-    
-    document.getElementById('btn-confirmar-acao').onclick = async function() {
-        fecharModalConfirmacao();
-        
-        const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
-        const { error } = await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
-        
-        if(!error) {
-            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ticket assumido!", "sucesso");
-            document.getElementById('tela-espera-ticket').style.display = 'none'; 
-            document.getElementById('tela-abertura-ticket').style.display = 'flex';
-            carregarTickets();
-            atualizarContadorTickets();
-        }
-    };
-}
-
-function fecharModalConfirmacao() {
-    document.getElementById('modalConfirmarAcao').classList.remove('aberto');
-}
-        </script>
-            <!-- ========== PARTE 3: LÓGICA DO CHAT ========== -->
-<script>
-function voltarParaListaTickets() {
-    document.getElementById('tela-chat-ticket').style.display = 'none';
-    document.getElementById('tela-lista-tickets').style.display = 'flex';
-    document.getElementById('titulo-modal-suporte').innerText = "Central de Suporte";
-    document.getElementById('btn-resolver-chat').style.display = 'none';
-    document.getElementById('tela-espera-ticket').style.display = 'none';
-    document.getElementById('tela-abertura-ticket').style.display = 'flex';
-    ticketAtualChatId = null;
-    carregarTickets();
-}
-
-async function abrirChatTicket(id, nomeAutor, passaporte) {
-    ticketAtualChatId = id;
-    document.getElementById('tela-lista-tickets').style.display = 'none';
-    document.getElementById('tela-chat-ticket').style.display = 'flex';
-    document.getElementById('titulo-modal-suporte').innerText = "Atendimento";
-    document.getElementById('chat-titulo').innerText = "Ticket #" + id;
-    document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (Passaporte: ${passaporte})`;
-    document.getElementById('input-chat-msg').value = "";
-    
-    const pass = localStorage.getItem('passaporte');
-    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    
-    // Só mostra o botão finalizar para líderes
-    if (isAdmin === true) {
-        document.getElementById('btn-resolver-chat').style.display = 'block';
-    } else {
-        document.getElementById('btn-resolver-chat').style.display = 'none';
-    }
-    
-    await carregarMensagens();
-}
-
-async function carregarMensagens() {
-    if(!ticketAtualChatId) return;
-    const chatBox = document.getElementById('chat-mensagens');
-    
-    const { data, error } = await sb.from('mensagens_ticket')
-        .select('*')
-        .eq('ticket_id', ticketAtualChatId)
-        .order('criado_em', { ascending: true });
-
-    if (error) {
-        chatBox.innerHTML = `<div style="color:red; font-size:12px;">Erro ao carregar mensagens.</div>`;
-        return;
-    }
-
-    if (data.length === 0) {
-        chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px; margin-top:20px;">Nenhuma mensagem ainda. Diga um "Olá"!</div>`;
-    } else {
-        chatBox.innerHTML = data.map(m => {
-            const isLider = m.autor.includes("Líder"); 
-            const dataObj = new Date(m.criado_em);
-            const hora = dataObj.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-            
-            let anexo = '';
-            if (m.imagem_url) {
-                if (m.imagem_url.match(/\.(mp4|webm|ogg)$/i)) {
-                    anexo = `<video src="${m.imagem_url}" controls style="max-width: 100%; border-radius: 8px; margin-top: 8px;"></video>`;
-                } else {
-                    anexo = `<img src="${m.imagem_url}" class="msg-img" onclick="window.open(this.src)">`;
-                }
-            }
-
-            return `
-                <div class="msg-card ${isLider ? 'admin' : ''}">
-                    <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
-                    <div class="msg-content">
-                        <div class="msg-header">
-                            <span class="msg-nome">${m.autor}</span>
-                            ${isLider ? '<span class="msg-tag">LIDERANÇA</span>' : '<span class="msg-tag">MEMBRO</span>'}
-                            <span class="msg-hora">${hora}</span>
-                        </div>
-                        <div class="msg-body">
-                            ${m.mensagem ? m.mensagem : ''}
-                            ${anexo}
-                        </div>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-    setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
-}
-
-async function enviarMensagemChat() {
-    const input = document.getElementById('input-chat-msg');
-    const texto = input.value.trim();
-    if(!texto || !ticketAtualChatId) return;
-
-    const nomeEu = document.getElementById('nomeUsuario').textContent;
-    const pass = localStorage.getItem('passaporte');
-    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
-
-    input.value = ""; 
-    const { error } = await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
-    if (!error) carregarMensagens();
-}
-
-async function enviarArquivoChat(input) {
-    const file = input.files[0];
-    if (!file || !ticketAtualChatId) return;
-    if (file.size > 20 * 1024 * 1024) { alert("Arquivo muito grande (Max 20MB)."); input.value = ""; return; }
-
-    const nomeEu = document.getElementById('nomeUsuario').textContent;
-    const pass = localStorage.getItem('passaporte');
-    const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
-
-    const label = document.querySelector('label[for="input-arquivo-chat"]');
-    const iconeAntigo = label.innerHTML;
-    label.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-    try {
-        const ext = file.name.split('.').pop();
-        const nomeArquivo = `${ticketAtualChatId}_${Date.now()}.${ext}`;
-        
-        const { error: upErr } = await sb.storage.from('midia_tickets').upload(nomeArquivo, file);
-        if (upErr) throw upErr;
-
-        const { data: urlData } = sb.storage.from('midia_tickets').getPublicUrl(nomeArquivo);
-
-        await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, imagem_url: urlData.publicUrl }]);
-        carregarMensagens();
-    } catch (err) { alert("Erro: " + err.message); } 
-    finally { label.innerHTML = iconeAntigo; input.value = ""; }
-}
-
-async function resolverTicketChat() {
-    document.getElementById('modalConfirmarAcao').classList.add('aberto');
-    document.getElementById('texto-modal-confirma').innerText = "Deseja finalizar este atendimento? O ticket será marcado como Resolvido e sumirá da lista.";
-    
-    document.getElementById('btn-confirmar-acao').onclick = async function() {
-        fecharModalConfirmacao();
-        
-        const { error } = await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
-        if (!error) {
-            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Atendimento finalizado!", "sucesso");
-            voltarParaListaTickets();
-            atualizarContadorTickets();
-        }
-    };
-}
-
-document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
-</script>
-<!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
-        </script> 
-            <!-- ========== GAVETA DE PERFIL E AUTOMAÇÃO ========== -->
-<div class="fundo-gaveta" id="fundoGaveta" onclick="fecharGaveta()"></div>
-
-<div class="gaveta-perfil" id="gavetaPerfil">
-    <div class="gaveta-topo">
-        <h3>Meu Dossiê</h3>
-        <button onclick="fecharGaveta()"><i class="fas fa-times"></i></button>
-    </div>
-
-    <img id="img-avatar-gaveta" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="gaveta-avatar">
-    
-    <div class="gaveta-info">
-        <div class="gaveta-nome" id="gavetaNome">Membro</div>
-        <div class="gaveta-cargo" id="gavetaCargo">Cargo</div>
-    </div>
-
-    <div class="gaveta-xp-box">
-        <div class="gaveta-xp-texto">
-            <span>Respeito (XP)</span>
-            <span id="gavetaXpTexto">0 / 1.000</span>
-        </div>
-        <div class="gaveta-barra-fundo">
-            <div class="gaveta-barra-preenchida" id="gavetaXpBarra"></div>
-        </div>
-        <p style="font-size: 11px; color: #64748b; margin-top: 8px; text-align: center;">Próximo Nível: <span id="gavetaProximoNivel">Executor</span></p>
-    </div>
-
-    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid #334155; color: white; font-weight: bold; margin-bottom: 10px;" onclick="fecharGaveta(); abrirModalPerfil();">Editar Perfil</button>
-    
-    <div style="margin-top: auto; text-align: center; font-size: 12px; color: #64748b;">
-        <i class="fas fa-id-card"></i> Passaporte: <span id="gavetaPassaporte">---</span>
-    </div>
-</div>
-
-<script>
-    // 1. MÁGICA: Move a foto e o texto "Olá, Falcão" automaticamente
-    document.addEventListener("DOMContentLoaded", () => {
-        const saudacao = document.querySelector('.saudacao');
-        if (saudacao && !document.querySelector('.cabecalho-saudacao')) {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'cabecalho-saudacao';
-            
-            const img = document.createElement('img');
-            img.id = 'img-avatar-mini';
-            img.src = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-            img.className = 'avatar-mini';
-            img.onclick = function() { window.abrirGaveta(); };
-            
-            // Coloca a imagem do lado esquerdo do "Olá"
-            saudacao.parentNode.insertBefore(wrapper, saudacao);
-            wrapper.appendChild(img);
-            wrapper.appendChild(saudacao);
-            
-            // Remove a foto antiga lá do banner para não ficar duplicada
-            const avatarAntigo = document.querySelector('.avatar-container');
-            if (avatarAntigo) avatarAntigo.remove();
-        }
-    });
-
-    // 2. Lógica para abrir e fechar a Gaveta
-    window.abrirGaveta = function() {
-        document.getElementById('fundoGaveta').classList.add('aberto');
-        document.getElementById('gavetaPerfil').classList.add('aberta');
-        
+    async function verificarPermissaoAviso() {
         const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
+        const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        if(data === true) document.getElementById('btn-editar-aviso').style.display = 'inline-block';
+    }
+    carregarAvisoRecente(); verificarPermissaoAviso(); setInterval(carregarAvisoRecente, 30000);
 
-        sb.from('membros').select('nome, passaporte, cargo, foto_url').eq('passaporte', pass).single().then(({data}) => {
-            if(data) {
-                document.getElementById('gavetaNome').textContent = data.nome || 'Membro';
-                document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo';
-                document.getElementById('gavetaPassaporte').textContent = data.passaporte;
+    // Funções provisórias para Faltas/Frequência/Membros (para os botões não darem erro no console)
+    function abrirFrequencia() { alert("Módulo de Frequência em construção!"); }
+    function abrirModalFaltas() { alert("Módulo de Faltas em construção!"); }
+    function abrirListaMembros() { alert("Módulo de Membros em construção!"); }
+                </script>
+                    <!-- JANELA DO SUPORTE -->
+    <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
+        <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #fff;" id="titulo-modal-suporte">Central de Suporte</h3>
+                <button onclick="fecharModalTickets()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+                <div style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;" id="resumoTickets"></div>
+                <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+
+                <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                        <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span></button>
+                        <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span></button>
+                        <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span></button>
+                    </div>
+                    <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                        <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
+                        <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold; color: white; border: none;" onclick="criarTicket()">Enviar Ticket</button>
+                    </div>
+                </div>
+
+                <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
+                    <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
+                    <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
+                </div>
+            </div>
+
+            <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
+                        <div><h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4><span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span></div>
+                    </div>
+                    <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;"><i class="fas fa-check"></i> Finalizar</button>
+                </div>
+                <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
+                <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
+                    <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;"><i class="fas fa-paperclip"></i></label>
+                    <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
+                    <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
+                    <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            let categoriaSelecionada = null;
+            let ticketAtualChatId = null;
+            let chatSubscription = null; // Variável do Tempo Real
+
+            window.abrirModalTickets = function() {
+                document.getElementById('modalTickets').classList.add('aberto');
+                window.voltarParaListaTickets();
+                document.getElementById('input-ticket').value = '';
+                categoriaSelecionada = null;
+                document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+                document.getElementById('div-descricao').style.display = 'none';
+                carregarTickets();
+            };
+            window.fecharModalTickets = function() { document.getElementById('modalTickets').classList.remove('aberto'); };
+            window.selecionarCategoria = function(cat) {
+                if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
+                else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
+                document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+                if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
+            };
+            window.criarTicket = async function() {
+                const texto = document.getElementById('input-ticket').value;
+                const pass = localStorage.getItem('passaporte');
+                const nome = document.getElementById('nomeUsuario').textContent;
+                if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
+                const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
+                await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
+                document.getElementById('tela-abertura-ticket').style.display = 'none';
+                document.getElementById('tela-espera-ticket').style.display = 'flex';
+                carregarTickets(); btn.innerText = "Enviar Ticket"; btn.disabled = false;
+            };
+
+            async function carregarTickets() {
+                const corpo = document.getElementById('corpoTickets');
+                const pass = localStorage.getItem('passaporte');
+                const nomeEu = document.getElementById('nomeUsuario').textContent;
+                corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
                 
-                const fotoFinal = data.foto_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-                document.getElementById('img-avatar-mini').src = fotoFinal;
-                document.getElementById('img-avatar-gaveta').src = fotoFinal;
+                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                const ehLider = isAdmin === true;
+                let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
+                if (!ehLider) query = query.eq('passaporte', pass);
+                
+                const { data, error } = await query;
+                if (error) { corpo.innerHTML = '<div style="color: red;">Erro.</div>'; return; }
+                if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
+                
+                corpo.innerHTML = data.map(t => {
+                    const isAberto = t.status === 'aberto'; const isAtendimento = t.status === 'atendimento'; const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
+                    const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+                    return `
+                    <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div><span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span></div>
+                        <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>
+                        ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}
+                        <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
+                        ${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
+                        ${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
+                    </div>`;
+                }).join('');
             }
-        });
 
-        // Simulação da Barra de XP
-        const xpAtual = 650; 
-        const xpTotal = 1000;
-        const porcentagem = (xpAtual / xpTotal) * 100;
-        
-        document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
-        setTimeout(() => {
-            document.getElementById('gavetaXpBarra').style.width = `${porcentagem}%`;
-        }, 100);
-    }
+            window.assumirTicket = async function(id) {
+                const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
+                await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
+                carregarTickets();
+            };
 
-    window.fecharGaveta = function() {
-        document.getElementById('fundoGaveta').classList.remove('aberto');
-        document.getElementById('gavetaPerfil').classList.remove('aberta');
-    }
-            </script>
+            window.voltarParaListaTickets = function() {
+                document.getElementById('tela-chat-ticket').style.display = 'none';
+                document.getElementById('tela-lista-tickets').style.display = 'flex';
+                document.getElementById('btn-resolver-chat').style.display = 'none';
+                document.getElementById('tela-espera-ticket').style.display = 'none';
+                document.getElementById('tela-abertura-ticket').style.display = 'flex';
+                ticketAtualChatId = null;
+                if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
+                carregarTickets();
+            };
+
+            window.abrirChatTicket = async function(id, nomeAutor, passaporte) {
+                ticketAtualChatId = id;
+                document.getElementById('tela-lista-tickets').style.display = 'none';
+                document.getElementById('tela-chat-ticket').style.display = 'flex';
+                document.getElementById('chat-titulo').innerText = "Ticket #" + id;
+                document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
+                document.getElementById('input-chat-msg').value = "";
+                
+                const pass = localStorage.getItem('passaporte');
+                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                document.getElementById('btn-resolver-chat').style.display = (isAdmin === true) ? 'block' : 'none';
+                
+                await carregarMensagens();
+
+                // TEMPO REAL LIGADO AQUI:
+                if (chatSubscription) sb.removeChannel(chatSubscription);
+                chatSubscription = sb.channel('chat-' + id)
+                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => {
+                        carregarMensagens();
+                    }).subscribe();
+            };
+
+            async function carregarMensagens() {
+                if(!ticketAtualChatId) return;
+                const chatBox = document.getElementById('chat-mensagens');
+                const { data } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
+                
+                if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; } 
+                else {
+                    chatBox.innerHTML = data.map(m => {
+                        const isLider = m.autor.includes("Líder"); 
+                        const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                        return `
+                            <div class="msg-card ${isLider ? 'admin' : ''}">
+                                <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
+                                <div class="msg-content">
+                                    <div class="msg-header"><span class="msg-nome">${m.autor}</span><span class="msg-tag">${isLider ? 'LIDERANÇA' : 'MEMBRO'}</span><span class="msg-hora">${hora}</span></div>
+                                    <div class="msg-body">${m.mensagem || ''}</div>
+                                </div>
+                            </div>`;
+                    }).join('');
+                }
+                setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+            }
+
+            window.enviarMensagemChat = async function() {
+                const input = document.getElementById('input-chat-msg'); const texto = input.value.trim();
+                if(!texto || !ticketAtualChatId) return;
+                const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte');
+                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+                const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
+                input.value = ""; 
+                await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
+                // Não precisa chamar carregarMensagens() aqui, o Tempo Real vai avisar!
+            };
+
+            window.resolverTicketChat = async function() {
+                if(!confirm("Finalizar atendimento?")) return;
+                await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+                window.voltarParaListaTickets();
+            };
+
+            document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
+        })();
+    </script>
 </body>
 </html>
