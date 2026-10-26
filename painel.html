@@ -1232,5 +1232,73 @@
         }
     };
     </script>
+    <script>
+    // Atualiza a Gaveta com o XP real do banco
+    window.abrirGaveta = async function() {
+        document.getElementById('fundoGaveta').classList.add('aberto'); 
+        document.getElementById('gavetaPerfil').classList.add('aberta');
+        
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+
+        // Puxa os dados reais
+        const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', pass).single();
+
+        if (data) {
+            const xpAtual = data.xp_total || 0;
+            
+            // Lógica de Metas (Para o visual)
+            // Se ele tem 0 a 3000 XP, o alvo é o Executor (3000)
+            // Se ele tem mais de 3000, o alvo é o Raiz (15000)
+            let xpTotal = 3000;
+            let proximoNivel = "Executor";
+
+            if (xpAtual >= 3000 && xpAtual < 15000) {
+                xpTotal = 15000;
+                proximoNivel = "Raiz";
+            } else if (xpAtual >= 15000) {
+                xpTotal = 50000;
+                proximoNivel = "Vigia";
+            }
+
+            // Atualiza a tela
+            document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
+            document.getElementById('gavetaProximoNivel').textContent = proximoNivel;
+            
+            // Calcula a porcentagem da barra (com um limite de 100%)
+            let porcentagem = (xpAtual / xpTotal) * 100;
+            if (porcentagem > 100) porcentagem = 100;
+
+            setTimeout(() => { 
+                document.getElementById('gavetaXpBarra').style.width = `${porcentagem}%`; 
+            }, 100);
+        }
+    }
+    </script>
+    <script>
+    // Função para dar XP manual (Apenas Liderança)
+    window.darXP = async function(passAlvo, nomeAlvo) {
+        const qtdStr = prompt(`Dar quanto de XP para ${nomeAlvo}?\n(Ex: 50, 100, 300)`, "50");
+        if (qtdStr === null) return; // Cancelou
+
+        const qtd = parseInt(qtdStr);
+        if (isNaN(qtd) || qtd <= 0) { alert("Digite um número válido maior que zero."); return; }
+
+        const motivo = prompt(`Motivo do bônus de +${qtd} XP:`, "Ato de bravura");
+        if (motivo === null) return;
+
+        // Puxa o XP atual para somar
+        const { data } = await sb.from('membros').select('xp_total').eq('passaporte', passAlvo).single();
+        if (data) {
+            const novoXP = (data.xp_total || 0) + qtd;
+            await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', passAlvo);
+            
+            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP para ${nomeAlvo}!`, "sucesso");
+            
+            // Se a gaveta estiver aberta no membro que recebeu, atualiza
+            if(localStorage.getItem('passaporte') === passAlvo) window.abrirGaveta();
+        }
+    };
+    </script>
 </body>
 </html>
