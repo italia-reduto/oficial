@@ -875,5 +875,150 @@
         if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
     }
                                                </script>
+    <!-- ========== CRONÔMETRO DE JORNADA EM TEMPO REAL ========== -->
+<script>
+    window.carregarMembrosAtivos = async function() {
+        const lista = document.getElementById('listaMembros');
+        const passLogado = localStorage.getItem('passaporte');
+        if(!lista) return;
+        
+        // Evita ficar piscando "Buscando..." toda hora que atualizar
+        if (lista.innerHTML.includes('Buscando...') || lista.innerHTML === '') {
+            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        }
+
+        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
+        window.souAdminMembros = (checkAdmin === true);
+
+        // Puxa o horário de entrada, início e fim de pausa
+        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome, equipe_id, entrada, pausa_inicio, pausa_fim').is('saida', null);
+        const { data: equipes } = await sb.from('equipes').select('id, nome');
+        
+        if (error) {
+            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar membros.</div>';
+            return;
+        }
+
+        const equipesMap = {};
+        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
+
+        const agora = new Date();
+        let atualizouBanco = false;
+
+        // Auto-Encerramento (30 mins de pausa)
+        for (let m of ativos) {
+            if (m.pausa_inicio && !m.pausa_fim) {
+                const inicioPausa = new Date(m.pausa_inicio);
+                const minutosPausado = (agora - inicioPausa) / 1000 / 60;
+                
+                if (minutosPausado >= 30) {
+                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
+                    atualizouBanco = true;
+                }
+            }
+        }
+
+        if(atualizouBanco) {
+            return window.carregarMembrosAtivos();
+        }
+
+        document.getElementById('membrosAtivos').textContent = ativos.length;
+
+        if (ativos.length === 0) {
+            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
+            return;
+        }
+
+        lista.innerHTML = ativos.map(m => {
+            let botoes = '';
+            const isPausado = (m.pausa_inicio && !m.pausa_fim);
+
+            if (window.souAdminMembros) {
+                botoes = `
+                    <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
+                        <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:12px; font-weight:bold; cursor:pointer;">
+                            <i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}
+                        </button>
+                        <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
+                    </div>
+                `;
+            }
+
+            // Configura a tag de status e a cor
+            let tagStatus = '';
+            if (isPausado) {
+                tagStatus = `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px;">PAUSADO</span>`;
+            } else {
+                tagStatus = `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>`;
+            }
+
+            const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
+
+            // Aqui adicionamos o Cronômetro de Jornada (vai começar a contar automaticamente)
+            return `
+            <div class="card-membro" style="${isPausado ? 'border-color: rgba(245,158,11,0.4);' : ''}">
+                <div style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
+                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
+                    ${tagStatus}
+                </div>
+                
+                <!-- AQUI ESTÁ O CRONÔMETRO -->
+                <div style="font-size: 13px; color: ${isPausado ? '#f59e0b' : '#22c55e'}; margin-top: 6px; font-weight: 600; display:flex; align-items:center; gap:5px;">
+                    <i class="fas fa-stopwatch"></i> 
+                    <span class="cronometro-jornada" data-entrada="${m.entrada}" data-pausa-inicio="${m.pausa_inicio || ''}" data-pausa-fim="${m.pausa_fim || ''}">00:00:00</span>
+                </div>
+
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                    <i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: <b>${nomeEquipe}</b>
+                </div>
+                
+                ${botoes}
+            </div>`;
+        }).join('');
+
+        // MÁGICA DO CRONÔMETRO: Roda a cada 1 segundo atualizando a continha
+        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
+        window.loopTimerMembros = setInterval(() => {
+            document.querySelectorAll('.cronometro-jornada').forEach(el => {
+                const entrada = new Date(el.getAttribute('data-entrada')).getTime();
+                const pInicioStr = el.getAttribute('data-pausa-inicio');
+                const pFimStr = el.getAttribute('data-pausa-fim');
+                
+                const pInicio = pInicioStr ? new Date(pInicioStr).getTime() : null;
+                const pFim = pFimStr ? new Date(pFimStr).getTime() : null;
+                
+                let tempoBrutoMs = Date.now() - entrada;
+                let tempoPausaMs = 0;
+
+                // Se já pausou alguma vez
+                if (pInicio) {
+                    if (pFim) {
+                        // Pausa concluída
+                        tempoPausaMs = pFim - pInicio;
+                    } else {
+                        // Ainda está pausado (desconta até o momento atual)
+                        tempoPausaMs = Date.now() - pInicio;
+                    }
+                }
+
+                let tempoLiquidoMs = tempoBrutoMs - tempoPausaMs;
+                if (tempoLiquidoMs < 0) tempoLiquidoMs = 0;
+
+                // Converte para Horas:Minutos:Segundos
+                const h = Math.floor(tempoLiquidoMs / 3600000);
+                const m = Math.floor((tempoLiquidoMs % 3600000) / 60000);
+                const s = Math.floor((tempoLiquidoMs % 60000) / 1000);
+
+                el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            });
+        }, 1000);
+    }
+
+    // Limpar o timer ao fechar
+    window.fecharListaMembros = function() {
+        document.getElementById('modalMembros').classList.remove('aberto');
+        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
+    }
+                    </script>
 </body>
 </html>
