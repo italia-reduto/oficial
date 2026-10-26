@@ -31,11 +31,10 @@
         .cabecalho-superior { position: absolute; top: 0; left: 0; right: 0; padding: 20px 24px; display: flex; justify-content: flex-end; z-index: 10; }
         .botao-sair { display: flex; align-items: center; gap: 8px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(96, 165, 250, 0.18); border-radius: 12px; padding: 10px 18px; color: #f87171; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; backdrop-filter: blur(10px); }
         
-        .conteudo { padding: 24px; margin-top: -30px; position: relative; z-index: 1; transition: filter 0.35s ease; }
-        .conteudo.desfocado { filter: blur(6px); }
+        .conteudo { padding: 24px; margin-top: -30px; position: relative; z-index: 1; }
         
         .cabecalho-saudacao { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
-        .cabecalho-saudacao .avatar-mini { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; background: #1e293b; cursor: pointer; transition: transform 0.2s ease; }
+        .cabecalho-saudacao .avatar-mini { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; background: #1e293b; cursor: pointer; }
         .saudacao { font-size: 28px; font-weight: 700; margin-bottom: 0; }
         .saudacao span { color: #60a5fa; }
         
@@ -78,10 +77,10 @@
         .btn-gaveta { width: 100%; height: 48px; flex-shrink: 0; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid #334155; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .gaveta-footer { margin-top: auto; padding-top: 20px; text-align: center; font-size: 12px; color: #64748b; flex-shrink: 0; }
 
+        /* ========== MODAIS GERAIS ========== */
         .fundo-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
         .fundo-modal.aberto { opacity: 1; visibility: visible; }
-        .caixa-modal { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.2); border-radius: 18px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center; transform: translateY(10px); transition: transform 0.3s ease; }
-        .fundo-modal.aberto .caixa-modal { transform: translateY(0); }
+        .caixa-modal { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.2); border-radius: 18px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center; }
         .icone-modal { width: 56px; height: 56px; border-radius: 50%; background: rgba(96,165,250,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
         .icone-modal i { font-size: 24px; color: #60a5fa; }
         .titulo-modal { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
@@ -95,6 +94,7 @@
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
         
+        /* ========== ESTILOS DO SUPORTE ========== */
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .msg-card { display: flex; gap: 12px; background: #1e293b; border: 1px solid #334155; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
         .msg-card.admin { border-left-color: #22c55e; }
@@ -108,6 +108,10 @@
         .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
         .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
         .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
+        
+        /* ========== ESTILOS DE MEMBROS ========== */
+        .card-membro { padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; margin-bottom: 8px; }
+        .btn-acao-membro { flex:1; padding:8px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:4px; }
     </style>
 </head>
 <body>
@@ -131,25 +135,30 @@
         </div>
         
         <div class="grade-cards">
+            <!-- Card Tickets (Abre o Suporte) -->
             <div class="card card-clicavel" onclick="abrirModalTickets()">
                 <div class="card-titulo">Tickets Abertos <i class="fas fa-ticket-alt"></i></div>
                 <div class="card-valor" id="valor-tickets-painel">0</div>
                 <div class="card-dica">Toque para abrir suporte</div>
             </div>
+            <!-- Card Faltas e Presenças -->
             <div class="card card-clicavel" onclick="abrirModalFaltas()">
                 <div class="card-titulo">Faltas e Presenças <i class="fas fa-user-check"></i></div>
                 <div class="card-valor" style="font-size: 18px;" id="valor-presencas">0P · 0F · 0J</div>
             </div>
+            <!-- Card Membros Ativos -->
             <div class="card card-clicavel" onclick="abrirListaMembros()">
                 <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
                 <div class="card-valor" id="membrosAtivos">—</div>
                 <div class="card-dica">Toque para ver a lista</div>
             </div>
+            <!-- Card Frequência -->
             <div class="card card-clicavel" onclick="abrirFrequencia()">
                 <div class="card-titulo">Frequência <i class="fas fa-calendar-check"></i></div>
                 <div class="card-valor" id="pontosHoje">0</div>
                 <div class="card-dica">Toque para ver histórico</div>
             </div>
+            <!-- Card Avisos -->
             <div class="card-aviso" style="position: relative;">
                 <div class="card-titulo">Aviso Recente <div><i class="fas fa-pen" id="btn-editar-aviso" style="cursor: pointer; display: none; margin-right: 8px; color: #60a5fa;" onclick="abrirModalAviso()"></i><i class="fas fa-bell"></i></div></div>
                 <div class="card-valor" id="texto-aviso" style="font-size: 20px; line-height: 1.4;">Carregando avisos...</div>
@@ -157,6 +166,7 @@
         </div>
     </div>
 
+    <!-- GAVETA DE PERFIL -->
     <div class="fundo-gaveta" id="fundoGaveta" onclick="fecharGaveta()"></div>
     <div class="gaveta-perfil" id="gavetaPerfil">
         <div class="gaveta-topo"><h3>Meu Dossiê</h3><button onclick="fecharGaveta()"><i class="fas fa-times"></i></button></div>
@@ -171,17 +181,112 @@
         <div class="gaveta-footer"><i class="fas fa-id-card"></i> Passaporte: <span id="gavetaPassaporte">---</span></div>
     </div>
 
-    <div class="fundo-modal" id="modalSair" onclick="if(event.target === this) fecharModalSair()"><div class="caixa-modal"><div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div><h3 class="titulo-modal">Deseja sair?</h3><p class="texto-modal">Você voltará para a tela de acesso.</p><div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalSair()">Cancelar</button><button class="botao-confirmar" onclick="confirmarSaida()">Sair</button></div></div></div>
-    <div class="fundo-modal" id="modalAviso" onclick="if(event.target === this) fecharModalAviso()"><div class="caixa-modal" style="max-width: 400px; padding: 24px;"><h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3><textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea><div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button></div></div></div>
-    <div class="fundo-modal" id="modalPerfil" onclick="if(event.target === this) fecharModalPerfil()"><div class="caixa-modal" style="max-width: 400px; padding: 24px;"><h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3><input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;"><input type="text" id="input-frase" placeholder="Sua frase..." style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;"><div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button></div></div></div>
-
     <nav class="barra-menu">
         <a href="painel.html" class="menu-item ativo"><i class="fas fa-home"></i><span>Painel</span></a>
         <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="#" class="menu-item" onclick="abrirModalTickets(); return false;"><i class="fas fa-headset"></i><span>Suporte</span></a>
                 </nav>
-                <script>
+                <!-- MODAL SAIR -->
+<div class="fundo-modal" id="modalSair" onclick="if(event.target === this) fecharModalSair()">
+    <div class="caixa-modal">
+        <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
+        <h3 class="titulo-modal">Deseja sair?</h3>
+        <p class="texto-modal">Você voltará para a tela de acesso.</p>
+        <div class="botoes-modal">
+            <button class="botao-cancelar" onclick="fecharModalSair()">Cancelar</button>
+            <button class="botao-confirmar" onclick="confirmarSaida()">Sair</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL AVISO -->
+<div class="fundo-modal" id="modalAviso" onclick="if(event.target === this) fecharModalAviso()">
+    <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
+        <h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3>
+        <textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; resize: none;"></textarea>
+        <div class="botoes-modal">
+            <button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button>
+            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDITAR PERFIL -->
+<div class="fundo-modal" id="modalPerfil" onclick="if(event.target === this) fecharModalPerfil()">
+    <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
+        <h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3>
+        <input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
+        <input type="text" id="input-frase" placeholder="Sua frase..." style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
+        <div class="botoes-modal">
+            <button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button>
+            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL MEMBROS (O MEGA AJUSTE) -->
+<div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Membros Ativos</h3>
+            <button class="lista-fechar" onclick="fecharListaMembros()" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="lista-corpo" id="listaMembros" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+    </div>
+</div>
+
+<!-- MODAL SUPORTE (TICKETS) -->
+<div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <h3 style="font-size: 20px; font-weight: 700; color: #fff;" id="titulo-modal-suporte">Central de Suporte</h3>
+            <button onclick="fecharModalTickets()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+            <div style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;" id="resumoTickets"></div>
+            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+
+            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span></button>
+                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span></button>
+                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span></button>
+                </div>
+                <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
+                    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold; color: white; border: none;" onclick="criarTicket()">Enviar Ticket</button>
+                </div>
+            </div>
+
+            <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
+                <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
+            </div>
+        </div>
+
+        <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
+                    <div><h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4><span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span></div>
+                </div>
+                <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;"><i class="fas fa-check"></i> Finalizar</button>
+            </div>
+            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
+            <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
+                <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;"><i class="fas fa-paperclip"></i></label>
+                <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
+                <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
+                <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <script>
+    // RELÓGIO
     function atualizarRelogio() {
         const agora = new Date(); const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
         document.getElementById('horaAtual').textContent = `${String(brasilia.getHours()).padStart(2, '0')}:${String(brasilia.getMinutes()).padStart(2, '0')}:${String(brasilia.getSeconds()).padStart(2, '0')}`;
@@ -189,18 +294,16 @@
     }
     atualizarRelogio(); setInterval(atualizarRelogio, 1000);
 
+    // GAVETA
     function abrirGaveta() {
         document.getElementById('fundoGaveta').classList.add('aberto'); document.getElementById('gavetaPerfil').classList.add('aberta');
-        setTimeout(() => { document.getElementById('gavetaXpBarra').style.width = `65%`; }, 100); // Exemplo visual
+        setTimeout(() => { document.getElementById('gavetaXpBarra').style.width = `65%`; }, 100); // XP de exemplo
     }
     function fecharGaveta() {
         document.getElementById('fundoGaveta').classList.remove('aberto'); document.getElementById('gavetaPerfil').classList.remove('aberta');
     }
 
-    function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
-    function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
-    function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
-
+    // DADOS DO USUÁRIO
     async function carregarDadosUsuario() {
         const pass = localStorage.getItem('passaporte');
         if (!pass) { window.location.href = 'login.html'; return; }
@@ -214,6 +317,7 @@
     }
     carregarDadosUsuario();
 
+    // EDITAR PERFIL
     let fotoBase64Temp = "";
     function abrirModalEditarPerfil() { document.getElementById('modalPerfil').classList.add('aberto'); }
     function fecharModalPerfil() { document.getElementById('modalPerfil').classList.remove('aberto'); }
@@ -226,10 +330,72 @@
         if(fotoBase64Temp) { document.getElementById('img-avatar-mini').src = fotoBase64Temp; document.getElementById('img-avatar-gaveta').src = fotoBase64Temp; }
         fecharModalPerfil(); alert("Perfil atualizado!");
     }
-                </script>
-                <script>
+
+    // SAIR
+    function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
+    function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
+    function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
+    </script>
+    <script>
+    // ========== MEMBROS ATIVOS (MEGA AJUSTE) ==========
+    let souAdminMembros = false;
+
+    function abrirListaMembros() {
+        document.getElementById('modalMembros').classList.add('aberto');
+        carregarMembrosAtivos();
+    }
+    function fecharListaMembros() { document.getElementById('modalMembros').classList.remove('aberto'); }
+
+    async function carregarMembrosAtivos() {
+        const lista = document.getElementById('listaMembros');
+        const passLogado = localStorage.getItem('passaporte');
+        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+
+        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
+        souAdminMembros = (checkAdmin === true);
+
+        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome').is('saida', null);
+        if (error) { lista.innerHTML = '<div style="text-align:center; color:red;">Erro.</div>'; return; }
+        
+        document.getElementById('membrosAtivos').textContent = ativos.length;
+        if (ativos.length === 0) { lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>'; return; }
+
+        lista.innerHTML = ativos.map(m => {
+            let botoes = '';
+            if (souAdminMembros) {
+                botoes = `
+                    <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
+                        <button onclick="adminAcaoPonto('${m.passaporte}', 'pausar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold;"><i class="fas fa-pause"></i> Pausar</button>
+                        <button onclick="adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold;"><i class="fas fa-stop"></i> Encerrar</button>
+                    </div>`;
+            }
+            return `
+            <div class="card-membro">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
+                    <span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>
+                </div>
+                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Passaporte: ${m.passaporte}</div>
+                ${botoes}
+            </div>`;
+        }).join('');
+    }
+
+    async function adminAcaoPonto(passAlvo, acao) {
+        if (!confirm(`Deseja ${acao} o ponto do passaporte ${passAlvo}?`)) return;
+        const agora = new Date().toISOString();
+        let updateData = {};
+        if (acao === 'pausar') updateData = { pausa_inicio: agora };
+        if (acao === 'encerrar') updateData = { saida: agora };
+        const { error } = await sb.from('pontos').update(updateData).eq('passaporte', passAlvo).is('saida', null);
+        if (error) alert("Erro ao executar ação.");
+        else { alert("Ação executada!"); carregarMembrosAtivos(); }
+    }
+
+    // ========== MURAL DE AVISOS ==========
     function abrirModalAviso() { document.getElementById('modalAviso').classList.add('aberto'); }
     function fecharModalAviso() { document.getElementById('modalAviso').classList.remove('aberto'); }
+    
     async function carregarAvisoRecente() {
         const { data } = await sb.from('avisos').select('texto').order('criado_em', { ascending: false }).limit(1).single();
         if (data) document.getElementById('texto-aviso').textContent = data.texto;
@@ -244,339 +410,167 @@
         const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
         if(data === true) document.getElementById('btn-editar-aviso').style.display = 'inline-block';
     }
-    carregarAvisoRecente(); verificarPermissaoAviso(); setInterval(carregarAvisoRecente, 30000);
 
-<!-- JANELAS DE MEMBROS E FREQUÊNCIA -->
-<div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Membros</h3>
-            <button class="lista-fechar" onclick="fecharListaMembros()" style="background:transparent; border:none; color:#94a3b8; font-size:20px;"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="lista-resumo" id="resumoMembros" style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;"></div>
-        <div class="lista-corpo" id="listaMembros" style="flex: 1; overflow-y: auto; max-height: 50vh; display: flex; flex-direction: column; gap: 8px;"></div>
-    </div>
-</div>
+    // PLACEHOLDERS DE FREQUÊNCIA E FALTAS (Para não dar erro na tela)
+    function abrirFrequencia() { alert("Módulo de Frequência em breve."); }
+    function abrirModalFaltas() { alert("Módulo de Faltas em breve."); }
 
-<div class="fundo-modal" id="modalFreq" onclick="if(event.target === this) document.getElementById('modalFreq').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <h3 class="lista-titulo" id="freqTitulo" style="font-size: 20px; font-weight: 700; color:#fff;">Frequência</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalFreq').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px;"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="fq-busca" style="margin-bottom: 10px;"><input type="date" id="freqData" style="width: 100%; padding: 10px; border-radius: 8px; background: #0f172a; color: white; border: 1px solid #334155;"></div>
-        <div class="lista-resumo" id="freqResumo" style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;"></div>
-        <div class="lista-corpo" id="freqCorpo" style="flex: 1; overflow-y: auto; max-height: 50vh; display: flex; flex-direction: column; gap: 8px;"></div>
-    </div>
-</div>
+    // Iniciar
+    document.addEventListener("DOMContentLoaded", () => {
+        carregarAvisoRecente(); verificarPermissaoAviso();
+        setInterval(carregarAvisoRecente, 30000);
+        // Atualiza contador de membros ao abrir
+        sb.from('pontos').select('*', { count: 'exact', head: true }).is('saida', null).then(({ count }) => {
+            document.getElementById('membrosAtivos').textContent = count || 0;
+        });
+    });
+    </script>
+        <script>
+        // ========== SISTEMA DE SUPORTE ==========
+        let categoriaSelecionada = null;
+        let ticketAtualChatId = null;
+        let chatSubscription = null; 
 
-<div class="fundo-modal" id="modalFaltas" onclick="if(event.target === this) document.getElementById('modalFaltas').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; margin-bottom:10px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Faltas e Presenças</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalFaltas').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px;"><i class="fas fa-times"></i></button>
-        </div>
-        <div class="lista-corpo" id="faltasCorpo" style="flex: 1; overflow-y: auto; max-height: 60vh; display: flex; flex-direction: column; gap: 8px;"></div>
-    </div>
-</div>
-                    <script>
-    // ========== LÓGICA DE MEMBROS ATIVOS ==========
-    let souAdmin = false;
-    let membrosAtivosMapa = new Map();
-
-    async function verificarAdmin() {
-        const pass = localStorage.getItem('passaporte');
-        if (!pass) { souAdmin = false; return; }
-        const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-        souAdmin = (data === true);
-    }
-
-    async function atualizarMembrosAtivos() {
-        const { data } = await sb.from('pontos').select('passaporte, nome, entrada, equipe_id').is('saida', null);
-        const el = document.getElementById('membrosAtivos');
-        if (el && data) el.textContent = data.length;
-        membrosAtivosMapa.clear();
-        (data || []).forEach(p => membrosAtivosMapa.set(String(p.passaporte), p));
-    }
-
-    function abrirListaMembros() {
-        document.getElementById('modalMembros').classList.add('aberto');
-        document.getElementById('listaMembros').innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>';
+        function abrirModalTickets() {
+            document.getElementById('modalTickets').classList.add('aberto');
+            voltarParaListaTickets();
+            document.getElementById('input-ticket').value = '';
+            categoriaSelecionada = null;
+            document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+            document.getElementById('div-descricao').style.display = 'none';
+            carregarTickets();
+        }
+        function fecharModalTickets() { document.getElementById('modalTickets').classList.remove('aberto'); }
         
-        setTimeout(() => {
-            renderizarListaMembros();
-        }, 500);
-    }
-    
-    function fecharListaMembros() { document.getElementById('modalMembros').classList.remove('aberto'); }
+        function selecionarCategoria(cat) {
+            if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
+            else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
+            document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+            if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
+        }
 
-    async function renderizarListaMembros() {
-        const corpo = document.getElementById('listaMembros');
-        const resumo = document.getElementById('resumoMembros');
-        
-        const { data: membros } = await sb.from('membros').select('nome, passaporte');
-        const { data: equipes } = await sb.from('equipes').select('id, nome');
-        
-        const equipesMap = {};
-        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
+        async function criarTicket() {
+            const texto = document.getElementById('input-ticket').value;
+            const pass = localStorage.getItem('passaporte');
+            const nome = document.getElementById('nomeUsuario').textContent;
+            if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
+            const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
+            await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
+            document.getElementById('tela-abertura-ticket').style.display = 'none';
+            document.getElementById('tela-espera-ticket').style.display = 'flex';
+            carregarTickets(); btn.innerText = "Enviar Ticket"; btn.disabled = false;
+        }
 
-        let on = 0; let off = 0;
-        
-        corpo.innerHTML = (membros || []).map(m => {
-            const ativo = membrosAtivosMapa.get(String(m.passaporte));
-            if (ativo) on++; else off++;
+        async function carregarTickets() {
+            const corpo = document.getElementById('corpoTickets');
+            const pass = localStorage.getItem('passaporte');
+            const nomeEu = document.getElementById('nomeUsuario').textContent;
+            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
             
-            return `
-            <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; margin-bottom: 8px;">
-                <div style="display:flex; justify-content:space-between;">
-                    <div style="font-size: 13px; font-weight: 600; color: #fff;">${m.nome}</div>
-                    <span style="font-size: 10px; font-weight: 700; color: ${ativo ? '#22c55e' : '#94a3b8'};">${ativo ? 'ON' : 'OFF'}</span>
-                </div>
-                <div style="font-size: 11px; color: #94a3b8; margin-top:4px;">Passaporte: ${m.passaporte}</div>
-                ${ativo ? `<div style="font-size: 11px; color: #60a5fa; margin-top:4px;">Equipe: ${equipesMap[ativo.equipe_id] || 'Sem equipe'}</div>` : ''}
-            </div>`;
-        }).join('');
-        
-        resumo.innerHTML = `<div>${on} em serviço · ${off} fora de serviço</div>`;
-    }
-    
-    // Chamar ao carregar a página
-    verificarAdmin();
-    atualizarMembrosAtivos();
-</script>
-    <script>
-    // ========== LÓGICA DE FREQUÊNCIA ==========
-    function abrirFrequencia() {
-        document.getElementById('modalFreq').classList.add('aberto');
-        document.getElementById('freqData').value = new Date().toISOString().split('T')[0];
-        carregarFrequencia();
-    }
-
-    async function carregarFrequencia() {
-        const dataSel = document.getElementById('freqData').value;
-        const corpo = document.getElementById('freqCorpo');
-        corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-        
-        // Lógica simplificada para não quebrar
-        setTimeout(() => {
-            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum registro nesta data.</div>';
-        }, 500);
-    }
-
-    function abrirModalFaltas() {
-        document.getElementById('modalFaltas').classList.add('aberto');
-        document.getElementById('faltasCorpo').innerHTML = `
-            <div style="display:flex; gap:10px; margin-bottom:15px;">
-                <div style="flex:1; background:rgba(34,197,94,.1); padding:15px; border-radius:8px; text-align:center; color:#22c55e;">
-                    <div style="font-size:24px; font-weight:bold;">0</div><div style="font-size:11px;">Presenças</div>
-                </div>
-                <div style="flex:1; background:rgba(239,68,68,.1); padding:15px; border-radius:8px; text-align:center; color:#ef4444;">
-                    <div style="font-size:24px; font-weight:bold;">0</div><div style="font-size:11px;">Faltas</div>
-                </div>
-                <div style="flex:1; background:rgba(245,158,11,.1); padding:15px; border-radius:8px; text-align:center; color:#f59e0b;">
-                    <div style="font-size:24px; font-weight:bold;">0</div><div style="font-size:11px;">Justificadas</div>
-                </div>
-            </div>
-            <div style="text-align:center; color:#64748b; font-size:13px;">Nenhum dia marcado ainda.</div>
-        `;
-    }
-    
-                </script>
-                    <!-- JANELA DO SUPORTE -->
-    <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
-        <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
-            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-                <h3 style="font-size: 20px; font-weight: 700; color: #fff;" id="titulo-modal-suporte">Central de Suporte</h3>
-                <button onclick="fecharModalTickets()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;"><i class="fas fa-times"></i></button>
-            </div>
+            const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+            const ehLider = isAdmin === true;
+            let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
+            if (!ehLider) query = query.eq('passaporte', pass);
             
-            <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
-                <div style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;" id="resumoTickets"></div>
-                <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+            const { data, error } = await query;
+            if (error) { corpo.innerHTML = '<div style="color: red;">Erro.</div>'; return; }
+            if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
+            
+            corpo.innerHTML = data.map(t => {
+                const isAberto = t.status === 'aberto'; const isAtendimento = t.status === 'atendimento'; const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
+                const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+                return `
+                <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div><span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span></div>
+                    <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>
+                    ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}
+                    <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
+                    ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
+                    ${podeAbrirChat ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
+                </div>`;
+            }).join('');
+        }
 
-                <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                        <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span></button>
-                        <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span></button>
-                        <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span></button>
-                    </div>
-                    <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                        <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
-                        <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold; color: white; border: none;" onclick="criarTicket()">Enviar Ticket</button>
-                    </div>
-                </div>
+        async function assumirTicket(id) {
+            const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
+            await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
+            carregarTickets();
+        }
 
-                <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
-                    <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                    <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
-                    <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
-                </div>
-            </div>
+        function voltarParaListaTickets() {
+            document.getElementById('tela-chat-ticket').style.display = 'none';
+            document.getElementById('tela-lista-tickets').style.display = 'flex';
+            document.getElementById('btn-resolver-chat').style.display = 'none';
+            document.getElementById('tela-espera-ticket').style.display = 'none';
+            document.getElementById('tela-abertura-ticket').style.display = 'flex';
+            ticketAtualChatId = null;
+            if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
+            carregarTickets();
+        }
 
-            <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
-                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
-                    <div style="display: flex; align-items: center; gap: 10px;">
-                        <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
-                        <div><h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4><span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span></div>
-                    </div>
-                    <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;"><i class="fas fa-check"></i> Finalizar</button>
-                </div>
-                <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
-                <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
-                    <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;"><i class="fas fa-paperclip"></i></label>
-                    <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
-                    <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
-                    <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-    </div>
+        async function abrirChatTicket(id, nomeAutor, passaporte) {
+            ticketAtualChatId = id;
+            document.getElementById('tela-lista-tickets').style.display = 'none';
+            document.getElementById('tela-chat-ticket').style.display = 'flex';
+            document.getElementById('chat-titulo').innerText = "Ticket #" + id;
+            document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
+            document.getElementById('input-chat-msg').value = "";
+            
+            const pass = localStorage.getItem('passaporte');
+            const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+            document.getElementById('btn-resolver-chat').style.display = (isAdmin === true) ? 'block' : 'none';
+            
+            await carregarMensagens();
 
-    <script>
-        (function() {
-            let categoriaSelecionada = null;
-            let ticketAtualChatId = null;
-            let chatSubscription = null; // Variável do Tempo Real
+            // TEMPO REAL ATIVADO
+            if (chatSubscription) sb.removeChannel(chatSubscription);
+            chatSubscription = sb.channel('chat-' + id)
+                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => {
+                    carregarMensagens();
+                }).subscribe();
+        }
 
-            window.abrirModalTickets = function() {
-                document.getElementById('modalTickets').classList.add('aberto');
-                window.voltarParaListaTickets();
-                document.getElementById('input-ticket').value = '';
-                categoriaSelecionada = null;
-                document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-                document.getElementById('div-descricao').style.display = 'none';
-                carregarTickets();
-            };
-            window.fecharModalTickets = function() { document.getElementById('modalTickets').classList.remove('aberto'); };
-            window.selecionarCategoria = function(cat) {
-                if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
-                else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
-                document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-                if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
-            };
-            window.criarTicket = async function() {
-                const texto = document.getElementById('input-ticket').value;
-                const pass = localStorage.getItem('passaporte');
-                const nome = document.getElementById('nomeUsuario').textContent;
-                if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
-                const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
-                await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
-                document.getElementById('tela-abertura-ticket').style.display = 'none';
-                document.getElementById('tela-espera-ticket').style.display = 'flex';
-                carregarTickets(); btn.innerText = "Enviar Ticket"; btn.disabled = false;
-            };
-
-            async function carregarTickets() {
-                const corpo = document.getElementById('corpoTickets');
-                const pass = localStorage.getItem('passaporte');
-                const nomeEu = document.getElementById('nomeUsuario').textContent;
-                corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-                
-                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-                const ehLider = isAdmin === true;
-                let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
-                if (!ehLider) query = query.eq('passaporte', pass);
-                
-                const { data, error } = await query;
-                if (error) { corpo.innerHTML = '<div style="color: red;">Erro.</div>'; return; }
-                if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
-                
-                corpo.innerHTML = data.map(t => {
-                    const isAberto = t.status === 'aberto'; const isAtendimento = t.status === 'atendimento'; const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
-                    const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+        async function carregarMensagens() {
+            if(!ticketAtualChatId) return;
+            const chatBox = document.getElementById('chat-mensagens');
+            const { data } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
+            
+            if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; } 
+            else {
+                chatBox.innerHTML = data.map(m => {
+                    const isLider = m.autor.includes("Líder"); 
+                    const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                     return `
-                    <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div><span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span></div>
-                        <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>
-                        ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}
-                        <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
-                        ${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
-                        ${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
-                    </div>`;
+                        <div class="msg-card ${isLider ? 'admin' : ''}">
+                            <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
+                            <div class="msg-content">
+                                <div class="msg-header"><span class="msg-nome">${m.autor}</span><span class="msg-tag">${isLider ? 'LIDERANÇA' : 'MEMBRO'}</span><span class="msg-hora">${hora}</span></div>
+                                <div class="msg-body">${m.mensagem || ''}</div>
+                            </div>
+                        </div>`;
                 }).join('');
             }
+            setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+        }
 
-            window.assumirTicket = async function(id) {
-                const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
-                await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
-                carregarTickets();
-            };
+        async function enviarMensagemChat() {
+            const input = document.getElementById('input-chat-msg'); const texto = input.value.trim();
+            if(!texto || !ticketAtualChatId) return;
+            const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte');
+            const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+            const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
+            input.value = ""; 
+            await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
+            // O Realtime vai avisar a tela para atualizar
+        }
 
-            window.voltarParaListaTickets = function() {
-                document.getElementById('tela-chat-ticket').style.display = 'none';
-                document.getElementById('tela-lista-tickets').style.display = 'flex';
-                document.getElementById('btn-resolver-chat').style.display = 'none';
-                document.getElementById('tela-espera-ticket').style.display = 'none';
-                document.getElementById('tela-abertura-ticket').style.display = 'flex';
-                ticketAtualChatId = null;
-                if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
-                carregarTickets();
-            };
+        async function resolverTicketChat() {
+            if(!confirm("Finalizar atendimento?")) return;
+            await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+            voltarParaListaTickets();
+        }
 
-            window.abrirChatTicket = async function(id, nomeAutor, passaporte) {
-                ticketAtualChatId = id;
-                document.getElementById('tela-lista-tickets').style.display = 'none';
-                document.getElementById('tela-chat-ticket').style.display = 'flex';
-                document.getElementById('chat-titulo').innerText = "Ticket #" + id;
-                document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
-                document.getElementById('input-chat-msg').value = "";
-                
-                const pass = localStorage.getItem('passaporte');
-                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-                document.getElementById('btn-resolver-chat').style.display = (isAdmin === true) ? 'block' : 'none';
-                
-                await carregarMensagens();
-
-                // TEMPO REAL LIGADO AQUI:
-                if (chatSubscription) sb.removeChannel(chatSubscription);
-                chatSubscription = sb.channel('chat-' + id)
-                    .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => {
-                        carregarMensagens();
-                    }).subscribe();
-            };
-
-            async function carregarMensagens() {
-                if(!ticketAtualChatId) return;
-                const chatBox = document.getElementById('chat-mensagens');
-                const { data } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
-                
-                if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; } 
-                else {
-                    chatBox.innerHTML = data.map(m => {
-                        const isLider = m.autor.includes("Líder"); 
-                        const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                        return `
-                            <div class="msg-card ${isLider ? 'admin' : ''}">
-                                <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
-                                <div class="msg-content">
-                                    <div class="msg-header"><span class="msg-nome">${m.autor}</span><span class="msg-tag">${isLider ? 'LIDERANÇA' : 'MEMBRO'}</span><span class="msg-hora">${hora}</span></div>
-                                    <div class="msg-body">${m.mensagem || ''}</div>
-                                </div>
-                            </div>`;
-                    }).join('');
-                }
-                setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
-            }
-
-            window.enviarMensagemChat = async function() {
-                const input = document.getElementById('input-chat-msg'); const texto = input.value.trim();
-                if(!texto || !ticketAtualChatId) return;
-                const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte');
-                const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-                const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
-                input.value = ""; 
-                await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
-                // Não precisa chamar carregarMensagens() aqui, o Tempo Real vai avisar!
-            };
-
-            window.resolverTicketChat = async function() {
-                if(!confirm("Finalizar atendimento?")) return;
-                await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
-                window.voltarParaListaTickets();
-            };
-
-            document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
-        })();
+        document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
     </script>
 </body>
 </html>
