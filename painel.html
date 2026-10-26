@@ -1499,5 +1499,123 @@
         }
     };
 </script>
+    <!-- ========== MODAL DE AÇÃO (XP E ADVERTÊNCIA) ========== -->
+<style>
+    .modal-acao { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
+    .modal-acao.aberto { opacity: 1; visibility: visible; }
+    .caixa-acao { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.3); border-radius: 18px; padding: 24px; max-width: 360px; width: 100%; text-align: center; transform: translateY(10px); transition: transform 0.3s ease; }
+    .modal-acao.aberto .caixa-acao { transform: translateY(0); }
+    .caixa-acao h3 { font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff; }
+    .caixa-acao p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+    .caixa-acao input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none; }
+    .caixa-acao input:focus { border-color: #3b82f6; }
+    .botoes-acao { display: flex; gap: 12px; margin-top: 10px; }
+    .btn-acao-cancelar { flex: 1; padding: 12px; border: 1px solid rgba(96,165,250,0.2); background: transparent; color: #94a3b8; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-acao-confirmar { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; color: #fff; background: linear-gradient(135deg, #3b82f6, #2563eb); }
+</style>
+
+<div class="modal-acao" id="modalAcao">
+    <div class="caixa-acao">
+        <h3 id="acao-titulo">Ação</h3>
+        <p>Membro: <b id="acao-nome-alvo" style="color:#60a5fa;">---</b></p>
+        
+        <div id="campo-quantidade-box">
+            <input type="number" id="acao-quantidade" placeholder="Quantidade de XP" value="50" min="1">
+        </div>
+        <input type="text" id="acao-motivo" placeholder="Digite o motivo..." value="">
+        
+        <div class="botoes-acao">
+            <button class="btn-acao-cancelar" onclick="fecharModalAcao()">Cancelar</button>
+            <button class="btn-acao-confirmar" id="btn-acao-confirmar" onclick="confirmarAcao()">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let tipoAcaoAtual = null; // 'xp' ou 'advertencia'
+    let passAlvoAtual = null;
+    let funcaoPosAcao = null;
+
+    // Função unificada para abrir o modal
+    window.abrirModalAcao = function(tipo, passAlvo, nomeAlvo, callback) {
+        tipoAcaoAtual = tipo;
+        passAlvoAtual = passAlvo;
+        funcaoPosAcao = callback;
+        
+        document.getElementById('acao-nome-alvo').innerText = nomeAlvo;
+        document.getElementById('acao-motivo').value = "";
+        document.getElementById('btn-acao-confirmar').disabled = false;
+        document.getElementById('btn-acao-confirmar').innerText = "Confirmar";
+
+        if (tipo === 'xp') {
+            document.getElementById('acao-titulo').innerText = "Enviar Recompensa (XP)";
+            document.getElementById('campo-quantidade-box').style.display = 'block';
+            document.getElementById('acao-quantidade').value = "50";
+            document.getElementById('acao-motivo').value = "Ato de bravura";
+            document.getElementById('btn-acao-confirmar').style.background = "linear-gradient(135deg, #3b82f6, #2563eb)";
+        } else if (tipo === 'advertencia') {
+            document.getElementById('acao-titulo').innerText = "Aplicar Advertência";
+            document.getElementById('campo-quantidade-box').style.display = 'none'; // Esconde a quantidade de XP
+            document.getElementById('acao-motivo').value = "Quebra de regras";
+            document.getElementById('btn-acao-confirmar').style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+        }
+
+        document.getElementById('modalAcao').classList.add('aberto');
+    }
+
+    window.fecharModalAcao = function() {
+        document.getElementById('modalAcao').classList.remove('aberto');
+        tipoAcaoAtual = null;
+        passAlvoAtual = null;
+        funcaoPosAcao = null;
+    }
+
+    window.confirmarAcao = async function() {
+        const motivo = document.getElementById('acao-motivo').value || "Não informado";
+        const btn = document.getElementById('btn-acao-confirmar');
+        btn.innerText = "Processando...";
+        btn.disabled = true;
+
+        if (tipoAcaoAtual === 'xp') {
+            const qtd = parseInt(document.getElementById('acao-quantidade').value);
+            if (isNaN(qtd) || qtd <= 0) { alert("Quantidade de XP inválida."); btn.innerText = "Confirmar"; btn.disabled = false; return; }
+
+            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', passAlvoAtual).single();
+            if (data) {
+                const novoXP = (data.xp_total || 0) + qtd;
+                await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP enviado!`, "sucesso");
+                if(localStorage.getItem('passaporte') === passAlvoAtual) window.abrirGaveta();
+            }
+        } 
+        else if (tipoAcaoAtual === 'advertencia') {
+            const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', passAlvoAtual).single();
+            if (data) {
+                const novoXP = Math.floor((data.xp_total || 0) * 0.8); // Perde 20%
+                const novasAdvertencias = (data.advertencias || 0) + 1;
+                await sb.from('membros').update({ xp_total: novoXP, advertencias: novasAdvertencias }).eq('passaporte', passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`Advertência aplicada!`, "erro");
+            }
+        }
+
+        if(typeof funcaoPosAcao === 'function') funcaoPosAcao();
+        fecharModalAcao();
+    }
+
+    // --- SUBSTITUINDO AS FUNÇÕES DOS BOTÕES ---
+    
+    // Botão de Dar XP
+    window.acaoDarXp = function(passAlvo, nomeAlvo) {
+        window.abrirModalAcao('xp', passAlvo, nomeAlvo, () => window.carregarTodosMembros());
+    }
+
+    // Botão de Advertir
+    window.acaoAdvertir = function(passAlvo, nomeAlvo) {
+        window.abrirModalAcao('advertencia', passAlvo, nomeAlvo, () => window.carregarTodosMembros());
+    }
+    
+    // Se o modal de DarXP antigo ainda estiver sendo chamado em outro lugar, mapeamos ele para cá também
+    window.abrirModalDarXp = window.acaoDarXp;
+</script>
 </body>
 </html>
