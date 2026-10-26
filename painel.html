@@ -20,6 +20,43 @@
     </script>
     
    <style>
+       /* ========== ESTILOS DA GAVETA DE PERFIL ========== */
+.fundo-gaveta {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px); z-index: 1000;
+    opacity: 0; visibility: hidden; transition: all 0.3s ease;
+}
+.fundo-gaveta.aberto { opacity: 1; visibility: visible; }
+
+.gaveta-perfil {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 80%; max-width: 340px;
+    background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+    border-right: 1px solid rgba(96, 165, 250, 0.2);
+    z-index: 1001; transform: translateX(-100%); transition: transform 0.3s ease;
+    display: flex; flex-direction: column; padding: 24px;
+}
+.gaveta-perfil.aberta { transform: translateX(0); }
+
+.gaveta-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.gaveta-topo h3 { font-size: 18px; font-weight: 700; color: #fff; }
+.gaveta-topo button { background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
+
+.gaveta-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover; margin: 0 auto 16px; background: #1e293b; display: block; }
+
+.gaveta-info { text-align: center; margin-bottom: 24px; }
+.gaveta-nome { font-size: 20px; font-weight: 700; color: #fff; }
+.gaveta-cargo { font-size: 14px; color: #60a5fa; font-weight: 600; margin-top: 4px; }
+
+.gaveta-xp-box { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
+.gaveta-xp-texto { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px; }
+.gaveta-barra-fundo { width: 100%; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; }
+.gaveta-barra-preenchida { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 999px; transition: width 1s ease; width: 0%; }
+
+/* Estilo do novo cabeçalho com avatar */
+.cabecalho-saudacao { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.cabecalho-saudacao .avatar-mini { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; background: #1e293b; cursor: pointer; transition: transform 0.2s ease; }
+.cabecalho-saudacao .avatar-mini:hover { transform: scale(1.05); }
+.cabecalho-saudacao .saudacao { margin-bottom: 0; }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
     /* Remove a seleção azul feia em celulares */
@@ -2246,5 +2283,101 @@ async function resolverTicketChat() {
 document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
 </script>
 <!-- ========== FIM DO SISTEMA DE TICKETS ========== -->
+        </script> 
+            <!-- ========== GAVETA DE PERFIL E AUTOMAÇÃO ========== -->
+<div class="fundo-gaveta" id="fundoGaveta" onclick="fecharGaveta()"></div>
+
+<div class="gaveta-perfil" id="gavetaPerfil">
+    <div class="gaveta-topo">
+        <h3>Meu Dossiê</h3>
+        <button onclick="fecharGaveta()"><i class="fas fa-times"></i></button>
+    </div>
+
+    <img id="img-avatar-gaveta" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="gaveta-avatar">
+    
+    <div class="gaveta-info">
+        <div class="gaveta-nome" id="gavetaNome">Membro</div>
+        <div class="gaveta-cargo" id="gavetaCargo">Cargo</div>
+    </div>
+
+    <div class="gaveta-xp-box">
+        <div class="gaveta-xp-texto">
+            <span>Respeito (XP)</span>
+            <span id="gavetaXpTexto">0 / 1.000</span>
+        </div>
+        <div class="gaveta-barra-fundo">
+            <div class="gaveta-barra-preenchida" id="gavetaXpBarra"></div>
+        </div>
+        <p style="font-size: 11px; color: #64748b; margin-top: 8px; text-align: center;">Próximo Nível: <span id="gavetaProximoNivel">Executor</span></p>
+    </div>
+
+    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid #334155; color: white; font-weight: bold; margin-bottom: 10px;" onclick="fecharGaveta(); abrirModalPerfil();">Editar Perfil</button>
+    
+    <div style="margin-top: auto; text-align: center; font-size: 12px; color: #64748b;">
+        <i class="fas fa-id-card"></i> Passaporte: <span id="gavetaPassaporte">---</span>
+    </div>
+</div>
+
+<script>
+    // 1. MÁGICA: Move a foto e o texto "Olá, Falcão" automaticamente
+    document.addEventListener("DOMContentLoaded", () => {
+        const saudacao = document.querySelector('.saudacao');
+        if (saudacao && !document.querySelector('.cabecalho-saudacao')) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'cabecalho-saudacao';
+            
+            const img = document.createElement('img');
+            img.id = 'img-avatar-mini';
+            img.src = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
+            img.className = 'avatar-mini';
+            img.onclick = function() { window.abrirGaveta(); };
+            
+            // Coloca a imagem do lado esquerdo do "Olá"
+            saudacao.parentNode.insertBefore(wrapper, saudacao);
+            wrapper.appendChild(img);
+            wrapper.appendChild(saudacao);
+            
+            // Remove a foto antiga lá do banner para não ficar duplicada
+            const avatarAntigo = document.querySelector('.avatar-container');
+            if (avatarAntigo) avatarAntigo.remove();
+        }
+    });
+
+    // 2. Lógica para abrir e fechar a Gaveta
+    window.abrirGaveta = function() {
+        document.getElementById('fundoGaveta').classList.add('aberto');
+        document.getElementById('gavetaPerfil').classList.add('aberta');
+        
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+
+        sb.from('membros').select('nome, passaporte, cargo, foto_url').eq('passaporte', pass).single().then(({data}) => {
+            if(data) {
+                document.getElementById('gavetaNome').textContent = data.nome || 'Membro';
+                document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo';
+                document.getElementById('gavetaPassaporte').textContent = data.passaporte;
+                
+                const fotoFinal = data.foto_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+                document.getElementById('img-avatar-mini').src = fotoFinal;
+                document.getElementById('img-avatar-gaveta').src = fotoFinal;
+            }
+        });
+
+        // Simulação da Barra de XP
+        const xpAtual = 650; 
+        const xpTotal = 1000;
+        const porcentagem = (xpAtual / xpTotal) * 100;
+        
+        document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
+        setTimeout(() => {
+            document.getElementById('gavetaXpBarra').style.width = `${porcentagem}%`;
+        }, 100);
+    }
+
+    window.fecharGaveta = function() {
+        document.getElementById('fundoGaveta').classList.remove('aberto');
+        document.getElementById('gavetaPerfil').classList.remove('aberta');
+    }
+            </script>
 </body>
 </html>
