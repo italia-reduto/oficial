@@ -1361,5 +1361,140 @@
         }
     };
 </script>
+    <!-- ========== CARD GERENCIAR MEMBROS (SÓ CARGOS ESPECÍFICOS) ========== -->
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+
+        // Puxa o cargo do jogador logado direto do banco
+        const { data: membro } = await sb.from('membros').select('cargo').eq('passaporte', pass).single();
+        
+        if (membro && membro.cargo) {
+            // Lista exata de quem pode ver o card
+            const cargosPermitidos = [
+                'Líder da organização',
+                '01 da organização',
+                'Coordenador',
+                'Gerente geral',
+                'Gerente'
+            ];
+
+            // Verifica se o cargo está na lista
+            if (cargosPermitidos.includes(membro.cargo)) {
+                const grade = document.querySelector('.grade-cards');
+                if (grade) {
+                    const cardAdmin = document.createElement('div');
+                    cardAdmin.className = 'card card-clicavel';
+                    cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
+                    cardAdmin.innerHTML = `
+                        <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
+                        <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
+                        <div class="card-dica">Toque para gerenciar XP e punições</div>
+                    `;
+                    cardAdmin.onclick = () => {
+                        document.getElementById('modalGerenciar').classList.add('aberto');
+                        window.carregarTodosMembros();
+                    };
+                    grade.appendChild(cardAdmin);
+                }
+            }
+        }
+    });
+                </script>
+    <!-- ========== MODAL PERSONALIZADO DE DAR XP ========== -->
+<style>
+    .modal-xp { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
+    .modal-xp.aberto { opacity: 1; visibility: visible; }
+    .caixa-xp { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.3); border-radius: 18px; padding: 24px; max-width: 360px; width: 100%; text-align: center; transform: translateY(10px); transition: transform 0.3s ease; }
+    .modal-xp.aberto .caixa-xp { transform: translateY(0); }
+    .caixa-xp h3 { font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff; }
+    .caixa-xp p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
+    .caixa-xp input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none; }
+    .caixa-xp input:focus { border-color: #3b82f6; }
+    .botoes-xp { display: flex; gap: 12px; margin-top: 10px; }
+    .btn-xp-cancelar { flex: 1; padding: 12px; border: 1px solid rgba(96,165,250,0.2); background: transparent; color: #94a3b8; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .btn-xp-confirmar { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; color: #fff; background: linear-gradient(135deg, #3b82f6, #2563eb); }
+</style>
+
+<div class="modal-xp" id="modalDarXp">
+    <div class="caixa-xp">
+        <h3>Enviar Recompensa</h3>
+        <p>Enviando XP para: <b id="xp-nome-alvo" style="color:#60a5fa;">---</b></p>
+        
+        <input type="number" id="xp-quantidade" placeholder="Quantidade de XP (Ex: 100)" value="50" min="1">
+        <input type="text" id="xp-motivo" placeholder="Motivo do bônus (Ex: Melhor vendedor)" value="Ato de bravura">
+        
+        <div class="botoes-xp">
+            <button class="btn-xp-cancelar" onclick="fecharModalXp()">Cancelar</button>
+            <button class="btn-xp-confirmar" onclick="confirmarDarXp()">Confirmar</button>
+        </div>
+    </div>
+</div>
+    <script>
+    let alvoXpAtual = null;
+    let funcaoPosXp = null;
+
+    // Abre o modal bonito em vez do prompt feio
+    window.abrirModalDarXp = function(passAlvo, nomeAlvo, callback) {
+        alvoXpAtual = passAlvo;
+        funcaoPosXp = callback;
+        
+        document.getElementById('xp-nome-alvo').innerText = nomeAlvo;
+        document.getElementById('xp-quantidade').value = "50"; // Valor padrão
+        document.getElementById('xp-motivo').value = "Ato de bravura";
+        
+        document.getElementById('modalDarXp').classList.add('aberto');
+    }
+
+    window.fecharModalXp = function() {
+        document.getElementById('modalDarXp').classList.remove('aberto');
+        alvoXpAtual = null;
+        funcaoPosXp = null;
+    }
+
+    // Executa quando clica em "Confirmar" no modal
+    window.confirmarDarXp = async function() {
+        const qtd = parseInt(document.getElementById('xp-quantidade').value);
+        const motivo = document.getElementById('xp-motivo').value;
+        
+        if (isNaN(qtd) || qtd <= 0) { alert("Digite uma quantidade válida."); return; }
+
+        const btn = document.querySelector('.btn-xp-confirmar');
+        btn.innerText = "Enviando...";
+        btn.disabled = true;
+
+        const { data } = await sb.from('membros').select('xp_total').eq('passaporte', alvoXpAtual).single();
+        
+        if (data) {
+            const novoXP = (data.xp_total || 0) + qtd;
+            await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', alvoXpAtual);
+            
+            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP enviado!`, "sucesso");
+            
+            // Atualiza a gaveta se for você mesmo
+            if(localStorage.getItem('passaporte') === alvoXpAtual) window.abrirGaveta();
+            
+            // Executa a função de atualizar a lista que estava aberta
+            if(typeof funcaoPosXp === 'function') funcaoPosXp();
+        }
+
+        btn.innerText = "Confirmar";
+        btn.disabled = false;
+        fecharModalXp();
+    }
+
+    // --- SUBSTITUINDO AS FUNÇÕES ANTIGAS ---
+    
+    // 1. Função do card de "Membros Ativos"
+    window.acaoDarXp = function(passAlvo, nomeAlvo) {
+        window.abrirModalDarXp(passAlvo, nomeAlvo, () => window.carregarMembrosAtivos());
+    }
+
+    // 2. Função do card de "Gerenciar Membros"
+    window.darXP = function(passAlvo, nomeAlvo) {
+        window.abrirModalDarXp(passAlvo, nomeAlvo, () => window.renderizarTodosMembros());
+    }
+            </script>
 </body>
 </html>
