@@ -7,15 +7,15 @@
   "theme_color": "#0f172a",
   "icons": [
     {
-      "src": "COLE_O_LINK_DA_SUA_IMAGEM_AQUI",
+      "src": "https://raw.githubusercontent.com/italia-reduto/oficial/main/file_00000000df28820e86def8c13ad0c746~2.jpg",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     },
     {
-      "src": "COLE_O_LINK_DA_SUA_IMAGEM_AQUI",
+      "src": "https://raw.githubusercontent.com/italia-reduto/oficial/main/file_00000000df28820e86def8c13ad0c746~2.jpg",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/jpeg",
       "purpose": "any maskable"
     }
   ]
