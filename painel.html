@@ -1721,5 +1721,102 @@
     navigator.serviceWorker.register('./sw.js');
   }
     </script>
+    <!-- ========== BOTÃO DE TIRAR XP ========== -->
+<script>
+    // 1. Atualiza o Modal para aceitar "Tirar XP"
+    const antigoAbrirModal = window.abrirModalAcao;
+    
+    window.abrirModalAcao = function(tipo, passAlvo, nomeAlvo, callback) {
+        if (tipo === 'tirar_xp') {
+            // Reaproveita a estrutura do modal de XP, mas muda as cores e textos
+            window.tipoAcaoAtual = 'tirar_xp';
+            window.passAlvoAtual = passAlvo;
+            window.funcaoPosAcao = callback;
+            
+            document.getElementById('acao-nome-alvo').innerText = nomeAlvo;
+            document.getElementById('acao-titulo').innerText = "Retirar XP (Punição)";
+            document.getElementById('campo-quantidade-box').style.display = 'block';
+            document.getElementById('acao-quantidade').value = "50";
+            document.getElementById('acao-motivo').value = "Punição leve";
+            document.getElementById('btn-acao-confirmar').style.background = "linear-gradient(135deg, #f59e0b, #d97706)"; // Laranja
+            document.getElementById('btn-acao-confirmar').disabled = false;
+            document.getElementById('btn-acao-confirmar').innerText = "Confirmar";
+            
+            document.getElementById('modalAcao').classList.add('aberto');
+        } else {
+            // Se for 'xp' ou 'advertencia', usa a função antiga normal
+            antigoAbrirModal(tipo, passAlvo, nomeAlvo, callback);
+        }
+    }
+
+    // 2. Atualiza a função de confirmar para subtrair o XP
+    const antigoConfirmarAcao = window.confirmarAcao;
+    
+    window.confirmarAcao = async function() {
+        if (window.tipoAcaoAtual === 'tirar_xp') {
+            const qtd = parseInt(document.getElementById('acao-quantidade').value);
+            if (isNaN(qtd) || qtd <= 0) { alert("Quantidade inválida."); return; }
+            
+            const btn = document.getElementById('btn-acao-confirmar');
+            btn.innerText = "Processando..."; btn.disabled = true;
+
+            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
+            if (data) {
+                let novoXP = (data.xp_total || 0) - qtd;
+                if (novoXP < 0) novoXP = 0; // Não deixa o XP ficar negativo
+
+                await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', window.passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`-${qtd} XP aplicado!`, "erro");
+                
+                if(localStorage.getItem('passaporte') === window.passAlvoAtual) window.abrirGaveta();
+                if(typeof window.funcaoPosAcao === 'function') window.funcaoPosAcao();
+            }
+            window.fecharModalAcao();
+        } else {
+            antigoConfirmarAcao();
+        }
+    }
+
+    // 3. Adiciona o botão "Tirar XP" visualmente em todas as listas
+    function adicionarBotoesTirarXP() {
+        document.querySelectorAll('.membro-item-fixo, .card-membro').forEach(cartao => {
+            if (!cartao.querySelector('.btn-tirar-xp')) {
+                // Descobre o passaporte e o nome (lógica adaptada para as duas listas)
+                let pass, nome;
+                if (cartao.classList.contains('membro-item-fixo')) {
+                    const textoPass = cartao.querySelector('div[style*="font-size: 11px"]').innerText;
+                    pass = textoPass.split('Pass: ')[1].split(' ')[0];
+                    nome = cartao.querySelector('div[style*="font-size: 14px"]').innerText.split(' ')[0];
+                } else if (cartao.classList.contains('card-membro')) {
+                    const textoPass = cartao.querySelector('div[style*="margin-top: 4px"]').innerText;
+                    pass = textoPass.split('Pass: ')[1].split(' ')[0];
+                    nome = cartao.querySelector('div[style*="font-weight: 700"]').innerText.split(' ')[0];
+                }
+
+                if (pass && nome) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn-tirar-xp';
+                    btn.innerHTML = '<i class="fas fa-minus-circle"></i> Tirar XP';
+                    // Estilo igual ao botão de advertência (vermelho/laranja)
+                    btn.style.cssText = 'flex:1; margin-top:6px; padding:8px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold; cursor:pointer;';
+                    btn.onclick = () => window.abrirModalAcao('tirar_xp', pass, nome, () => {
+                        if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros();
+                        if(typeof window.carregarMembrosAtivos === 'function') window.carregarMembrosAtivos();
+                    });
+                    
+                    // Adiciona o botão dentro da div de botões do cartão
+                    const divBotoes = cartao.querySelector('div[style*="display:flex; gap: 6px"]') || cartao.querySelector('div[style*="display:flex; gap:6px"]');
+                    if (divBotoes) {
+                        divBotoes.style.flexWrap = 'wrap'; // Permite quebrar linha no celular
+                        divBotoes.appendChild(btn);
+                    }
+                }
+            }
+        });
+    }
+
+    // Fica "vigiando" quando as listas abrem para colocar o botão novo
+    setInterval(adicionarBotoesTirarXP, 1000);
+</script>
 </body>
 </html>
