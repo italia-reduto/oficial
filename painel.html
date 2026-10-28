@@ -1966,5 +1966,21 @@
         });
     }, 1000);
                                                                                  </script>
+    <!-- ========== FORÇAR ATUALIZAÇÃO DO BOTÃO ========== -->
+<script>
+    setInterval(() => {
+        // Procura todos os botões na tela
+        const botoes = document.querySelectorAll('.btn-tirar-xp, button');
+        
+        botoes.forEach(btn => {
+            // Se o botão tiver "Multar" ou "Tirar XP", garante que o texto está certo e a cor é laranja
+            if (btn.innerHTML.includes('Multar') || btn.innerHTML.includes('Tirar XP') || btn.classList.contains('btn-tirar-xp')) {
+                btn.classList.add('btn-tirar-xp');
+                btn.innerHTML = '<i class="fas fa-minus-circle"></i> Tirar XP';
+                btn.style.cssText = 'flex:1; padding:8px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold; cursor:pointer;';
+            }
+        });
+    }, 1000);
+</script>
 </body>
 </html>
