@@ -1640,5 +1640,64 @@
         });
     };
 </script>
+<!-- ========== RESTAURANDO O CARD GERENCIAR MEMBROS ========== -->
+<!-- A JANELA ONDE A LISTA APARECE -->
+<div class="fundo-modal" id="modalGerenciar" onclick="if(event.target === this) document.getElementById('modalGerenciar').classList.remove('aberto')">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Gerenciar Membros</h3>
+            <button class="lista-fechar" onclick="document.getElementById('modalGerenciar').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-search" style="color:#60a5fa;"></i>
+            <input type="text" id="buscaTodos" placeholder="Buscar por nome ou passaporte..." oninput="window.filtrarTodosMembros()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
+        </div>
+        <div id="listaTodosMembros" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
+        </div>
+    </div>
+</div>
+
+<!-- O SCRIPT QUE CRIA O CARD -->
+<script>
+    document.addEventListener("DOMContentLoaded", async () => {
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+
+        const { data: membro } = await sb.from('membros').select('cargo').eq('passaporte', pass).single();
+        
+        if (membro && membro.cargo) {
+            const cargosPermitidos = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+
+            if (cargosPermitidos.includes(membro.cargo)) {
+                const grade = document.querySelector('.grade-cards');
+                const cardAviso = document.querySelector('.card-aviso'); 
+                
+                if (grade && cardAviso) {
+                    const cardAdmin = document.createElement('div');
+                    cardAdmin.className = 'card card-clicavel';
+                    cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
+                    cardAdmin.innerHTML = `
+                        <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
+                        <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
+                        <div class="card-dica">Toque para gerenciar XP e punições</div>
+                    `;
+                    
+                    cardAdmin.onclick = () => {
+                        document.getElementById('modalGerenciar').classList.add('aberto');
+                        // Chama a função de carregar que já está no código anterior
+                        if(typeof window.carregarTodosMembros === 'function') {
+                            window.carregarTodosMembros();
+                        } else {
+                            console.error("Função carregarTodosMembros não encontrada!");
+                        }
+                    };
+
+                    grade.insertBefore(cardAdmin, cardAviso);
+                }
+            }
+        }
+    });
+</script>                                                   
 </body>
 </html>
