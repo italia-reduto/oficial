@@ -1818,5 +1818,153 @@
     // Fica "vigiando" quando as listas abrem para colocar o botão novo
     setInterval(adicionarBotoesTirarXP, 1000);
 </script>
+    <!-- ========== ATUALIZAÇÃO: XP NEGATIVO E RETIRAR ADVERTÊNCIA ========== -->
+<script>
+    // 1. Sobrescrevendo a função de confirmar ação (O Cérebro)
+    window.confirmarAcao = async function() {
+        const motivo = document.getElementById('acao-motivo').value || "Não informado";
+        const btn = document.getElementById('btn-acao-confirmar');
+        btn.innerText = "Processando..."; btn.disabled = true;
+
+        // --- AÇÃO: DAR XP ---
+        if (window.tipoAcaoAtual === 'xp') {
+            const qtd = parseInt(document.getElementById('acao-quantidade').value);
+            if (isNaN(qtd) || qtd <= 0) { alert("XP inválido."); btn.innerText = "Confirmar"; btn.disabled = false; return; }
+            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
+            if (data) {
+                await sb.from('membros').update({ xp_total: (data.xp_total || 0) + qtd }).eq('passaporte', window.passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP enviado!`, "sucesso");
+            }
+        } 
+        // --- AÇÃO: TIRAR XP (MULTA) ---
+        else if (window.tipoAcaoAtual === 'tirar_xp') {
+            const qtd = parseInt(document.getElementById('acao-quantidade').value);
+            if (isNaN(qtd) || qtd <= 0) { alert("Valor inválido."); btn.innerText = "Confirmar"; btn.disabled = false; return; }
+            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
+            if (data) {
+                // PERMITE FICAR NEGATIVO (Não trava no zero)
+                const novoXP = (data.xp_total || 0) - qtd;
+                await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', window.passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`-${qtd} XP aplicado!`, "erro");
+            }
+        }
+        // --- AÇÃO: APLICAR ADVERTÊNCIA ---
+        else if (window.tipoAcaoAtual === 'advertencia') {
+            const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', window.passAlvoAtual).single();
+            if (data) {
+                await sb.from('membros').update({ xp_total: Math.floor((data.xp_total || 0) * 0.8), advertencias: (data.advertencias || 0) + 1 }).eq('passaporte', window.passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`Advertência aplicada!`, "erro");
+            }
+        }
+        // --- AÇÃO: RETIRAR ADVERTÊNCIA ---
+        else if (window.tipoAcaoAtual === 'retirar_advertencia') {
+            const { data } = await sb.from('membros').select('advertencias').eq('passaporte', window.passAlvoAtual).single();
+            if (data && data.advertencias > 0) {
+                await sb.from('membros').update({ advertencias: data.advertencias - 1 }).eq('passaporte', window.passAlvoAtual);
+                if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`Advertência removida!`, "sucesso");
+            }
+        }
+
+        if(localStorage.getItem('passaporte') === window.passAlvoAtual) window.abrirGaveta();
+        if(typeof window.funcaoPosAcao === 'function') window.funcaoPosAcao();
+        window.fecharModalAcao();
+    };
+
+    // 2. Atualizando o Modal para suportar a Retirada
+    const antigoAbrirModal = window.abrirModalAcao;
+    window.abrirModalAcao = function(tipo, passAlvo, nomeAlvo, callback) {
+        if (tipo === 'retirar_advertencia') {
+            window.tipoAcaoAtual = 'retirar_advertencia';
+            window.passAlvoAtual = passAlvo;
+            window.funcaoPosAcao = callback;
+            
+            document.getElementById('acao-nome-alvo').innerText = nomeAlvo;
+            document.getElementById('acao-titulo').innerText = "Retirar Advertência";
+            document.getElementById('campo-quantidade-box').style.display = 'none'; // Esconde o campo de quantidade
+            document.getElementById('acao-motivo').value = "Bom comportamento";
+            document.getElementById('btn-acao-confirmar').style.background = "linear-gradient(135deg, #22c55e, #16a34a)"; // Verde
+            document.getElementById('btn-acao-confirmar').disabled = false;
+            document.getElementById('btn-acao-confirmar').innerText = "Confirmar";
+            
+            document.getElementById('modalAcao').classList.add('aberto');
+        } else {
+            antigoAbrirModal(tipo, passAlvo, nomeAlvo, callback);
+        }
+    }
+
+    // 3. Alterando a Gaveta para mostrar XP Negativo corretamente
+    const antigoAbrirGaveta = window.abrirGaveta;
+    window.abrirGaveta = async function() {
+        await antigoAbrirGaveta(); // Roda a gaveta normal
+        const pass = localStorage.getItem('passaporte');
+        const { data } = await sb.from('membros').select('xp_total').eq('passaporte', pass).single();
+        
+        if(data && data.xp_total < 0) {
+            // Se for negativo, mostra o valor vermelho e zera a barra
+            const elTexto = document.getElementById('gavetaXpTexto');
+            elTexto.innerText = `${data.xp_total} / 3000`;
+            elTexto.style.color = "#ef4444"; // Vermelho
+            document.getElementById('gavetaXpBarra').style.width = `0%`;
+        }
+    }
+
+    // 4. Injetando os botões (Tirar XP e Retirar Advertência) nas listas
+    setInterval(() => {
+        document.querySelectorAll('.membro-item-fixo, .card-membro').forEach(cartao => {
+            // Verifica se o cartão já foi processado para não duplicar
+            if (cartao.querySelector('.btn-tirar-xp')) return; 
+
+            let pass, nome, advertencias = 0;
+            
+            // Pegando os dados de acordo com o tipo de card
+            if (cartao.classList.contains('membro-item-fixo')) {
+                const textoPass = cartao.querySelector('div[style*="font-size: 11px"]').innerText;
+                pass = textoPass.split('Pass: ')[1].split(' ')[0];
+                nome = cartao.querySelector('div[style*="font-size: 14px"]').innerText.split(' ')[0];
+                // Tenta pegar o número de advertências do texto
+                const spanAdv = cartao.querySelector('div[style*="color: #ef4444"]');
+                if(spanAdv) advertencias = parseInt(spanAdv.innerText.replace(/\D/g,''));
+            } else if (cartao.classList.contains('card-membro')) {
+                const textoPass = cartao.querySelector('div[style*="margin-top: 4px"]').innerText;
+                pass = textoPass.split('Pass: ')[1].split(' ')[0];
+                nome = cartao.querySelector('div[style*="font-weight: 700"]').innerText.split(' ')[0];
+            }
+
+            if (pass && nome) {
+                const divBotoes = cartao.querySelector('div[style*="display:flex; gap: 6px"]') || cartao.querySelector('div[style*="display:flex; gap:6px"]');
+                if (divBotoes) {
+                    divBotoes.style.flexWrap = 'wrap'; // Permite quebrar linha no celular
+                    
+                    // Botão de Tirar XP (Laranja)
+                    const btnTirarXp = document.createElement('button');
+                    btnTirarXp.className = 'btn-tirar-xp';
+                    btnTirarXp.innerHTML = '<i class="fas fa-minus-circle"></i> Tirar XP';
+                    btnTirarXp.style.cssText = 'flex:1; padding:8px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold; cursor:pointer;';
+                    btnTirarXp.onclick = () => window.abrirModalAcao('tirar_xp', pass, nome, () => {
+                        if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros();
+                        if(typeof window.carregarMembrosAtivos === 'function') window.carregarMembrosAtivos();
+                    });
+                    divBotoes.appendChild(btnTirarXp);
+
+                    // Botão de Advertir ou Retirar
+                    // Procuramos o botão de advertir original para trocar a função
+                    const btnAdvOriginal = Array.from(divBotoes.querySelectorAll('button')).find(b => b.innerHTML.includes('Advertir'));
+                    if (btnAdvOriginal) {
+                        if (advertencias > 0) {
+                            // Se já tem advertência, troca para Retirar
+                            btnAdvOriginal.innerHTML = '<i class="fas fa-check-circle"></i> Retirar Adv.';
+                            btnAdvOriginal.style.background = 'rgba(34,197,94,0.1)';
+                            btnAdvOriginal.style.color = '#22c55e';
+                            btnAdvOriginal.style.borderColor = 'rgba(34,197,94,0.3)';
+                            btnAdvOriginal.onclick = () => window.abrirModalAcao('retirar_advertencia', pass, nome, () => {
+                                if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros();
+                            });
+                        }
+                    }
+                }
+            }
+        });
+    }, 1000);
+                                                                                 </script>
 </body>
 </html>
