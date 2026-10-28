@@ -5,12 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="theme-color" content="#000000">
     <meta name="color-scheme" content="dark">
-    <title>ITÁLIA · PAINEL</title>
-    
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <title>ITÁLIA · PAINEL</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -37,7 +35,6 @@
         .botao-sair { display: flex; align-items: center; gap: 8px; background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(96, 165, 250, 0.18); border-radius: 12px; padding: 10px 18px; color: #f87171; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.25s ease; backdrop-filter: blur(10px); }
         
         .conteudo { padding: 24px; margin-top: -30px; position: relative; z-index: 1; }
-        
         .cabecalho-saudacao { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
         .cabecalho-saudacao .avatar-mini { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #3b82f6; object-fit: cover; background: #1e293b; cursor: pointer; }
         .saudacao { font-size: 28px; font-weight: 700; margin-bottom: 0; }
@@ -63,63 +60,9 @@
         .card-aviso { background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 14px; padding: 20px; grid-column: 1 / -1; }
         .card-clicavel { cursor: pointer; transition: border-color 0.25s ease; }
         .card-dica { font-size: 11px; color: #64748b; margin-top: 4px; }
-                /* ========== GAVETA E MENUS ========== */
-        .fundo-gaveta { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
-        .fundo-gaveta.aberto { opacity: 1; visibility: visible; }
-        .gaveta-perfil { position: fixed; top: 0; left: 0; bottom: 0; width: 80%; max-width: 340px; background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border-right: 1px solid rgba(96, 165, 250, 0.2); z-index: 1001; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; }
-        .gaveta-perfil.aberta { transform: translateX(0); }
-        .gaveta-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0; }
-        .gaveta-topo h3 { font-size: 18px; font-weight: 700; color: #fff; }
-        .gaveta-topo button { background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
-        .gaveta-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover; margin: 0 auto 16px; background: #1e293b; display: block; flex-shrink: 0; }
-        .gaveta-info { text-align: center; margin-bottom: 24px; flex-shrink: 0; }
-        .gaveta-nome { font-size: 20px; font-weight: 700; color: #fff; }
-        .gaveta-cargo { font-size: 14px; color: #60a5fa; font-weight: 600; margin-top: 4px; }
-        .gaveta-xp-box { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 24px; flex-shrink: 0; }
-        .gaveta-xp-texto { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px; }
-        .gaveta-barra-fundo { width: 100%; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; }
-        .gaveta-barra-preenchida { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 999px; transition: width 1s ease; width: 0%; }
-        .btn-gaveta { width: 100%; height: 48px; flex-shrink: 0; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid #334155; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .gaveta-footer { margin-top: auto; padding-top: 20px; text-align: center; font-size: 12px; color: #64748b; flex-shrink: 0; }
-
-        /* ========== MODAIS GERAIS ========== */
-        .fundo-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
-        .fundo-modal.aberto { opacity: 1; visibility: visible; }
-        .caixa-modal { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.2); border-radius: 18px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center; }
-        .icone-modal { width: 56px; height: 56px; border-radius: 50%; background: rgba(96,165,250,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
-        .icone-modal i { font-size: 24px; color: #60a5fa; }
-        .titulo-modal { font-size: 20px; font-weight: 700; margin-bottom: 10px; color: #fff; }
-        .texto-modal { font-size: 15px; color: #94a3b8; margin-bottom: 28px; line-height: 1.6; }
-        .botoes-modal { display: flex; gap: 12px; }
-        .botao-cancelar { flex: 1; padding: 14px; border: 1px solid rgba(96,165,250,0.2); background: transparent; color: #94a3b8; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
-        .botao-confirmar { flex: 1; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; color: #fff; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); }
-        
-        .barra-menu { position: fixed; bottom: 0; left: 0; right: 0; height: 70px; background: #000; display: flex; align-items: center; justify-content: space-around; border-top: 1px solid rgba(96,165,250,0.15); z-index: 100; }
-        .menu-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 11px; cursor: pointer; background: none; border: none; }
-        .menu-item.ativo { color: #60a5fa; }
-        .menu-item i { font-size: 20px; margin-bottom: 2px; }
-        
-        /* ========== ESTILOS DO SUPORTE ========== */
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .msg-card { display: flex; gap: 12px; background: #1e293b; border: 1px solid #334155; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
-        .msg-card.admin { border-left-color: #22c55e; }
-        .msg-avatar { width: 40px; height: 40px; border-radius: 50%; background: #334155; color: white; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
-        .msg-content { flex: 1; display: flex; flex-direction: column; }
-        .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-        .msg-nome { font-size: 14px; font-weight: 700; color: #60a5fa; }
-        .msg-card.admin .msg-nome { color: #22c55e; }
-        .msg-tag { font-size: 10px; background: #334155; color: #cbd5e1; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
-        .msg-card.admin .msg-tag { background: #166534; color: #86efac; }
-        .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
-        .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
-        .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        
-        /* ========== ESTILOS DE MEMBROS ========== */
-        .card-membro { padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; margin-bottom: 8px; }
-        .btn-acao-membro { flex:1; padding:8px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:4px; }
-    </style>
-</head>
-<body>
+        /<style>
+        /<head>
+        <body>
     <div class="banner-topo"></div>
     <div class="cabecalho-superior">
         <button class="botao-sair" onclick="abrirModalSair()"><i class="fas fa-sign-out-alt"></i> Sair</button>
@@ -140,30 +83,25 @@
         </div>
         
         <div class="grade-cards">
-            <!-- Card Tickets (Abre o Suporte) -->
             <div class="card card-clicavel" onclick="abrirModalTickets()">
                 <div class="card-titulo">Tickets Abertos <i class="fas fa-ticket-alt"></i></div>
                 <div class="card-valor" id="valor-tickets-painel">0</div>
                 <div class="card-dica">Toque para abrir suporte</div>
             </div>
-            <!-- Card Faltas e Presenças -->
             <div class="card card-clicavel" onclick="abrirModalFaltas()">
                 <div class="card-titulo">Faltas e Presenças <i class="fas fa-user-check"></i></div>
                 <div class="card-valor" style="font-size: 18px;" id="valor-presencas">0P · 0F · 0J</div>
             </div>
-            <!-- Card Membros Ativos -->
             <div class="card card-clicavel" onclick="abrirListaMembros()">
                 <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
                 <div class="card-valor" id="membrosAtivos">—</div>
                 <div class="card-dica">Toque para ver a lista</div>
             </div>
-            <!-- Card Frequência -->
             <div class="card card-clicavel" onclick="abrirFrequencia()">
                 <div class="card-titulo">Frequência <i class="fas fa-calendar-check"></i></div>
                 <div class="card-valor" id="pontosHoje">0</div>
                 <div class="card-dica">Toque para ver histórico</div>
             </div>
-            <!-- Card Avisos -->
             <div class="card-aviso" style="position: relative;">
                 <div class="card-titulo">Aviso Recente <div><i class="fas fa-pen" id="btn-editar-aviso" style="cursor: pointer; display: none; margin-right: 8px; color: #60a5fa;" onclick="abrirModalAviso()"></i><i class="fas fa-bell"></i></div></div>
                 <div class="card-valor" id="texto-aviso" style="font-size: 20px; line-height: 1.4;">Carregando avisos...</div>
@@ -174,7 +112,7 @@
     <!-- GAVETA DE PERFIL -->
     <div class="fundo-gaveta" id="fundoGaveta" onclick="fecharGaveta()"></div>
     <div class="gaveta-perfil" id="gavetaPerfil">
-        <div class="gaveta-topo"><h3>Meu Dossiê</h3><button onclick="fecharGaveta()"><i class="fas fa-times"></i></button></div>
+        <div class="gaveta-topo"><h3>Meu Perfil</h3><button onclick="fecharGaveta()"><i class="fas fa-times"></i></button></div>
         <img id="img-avatar-gaveta" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="gaveta-avatar">
         <div class="gaveta-info"><div class="gaveta-nome" id="gavetaNome">Membro</div><div class="gaveta-cargo" id="gavetaCargo">Cargo</div></div>
         <div class="gaveta-xp-box">
@@ -191,17 +129,14 @@
         <a href="bate-ponto.html" class="menu-item"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="#" class="menu-item" onclick="abrirModalTickets(); return false;"><i class="fas fa-headset"></i><span>Suporte</span></a>
-                </nav>
-                <!-- MODAL SAIR -->
+    </nav>
+        <!-- MODAL SAIR -->
 <div class="fundo-modal" id="modalSair" onclick="if(event.target === this) fecharModalSair()">
     <div class="caixa-modal">
         <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
         <h3 class="titulo-modal">Deseja sair?</h3>
         <p class="texto-modal">Você voltará para a tela de acesso.</p>
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalSair()">Cancelar</button>
-            <button class="botao-confirmar" onclick="confirmarSaida()">Sair</button>
-        </div>
+        <div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalSair()">Cancelar</button><button class="botao-confirmar" onclick="confirmarSaida()">Sair</button></div>
     </div>
 </div>
 
@@ -210,10 +145,7 @@
     <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
         <h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3>
         <textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; resize: none;"></textarea>
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button>
-            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button>
-        </div>
+        <div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button></div>
     </div>
 </div>
 
@@ -223,25 +155,39 @@
         <h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3>
         <input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
         <input type="text" id="input-frase" placeholder="Sua frase..." style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button>
-            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button>
-        </div>
+        <div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button></div>
     </div>
 </div>
 
-<!-- MODAL MEMBROS (O MEGA AJUSTE) -->
-<div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+<!-- JANELA GERENCIAR MEMBROS -->
+<div class="fundo-modal" id="modalGerenciar" onclick="if(event.target === this) document.getElementById('modalGerenciar').classList.remove('aberto')">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 85vh; display: flex; flex-direction: column;">
         <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Membros Ativos</h3>
-            <button class="lista-fechar" onclick="fecharListaMembros()" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Gerenciar Membros</h3>
+            <button class="lista-fechar" onclick="document.getElementById('modalGerenciar').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
         </div>
-        <div class="lista-corpo" id="listaMembros" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
+        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-search" style="color:#60a5fa;"></i>
+            <input type="text" id="buscaTodos" placeholder="Buscar por nome ou passaporte..." oninput="window.filtrarTodosMembros()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
+        </div>
+        <div id="listaTodosMembros" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
 </div>
 
-<!-- MODAL SUPORTE (TICKETS) -->
+<!-- MODAL DE AÇÃO (XP / ADVERTÊNCIA) -->
+<div class="modal-acao" id="modalAcao">
+    <div class="caixa-acao">
+        <h3 id="acao-titulo">Ação</h3>
+        <p>Membro: <b id="acao-nome-alvo" style="color:#60a5fa;">---</b></p>
+        <div id="campo-quantidade-box"><input type="number" id="acao-quantidade" placeholder="Quantidade de XP" value="50" min="1"></div>
+        <input type="text" id="acao-motivo" placeholder="Digite o motivo..." value="">
+        <div class="botoes-acao">
+            <button class="btn-acao-cancelar" onclick="window.fecharModalAcao()">Cancelar</button>
+            <button class="btn-acao-confirmar" id="btn-acao-confirmar" onclick="window.confirmarAcao()">Confirmar</button>
+        </div>
+    </div>
+</div>
+        <!-- JANELA DO SUPORTE -->
 <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
     <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
         <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
@@ -254,6 +200,10 @@
             <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
 
             <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 8px; padding: 12px; font-size: 12px; color: #fca5a5; display: flex; gap: 8px; align-items: flex-start;">
+                    <i class="fas fa-exclamation-triangle" style="margin-top: 2px;"></i>
+                    <span><strong>Aviso:</strong> Para denúncias ou bugs, anexe prints/gravações no chat.</span>
+                </div>
                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
                     <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span></button>
                     <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span></button>
@@ -289,9 +239,9 @@
             </div>
         </div>
     </div>
-    </div>
-    <script>
-    // RELÓGIO
+</div>
+        <script>
+    // ========== CORE E RELÓGIO ==========
     function atualizarRelogio() {
         const agora = new Date(); const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
         document.getElementById('horaAtual').textContent = `${String(brasilia.getHours()).padStart(2, '0')}:${String(brasilia.getMinutes()).padStart(2, '0')}:${String(brasilia.getSeconds()).padStart(2, '0')}`;
@@ -299,105 +249,94 @@
     }
     atualizarRelogio(); setInterval(atualizarRelogio, 1000);
 
-    // GAVETA
-    function abrirGaveta() {
-        document.getElementById('fundoGaveta').classList.add('aberto'); document.getElementById('gavetaPerfil').classList.add('aberta');
-        setTimeout(() => { document.getElementById('gavetaXpBarra').style.width = `65%`; }, 100); // XP de exemplo
-    }
-    function fecharGaveta() {
-        document.getElementById('fundoGaveta').classList.remove('aberto'); document.getElementById('gavetaPerfil').classList.remove('aberta');
-    }
+    let isAdmin = false;
 
-    // DADOS DO USUÁRIO
     async function carregarDadosUsuario() {
         const pass = localStorage.getItem('passaporte');
         if (!pass) { window.location.href = 'login.html'; return; }
-        const { data } = await sb.from('membros').select('nome, passaporte, cargo, foto_url').eq('passaporte', pass).single();
+        
+        const { data } = await sb.from('membros').select('nome, passaporte, cargo, foto_url, xp_total').eq('passaporte', pass).single();
         if (data) {
-            document.getElementById('nomeUsuario').textContent = data.nome || 'Membro'; document.getElementById('passaporteUsuario').textContent = data.passaporte; document.getElementById('cargoUsuario').textContent = data.cargo || '—';
-            document.getElementById('gavetaNome').textContent = data.nome || 'Membro'; document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo'; document.getElementById('gavetaPassaporte').textContent = data.passaporte;
+            document.getElementById('nomeUsuario').textContent = data.nome || 'Membro';
+            document.getElementById('passaporteUsuario').textContent = data.passaporte;
+            document.getElementById('cargoUsuario').textContent = data.cargo || '—';
+            document.getElementById('gavetaNome').textContent = data.nome || 'Membro';
+            document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo';
+            document.getElementById('gavetaPassaporte').textContent = data.passaporte;
+            
             const fotoFinal = data.foto_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-            document.getElementById('img-avatar-mini').src = fotoFinal; document.getElementById('img-avatar-gaveta').src = fotoFinal;
+            document.getElementById('img-avatar-mini').src = fotoFinal;
+            document.getElementById('img-avatar-gaveta').src = fotoFinal;
+
+            const cargosPermitidos = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+            if (cargosPermitidos.includes(data.cargo)) { isAdmin = true; }
         }
     }
     carregarDadosUsuario();
+</script>
+                                                                                                             <script>
+    // ========== GAVETA E PERFIL ==========
+    function abrirGaveta() {
+        document.getElementById('fundoGaveta').classList.add('aberto'); 
+        document.getElementById('gavetaPerfil').classList.add('aberta');
+        
+        const pass = localStorage.getItem('passaporte');
+        sb.from('membros').select('xp_total').eq('passaporte', pass).single().then(({data}) => {
+            if(data) {
+                const xp = data.xp_total || 0;
+                const elTexto = document.getElementById('gavetaXpTexto');
+                const elBarra = document.getElementById('gavetaXpBarra');
+                
+                let meta = 3000; let prox = "Executor";
+                if (xp >= 3000 && xp < 15000) { meta = 15000; prox = "Raiz"; }
+                else if (xp >= 15000) { meta = 50000; prox = "Vigia"; }
 
-    // EDITAR PERFIL
+                elTexto.innerText = `${xp} / ${meta}`;
+                document.getElementById('gavetaProximoNivel').textContent = prox;
+
+                if (xp < 0) {
+                    elTexto.style.color = "#ef4444";
+                    elBarra.style.width = `0%`;
+                } else {
+                    elTexto.style.color = "#cbd5e1";
+                    let pct = (xp / meta) * 100; if(pct > 100) pct = 100;
+                    elBarra.style.width = `${pct}%`;
+                }
+            }
+        });
+    }
+    function fecharGaveta() {
+        document.getElementById('fundoGaveta').classList.remove('aberto'); 
+        document.getElementById('gavetaPerfil').classList.remove('aberta');
+    }
+
     let fotoBase64Temp = "";
     function abrirModalEditarPerfil() { document.getElementById('modalPerfil').classList.add('aberto'); }
     function fecharModalPerfil() { document.getElementById('modalPerfil').classList.remove('aberto'); }
+    
     document.getElementById('input-foto-arquivo').addEventListener('change', function(event) {
         const reader = new FileReader(); reader.onload = function(e) { fotoBase64Temp = e.target.result; }; reader.readAsDataURL(event.target.files[0]);
     });
+
     async function salvarPerfil() {
         const pass = localStorage.getItem('passaporte'); const frase = document.getElementById('input-frase').value;
-        await sb.from('membros').update({ foto_url: fotoBase64Temp, frase_status: frase }).eq('passaporte', pass);
-        if(fotoBase64Temp) { document.getElementById('img-avatar-mini').src = fotoBase64Temp; document.getElementById('img-avatar-gaveta').src = fotoBase64Temp; }
-        fecharModalPerfil(); alert("Perfil atualizado!");
+        let updateData = { frase_status: frase };
+        if (fotoBase64Temp && fotoBase64Temp.length > 10) updateData.foto_url = fotoBase64Temp;
+
+        await sb.from('membros').update(updateData).eq('passaporte', pass);
+        if(updateData.foto_url) { 
+            document.getElementById('img-avatar-mini').src = updateData.foto_url; 
+            document.getElementById('img-avatar-gaveta').src = updateData.foto_url; 
+        }
+        fecharModalPerfil(); 
     }
 
-    // SAIR
     function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
     function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
     function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
-    </script>
-    <script>
-    // ========== MEMBROS ATIVOS (MEGA AJUSTE) ==========
-    let souAdminMembros = false;
-
-    function abrirListaMembros() {
-        document.getElementById('modalMembros').classList.add('aberto');
-        carregarMembrosAtivos();
-    }
-    function fecharListaMembros() { document.getElementById('modalMembros').classList.remove('aberto'); }
-
-    async function carregarMembrosAtivos() {
-        const lista = document.getElementById('listaMembros');
-        const passLogado = localStorage.getItem('passaporte');
-        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-
-        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        souAdminMembros = (checkAdmin === true);
-
-        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome').is('saida', null);
-        if (error) { lista.innerHTML = '<div style="text-align:center; color:red;">Erro.</div>'; return; }
-        
-        document.getElementById('membrosAtivos').textContent = ativos.length;
-        if (ativos.length === 0) { lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>'; return; }
-
-        lista.innerHTML = ativos.map(m => {
-            let botoes = '';
-            if (souAdminMembros) {
-                botoes = `
-                    <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
-                        <button onclick="adminAcaoPonto('${m.passaporte}', 'pausar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold;"><i class="fas fa-pause"></i> Pausar</button>
-                        <button onclick="adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold;"><i class="fas fa-stop"></i> Encerrar</button>
-                    </div>`;
-            }
-            return `
-            <div class="card-membro">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                    <span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>
-                </div>
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Passaporte: ${m.passaporte}</div>
-                ${botoes}
-            </div>`;
-        }).join('');
-    }
-
-    async function adminAcaoPonto(passAlvo, acao) {
-        if (!confirm(`Deseja ${acao} o ponto do passaporte ${passAlvo}?`)) return;
-        const agora = new Date().toISOString();
-        let updateData = {};
-        if (acao === 'pausar') updateData = { pausa_inicio: agora };
-        if (acao === 'encerrar') updateData = { saida: agora };
-        const { error } = await sb.from('pontos').update(updateData).eq('passaporte', passAlvo).is('saida', null);
-        if (error) alert("Erro ao executar ação.");
-        else { alert("Ação executada!"); carregarMembrosAtivos(); }
-    }
-
-    // ========== MURAL DE AVISOS ==========
+</script>
+                                <script>
+    // ========== AVISOS E ADMIN ==========
     function abrirModalAviso() { document.getElementById('modalAviso').classList.add('aberto'); }
     function fecharModalAviso() { document.getElementById('modalAviso').classList.remove('aberto'); }
     
@@ -410,1114 +349,36 @@
         await sb.from('avisos').insert([{ texto: texto, autor: document.getElementById('nomeUsuario').textContent }]);
         fecharModalAviso(); carregarAvisoRecente();
     }
-    async function verificarPermissaoAviso() {
-        const pass = localStorage.getItem('passaporte');
-        const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-        if(data === true) document.getElementById('btn-editar-aviso').style.display = 'inline-block';
-    }
+    
+    setTimeout(() => { if(isAdmin) document.getElementById('btn-editar-aviso').style.display = 'inline-block'; }, 1000);
+    carregarAvisoRecente(); setInterval(carregarAvisoRecente, 30000);
 
-    // PLACEHOLDERS DE FREQUÊNCIA E FALTAS (Para não dar erro na tela)
-    function abrirFrequencia() { alert("Módulo de Frequência em breve."); }
-    function abrirModalFaltas() { alert("Módulo de Faltas em breve."); }
-
-    // Iniciar
-    document.addEventListener("DOMContentLoaded", () => {
-        carregarAvisoRecente(); verificarPermissaoAviso();
-        setInterval(carregarAvisoRecente, 30000);
-        // Atualiza contador de membros ao abrir
-        sb.from('pontos').select('*', { count: 'exact', head: true }).is('saida', null).then(({ count }) => {
-            document.getElementById('membrosAtivos').textContent = count || 0;
-        });
-    });
-    </script>
+    setTimeout(() => {
+        if (isAdmin) {
+            const grade = document.querySelector('.grade-cards');
+            const cardAviso = document.querySelector('.card-aviso'); 
+            if (grade && cardAviso && !document.getElementById('cardGerencia')) {
+                const cardAdmin = document.createElement('div');
+                cardAdmin.id = 'cardGerencia';
+                cardAdmin.className = 'card card-clicavel';
+                cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
+                cardAdmin.innerHTML = `
+                    <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
+                    <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
+                    <div class="card-dica">Toque para gerenciar XP e punições</div>
+                `;
+                cardAdmin.onclick = () => {
+                    document.getElementById('modalGerenciar').classList.add('aberto');
+                    window.carregarTodosMembros();
+                };
+                grade.insertBefore(cardAdmin, cardAviso);
+            }
+        }
+    }, 1500);
+</script>
         <script>
-        // ========== SISTEMA DE SUPORTE ==========
-        let categoriaSelecionada = null;
-        let ticketAtualChatId = null;
-        let chatSubscription = null; 
-
-        function abrirModalTickets() {
-            document.getElementById('modalTickets').classList.add('aberto');
-            voltarParaListaTickets();
-            document.getElementById('input-ticket').value = '';
-            categoriaSelecionada = null;
-            document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-            document.getElementById('div-descricao').style.display = 'none';
-            carregarTickets();
-        }
-        function fecharModalTickets() { document.getElementById('modalTickets').classList.remove('aberto'); }
-        
-        function selecionarCategoria(cat) {
-            if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
-            else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
-            document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-            if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
-        }
-
-        async function criarTicket() {
-            const texto = document.getElementById('input-ticket').value;
-            const pass = localStorage.getItem('passaporte');
-            const nome = document.getElementById('nomeUsuario').textContent;
-            if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
-            const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
-            await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
-            document.getElementById('tela-abertura-ticket').style.display = 'none';
-            document.getElementById('tela-espera-ticket').style.display = 'flex';
-            carregarTickets(); btn.innerText = "Enviar Ticket"; btn.disabled = false;
-        }
-
-        async function carregarTickets() {
-            const corpo = document.getElementById('corpoTickets');
-            const pass = localStorage.getItem('passaporte');
-            const nomeEu = document.getElementById('nomeUsuario').textContent;
-            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-            
-            const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-            const ehLider = isAdmin === true;
-            let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
-            if (!ehLider) query = query.eq('passaporte', pass);
-            
-            const { data, error } = await query;
-            if (error) { corpo.innerHTML = '<div style="color: red;">Erro.</div>'; return; }
-            if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
-            
-            corpo.innerHTML = data.map(t => {
-                const isAberto = t.status === 'aberto'; const isAtendimento = t.status === 'atendimento'; const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
-                const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
-                return `
-                <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div><span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span></div>
-                    <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>
-                    ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}
-                    <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
-                    ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
-                    ${podeAbrirChat ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
-                </div>`;
-            }).join('');
-        }
-
-        async function assumirTicket(id) {
-            const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
-            await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
-            carregarTickets();
-        }
-
-        function voltarParaListaTickets() {
-            document.getElementById('tela-chat-ticket').style.display = 'none';
-            document.getElementById('tela-lista-tickets').style.display = 'flex';
-            document.getElementById('btn-resolver-chat').style.display = 'none';
-            document.getElementById('tela-espera-ticket').style.display = 'none';
-            document.getElementById('tela-abertura-ticket').style.display = 'flex';
-            ticketAtualChatId = null;
-            if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
-            carregarTickets();
-        }
-
-        async function abrirChatTicket(id, nomeAutor, passaporte) {
-            ticketAtualChatId = id;
-            document.getElementById('tela-lista-tickets').style.display = 'none';
-            document.getElementById('tela-chat-ticket').style.display = 'flex';
-            document.getElementById('chat-titulo').innerText = "Ticket #" + id;
-            document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
-            document.getElementById('input-chat-msg').value = "";
-            
-            const pass = localStorage.getItem('passaporte');
-            const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-            document.getElementById('btn-resolver-chat').style.display = (isAdmin === true) ? 'block' : 'none';
-            
-            await carregarMensagens();
-
-            // TEMPO REAL ATIVADO
-            if (chatSubscription) sb.removeChannel(chatSubscription);
-            chatSubscription = sb.channel('chat-' + id)
-                .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => {
-                    carregarMensagens();
-                }).subscribe();
-        }
-
-        async function carregarMensagens() {
-            if(!ticketAtualChatId) return;
-            const chatBox = document.getElementById('chat-mensagens');
-            const { data } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
-            
-            if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; } 
-            else {
-                chatBox.innerHTML = data.map(m => {
-                    const isLider = m.autor.includes("Líder"); 
-                    const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                    return `
-                        <div class="msg-card ${isLider ? 'admin' : ''}">
-                            <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
-                            <div class="msg-content">
-                                <div class="msg-header"><span class="msg-nome">${m.autor}</span><span class="msg-tag">${isLider ? 'LIDERANÇA' : 'MEMBRO'}</span><span class="msg-hora">${hora}</span></div>
-                                <div class="msg-body">${m.mensagem || ''}</div>
-                            </div>
-                        </div>`;
-                }).join('');
-            }
-            setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
-        }
-
-        async function enviarMensagemChat() {
-            const input = document.getElementById('input-chat-msg'); const texto = input.value.trim();
-            if(!texto || !ticketAtualChatId) return;
-            const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte');
-            const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-            const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
-            input.value = ""; 
-            await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
-            // O Realtime vai avisar a tela para atualizar
-        }
-
-        async function resolverTicketChat() {
-            if(!confirm("Finalizar atendimento?")) return;
-            await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
-            voltarParaListaTickets();
-        }
-
-        document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
-    </script>
-    <!-- ========== ATUALIZAÇÃO DO CARD DE MEMBROS ========== -->
-<script>
-    // Sobrescreve a função antiga para aplicar as novas regras (Equipe, Pausa e Auto-Encerramento)
-    window.carregarMembrosAtivos = async function() {
-        const lista = document.getElementById('listaMembros');
-        const passLogado = localStorage.getItem('passaporte');
-        if(!lista) return;
-        
-        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-
-        // Verifica se é admin (Liderança)
-        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        window.souAdminMembros = (checkAdmin === true);
-
-        // Puxa os pontos abertos e as equipes
-        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome, equipe_id, pausa_inicio, pausa_fim').is('saida', null);
-        const { data: equipes } = await sb.from('equipes').select('id, nome');
-        
-        if (error) {
-            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar membros.</div>';
-            return;
-        }
-
-        const equipesMap = {};
-        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
-
-        const agora = new Date();
-        let atualizouBanco = false;
-
-        // 1. Lógica do Auto-Encerramento (30 mins)
-        for (let m of ativos) {
-            if (m.pausa_inicio && !m.pausa_fim) {
-                const inicioPausa = new Date(m.pausa_inicio);
-                const minutosPausado = (agora - inicioPausa) / 1000 / 60;
-                
-                if (minutosPausado >= 30) {
-                    // Encerra automaticamente no banco
-                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
-                    atualizouBanco = true;
-                }
-            }
-        }
-
-        if(atualizouBanco) {
-            return window.carregarMembrosAtivos(); // Recarrega a lista se encerrou alguém
-        }
-
-        // Atualiza o numerozinho do painel
-        document.getElementById('membrosAtivos').textContent = ativos.length;
-
-        if (ativos.length === 0) {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
-            return;
-        }
-
-        // 2. Renderiza os cartões
-        window.renderizarCartoesMembros = function() {
-            if (!document.getElementById('listaMembros')) return;
-            
-            lista.innerHTML = ativos.map(m => {
-                let botoes = '';
-                const isPausado = (m.pausa_inicio && !m.pausa_fim);
-
-                if (window.souAdminMembros) {
-                    botoes = `
-                        <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
-                            <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:12px; font-weight:bold; cursor:pointer;">
-                                <i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}
-                            </button>
-                            <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
-                        </div>
-                    `;
-                }
-
-                let timerPausa = '';
-                let tagPausa = '';
-                if (isPausado) {
-                    const diffMs = Date.now() - new Date(m.pausa_inicio).getTime();
-                    const min = Math.floor(diffMs / 60000);
-                    const seg = Math.floor((diffMs % 60000) / 1000);
-                    timerPausa = `<div style="font-size:11px; color:#f59e0b; margin-top:6px; background:rgba(245,158,11,0.1); padding:4px; border-radius:4px; text-align:center;"><i class="fas fa-hourglass-half"></i> Pausado há: <b id="timer-pausa-${m.passaporte}">${min}m ${seg}s</b> / 30:00</div>`;
-                    tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px; margin-left:8px;">PAUSADO</span>`;
-                } else {
-                    tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px; margin-left:8px;">ON</span>`;
-                }
-
-                const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
-
-                return `
-                <div class="card-membro" style="${isPausado ? 'border-color: rgba(245,158,11,0.4);' : ''}">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome} ${tagPausa}</div>
-                    </div>
-                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-                        <i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: <b>${nomeEquipe}</b>
-                    </div>
-                    ${timerPausa}
-                    ${botoes}
-                </div>`;
-            }).join('');
-        }
-
-        window.renderizarCartoesMembros();
-
-        // 3. Loop do cronômetro em tempo real
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-        window.loopTimerMembros = setInterval(() => {
-            ativos.forEach(m => {
-                if (m.pausa_inicio && !m.pausa_fim) {
-                    const el = document.getElementById('timer-pausa-' + m.passaporte);
-                    if (el) {
-                        const diffMs = Date.now() - new Date(m.pausa_inicio).getTime();
-                        const min = Math.floor(diffMs / 60000);
-                        const seg = Math.floor((diffMs % 60000) / 1000);
-                        el.textContent = `${min}m ${seg}s`;
-                        
-                        // Se chegar a 30 minutos com a tela aberta, atualiza para auto-encerrar
-                        if (min >= 30) {
-                            clearInterval(window.loopTimerMembros);
-                            window.carregarMembrosAtivos();
-                        }
-                    }
-                }
-            });
-        }, 1000);
-    }
-
-    // Ação de Pausar, Retomar e Encerrar da Liderança
-    window.adminAcaoPonto = async function(passAlvo, acao) {
-        if (!confirm(`Deseja ${acao} o ponto do passaporte ${passAlvo}?`)) return;
-
-        const agora = new Date().toISOString();
-        let updateData = {};
-
-        if (acao === 'pausar') updateData = { pausa_inicio: agora };
-        if (acao === 'retomar') updateData = { pausa_fim: agora };
-        if (acao === 'encerrar') updateData = { saida: agora };
-
-        const { error } = await sb.from('pontos').update(updateData).eq('passaporte', passAlvo).is('saida', null);
-
-        if (error) {
-            alert("Erro ao executar ação: " + error.message);
-        } else {
-            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Ação executada!", "sucesso");
-            window.carregarMembrosAtivos(); 
-        }
-    }
-
-    // Limpar o timer quando fechar a janelinha
-    window.fecharListaMembros = function() {
-        document.getElementById('modalMembros').classList.remove('aberto');
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-    }
-</script>
-    <!-- ========== CORREÇÃO DE BUGS E MELHORIAS ========== -->
-<script>
-    // 1. CORREÇÃO DA FOTO: Só apaga a foto se você escolher uma nova de propósito
-    window.salvarPerfil = async function() {
-        const pass = localStorage.getItem('passaporte'); 
-        const frase = document.getElementById('input-frase').value;
-        
-        let updateData = { frase_status: frase };
-        
-        // Se a variável tiver a foto nova, salva ela. Se estiver vazia, não mexe na antiga!
-        if (fotoBase64Temp && fotoBase64Temp.length > 10) {
-            updateData.foto_url = fotoBase64Temp;
-        }
-        
-        await sb.from('membros').update(updateData).eq('passaporte', pass);
-        
-        if(updateData.foto_url) { 
-            document.getElementById('img-avatar-mini').src = updateData.foto_url; 
-            document.getElementById('img-avatar-gaveta').src = updateData.foto_url; 
-        }
-        fecharModalPerfil(); 
-        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Perfil atualizado!", "sucesso");
-    }
-
-    // Garantir que a foto carregue logo de cara
-    document.addEventListener("DOMContentLoaded", () => {
-        if(typeof carregarDadosUsuario === 'function') carregarDadosUsuario();
-    });
-
-    // 2. CORREÇÃO DA LISTA DE MEMBROS: ON na direita e cronômetro inteligente
-    window.carregarMembrosAtivos = async function() {
-        const lista = document.getElementById('listaMembros');
-        const passLogado = localStorage.getItem('passaporte');
-        if(!lista) return;
-        
-        // Evita ficar piscando "Buscando..." toda hora que atualizar
-        if (lista.innerHTML.includes('Buscando...') || lista.innerHTML === '') {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-        }
-
-        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        window.souAdminMembros = (checkAdmin === true);
-
-        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome, equipe_id, pausa_inicio, pausa_fim').is('saida', null);
-        const { data: equipes } = await sb.from('equipes').select('id, nome');
-        
-        if (error) {
-            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar membros.</div>';
-            return;
-        }
-
-        const equipesMap = {};
-        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
-
-        const agora = new Date();
-        let atualizouBanco = false;
-
-        // Auto-Encerramento (30 mins)
-        for (let m of ativos) {
-            if (m.pausa_inicio && !m.pausa_fim) {
-                const inicioPausa = new Date(m.pausa_inicio);
-                const minutosPausado = (agora - inicioPausa) / 1000 / 60;
-                
-                if (minutosPausado >= 30) {
-                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
-                    atualizouBanco = true;
-                }
-            }
-        }
-
-        if(atualizouBanco) {
-            return window.carregarMembrosAtivos();
-        }
-
-        document.getElementById('membrosAtivos').textContent = ativos.length;
-
-        if (ativos.length === 0) {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
-            return;
-        }
-
-        lista.innerHTML = ativos.map(m => {
-            let botoes = '';
-            const isPausado = (m.pausa_inicio && !m.pausa_fim);
-
-            if (window.souAdminMembros) {
-                botoes = `
-                    <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:12px; font-weight:bold; cursor:pointer;">
-                            <i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}
-                        </button>
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
-                    </div>
-                `;
-            }
-
-            let timerPausa = '';
-            let tagPausa = '';
-            if (isPausado) {
-                const diffMs = Date.now() - new Date(m.pausa_inicio).getTime();
-                const min = Math.floor(diffMs / 60000);
-                const seg = Math.floor((diffMs % 60000) / 1000);
-                timerPausa = `<div style="font-size:11px; color:#f59e0b; margin-top:6px; background:rgba(245,158,11,0.1); padding:4px; border-radius:4px; text-align:center;"><i class="fas fa-hourglass-half"></i> Pausado há: <b class="timer-pausa" data-inicio="${m.pausa_inicio}">${min}m ${seg}s</b> / 30:00</div>`;
-                tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px;">PAUSADO</span>`;
-            } else {
-                tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>`;
-            }
-
-            const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
-
-            // CORREÇÃO DO ON: O nome e a tag estão em pontas opostas
-            return `
-            <div class="card-membro" style="${isPausado ? 'border-color: rgba(245,158,11,0.4);' : ''}">
-                <div style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
-                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                    ${tagPausa}
-                </div>
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-                    <i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: <b>${nomeEquipe}</b>
-                </div>
-                ${timerPausa}
-                ${botoes}
-            </div>`;
-        }).join('');
-
-        // Atualiza os relógios na tela a cada segundo
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-        window.loopTimerMembros = setInterval(() => {
-            document.querySelectorAll('.timer-pausa').forEach(el => {
-                const inicio = new Date(el.getAttribute('data-inicio')).getTime();
-                const diffMs = Date.now() - inicio;
-                const min = Math.floor(diffMs / 60000);
-                const seg = Math.floor((diffMs % 60000) / 1000);
-                el.textContent = `${min}m ${seg}s`;
-
-                if (min >= 30) {
-                    clearInterval(window.loopTimerMembros);
-                    window.carregarMembrosAtivos();
-                }
-            });
-        }, 1000);
-    }
-
-    // Limpar o timer ao fechar
-    window.fecharListaMembros = function() {
-        document.getElementById('modalMembros').classList.remove('aberto');
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-    }
-                                               </script>
-    <!-- ========== CRONÔMETRO DE JORNADA EM TEMPO REAL ========== -->
-<script>
-    window.carregarMembrosAtivos = async function() {
-        const lista = document.getElementById('listaMembros');
-        const passLogado = localStorage.getItem('passaporte');
-        if(!lista) return;
-        
-        // Evita ficar piscando "Buscando..." toda hora que atualizar
-        if (lista.innerHTML.includes('Buscando...') || lista.innerHTML === '') {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-        }
-
-        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        window.souAdminMembros = (checkAdmin === true);
-
-        // Puxa o horário de entrada, início e fim de pausa
-        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome, equipe_id, entrada, pausa_inicio, pausa_fim').is('saida', null);
-        const { data: equipes } = await sb.from('equipes').select('id, nome');
-        
-        if (error) {
-            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar membros.</div>';
-            return;
-        }
-
-        const equipesMap = {};
-        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
-
-        const agora = new Date();
-        let atualizouBanco = false;
-
-        // Auto-Encerramento (30 mins de pausa)
-        for (let m of ativos) {
-            if (m.pausa_inicio && !m.pausa_fim) {
-                const inicioPausa = new Date(m.pausa_inicio);
-                const minutosPausado = (agora - inicioPausa) / 1000 / 60;
-                
-                if (minutosPausado >= 30) {
-                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
-                    atualizouBanco = true;
-                }
-            }
-        }
-
-        if(atualizouBanco) {
-            return window.carregarMembrosAtivos();
-        }
-
-        document.getElementById('membrosAtivos').textContent = ativos.length;
-
-        if (ativos.length === 0) {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
-            return;
-        }
-
-        lista.innerHTML = ativos.map(m => {
-            let botoes = '';
-            const isPausado = (m.pausa_inicio && !m.pausa_fim);
-
-            if (window.souAdminMembros) {
-                botoes = `
-                    <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:12px; font-weight:bold; cursor:pointer;">
-                            <i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}
-                        </button>
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
-                    </div>
-                `;
-            }
-
-            // Configura a tag de status e a cor
-            let tagStatus = '';
-            if (isPausado) {
-                tagStatus = `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px;">PAUSADO</span>`;
-            } else {
-                tagStatus = `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>`;
-            }
-
-            const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
-
-            // Aqui adicionamos o Cronômetro de Jornada (vai começar a contar automaticamente)
-            return `
-            <div class="card-membro" style="${isPausado ? 'border-color: rgba(245,158,11,0.4);' : ''}">
-                <div style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
-                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                    ${tagStatus}
-                </div>
-                
-                <!-- AQUI ESTÁ O CRONÔMETRO -->
-                <div style="font-size: 13px; color: ${isPausado ? '#f59e0b' : '#22c55e'}; margin-top: 6px; font-weight: 600; display:flex; align-items:center; gap:5px;">
-                    <i class="fas fa-stopwatch"></i> 
-                    <span class="cronometro-jornada" data-entrada="${m.entrada}" data-pausa-inicio="${m.pausa_inicio || ''}" data-pausa-fim="${m.pausa_fim || ''}">00:00:00</span>
-                </div>
-
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-                    <i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: <b>${nomeEquipe}</b>
-                </div>
-                
-                ${botoes}
-            </div>`;
-        }).join('');
-
-        // MÁGICA DO CRONÔMETRO: Roda a cada 1 segundo atualizando a continha
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-        window.loopTimerMembros = setInterval(() => {
-            document.querySelectorAll('.cronometro-jornada').forEach(el => {
-                const entrada = new Date(el.getAttribute('data-entrada')).getTime();
-                const pInicioStr = el.getAttribute('data-pausa-inicio');
-                const pFimStr = el.getAttribute('data-pausa-fim');
-                
-                const pInicio = pInicioStr ? new Date(pInicioStr).getTime() : null;
-                const pFim = pFimStr ? new Date(pFimStr).getTime() : null;
-                
-                let tempoBrutoMs = Date.now() - entrada;
-                let tempoPausaMs = 0;
-
-                // Se já pausou alguma vez
-                if (pInicio) {
-                    if (pFim) {
-                        // Pausa concluída
-                        tempoPausaMs = pFim - pInicio;
-                    } else {
-                        // Ainda está pausado (desconta até o momento atual)
-                        tempoPausaMs = Date.now() - pInicio;
-                    }
-                }
-
-                let tempoLiquidoMs = tempoBrutoMs - tempoPausaMs;
-                if (tempoLiquidoMs < 0) tempoLiquidoMs = 0;
-
-                // Converte para Horas:Minutos:Segundos
-                const h = Math.floor(tempoLiquidoMs / 3600000);
-                const m = Math.floor((tempoLiquidoMs % 3600000) / 60000);
-                const s = Math.floor((tempoLiquidoMs % 60000) / 1000);
-
-                el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-            });
-        }, 1000);
-    }
-
-    // Limpar o timer ao fechar
-    window.fecharListaMembros = function() {
-        document.getElementById('modalMembros').classList.remove('aberto');
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-    }
-                    </script>
-    <!-- ========== MÓDULO DE FREQUÊNCIA FORTIFICADO ========== -->
-<style>
-    .fq-resumo { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px; }
-    .fq-card { padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px; border: 1px solid; }
-    .fq-card.p { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); color: #22c55e; }
-    .fq-card.f { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.3); color: #ef4444; }
-    .fq-card.j { background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.3); color: #f59e0b; }
-    .fq-card b { font-size: 18px; }
-    .fq-card span { font-size: 10px; font-weight: 700; text-transform: uppercase; }
-    
-    .fq-busca { background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px; }
-    .fq-busca input { flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px; }
-    
-    .fq-item { padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .fq-item-info { display: flex; flex-direction: column; gap: 2px; }
-    .fq-item-nome { font-size: 14px; font-weight: 600; color: #fff; }
-    .fq-item-pass { font-size: 11px; color: #94a3b8; }
-    
-    .fq-botoes { display: flex; gap: 6px; }
-    .fq-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid; background: transparent; font-size: 13px; font-weight: 800; cursor: pointer; transition: 0.2s; }
-    .fq-btn.P { color: #22c55e; border-color: rgba(34, 197, 94, 0.4); }
-    .fq-btn.P.on { background: #22c55e; color: #000; border-color: #22c55e; }
-    .fq-btn.F { color: #ef4444; border-color: rgba(239, 68, 68, 0.4); }
-    .fq-btn.F.on { background: #ef4444; color: #fff; border-color: #ef4444; }
-    .fq-btn.J { color: #f59e0b; border-color: rgba(245, 158, 11, 0.4); }
-    .fq-btn.J.on { background: #f59e0b; color: #000; border-color: #f59e0b; }
-    
-    .fq-legenda { font-size: 10px; color: #64748b; text-align: center; margin-top: 10px; }
-</style>
-
-<div class="fundo-modal" id="modalFrequencia" onclick="if(event.target === this) document.getElementById('modalFrequencia').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;">
-        
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Frequência</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalFrequencia').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-
-        <!-- CALENDÁRIO -->
-        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-calendar-day" style="color:#60a5fa;"></i>
-            <input type="date" id="freqData" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark;" onchange="carregarFrequencia()">
-        </div>
-
-        <!-- RESUMO DO DIA (TERMÔMETRO) -->
-        <div class="fq-resumo" id="fqResumo">
-            <div class="fq-card p"><b id="resumoP">0</b><span>Presenças</span></div>
-            <div class="fq-card f"><b id="resumoF">0</b><span>Faltas</span></div>
-            <div class="fq-card j"><b id="resumoJ">0</b><span>Justificativas</span></div>
-        </div>
-
-        <!-- BARRA DE BUSCA -->
-        <div class="fq-busca">
-            <i class="fas fa-search" style="color:#60a5fa;"></i>
-            <input type="text" id="freqBusca" placeholder="Buscar membro..." oninput="filtrarFrequencia()">
-        </div>
-
-        <!-- LISTA DE MEMBROS -->
-        <div id="freqCorpo" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Selecione uma data...</div>
-        </div>
-        
-        <div class="fq-legenda" id="fqLegenda" style="display: none;">
-            <i class="fas fa-info-circle"></i> P: +50 XP | J: +10 XP | F: -200 XP e Bloqueio
-        </div>
-    </div>
-</div>
-    <script>
-    let listaFrequenciaAtual = []; // Guarda os dados para a busca funcionar sem recarregar
-
-    // Substitui o alerta antigo
-    window.abrirFrequencia = function() {
-        document.getElementById('modalFrequencia').classList.add('aberto');
-        const hoje = new Date().toLocaleDateString('en-CA'); // Formato YYYY-MM-DD
-        document.getElementById('freqData').value = hoje;
-        document.getElementById('freqBusca').value = '';
-        window.carregarFrequencia();
-    };
-
-    window.carregarFrequencia = async function() {
-        const dataSel = document.getElementById('freqData').value;
-        const corpo = document.getElementById('freqCorpo');
-        const passLogado = localStorage.getItem('passaporte');
-
-        if (!dataSel) return;
-        corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando dados...</div>';
-
-        // Verifica se é Liderança
-        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        const ehLider = isAdmin === true;
-
-        // Puxa membros
-        const { data: membros } = await sb.from('membros').select('nome, passaporte');
-        
-        // Puxa presenças salvas nesse dia
-        const { data: presencas } = await sb.from('presencas').select('*').eq('data', dataSel);
-        
-        // Puxa quem bateu ponto nesse dia (para a "Mágica do Ponto Automático")
-        // Consideramos que a entrada é um timestamp. Vamos buscar do inicio ao fim do dia.
-        const inicioDia = `${dataSel}T00:00:00.000Z`;
-        const fimDia = `${dataSel}T23:59:59.999Z`;
-        const { data: pontosDia } = await sb.from('pontos').select('passaporte, entrada').gte('entrada', inicioDia).lte('entrada', fimDia);
-
-        const mapaPresencas = {};
-        (presencas || []).forEach(p => mapaPresencas[String(p.passaporte)] = p.status);
-
-        const mapaPontos = new Set();
-        (pontosDia || []).forEach(p => mapaPontos.add(String(p.passaporte)));
-
-        // Monta a lista combinada
-        listaFrequenciaAtual = (membros || []).map(m => {
-            let status = mapaPresencas[String(m.passaporte)];
-            
-            // MÁGICA: Se não tem status salvo, mas bateu ponto, já considera Presença!
-            if (!status && mapaPontos.has(String(m.passaporte))) {
-                status = 'P';
-            }
-            return { ...m, status: status || null };
-        }).sort((a, b) => a.nome.localeCompare(b.nome));
-
-        window.renderizarFrequencia(ehLider);
-    };
-
-    window.filtrarFrequencia = function() {
-        const termo = document.getElementById('freqBusca').value.toLowerCase();
-        const itens = document.querySelectorAll('.fq-item');
-        itens.forEach(item => {
-            const nome = item.querySelector('.fq-item-nome').innerText.toLowerCase();
-            const pass = item.querySelector('.fq-item-pass').innerText.toLowerCase();
-            if (nome.includes(termo) || pass.includes(termo)) {
-                item.style.display = 'flex';
-            } else {
-                item.style.display = 'none';
-            }
-        });
-    };
-
-    window.renderizarFrequencia = function(ehLider) {
-        const corpo = document.getElementById('freqCorpo');
-        const legenda = document.getElementById('fqLegenda');
-        
-        let qtdP = 0, qtdF = 0, qtdJ = 0;
-
-        if (listaFrequenciaAtual.length === 0) {
-            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro cadastrado.</div>';
-            return;
-        }
-
-        corpo.innerHTML = listaFrequenciaAtual.map(m => {
-            if (m.status === 'P') qtdP++;
-            if (m.status === 'F') qtdF++;
-            if (m.status === 'J') qtdJ++;
-
-            // Se for líder, mostra os botões. Se não, só mostra o status em texto
-            let acoes = '';
-            if (ehLider) {
-                acoes = `
-                <div class="fq-botoes">
-                    <button class="fq-btn P ${m.status === 'P' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'P')">P</button>
-                    <button class="fq-btn F ${m.status === 'F' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'F')">F</button>
-                    <button class="fq-btn J ${m.status === 'J' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'J')">J</button>
-                </div>`;
-            } else {
-                const tag = m.status === 'P' ? '<span style="color:#22c55e; font-weight:bold;">PRESENÇA</span>' : m.status === 'F' ? '<span style="color:#ef4444; font-weight:bold;">FALTA</span>' : m.status === 'J' ? '<span style="color:#f59e0b; font-weight:bold;">JUSTIFICADO</span>' : '<span style="color:#64748b;">-</span>';
-                acoes = tag;
-            }
-
-            return `
-            <div class="fq-item">
-                <div class="fq-item-info">
-                    <div class="fq-item-nome">${m.nome}</div>
-                    <div class="fq-item-pass">Pass: ${m.passaporte}</div>
-                </div>
-                ${acoes}
-            </div>`;
-        }).join('');
-
-        // Atualiza os cartõezinhos de resumo
-        document.getElementById('resumoP').innerText = qtdP;
-        document.getElementById('resumoF').innerText = qtdF;
-        document.getElementById('resumoJ').innerText = qtdJ;
-        
-        if(ehLider) legenda.style.display = 'block';
-
-        // Reaplica o filtro caso tenha texto na busca
-        if(document.getElementById('freqBusca').value) window.filtrarFrequencia();
-    };
-
-    window.marcarPresenca = async function(passAlvo, novoStatus) {
-        const dataSel = document.getElementById('freqData').value;
-        
-        // Se clicar no mesmo botão que já está marcado, ele desmarca (limpa)
-        const membro = listaFrequenciaAtual.find(m => String(m.passaporte) === String(passAlvo));
-        const statusFinal = (membro.status === novoStatus) ? null : novoStatus;
-
-        // Atualiza na hora na tela (otimista)
-        membro.status = statusFinal;
-        window.renderizarFrequencia(true);
-
-        // Salva no Supabase
-        if (statusFinal === null) {
-            await sb.from('presencas').delete().eq('passaporte', passAlvo).eq('data', dataSel);
-        } else {
-            const { data: existe } = await sb.from('presencas').select('id').eq('passaporte', passAlvo).eq('data', dataSel).single();
-            if (existe) {
-                await sb.from('presencas').update({ status: statusFinal }).eq('id', existe.id);
-            } else {
-                await sb.from('presencas').insert([{ passaporte: passAlvo, data: dataSel, status: statusFinal }]);
-            }
-        }
-    };
-    </script>
-    <script>
-    // Atualiza a Gaveta com o XP real do banco
-    window.abrirGaveta = async function() {
-        document.getElementById('fundoGaveta').classList.add('aberto'); 
-        document.getElementById('gavetaPerfil').classList.add('aberta');
-        
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-
-        // Puxa os dados reais
-        const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', pass).single();
-
-        if (data) {
-            const xpAtual = data.xp_total || 0;
-            
-            // Lógica de Metas (Para o visual)
-            // Se ele tem 0 a 3000 XP, o alvo é o Executor (3000)
-            // Se ele tem mais de 3000, o alvo é o Raiz (15000)
-            let xpTotal = 3000;
-            let proximoNivel = "Executor";
-
-            if (xpAtual >= 3000 && xpAtual < 15000) {
-                xpTotal = 15000;
-                proximoNivel = "Raiz";
-            } else if (xpAtual >= 15000) {
-                xpTotal = 50000;
-                proximoNivel = "Vigia";
-            }
-
-            // Atualiza a tela
-            document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
-            document.getElementById('gavetaProximoNivel').textContent = proximoNivel;
-            
-            // Calcula a porcentagem da barra (com um limite de 100%)
-            let porcentagem = (xpAtual / xpTotal) * 100;
-            if (porcentagem > 100) porcentagem = 100;
-
-            setTimeout(() => { 
-                document.getElementById('gavetaXpBarra').style.width = `${porcentagem}%`; 
-            }, 100);
-        }
-    }
-    </script>
-    <script>
-    // Função para dar XP manual (Apenas Liderança)
-    window.darXP = async function(passAlvo, nomeAlvo) {
-        const qtdStr = prompt(`Dar quanto de XP para ${nomeAlvo}?\n(Ex: 50, 100, 300)`, "50");
-        if (qtdStr === null) return; // Cancelou
-
-        const qtd = parseInt(qtdStr);
-        if (isNaN(qtd) || qtd <= 0) { alert("Digite um número válido maior que zero."); return; }
-
-        const motivo = prompt(`Motivo do bônus de +${qtd} XP:`, "Ato de bravura");
-        if (motivo === null) return;
-
-        // Puxa o XP atual para somar
-        const { data } = await sb.from('membros').select('xp_total').eq('passaporte', passAlvo).single();
-        if (data) {
-            const novoXP = (data.xp_total || 0) + qtd;
-            await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', passAlvo);
-            
-            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP para ${nomeAlvo}!`, "sucesso");
-            
-            // Se a gaveta estiver aberta no membro que recebeu, atualiza
-            if(localStorage.getItem('passaporte') === passAlvo) window.abrirGaveta();
-        }
-    };
-    </script>
-    <!-- MUDANÇA DE NOME E BOTÃO DE XP -->
-<script>
-    // 1. Troca o "Meu Dossiê" para "Meu Perfil"
-    document.addEventListener("DOMContentLoaded", () => {
-        const tituloGaveta = document.querySelector('#gavetaPerfil .gaveta-topo h3');
-        if(tituloGaveta) tituloGaveta.innerText = "Meu Perfil";
-    });
-
-    // 2. Adiciona o botão de "+ XP" na lista de membros
-    // Salvamos a função antiga para não apagar
-    const funcaoAntigaMembros = window.carregarMembrosAtivos;
-
-    window.carregarMembrosAtivos = async function() {
-        await funcaoAntigaMembros(); // Executa o código antigo
-        
-        // Depois que o código antigo termina, a gente adiciona o botão "+ XP" nos cartões
-        const lista = document.getElementById('listaMembros');
-        const cartoes = lista.querySelectorAll('.card-membro');
-        
-        cartoes.forEach(cartao => {
-            // Verifica se é admin e se o botão já não existe
-            if(window.souAdminMembros && !cartao.querySelector('.btn-dar-xp')) {
-                // Pega o passaporte do membro que está no texto
-                const textoPass = cartao.querySelector('div[style*="margin-top: 4px"]').innerText;
-                const passaporteAlvo = textoPass.split('Pass: ')[1].split(' ')[0];
-                const nomeAlvo = cartao.querySelector('div[style*="font-weight: 700"]').innerText.split(' ')[0];
-
-                const btnXp = document.createElement('button');
-                btnXp.className = 'btn-dar-xp';
-                btnXp.innerHTML = '<i class="fas fa-star"></i> Dar XP';
-                btnXp.style.cssText = 'width:100%; margin-top:8px; padding:6px; border-radius:6px; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); font-size:11px; font-weight:bold; cursor:pointer;';
-                btnXp.onclick = () => window.darXP(passaporteAlvo, nomeAlvo);
-
-                // Coloca o botão no final do cartão
-                cartao.appendChild(btnXp);
-            }
-        });
-    };
-
-    // 3. A função que abre a caixinha de dar XP
-    window.darXP = async function(passAlvo, nomeAlvo) {
-        const qtdStr = prompt(`Dar quanto de XP para ${nomeAlvo}?\n(Ex: 50, 100, 300)`, "50");
-        if (qtdStr === null) return;
-
-        const qtd = parseInt(qtdStr);
-        if (isNaN(qtd) || qtd <= 0) { alert("Digite um número válido."); return; }
-
-        const motivo = prompt(`Motivo do bônus de +${qtd} XP:`, "Ato de bravura");
-        if (motivo === null) return;
-
-        const { data } = await sb.from('membros').select('xp_total').eq('passaporte', passAlvo).single();
-        if (data) {
-            const novoXP = (data.xp_total || 0) + qtd;
-            await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', passAlvo);
-            if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin(`+${qtd} XP dado para ${nomeAlvo}!`, "sucesso");
-            
-            // Atualiza na hora se o cara que recebeu for você mesmo
-            if(localStorage.getItem('passaporte') === passAlvo) window.abrirGaveta();
-        }
-    };
-</script>
-   <!-- ========== GERENCIAR MEMBROS (CORRIGIDO E POSICIONADO) ========== -->
-<!-- 1. O VISUAL DA JANELA (MODAL) -->
-<div class="fundo-modal" id="modalGerenciar" onclick="if(event.target === this) document.getElementById('modalGerenciar').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 85vh; display: flex; flex-direction: column;">
-        
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Gerenciar Membros</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalGerenciar').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-
-        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-search" style="color:#60a5fa;"></i>
-            <input type="text" id="buscaTodos" placeholder="Buscar por nome ou passaporte..." oninput="window.filtrarTodosMembros()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
-        </div>
-
-        <div id="listaTodosMembros" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
-        </div>
-    </div>
-</div>
-
-<!-- 2. A LÓGICA E CRIAÇÃO DO CARD -->
-<script>
+    // ========== LÓGICA UNIFICADA DE AÇÕES ==========
     let listaTodosMembrosGlobal = [];
-
-    document.addEventListener("DOMContentLoaded", async () => {
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-
-        const { data: membro } = await sb.from('membros').select('cargo').eq('passaporte', pass).single();
-        
-        if (membro && membro.cargo) {
-            const cargosPermitidos = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
-
-            if (cargosPermitidos.includes(membro.cargo)) {
-                const grade = document.querySelector('.grade-cards');
-                const cardAviso = document.querySelector('.card-aviso'); // Pega o card de aviso
-                
-                if (grade && cardAviso) {
-                    const cardAdmin = document.createElement('div');
-                    cardAdmin.className = 'card card-clicavel';
-                    cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
-                    cardAdmin.innerHTML = `
-                        <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
-                        <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
-                        <div class="card-dica">Toque para gerenciar XP e punições</div>
-                    `;
-                    
-                    cardAdmin.onclick = () => {
-                        document.getElementById('modalGerenciar').classList.add('aberto');
-                        window.carregarTodosMembros();
-                    };
-
-                    // A MÁGICA DA POSIÇÃO: Insere ANTES do card de aviso
-                    grade.insertBefore(cardAdmin, cardAviso);
-                }
-            }
-        }
-    });
-
-    window.carregarTodosMembros = async function() {
-        const lista = document.getElementById('listaTodosMembros');
-        if(!lista) return;
-        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando membros...</div>';
-
-        const { data: membros, error } = await sb.from('membros').select('nome, passaporte, cargo, xp_total, advertencias').order('nome');
-        
-        if (error) {
-            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar.</div>';
-            return;
-        }
-
-        listaTodosMembrosGlobal = membros || [];
-        window.renderizarTodosMembros();
-    };
-
-    window.renderizarTodosMembros = function() {
-        const lista = document.getElementById('listaTodosMembros');
-        if(!lista) return;
-        
-        if (listaTodosMembrosGlobal.length === 0) {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro.</div>';
-            return;
-        }
-
-        lista.innerHTML = listaTodosMembrosGlobal.map(m => {
-            const xp = m.xp_total || 0;
-            const adv = m.advertencias || 0;
-            const corBorda = adv > 0 ? 'rgba(239, 68, 68, 0.4)' : 'rgba(96, 165, 250, 0.12)';
-
-            return `
-            <div class="membro-item-fixo" style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid ${corBorda}; border-radius: 12px; margin-bottom: 8px;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                        <div style="font-size: 11px; color: #94a3b8;">Pass: ${m.passaporte} | Cargo: ${m.cargo || 'Sem cargo'}</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-size: 12px; font-weight: bold; color: #60a5fa;">${xp} XP</div>
-                        ${adv > 0 ? `<div style="font-size: 10px; color: #ef4444; font-weight: bold;">⚠️ ${adv} Adv.</div>` : ''}
-                    </div>
-                </div>
-                
-                <div style="display:flex; gap: 6px; margin-top: 10px; border-top: 1px solid #334155; padding-top: 10px;">
-                    <button onclick="window.abrirModalDarXp('${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); font-size:11px; font-weight:bold; cursor:pointer;">
-                        <i class="fas fa-star"></i> Dar XP
-                    </button>
-                    <button onclick="window.acaoAdvertir('${m.passaporte}', '${m.nome}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold; cursor:pointer;">
-                        <i class="fas fa-exclamation-triangle"></i> Advertir
-                    </button>
-                </div>
-            </div>`;
-        }).join('');
-    };
-
-    window.filtrarTodosMembros = function() {
-        const termo = document.getElementById('buscaTodos').value.toLowerCase();
-        const itens = document.querySelectorAll('.membro-item-fixo');
-        itens.forEach(item => {
-            item.style.display = item.innerText.toLowerCase().includes(termo) ? 'block' : 'none';
-        });
-    };
-
-    <!-- ========== MODAL DE AÇÃO (XP E ADVERTÊNCIA) ========== -->
-<style>
-    .modal-acao { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
-    .modal-acao.aberto { opacity: 1; visibility: visible; }
-    .caixa-acao { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.3); border-radius: 18px; padding: 24px; max-width: 360px; width: 100%; text-align: center; transform: translateY(10px); transition: transform 0.3s ease; }
-    .modal-acao.aberto .caixa-acao { transform: translateY(0); }
-    .caixa-acao h3 { font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff; }
-    .caixa-acao p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; }
-    .caixa-acao input { width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none; }
-    .caixa-acao input:focus { border-color: #3b82f6; }
-    .botoes-acao { display: flex; gap: 12px; margin-top: 10px; }
-    .btn-acao-cancelar { flex: 1; padding: 12px; border: 1px solid rgba(96,165,250,0.2); background: transparent; color: #94a3b8; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
-    .btn-acao-confirmar { flex: 1; padding: 12px; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; color: #fff; }
-</style>
-
-<div class="modal-acao" id="modalAcao">
-    <div class="caixa-acao">
-        <h3 id="acao-titulo">Ação</h3>
-        <p>Membro: <b id="acao-nome-alvo" style="color:#60a5fa;">---</b></p>
-        <div id="campo-quantidade-box"><input type="number" id="acao-quantidade" placeholder="Quantidade de XP" value="50" min="1"></div>
-        <input type="text" id="acao-motivo" placeholder="Digite o motivo..." value="">
-        <div class="botoes-acao">
-            <button class="btn-acao-cancelar" onclick="window.fecharModalAcao()">Cancelar</button>
-            <button class="btn-acao-confirmar" id="btn-acao-confirmar" onclick="window.confirmarAcao()">Confirmar</button>
-        </div>
-    </div>
-</div>
-
-<script>
     window.tipoAcaoAtual = null;
     window.passAlvoAtual = null;
     window.funcaoPosAcao = null;
@@ -1538,32 +399,20 @@
         btn.innerText = "Confirmar";
 
         if (tipo === 'xp') {
-            titulo.innerText = "Enviar Recompensa (XP)";
-            boxQtd.style.display = 'block';
-            document.getElementById('acao-quantidade').value = "50";
-            inputMotivo.value = "Ato de bravura";
+            titulo.innerText = "Enviar Recompensa (XP)"; boxQtd.style.display = 'block';
+            document.getElementById('acao-quantidade').value = "50"; inputMotivo.value = "Ato de bravura";
             btn.style.background = "linear-gradient(135deg, #3b82f6, #2563eb)";
-        } 
-        else if (tipo === 'tirar_xp') {
-            titulo.innerText = "Tirar XP (Punição)";
-            boxQtd.style.display = 'block';
-            document.getElementById('acao-quantidade').value = "200";
-            inputMotivo.value = "Punição aplicada";
+        } else if (tipo === 'tirar_xp') {
+            titulo.innerText = "Tirar XP (Punição)"; boxQtd.style.display = 'block';
+            document.getElementById('acao-quantidade').value = "200"; inputMotivo.value = "Punição aplicada";
             btn.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+        } else if (tipo === 'advertencia') {
+            titulo.innerText = "Aplicar Advertência"; boxQtd.style.display = 'none'; 
+            inputMotivo.value = "Quebra de regras"; btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+        } else if (tipo === 'retirar_advertencia') {
+            titulo.innerText = "Retirar Advertência"; boxQtd.style.display = 'none'; 
+            inputMotivo.value = "Bom comportamento"; btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
         }
-        else if (tipo === 'advertencia') {
-            titulo.innerText = "Aplicar Advertência";
-            boxQtd.style.display = 'none'; 
-            inputMotivo.value = "Quebra de regras";
-            btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
-        }
-        else if (tipo === 'retirar_advertencia') {
-            titulo.innerText = "Retirar Advertência";
-            boxQtd.style.display = 'none'; 
-            inputMotivo.value = "Bom comportamento";
-            btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
-        }
-
         document.getElementById('modalAcao').classList.add('aberto');
     };
 
@@ -1577,39 +426,38 @@
             const qtd = parseInt(document.getElementById('acao-quantidade').value);
             const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
             if (data) await sb.from('membros').update({ xp_total: (data.xp_total || 0) + qtd }).eq('passaporte', window.passAlvoAtual);
-        } 
-        else if (window.tipoAcaoAtual === 'tirar_xp') {
+        } else if (window.tipoAcaoAtual === 'tirar_xp') {
             const qtd = parseInt(document.getElementById('acao-quantidade').value);
             const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
             if (data) {
-                const novoXP = (data.xp_total || 0) - qtd; // AQUI PERMITE NEGATIVO
+                const novoXP = (data.xp_total || 0) - qtd;
                 await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', window.passAlvoAtual);
             }
-        }
-        else if (window.tipoAcaoAtual === 'advertencia') {
+        } else if (window.tipoAcaoAtual === 'advertencia') {
             const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', window.passAlvoAtual).single();
             if (data) await sb.from('membros').update({ xp_total: Math.floor((data.xp_total || 0) * 0.8), advertencias: (data.advertencias || 0) + 1 }).eq('passaporte', window.passAlvoAtual);
-        }
-        else if (window.tipoAcaoAtual === 'retirar_advertencia') {
+        } else if (window.tipoAcaoAtual === 'retirar_advertencia') {
             const { data } = await sb.from('membros').select('advertencias').eq('passaporte', window.passAlvoAtual).single();
             if (data && data.advertencias > 0) await sb.from('membros').update({ advertencias: data.advertencias - 1 }).eq('passaporte', window.passAlvoAtual);
         }
 
-        if(localStorage.getItem('passaporte') === window.passAlvoAtual) window.abrirGaveta();
+        if(localStorage.getItem('passaporte') === window.passAlvoAtual && typeof window.abrirGaveta === 'function') window.abrirGaveta();
         if(typeof window.funcaoPosAcao === 'function') window.funcaoPosAcao();
         window.fecharModalAcao();
     };
-
-    // Atualizando a lista para usar os novos botões
-    window.renderizarTodosMembros = function() {
+</script>
+                                         <script>
+    // ========== GERENCIAR MEMBROS ==========
+    window.carregarTodosMembros = async function() {
         const lista = document.getElementById('listaTodosMembros');
         if(!lista) return;
+        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        const { data: membros } = await sb.from('membros').select('nome, passaporte, cargo, xp_total, advertencias').order('nome');
+        listaTodosMembrosGlobal = membros || [];
         
         lista.innerHTML = listaTodosMembrosGlobal.map(m => {
-            const xp = m.xp_total || 0;
-            const adv = m.advertencias || 0;
+            const xp = m.xp_total || 0; const adv = m.advertencias || 0;
             let corBorda = adv > 0 ? 'rgba(239, 68, 68, 0.4)' : (xp < 0 ? 'rgba(245, 158, 11, 0.4)' : 'rgba(96, 165, 250, 0.12)');
-
             return `
             <div class="membro-item-fixo" style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid ${corBorda}; border-radius: 12px; margin-bottom: 8px;">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1631,7 +479,7 @@
                 </div>
             </div>`;
         }).join('');
-    }
+    };
 
     window.filtrarTodosMembros = function() {
         const termo = document.getElementById('buscaTodos').value.toLowerCase();
@@ -1640,146 +488,400 @@
         });
     };
 </script>
-<!-- ========== RESTAURANDO O CARD GERENCIAR MEMBROS ========== -->
-<!-- A JANELA ONDE A LISTA APARECE -->
-<div class="fundo-modal" id="modalGerenciar" onclick="if(event.target === this) document.getElementById('modalGerenciar').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 85vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Gerenciar Membros</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalGerenciar').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-search" style="color:#60a5fa;"></i>
-            <input type="text" id="buscaTodos" placeholder="Buscar por nome ou passaporte..." oninput="window.filtrarTodosMembros()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
-        </div>
-        <div id="listaTodosMembros" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
-        </div>
-    </div>
-</div>
+            <script>
+    // ========== MEMBROS ATIVOS ==========
+    window.abrirListaMembros = function() {
+        document.getElementById('modalMembros').classList.add('aberto');
+        window.carregarMembrosAtivos();
+    };
+    window.fecharListaMembros = function() {
+        document.getElementById('modalMembros').classList.remove('aberto');
+    };
 
-<!-- O SCRIPT QUE CRIA O CARD -->
-<script>
-    document.addEventListener("DOMContentLoaded", async () => {
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-
-        const { data: membro } = await sb.from('membros').select('cargo').eq('passaporte', pass).single();
+    window.carregarMembrosAtivos = async function() {
+        const lista = document.getElementById('listaMembros');
+        if(!lista) return;
         
-        if (membro && membro.cargo) {
-            const cargosPermitidos = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+        if (lista.innerHTML.includes('Buscando...') || lista.innerHTML === '') {
+            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        }
 
-            if (cargosPermitidos.includes(membro.cargo)) {
-                const grade = document.querySelector('.grade-cards');
-                const cardAviso = document.querySelector('.card-aviso'); 
-                
-                if (grade && cardAviso) {
-                    const cardAdmin = document.createElement('div');
-                    cardAdmin.className = 'card card-clicavel';
-                    cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
-                    cardAdmin.innerHTML = `
-                        <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
-                        <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
-                        <div class="card-dica">Toque para gerenciar XP e punições</div>
-                    `;
-                    
-                    cardAdmin.onclick = () => {
-                        document.getElementById('modalGerenciar').classList.add('aberto');
-                        // Chama a função de carregar que já está no código anterior
-                        if(typeof window.carregarTodosMembros === 'function') {
-                            window.carregarTodosMembros();
-                        } else {
-                            console.error("Função carregarTodosMembros não encontrada!");
-                        }
-                    };
+        const [resPontos, resMembros, resEquipes] = await Promise.all([
+            sb.from('pontos').select('passaporte, nome, equipe_id, entrada, pausa_inicio, pausa_fim').is('saida', null),
+            sb.from('membros').select('passaporte, xp_total, advertencias'),
+            sb.from('equipes').select('id, nome')
+        ]);
 
-                    grade.insertBefore(cardAdmin, cardAviso);
+        const ativos = resPontos.data || [];
+        const membrosDados = resMembros.data || [];
+        const equipes = resEquipes.data || [];
+
+        const membrosMap = {};
+        membrosDados.forEach(m => membrosMap[String(m.passaporte)] = m);
+        const equipesMap = {};
+        equipes.forEach(e => equipesMap[e.id] = e.nome);
+
+        const agora = new Date();
+        let atualizouBanco = false;
+
+        for (let m of ativos) {
+            if (m.pausa_inicio && !m.pausa_fim) {
+                const minutosPausado = (agora - new Date(m.pausa_inicio)) / 1000 / 60;
+                if (minutosPausado >= 30) {
+                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
+                    atualizouBanco = true;
                 }
             }
         }
-    });
-</script>
-   <script>
-    // Variável global para guardar os membros
-    let listaTodosMembrosGlobal = [];
+        if(atualizouBanco) return window.carregarMembrosAtivos();
 
-    // 1. Puxa os dados do banco
-    window.carregarTodosMembros = async function() {
-        const lista = document.getElementById('listaTodosMembros');
-        if(!lista) return;
-        
-        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-        
-        const { data: membros, error } = await sb.from('membros').select('nome, passaporte, cargo, xp_total, advertencias').order('nome');
-        
-        if (error) {
-            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar.</div>';
+        document.getElementById('membrosAtivos').textContent = ativos.length;
+
+        if (ativos.length === 0) {
+            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
             return;
         }
 
-        listaTodosMembrosGlobal = membros || [];
-        window.renderizarTodosMembros();
-    };
+        lista.innerHTML = ativos.map(m => {
+            const isPausado = (m.pausa_inicio && !m.pausa_fim);
+            const dadosMembro = membrosMap[String(m.passaporte)] || { xp_total: 0, advertencias: 0 };
+            const xp = dadosMembro.xp_total || 0;
+            const adv = dadosMembro.advertencias || 0;
+            const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
 
-    // 2. Desenha os cartões na tela
-    window.renderizarTodosMembros = function() {
-        const lista = document.getElementById('listaTodosMembros');
-        if(!lista) return;
-        
-        if (listaTodosMembrosGlobal.length === 0) {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro.</div>';
-            return;
-        }
+            let botoesAdmin = '';
+            if (isAdmin) {
+                botoesAdmin = `
+                <div style="display:flex; gap: 6px; margin-top: 8px; border-top: 1px solid #334155; padding-top: 8px; flex-wrap: wrap;">
+                    <button onclick="window.abrirModalAcao('xp', '${m.passaporte}', '${m.nome}', () => window.carregarMembrosAtivos())" style="flex:1; padding:6px; border-radius:6px; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-star"></i> Dar XP</button>
+                    <button onclick="window.abrirModalAcao('tirar_xp', '${m.passaporte}', '${m.nome}', () => window.carregarMembrosAtivos())" style="flex:1; padding:6px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-minus-circle"></i> Tirar XP</button>
+                    ${adv > 0 ? `
+                    <button onclick="window.abrirModalAcao('retirar_advertencia', '${m.passaporte}', '${m.nome}', () => window.carregarMembrosAtivos())" style="flex:1; padding:6px; border-radius:6px; background:rgba(34,197,94,0.1); color:#22c55e; border:1px solid rgba(34,197,94,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-check-circle"></i> Retirar Adv.</button>` : `
+                    <button onclick="window.abrirModalAcao('advertencia', '${m.passaporte}', '${m.nome}', () => window.carregarMembrosAtivos())" style="flex:1; padding:6px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-exclamation-triangle"></i> Advertir</button>`}
+                    <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:6px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}</button>
+                    <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
+                </div>`;
+            }
 
-        lista.innerHTML = listaTodosMembrosGlobal.map(m => {
-            const xp = m.xp_total || 0;
-            const adv = m.advertencias || 0;
-            
-            // Borda vermelha se tiver advertência, laranja se tiver devendo XP
-            let corBorda = adv > 0 ? 'rgba(239, 68, 68, 0.4)' : (xp < 0 ? 'rgba(245, 158, 11, 0.4)' : 'rgba(96, 165, 250, 0.12)');
+            let tagStatus = isPausado ? `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px;">PAUSADO</span>` : `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>`;
+            let corBordaCard = adv > 0 ? 'rgba(239, 68, 68, 0.4)' : (xp < 0 ? 'rgba(245, 158, 11, 0.4)' : 'rgba(96, 165, 250, 0.12)');
 
             return `
-            <div class="membro-item-fixo" style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid ${corBorda}; border-radius: 12px; margin-bottom: 8px;">
+            <div class="card-membro" style="border-color: ${corBordaCard};">
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                        <div style="font-size: 11px; color: #94a3b8;">Pass: ${m.passaporte} | Cargo: ${m.cargo || 'Sem cargo'}</div>
-                    </div>
-                    <div style="text-align:right;">
-                        <div style="font-size: 12px; font-weight: bold; color: ${xp < 0 ? '#ef4444' : '#60a5fa'};">${xp} XP</div>
-                        ${adv > 0 ? `<div style="font-size: 10px; color: #ef4444; font-weight: bold;">⚠️ ${adv} Adv.</div>` : ''}
-                    </div>
+                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
+                    ${tagStatus}
                 </div>
-                <div style="display:flex; gap: 6px; margin-top: 10px; border-top: 1px solid #334155; padding-top: 10px;">
-                    
-                    <button onclick="window.abrirModalAcao('xp', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); font-size:11px; font-weight:bold; cursor:pointer;">
-                        <i class="fas fa-star"></i> Dar XP
-                    </button>
-                    
-                    <button onclick="window.abrirModalAcao('tirar_xp', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold; cursor:pointer;">
-                        <i class="fas fa-minus-circle"></i> Tirar XP
-                    </button>
-                    
-                    ${adv > 0 ? `
-                    <button onclick="window.abrirModalAcao('retirar_advertencia', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(34,197,94,0.1); color:#22c55e; border:1px solid rgba(34,197,94,0.3); font-size:11px; font-weight:bold; cursor:pointer;">
-                        <i class="fas fa-check-circle"></i> Retirar Adv.
-                    </button>` : `
-                    <button onclick="window.abrirModalAcao('advertencia', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold; cursor:pointer;">
-                        <i class="fas fa-exclamation-triangle"></i> Advertir
-                    </button>`}
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top: 4px;">
+                    <div style="font-size: 11px; color: #94a3b8;"><i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: ${nomeEquipe}</div>
+                    <div style="font-size: 12px; font-weight: bold; color: ${xp < 0 ? '#ef4444' : '#60a5fa'};">${xp} XP ${adv > 0 ? `| ⚠️ ${adv} Adv` : ''}</div>
                 </div>
+                ${botoesAdmin}
             </div>`;
         }).join('');
     };
 
-    // 3. Filtro de busca
-    window.filtrarTodosMembros = function() {
-        const termo = document.getElementById('buscaTodos').value.toLowerCase();
-        const itens = document.querySelectorAll('.membro-item-fixo');
-        itens.forEach(item => {
-            item.style.display = item.innerText.toLowerCase().includes(termo) ? 'block' : 'none';
+    window.adminAcaoPonto = async function(passAlvo, acao) {
+        if (!confirm(`Deseja ${acao} o ponto do passaporte ${passAlvo}?`)) return;
+        const agora = new Date().toISOString();
+        let updateData = {};
+        if (acao === 'pausar') updateData = { pausa_inicio: agora };
+        if (acao === 'retomar') updateData = { pausa_fim: agora };
+        if (acao === 'encerrar') updateData = { saida: agora };
+        const { error } = await sb.from('pontos').update(updateData).eq('passaporte', passAlvo).is('saida', null);
+        if (!error) window.carregarMembrosAtivos();
+    };
+</script>
+            <script>
+    // ========== SISTEMA DE SUPORTE (TICKETS) ==========
+    let categoriaSelecionada = null;
+    let ticketAtualChatId = null;
+    let chatSubscription = null;
+
+    window.abrirModalTickets = function() {
+        document.getElementById('modalTickets').classList.add('aberto');
+        window.voltarParaListaTickets();
+        document.getElementById('input-ticket').value = '';
+        categoriaSelecionada = null;
+        document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+        document.getElementById('div-descricao').style.display = 'none';
+        window.carregarTickets();
+    };
+    window.fecharModalTickets = function() { document.getElementById('modalTickets').classList.remove('aberto'); };
+
+    window.selecionarCategoria = function(cat) {
+        if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
+        else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
+        document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
+        if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
+    };
+
+    window.criarTicket = async function() {
+        const texto = document.getElementById('input-ticket').value;
+        const pass = localStorage.getItem('passaporte');
+        const nome = document.getElementById('nomeUsuario').textContent;
+        if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
+        const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
+        
+        await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
+        
+        document.getElementById('tela-abertura-ticket').style.display = 'none';
+        document.getElementById('tela-espera-ticket').style.display = 'flex';
+        window.carregarTickets(); 
+        btn.innerText = "Enviar Ticket"; btn.disabled = false;
+    };
+
+    window.carregarTickets = async function() {
+        const corpo = document.getElementById('corpoTickets');
+        const pass = localStorage.getItem('passaporte');
+        const nomeEu = document.getElementById('nomeUsuario').textContent;
+        corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        
+        const { data: isAdminCheck } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        const ehLider = isAdminCheck === true;
+        
+        let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
+        if (!ehLider) query = query.eq('passaporte', pass);
+        
+        const { data, error } = await query;
+        if (error) { corpo.innerHTML = '<div style="color: red;">Erro.</div>'; return; }
+        if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
+        
+        corpo.innerHTML = data.map(t => {
+            const isAberto = t.status === 'aberto'; 
+            const isAtendimento = t.status === 'atendimento'; 
+            const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
+            const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+            
+            return `
+            <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div><span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span></div>
+                <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>
+                ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}
+                <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
+                ${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
+                ${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
+            </div>`;
+        }).join('');
+    };
+
+    window.assumirTicket = async function(id) {
+        const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
+        await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
+        window.carregarTickets();
+    };
+
+    window.voltarParaListaTickets = function() {
+        document.getElementById('tela-chat-ticket').style.display = 'none';
+        document.getElementById('tela-lista-tickets').style.display = 'flex';
+        document.getElementById('btn-resolver-chat').style.display = 'none';
+        document.getElementById('tela-espera-ticket').style.display = 'none';
+        document.getElementById('tela-abertura-ticket').style.display = 'flex';
+        ticketAtualChatId = null;
+        if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
+        window.carregarTickets();
+    };
+
+    window.abrirChatTicket = async function(id, nomeAutor, passaporte) {
+        ticketAtualChatId = id;
+        document.getElementById('tela-lista-tickets').style.display = 'none';
+        document.getElementById('tela-chat-ticket').style.display = 'flex';
+        document.getElementById('chat-titulo').innerText = "Ticket #" + id;
+        document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
+        document.getElementById('input-chat-msg').value = "";
+        
+        const pass = localStorage.getItem('passaporte');
+        const { data: isAdminCheck } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        document.getElementById('btn-resolver-chat').style.display = (isAdminCheck === true) ? 'block' : 'none';
+        
+        await window.carregarMensagens();
+
+        if (chatSubscription) sb.removeChannel(chatSubscription);
+        chatSubscription = sb.channel('chat-' + id)
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => {
+                window.carregarMensagens();
+            }).subscribe();
+    };
+
+    window.carregarMensagens = async function() {
+        if(!ticketAtualChatId) return;
+        const chatBox = document.getElementById('chat-mensagens');
+        const { data } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
+        
+        if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; } 
+        else {
+            chatBox.innerHTML = data.map(m => {
+                const isLider = m.autor.includes("Líder"); 
+                const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                return `
+                    <div class="msg-card ${isLider ? 'admin' : ''}">
+                        <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
+                        <div class="msg-content">
+                            <div class="msg-header"><span class="msg-nome">${m.autor}</span><span class="msg-tag">${isLider ? 'LIDERANÇA' : 'MEMBRO'}</span><span class="msg-hora">${hora}</span></div>
+                            <div class="msg-body">${m.mensagem || ''}</div>
+                        </div>
+                    </div>`;
+            }).join('');
+        }
+        setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
+    };
+
+    window.enviarMensagemChat = async function() {
+        const input = document.getElementById('input-chat-msg'); const texto = input.value.trim();
+        if(!texto || !ticketAtualChatId) return;
+        const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte');
+        const { data: isAdminCheck } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        const autor = isAdminCheck === true ? `Líder (${nomeEu})` : "Jogador";
+        input.value = ""; 
+        await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
+    };
+
+    window.resolverTicketChat = async function() {
+        if(!confirm("Finalizar atendimento?")) return;
+        await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+        window.voltarParaListaTickets();
+    };
+
+    document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
+</script>
+                                                                                    <!-- JANELA DE FREQUÊNCIA -->
+<div class="fundo-modal" id="modalFrequencia" onclick="if(event.target === this) document.getElementById('modalFrequencia').classList.remove('aberto')">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Frequência</h3>
+            <button class="lista-fechar" onclick="document.getElementById('modalFrequencia').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-calendar-day" style="color:#60a5fa;"></i>
+            <input type="date" id="freqData" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark;" onchange="window.carregarFrequencia()">
+        </div>
+
+        <div class="fq-resumo" id="fqResumo" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+            <div class="fq-card p" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoP" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Presenças</span></div>
+            <div class="fq-card f" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoF" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Faltas</span></div>
+            <div class="fq-card j" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoJ" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Justificativas</span></div>
+        </div>
+
+        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-search" style="color:#60a5fa;"></i>
+            <input type="text" id="freqBusca" placeholder="Buscar membro..." oninput="window.filtrarFrequencia()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
+        </div>
+
+        <div id="freqCorpo" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="text-align:center; padding:20px; color:#64748b;">Carregando membros...</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let listaFrequenciaAtual = [];
+
+    window.abrirFrequencia = function() {
+        document.getElementById('modalFrequencia').classList.add('aberto');
+        const hoje = new Date().toLocaleDateString('en-CA');
+        document.getElementById('freqData').value = hoje;
+        document.getElementById('freqBusca').value = '';
+        window.carregarFrequencia();
+    };
+
+    window.carregarFrequencia = async function() {
+        const dataSel = document.getElementById('freqData').value;
+        const corpo = document.getElementById('freqCorpo');
+        const passLogado = localStorage.getItem('passaporte');
+
+        if (!dataSel) return;
+        corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando dados...</div>';
+
+        const { data: membros } = await sb.from('membros').select('nome, passaporte');
+        const { data: presencas } = await sb.from('presencas').select('*').eq('data', dataSel);
+        
+        const inicioDia = `${dataSel}T00:00:00.000Z`;
+        const fimDia = `${dataSel}T23:59:59.999Z`;
+        const { data: pontosDia } = await sb.from('pontos').select('passaporte, entrada').gte('entrada', inicioDia).lte('entrada', fimDia);
+
+        const mapaPresencas = {};
+        (presencas || []).forEach(p => mapaPresencas[String(p.passaporte)] = p.status);
+
+        const mapaPontos = new Set();
+        (pontosDia || []).forEach(p => mapaPontos.add(String(p.passaporte)));
+
+        listaFrequenciaAtual = (membros || []).map(m => {
+            let status = mapaPresencas[String(m.passaporte)];
+            if (!status && mapaPontos.has(String(m.passaporte))) { status = 'P'; }
+            return { ...m, status: status || null };
+        }).sort((a, b) => a.nome.localeCompare(b.nome));
+
+        window.renderizarFrequencia();
+    };
+
+    window.filtrarFrequencia = function() {
+        const termo = document.getElementById('freqBusca').value.toLowerCase();
+        document.querySelectorAll('.fq-item').forEach(item => {
+            const nome = item.querySelector('.fq-item-nome').innerText.toLowerCase();
+            item.style.display = nome.includes(termo) ? 'flex' : 'none';
         });
     };
-   </script> 
+
+    window.renderizarFrequencia = function() {
+        const corpo = document.getElementById('freqCorpo');
+        let qtdP = 0, qtdF = 0, qtdJ = 0;
+
+        if (listaFrequenciaAtual.length === 0) {
+            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro.</div>';
+            return;
+        }
+
+        corpo.innerHTML = listaFrequenciaAtual.map(m => {
+            if (m.status === 'P') qtdP++;
+            if (m.status === 'F') qtdF++;
+            if (m.status === 'J') qtdJ++;
+
+            let acoes = '';
+            if (isAdmin) {
+                acoes = `
+                <div style="display:flex; gap: 6px;">
+                    <button class="fq-btn ${m.status === 'P' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'P')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.4); background: ${m.status === 'P' ? '#22c55e' : 'transparent'}; color: ${m.status === 'P' ? '#000' : '#22c55e'}; font-weight: bold; cursor: pointer;">P</button>
+                    <button class="fq-btn ${m.status === 'F' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'F')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4); background: ${m.status === 'F' ? '#ef4444' : 'transparent'}; color: ${m.status === 'F' ? '#fff' : '#ef4444'}; font-weight: bold; cursor: pointer;">F</button>
+                    <button class="fq-btn ${m.status === 'J' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'J')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.4); background: ${m.status === 'J' ? '#f59e0b' : 'transparent'}; color: ${m.status === 'J' ? '#000' : '#f59e0b'}; font-weight: bold; cursor: pointer;">J</button>
+                </div>`;
+            } else {
+                const tag = m.status === 'P' ? '<span style="color:#22c55e; font-weight:bold;">PRESENÇA</span>' : m.status === 'F' ? '<span style="color:#ef4444; font-weight:bold;">FALTA</span>' : m.status === 'J' ? '<span style="color:#f59e0b; font-weight:bold;">JUSTIFICADO</span>' : '<span style="color:#64748b;">-</span>';
+                acoes = tag;
+            }
+
+            return `
+            <div class="fq-item" style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div class="fq-item-info" style="display: flex; flex-direction: column; gap: 2px;">
+                    <div class="fq-item-nome" style="font-size: 14px; font-weight: 600; color: #fff;">${m.nome}</div>
+                    <div class="fq-item-pass" style="font-size: 11px; color: #94a3b8;">Pass: ${m.passaporte}</div>
+                </div>
+                ${acoes}
+            </div>`;
+        }).join('');
+
+        document.getElementById('resumoP').innerText = qtdP;
+        document.getElementById('resumoF').innerText = qtdF;
+        document.getElementById('resumoJ').innerText = qtdJ;
+
+        if(document.getElementById('freqBusca').value) window.filtrarFrequencia();
+    };
+
+    window.marcarPresenca = async function(passAlvo, novoStatus) {
+        const dataSel = document.getElementById('freqData').value;
+        const membro = listaFrequenciaAtual.find(m => String(m.passaporte) === String(passAlvo));
+        const statusFinal = (membro.status === novoStatus) ? null : novoStatus;
+        membro.status = statusFinal;
+        window.renderizarFrequencia();
+
+        if (statusFinal === null) {
+            await sb.from('presencas').delete().eq('passaporte', passAlvo).eq('data', dataSel);
+        } else {
+            const { data: existe } = await sb.from('presencas').select('id').eq('passaporte', passAlvo).eq('data', dataSel).single();
+            if (existe) await sb.from('presencas').update({ status: statusFinal }).eq('id', existe.id);
+            else await sb.from('presencas').insert([{ passaporte: passAlvo, data: dataSel, status: statusFinal }]);
+        }
+    };
+</script>
 </body>
 </html>
