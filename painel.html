@@ -1716,5 +1716,10 @@
     window.acaoDarXp = window.darXP; // Aponta as duas funções para o mesmo modal
     window.acaoAdvertir = function(passAlvo, nomeAlvo) { window.abrirModalAcao('advertencia', passAlvo, nomeAlvo, () => { if(typeof window.carregarMembrosAtivos === 'function') window.carregarMembrosAtivos(); if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros(); }); };
 </script>
+    <script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js');
+  }
+    </script>
 </body>
 </html>
