@@ -823,5 +823,58 @@ document.addEventListener("DOMContentLoaded", () => {
         if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
     }
 </script>
+    <script>
+    // ========== CORREÇÃO DEFINITIVA DA GAVETA (METAS 1500, 6000, 15000) ==========
+    window.abrirGaveta = async function() {
+        document.getElementById('fundoGaveta').classList.add('aberto'); 
+        document.getElementById('gavetaPerfil').classList.add('aberta');
+        
+        // Força o nome "Meu Perfil"
+        const titulo = document.querySelector('#gavetaPerfil .gaveta-topo h3');
+        if(titulo) titulo.innerText = "Meu Perfil";
+
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+
+        const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', pass).single();
+
+        if (data) {
+            const xpAtual = data.xp_total || 0;
+            
+            // MATEMÁTICA AJUSTADA AQUI
+            let xpTotal = 1500;
+            let proximoNivel = "Executor";
+
+            if (xpAtual >= 1500 && xpAtual < 6000) {
+                xpTotal = 6000;
+                proximoNivel = "Raiz";
+            } else if (xpAtual >= 6000) {
+                xpTotal = 15000;
+                proximoNivel = "Vigia";
+            }
+
+            document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
+            document.getElementById('gavetaProximoNivel').textContent = proximoNivel;
+            
+            const elBarra = document.getElementById('gavetaXpBarra');
+            const elTexto = document.getElementById('gavetaXpTexto');
+
+            if (xpAtual < 0) {
+                elTexto.style.color = "#ef4444";
+                elBarra.style.width = `0%`;
+            } else {
+                elTexto.style.color = "#cbd5e1";
+                let porcentagem = (xpAtual / xpTotal) * 100;
+                if (porcentagem > 100) porcentagem = 100;
+                elBarra.style.width = `${porcentagem}%`;
+            }
+        }
+    };
+
+    window.fecharGaveta = function() {
+        document.getElementById('fundoGaveta').classList.remove('aberto'); 
+        document.getElementById('gavetaPerfil').classList.remove('aberta');
+    }
+    </script>
 </body>
 </html>
