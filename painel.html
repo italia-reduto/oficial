@@ -744,6 +744,67 @@
     };
 
     document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
+        <!-- JANELA GERENCIAR MEMBROS -->
+<div class="fundo-modal" id="modalGerenciar" onclick="if(event.target === this) document.getElementById('modalGerenciar').classList.remove('aberto')">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Gerenciar Membros</h3>
+            <button class="lista-fechar" onclick="document.getElementById('modalGerenciar').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-search" style="color:#60a5fa;"></i>
+            <input type="text" id="buscaTodos" placeholder="Buscar por nome ou passaporte..." oninput="window.filtrarTodosMembros()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
+        </div>
+        <div id="listaTodosMembros" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE AÇÃO (XP / ADVERTÊNCIA) -->
+<div class="fundo-modal" id="modalAcao" onclick="if(event.target === this) fecharModalAcao()">
+    <div class="caixa-modal" style="max-width: 360px; padding: 24px;">
+        <h3 id="acao-titulo" style="font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff; text-align: center;">Ação</h3>
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px; text-align: center;">Membro: <b id="acao-nome-alvo" style="color:#60a5fa;">---</b></p>
+        <div id="campo-quantidade-box">
+            <input type="number" id="acao-quantidade" placeholder="Quantidade de XP" value="50" min="1" style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none;">
+        </div>
+        <input type="text" id="acao-motivo" placeholder="Digite o motivo..." value="" style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none;">
+        <div class="botoes-modal">
+            <button class="botao-cancelar" onclick="fecharModalAcao()">Cancelar</button>
+            <button class="botao-confirmar" id="btn-acao-confirmar" onclick="confirmarAcao()">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<!-- JANELA DE FREQUÊNCIA -->
+<div class="fundo-modal" id="modalFrequencia" onclick="if(event.target === this) document.getElementById('modalFrequencia').classList.remove('aberto')">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;">
+        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Frequência</h3>
+            <button class="lista-fechar" onclick="document.getElementById('modalFrequencia').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-calendar-day" style="color:#60a5fa;"></i>
+            <input type="date" id="freqData" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark;" onchange="carregarFrequencia()">
+        </div>
+        <div class="fq-resumo" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px;">
+            <div class="fq-card p" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoP" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Presenças</span></div>
+            <div class="fq-card f" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoF" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Faltas</span></div>
+            <div class="fq-card j" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoJ" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Justificativas</span></div>
+        </div>
+        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+            <i class="fas fa-search" style="color:#60a5fa;"></i>
+            <input type="text" id="freqBusca" placeholder="Buscar membro..." oninput="filtrarFrequencia()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
+        </div>
+        <div id="freqCorpo" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
+            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
+        </div>
+        <div class="fq-legenda" id="fqLegenda" style="display: none; font-size: 10px; color: #64748b; text-align: center; margin-top: 10px;">
+            <i class="fas fa-info-circle"></i> P: +50 XP | J: +10 XP | F: -200 XP e Bloqueio
+        </div>
+    </div>
+</div>
 </script>
 </body>
 </html>
