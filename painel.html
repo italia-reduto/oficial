@@ -283,183 +283,351 @@
         </div>
     </div>
 </div>
-<script>
-// RELÓGIO
-function atualizarRelogio() {
-    const agora = new Date(); const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
-    document.getElementById('horaAtual').textContent = `${String(brasilia.getHours()).padStart(2, '0')}:${String(brasilia.getMinutes()).padStart(2, '0')}:${String(brasilia.getSeconds()).padStart(2, '0')}`;
-    document.getElementById('dataAtual').textContent = `${String(brasilia.getDate()).padStart(2, '0')}/${String(brasilia.getMonth() + 1).padStart(2, '0')}/${brasilia.getFullYear()}`;
-}
-atualizarRelogio(); setInterval(atualizarRelogio, 1000);
-
-// GAVETA
-function abrirGaveta() {
-    document.getElementById('fundoGaveta').classList.add('aberto'); document.getElementById('gavetaPerfil').classList.add('aberta');
-    setTimeout(() => { document.getElementById('gavetaXpBarra').style.width = `65%`; }, 100); // XP de exemplo
-}
-function fecharGaveta() {
-    document.getElementById('fundoGaveta').classList.remove('aberto'); document.getElementById('gavetaPerfil').classList.remove('aberta');
-}
-
-// DADOS DO USUÁRIO
-async function carregarDadosUsuario() {
-    const pass = localStorage.getItem('passaporte');
-    if (!pass) { window.location.href = 'login.html'; return; }
-    const { data } = await sb.from('membros').select('nome, passaporte, cargo, foto_url').eq('passaporte', pass).single();
-    if (data) {
-        document.getElementById('nomeUsuario').textContent = data.nome || 'Membro'; document.getElementById('passaporteUsuario').textContent = data.passaporte; document.getElementById('cargoUsuario').textContent = data.cargo || '—';
-        document.getElementById('gavetaNome').textContent = data.nome || 'Membro'; document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo'; document.getElementById('gavetaPassaporte').textContent = data.passaporte;
-        const fotoFinal = data.foto_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
-        document.getElementById('img-avatar-mini').src = fotoFinal; document.getElementById('img-avatar-gaveta').src = fotoFinal;
+    <script>
+    // ========== RELÓGIO ==========
+    function atualizarRelogio() {
+        const agora = new Date(); const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+        document.getElementById('horaAtual').textContent = `${String(brasilia.getHours()).padStart(2, '0')}:${String(brasilia.getMinutes()).padStart(2, '0')}:${String(brasilia.getSeconds()).padStart(2, '0')}`;
+        document.getElementById('dataAtual').textContent = `${String(brasilia.getDate()).padStart(2, '0')}/${String(brasilia.getMonth() + 1).padStart(2, '0')}/${brasilia.getFullYear()}`;
     }
-}
-carregarDadosUsuario();
+    atualizarRelogio(); setInterval(atualizarRelogio, 1000);
 
-// EDITAR PERFIL
-let fotoBase64Temp = "";
-function abrirModalEditarPerfil() { document.getElementById('modalPerfil').classList.add('aberto'); }
-function fecharModalPerfil() { document.getElementById('modalPerfil').classList.remove('aberto'); }
-document.getElementById('input-foto-arquivo').addEventListener('change', function(event) {
-    const reader = new FileReader(); reader.onload = function(e) { fotoBase64Temp = e.target.result; }; reader.readAsDataURL(event.target.files[0]);
-});
-async function salvarPerfil() {
-    const pass = localStorage.getItem('passaporte'); const frase = document.getElementById('input-frase').value;
-    await sb.from('membros').update({ foto_url: fotoBase64Temp, frase_status: frase }).eq('passaporte', pass);
-    if(fotoBase64Temp) { document.getElementById('img-avatar-mini').src = fotoBase64Temp; document.getElementById('img-avatar-gaveta').src = fotoBase64Temp; }
-    fecharModalPerfil(); alert("Perfil atualizado!");
-}
+    // ========== GAVETA ==========
+    window.abrirGaveta = async function() {
+        document.getElementById('fundoGaveta').classList.add('aberto'); 
+        document.getElementById('gavetaPerfil').classList.add('aberta');
+        
+        const titulo = document.querySelector('#gavetaPerfil .gaveta-topo h3');
+        if(titulo) titulo.innerText = "Meu Perfil";
 
-// SAIR
-function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
-function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
-function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
-</script>
-<script>
-// ========== MEMBROS ATIVOS (MEGA AJUSTE) ==========
-let souAdminMembros = false;
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
 
-function abrirListaMembros() {
-    document.getElementById('modalMembros').classList.add('aberto');
-    carregarMembrosAtivos();
-}
-function fecharListaMembros() { document.getElementById('modalMembros').classList.remove('aberto'); }
+        const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', pass).single();
 
-async function carregarMembrosAtivos() {
-    const lista = document.getElementById('listaMembros');
-    const passLogado = localStorage.getItem('passaporte');
-    lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        if (data) {
+            const xpAtual = data.xp_total || 0;
+            
+            let xpTotal = 1500;
+            let proximoNivel = "Executor";
 
-    const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-    souAdminMembros = (checkAdmin === true);
+            if (xpAtual >= 1500 && xpAtual < 6000) { xpTotal = 6000; proximoNivel = "Raiz"; } 
+            else if (xpAtual >= 6000) { xpTotal = 15000; proximoNivel = "Vigia"; }
 
-    const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome').is('saida', null);
-    if (error) { lista.innerHTML = '<div style="text-align:center; color:red;">Erro.</div>'; return; }
-    
-    document.getElementById('membrosAtivos').textContent = ativos.length;
-    if (ativos.length === 0) { lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>'; return; }
+            document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
+            document.getElementById('gavetaProximoNivel').textContent = proximoNivel;
+            
+            const elBarra = document.getElementById('gavetaXpBarra');
+            const elTexto = document.getElementById('gavetaXpTexto');
 
-    lista.innerHTML = ativos.map(m => {
-        let botoes = '';
-        if (souAdminMembros) {
-            botoes = `
-                <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
-                    <button onclick="adminAcaoPonto('${m.passaporte}', 'pausar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold;"><i class="fas fa-pause"></i> Pausar</button>
-                    <button onclick="adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold;"><i class="fas fa-stop"></i> Encerrar</button>
-                </div>`;
+            if (xpAtual < 0) {
+                elTexto.style.color = "#ef4444"; elBarra.style.width = `0%`;
+            } else {
+                elTexto.style.color = "#cbd5e1";
+                let porcentagem = (xpAtual / xpTotal) * 100;
+                if (porcentagem > 100) porcentagem = 100;
+                elBarra.style.width = `${porcentagem}%`;
+            }
         }
-        return `
-        <div class="card-membro">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                <span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>
-            </div>
-            <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">Passaporte: ${m.passaporte}</div>
-            ${botoes}
-        </div>`;
-    }).join('');
-}
+    };
+    window.fecharGaveta = function() {
+        document.getElementById('fundoGaveta').classList.remove('aberto'); document.getElementById('gavetaPerfil').classList.remove('aberta');
+    }
 
-async function adminAcaoPonto(passAlvo, acao) {
-    if (!confirm(`Deseja ${acao} o ponto do passaporte ${passAlvo}?`)) return;
-    const agora = new Date().toISOString();
-    let updateData = {};
-    if (acao === 'pausar') updateData = { pausa_inicio: agora };
-    if (acao === 'encerrar') updateData = { saida: agora };
-    const { error } = await sb.from('pontos').update(updateData).eq('passaporte', passAlvo).is('saida', null);
-    if (error) alert("Erro ao executar ação.");
-    else { alert("Ação executada!"); carregarMembrosAtivos(); }
-}
+    // ========== DADOS DO USUÁRIO ==========
+    async function carregarDadosUsuario() {
+        const pass = localStorage.getItem('passaporte');
+        if (!pass) { window.location.href = 'login.html'; return; }
+        const { data } = await sb.from('membros').select('nome, passaporte, cargo, foto_url').eq('passaporte', pass).single();
+        if (data) {
+            document.getElementById('nomeUsuario').textContent = data.nome || 'Membro'; 
+            document.getElementById('passaporteUsuario').textContent = data.passaporte; 
+            document.getElementById('cargoUsuario').textContent = data.cargo || '—';
+            document.getElementById('gavetaNome').textContent = data.nome || 'Membro'; 
+            document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo'; 
+            document.getElementById('gavetaPassaporte').textContent = data.passaporte;
+            const fotoFinal = data.foto_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
+            document.getElementById('img-avatar-mini').src = fotoFinal; document.getElementById('img-avatar-gaveta').src = fotoFinal;
+        }
+    }
+    carregarDadosUsuario();
 
-// ========== MURAL DE AVISOS ==========
-function abrirModalAviso() { document.getElementById('modalAviso').classList.add('aberto'); }
-function fecharModalAviso() { document.getElementById('modalAviso').classList.remove('aberto'); }
-
-async function carregarAvisoRecente() {
-    const { data } = await sb.from('avisos').select('texto').order('criado_em', { ascending: false }).limit(1).single();
-    if (data) document.getElementById('texto-aviso').textContent = data.texto;
-}
-async function salvarAviso() {
-    const texto = document.getElementById('input-aviso').value;
-    await sb.from('avisos').insert([{ texto: texto, autor: document.getElementById('nomeUsuario').textContent }]);
-    fecharModalAviso(); carregarAvisoRecente();
-}
-async function verificarPermissaoAviso() {
-    const pass = localStorage.getItem('passaporte');
-    const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-    if(data === true) document.getElementById('btn-editar-aviso').style.display = 'inline-block';
-}
-
-// PLACEHOLDERS DE FREQUÊNCIA E FALTAS (Para não dar erro na tela)
-function abrirFrequencia() { alert("Módulo de Frequência em breve."); }
-function abrirModalFaltas() { alert("Módulo de Faltas em breve."); }
-
-// Iniciar
-document.addEventListener("DOMContentLoaded", () => {
-    carregarAvisoRecente(); verificarPermissaoAviso();
-    setInterval(carregarAvisoRecente, 30000);
-    // Atualiza contador de membros ao abrir
-    sb.from('pontos').select('*', { count: 'exact', head: true }).is('saida', null).then(({ count }) => {
-        document.getElementById('membrosAtivos').textContent = count || 0;
+    // ========== EDITAR PERFIL ==========
+    let fotoBase64Temp = "";
+    function abrirModalEditarPerfil() { document.getElementById('modalPerfil').classList.add('aberto'); }
+    function fecharModalPerfil() { document.getElementById('modalPerfil').classList.remove('aberto'); }
+    document.getElementById('input-foto-arquivo').addEventListener('change', function(event) {
+        const reader = new FileReader(); reader.onload = function(e) { fotoBase64Temp = e.target.result; }; reader.readAsDataURL(event.target.files[0]);
     });
-});
-</script>
+    async function salvarPerfil() {
+        const pass = localStorage.getItem('passaporte'); const frase = document.getElementById('input-frase').value;
+        let updateData = { frase_status: frase };
+        if (fotoBase64Temp && fotoBase64Temp.length > 10) updateData.foto_url = fotoBase64Temp;
+        await sb.from('membros').update(updateData).eq('passaporte', pass);
+        if(updateData.foto_url) { 
+            document.getElementById('img-avatar-mini').src = updateData.foto_url; document.getElementById('img-avatar-gaveta').src = updateData.foto_url; 
+        }
+        fecharModalPerfil(); if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Perfil atualizado!", "sucesso");
+    }
+
+    // ========== SAIR ==========
+    function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
+    function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
+    function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
+
+    // ========== AVISOS ==========
+    function abrirModalAviso() { document.getElementById('modalAviso').classList.add('aberto'); }
+    function fecharModalAviso() { document.getElementById('modalAviso').classList.remove('aberto'); }
+    async function carregarAvisoRecente() {
+        const { data } = await sb.from('avisos').select('texto').order('criado_em', { ascending: false }).limit(1).single();
+        if (data) document.getElementById('texto-aviso').textContent = data.texto;
+    }
+    async function salvarAviso() {
+        const texto = document.getElementById('input-aviso').value;
+        await sb.from('avisos').insert([{ texto: texto, autor: document.getElementById('nomeUsuario').textContent }]);
+        fecharModalAviso(); carregarAvisoRecente();
+    }
+    carregarAvisoRecente(); setInterval(carregarAvisoRecente, 30000);
+    </script>
+    <script>
+    // ========== VERIFICAÇÃO DE ADMIN E CRIAÇÃO DO CARD ==========
+    let souAdminMembros = false;
+    let listaTodosMembrosGlobal = [];
+    window.tipoAcaoAtual = null; window.passAlvoAtual = null; window.funcaoPosAcao = null;
+
+    document.addEventListener("DOMContentLoaded", async () => {
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+        
+        const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
+        if (data === true) { 
+            document.getElementById('btn-editar-aviso').style.display = 'inline-block';
+            souAdminMembros = true;
+            
+            const grade = document.querySelector('.grade-cards');
+            const cardAviso = document.querySelector('.card-aviso'); 
+            if (grade && cardAviso && !document.getElementById('cardGerencia')) {
+                const cardAdmin = document.createElement('div');
+                cardAdmin.id = 'cardGerencia';
+                cardAdmin.className = 'card card-clicavel';
+                cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
+                cardAdmin.innerHTML = `
+                    <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
+                    <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
+                    <div class="card-dica">Toque para gerenciar XP e punições</div>
+                `;
+                cardAdmin.onclick = () => {
+                    document.getElementById('modalGerenciar').classList.add('aberto');
+                    window.carregarTodosMembros();
+                };
+                grade.insertBefore(cardAdmin, cardAviso);
+            }
+        }
+    });
+
+    // ========== MODAL DE AÇÃO (XP / ADVERTÊNCIA) ==========
+    window.abrirModalAcao = function(tipo, passAlvo, nomeAlvo, callback) {
+        window.tipoAcaoAtual = tipo; window.passAlvoAtual = passAlvo; window.funcaoPosAcao = callback;
+        const titulo = document.getElementById('acao-titulo');
+        const boxQtd = document.getElementById('campo-quantidade-box');
+        const btn = document.getElementById('btn-acao-confirmar');
+
+        document.getElementById('acao-nome-alvo').innerText = nomeAlvo;
+        btn.disabled = false; btn.innerText = "Confirmar";
+
+        if (tipo === 'xp') {
+            titulo.innerText = "Enviar Recompensa (XP)"; boxQtd.style.display = 'block';
+            document.getElementById('acao-quantidade').value = "50"; document.getElementById('acao-motivo').value = "Ato de bravura";
+            btn.style.background = "linear-gradient(135deg, #3b82f6, #2563eb)";
+        } else if (tipo === 'tirar_xp') {
+            titulo.innerText = "Tirar XP (Punição)"; boxQtd.style.display = 'block';
+            document.getElementById('acao-quantidade').value = "200"; document.getElementById('acao-motivo').value = "Punição aplicada";
+            btn.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
+        } else if (tipo === 'advertencia') {
+            titulo.innerText = "Aplicar Advertência"; boxQtd.style.display = 'none'; 
+            document.getElementById('acao-motivo').value = "Quebra de regras"; btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
+        } else if (tipo === 'retirar_advertencia') {
+            titulo.innerText = "Retirar Advertência"; boxQtd.style.display = 'none'; 
+            document.getElementById('acao-motivo').value = "Bom comportamento"; btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
+        }
+        document.getElementById('modalAcao').classList.add('aberto');
+    };
+    window.fecharModalAcao = function() { document.getElementById('modalAcao').classList.remove('aberto'); };
+
+    window.confirmarAcao = async function() {
+        const btn = document.getElementById('btn-acao-confirmar');
+        btn.innerText = "Processando..."; btn.disabled = true;
+
+        if (window.tipoAcaoAtual === 'xp') {
+            const qtd = parseInt(document.getElementById('acao-quantidade').value);
+            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
+            if (data) await sb.from('membros').update({ xp_total: (data.xp_total || 0) + qtd }).eq('passaporte', window.passAlvoAtual);
+        } else if (window.tipoAcaoAtual === 'tirar_xp') {
+            const qtd = parseInt(document.getElementById('acao-quantidade').value);
+            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
+            if (data) await sb.from('membros').update({ xp_total: (data.xp_total || 0) - qtd }).eq('passaporte', window.passAlvoAtual);
+        } else if (window.tipoAcaoAtual === 'advertencia') {
+            const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', window.passAlvoAtual).single();
+            if (data) await sb.from('membros').update({ xp_total: Math.floor((data.xp_total || 0) * 0.8), advertencias: (data.advertencias || 0) + 1 }).eq('passaporte', window.passAlvoAtual);
+        } else if (window.tipoAcaoAtual === 'retirar_advertencia') {
+            const { data } = await sb.from('membros').select('advertencias').eq('passaporte', window.passAlvoAtual).single();
+            if (data && data.advertencias > 0) await sb.from('membros').update({ advertencias: data.advertencias - 1 }).eq('passaporte', window.passAlvoAtual);
+        }
+
+        if(localStorage.getItem('passaporte') === window.passAlvoAtual) window.abrirGaveta();
+        if(typeof window.funcaoPosAcao === 'function') window.funcaoPosAcao();
+        window.fecharModalAcao();
+    };
+    </script>
+    <script>
+    // ========== MÓDULO DE FREQUÊNCIA ==========
+    let listaFrequenciaAtual = [];
+    
+    window.abrirFrequencia = function() {
+        document.getElementById('modalFrequencia').classList.add('aberto');
+        const hoje = new Date().toLocaleDateString('en-CA');
+        document.getElementById('freqData').value = hoje;
+        document.getElementById('freqBusca').value = '';
+        window.carregarFrequencia();
+    };
+
+    window.carregarFrequencia = async function() {
+        const dataSel = document.getElementById('freqData').value;
+        const corpo = document.getElementById('freqCorpo');
+        const passLogado = localStorage.getItem('passaporte');
+
+        if (!dataSel) return;
+        corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando dados...</div>';
+
+        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
+        const ehLider = isAdmin === true;
+
+        const { data: membros } = await sb.from('membros').select('nome, passaporte');
+        const { data: presencas } = await sb.from('presencas').select('*').eq('data', dataSel);
+        
+        const inicioDia = `${dataSel}T00:00:00.000Z`;
+        const fimDia = `${dataSel}T23:59:59.999Z`;
+        const { data: pontosDia } = await sb.from('pontos').select('passaporte, entrada').gte('entrada', inicioDia).lte('entrada', fimDia);
+
+        const mapaPresencas = {};
+        (presencas || []).forEach(p => mapaPresencas[String(p.passaporte)] = p.status);
+        const mapaPontos = new Set();
+        (pontosDia || []).forEach(p => mapaPontos.add(String(p.passaporte)));
+
+        listaFrequenciaAtual = (membros || []).map(m => {
+            let status = mapaPresencas[String(m.passaporte)];
+            // Se não tem status, mas bateu ponto, já marca como Presença
+            if (!status && mapaPontos.has(String(m.passaporte))) status = 'P';
+            return { ...m, status: status || null };
+        }).sort((a, b) => a.nome.localeCompare(b.nome));
+
+        window.renderizarFrequencia(ehLider);
+    };
+
+    window.renderizarFrequencia = function(ehLider) {
+        const corpo = document.getElementById('freqCorpo');
+        const legenda = document.getElementById('fqLegenda');
+        let qtdP = 0, qtdF = 0, qtdJ = 0;
+
+        if (listaFrequenciaAtual.length === 0) { 
+            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro.</div>'; 
+            return; 
+        }
+
+        corpo.innerHTML = listaFrequenciaAtual.map(m => {
+            if (m.status === 'P') qtdP++; if (m.status === 'F') qtdF++; if (m.status === 'J') qtdJ++;
+            let acoes = '';
+            
+            if (ehLider) {
+                acoes = `
+                <div class="fq-botoes">
+                    <button class="fq-btn P ${m.status === 'P' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'P')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.4); background: ${m.status === 'P' ? '#22c55e' : 'transparent'}; color: ${m.status === 'P' ? '#000' : '#22c55e'}; font-weight: bold; cursor: pointer;">P</button>
+                    <button class="fq-btn F ${m.status === 'F' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'F')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4); background: ${m.status === 'F' ? '#ef4444' : 'transparent'}; color: ${m.status === 'F' ? '#fff' : '#ef4444'}; font-weight: bold; cursor: pointer;">F</button>
+                    <button class="fq-btn J ${m.status === 'J' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'J')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.4); background: ${m.status === 'J' ? '#f59e0b' : 'transparent'}; color: ${m.status === 'J' ? '#000' : '#f59e0b'}; font-weight: bold; cursor: pointer;">J</button>
+                </div>`;
+            } else {
+                const tag = m.status === 'P' ? '<span style="color:#22c55e; font-weight:bold;">PRESENÇA</span>' : m.status === 'F' ? '<span style="color:#ef4444; font-weight:bold;">FALTA</span>' : m.status === 'J' ? '<span style="color:#f59e0b; font-weight:bold;">JUSTIFICADO</span>' : '<span style="color:#64748b;">-</span>';
+                acoes = tag;
+            }
+            
+            return `
+            <div class="fq-item" style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                <div class="fq-item-info" style="display: flex; flex-direction: column; gap: 2px;">
+                    <div class="fq-item-nome" style="font-size: 14px; font-weight: 600; color: #fff;">${m.nome}</div>
+                    <div class="fq-item-pass" style="font-size: 11px; color: #94a3b8;">Pass: ${m.passaporte}</div>
+                </div>
+                ${acoes}
+            </div>`;
+        }).join('');
+
+        document.getElementById('resumoP').innerText = qtdP;
+        document.getElementById('resumoF').innerText = qtdF;
+        document.getElementById('resumoJ').innerText = qtdJ;
+        if(ehLider) legenda.style.display = 'block';
+    };
+
+    window.marcarPresenca = async function(passAlvo, novoStatus) {
+        const dataSel = document.getElementById('freqData').value;
+        const membro = listaFrequenciaAtual.find(m => String(m.passaporte) === String(passAlvo));
+        const statusFinal = (membro.status === novoStatus) ? null : novoStatus; // Clicar no mesmo botão desmarca
+        membro.status = statusFinal;
+        window.renderizarFrequencia(true);
+
+        if (statusFinal === null) {
+            await sb.from('presencas').delete().eq('passaporte', passAlvo).eq('data', dataSel);
+        } else {
+            const { data: existe } = await sb.from('presencas').select('id').eq('passaporte', passAlvo).eq('data', dataSel).single();
+            if (existe) await sb.from('presencas').update({ status: statusFinal }).eq('id', existe.id);
+            else await sb.from('presencas').insert([{ passaporte: passAlvo, data: dataSel, status: statusFinal }]);
+        }
+    };
+    </script>
     <script>
     // ========== SISTEMA DE SUPORTE ==========
     let categoriaSelecionada = null;
     let ticketAtualChatId = null;
     let chatSubscription = null; 
 
-    function abrirModalTickets() {
+    window.abrirModalTickets = function() {
         document.getElementById('modalTickets').classList.add('aberto');
-        voltarParaListaTickets();
+        window.voltarParaListaTickets();
         document.getElementById('input-ticket').value = '';
         categoriaSelecionada = null;
         document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
         document.getElementById('div-descricao').style.display = 'none';
-        carregarTickets();
-    }
-    function fecharModalTickets() { document.getElementById('modalTickets').classList.remove('aberto'); }
+        window.carregarTickets();
+    };
+    window.fecharModalTickets = function() { document.getElementById('modalTickets').classList.remove('aberto'); };
     
-    function selecionarCategoria(cat) {
-        if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } 
-        else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; }
+    window.selecionarCategoria = function(cat) {
+        if (categoriaSelecionada === cat) { 
+            categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; 
+        } else { 
+            categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; 
+        }
         document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-        if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } }
-    }
+        if (categoriaSelecionada) { 
+            const btn = document.getElementById('btn-cat-' + categoriaSelecionada); 
+            if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } 
+        }
+    };
 
-    async function criarTicket() {
+    window.criarTicket = async function() {
         const texto = document.getElementById('input-ticket').value;
         const pass = localStorage.getItem('passaporte');
         const nome = document.getElementById('nomeUsuario').textContent;
         if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
+        
         const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
         await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
+        
         document.getElementById('tela-abertura-ticket').style.display = 'none';
         document.getElementById('tela-espera-ticket').style.display = 'flex';
-        carregarTickets(); btn.innerText = "Enviar Ticket"; btn.disabled = false;
-    }
+        window.carregarTickets(); 
+        btn.innerText = "Enviar Ticket"; btn.disabled = false;
+    };
 
-    async function carregarTickets() {
+    window.carregarTickets = async function() {
         const corpo = document.getElementById('corpoTickets');
         const pass = localStorage.getItem('passaporte');
         const nomeEu = document.getElementById('nomeUsuario').textContent;
@@ -467,6 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
         const ehLider = isAdmin === true;
+        
         let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
         if (!ehLider) query = query.eq('passaporte', pass);
         
@@ -475,27 +644,33 @@ document.addEventListener("DOMContentLoaded", () => {
         if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
         
         corpo.innerHTML = data.map(t => {
-            const isAberto = t.status === 'aberto'; const isAtendimento = t.status === 'atendimento'; const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
+            const isAberto = t.status === 'aberto'; 
+            const isAtendimento = t.status === 'atendimento'; 
+            const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
             const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
+            
             return `
             <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div><span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span></div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div>
+                    <span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span>
+                </div>
                 <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>
                 ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}
                 <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
-                ${(ehLider && isAberto) ? `<button onclick="assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
-                ${podeAbrirChat ? `<button onclick="abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
+                ${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
+                ${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
             </div>`;
         }).join('');
-    }
+    };
 
-    async function assumirTicket(id) {
+    window.assumirTicket = async function(id) {
         const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
         await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
-        carregarTickets();
-    }
+        window.carregarTickets();
+    };
 
-    function voltarParaListaTickets() {
+    window.voltarParaListaTickets = function() {
         document.getElementById('tela-chat-ticket').style.display = 'none';
         document.getElementById('tela-lista-tickets').style.display = 'flex';
         document.getElementById('btn-resolver-chat').style.display = 'none';
@@ -503,10 +678,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('tela-abertura-ticket').style.display = 'flex';
         ticketAtualChatId = null;
         if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
-        carregarTickets();
-    }
+        window.carregarTickets();
+    };
 
-    async function abrirChatTicket(id, nomeAutor, passaporte) {
+    window.abrirChatTicket = async function(id, nomeAutor, passaporte) {
         ticketAtualChatId = id;
         document.getElementById('tela-lista-tickets').style.display = 'none';
         document.getElementById('tela-chat-ticket').style.display = 'flex';
@@ -518,23 +693,24 @@ document.addEventListener("DOMContentLoaded", () => {
         const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
         document.getElementById('btn-resolver-chat').style.display = (isAdmin === true) ? 'block' : 'none';
         
-        await carregarMensagens();
+        await window.carregarMensagens();
 
-        // TEMPO REAL ATIVADO
+        // Tempo real no chat
         if (chatSubscription) sb.removeChannel(chatSubscription);
         chatSubscription = sb.channel('chat-' + id)
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => {
-                carregarMensagens();
+                window.carregarMensagens();
             }).subscribe();
-    }
+    };
 
-    async function carregarMensagens() {
+    window.carregarMensagens = async function() {
         if(!ticketAtualChatId) return;
         const chatBox = document.getElementById('chat-mensagens');
         const { data } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
         
-        if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; } 
-        else {
+        if (data.length === 0) { 
+            chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; 
+        } else {
             chatBox.innerHTML = data.map(m => {
                 const isLider = m.autor.includes("Líder"); 
                 const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -549,9 +725,9 @@ document.addEventListener("DOMContentLoaded", () => {
             }).join('');
         }
         setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
-    }
+    };
 
-    async function enviarMensagemChat() {
+    window.enviarMensagemChat = async function() {
         const input = document.getElementById('input-chat-msg'); const texto = input.value.trim();
         if(!texto || !ticketAtualChatId) return;
         const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte');
@@ -559,322 +735,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
         input.value = ""; 
         await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
-    }
-
-    async function resolverTicketChat() {
-        if(!confirm("Finalizar atendimento?")) return;
-        await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
-        voltarParaListaTickets();
-    }
-
-    document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') enviarMensagemChat(); });
-    </script>
-        <!-- ========== ATUALIZAÇÃO DO CARD DE MEMBROS ========== -->
-<script>
-    window.carregarMembrosAtivos = async function() {
-        const lista = document.getElementById('listaMembros');
-        const passLogado = localStorage.getItem('passaporte');
-        if(!lista) return;
-        
-        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-
-        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        window.souAdminMembros = (checkAdmin === true);
-
-        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome, equipe_id, pausa_inicio, pausa_fim').is('saida', null);
-        const { data: equipes } = await sb.from('equipes').select('id, nome');
-        
-        if (error) {
-            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar membros.</div>';
-            return;
-        }
-
-        const equipesMap = {};
-        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
-
-        const agora = new Date();
-        let atualizouBanco = false;
-
-        for (let m of ativos) {
-            if (m.pausa_inicio && !m.pausa_fim) {
-                const inicioPausa = new Date(m.pausa_inicio);
-                const minutosPausado = (agora - inicioPausa) / 1000 / 60;
-                
-                if (minutosPausado >= 30) {
-                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
-                    atualizouBanco = true;
-                }
-            }
-        }
-
-        if(atualizouBanco) {
-            return window.carregarMembrosAtivos();
-        }
-
-        document.getElementById('membrosAtivos').textContent = ativos.length;
-
-        if (ativos.length === 0) {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
-            return;
-        }
-
-        lista.innerHTML = ativos.map(m => {
-            let botoes = '';
-            const isPausado = (m.pausa_inicio && !m.pausa_fim);
-
-            if (window.souAdminMembros) {
-                botoes = `
-                    <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:12px; font-weight:bold; cursor:pointer;">
-                            <i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}
-                        </button>
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
-                    </div>
-                `;
-            }
-
-            let timerPausa = '';
-            let tagPausa = '';
-            if (isPausado) {
-                const diffMs = Date.now() - new Date(m.pausa_inicio).getTime();
-                const min = Math.floor(diffMs / 60000);
-                const seg = Math.floor((diffMs % 60000) / 1000);
-                timerPausa = `<div style="font-size:11px; color:#f59e0b; margin-top:6px; background:rgba(245,158,11,0.1); padding:4px; border-radius:4px; text-align:center;"><i class="fas fa-hourglass-half"></i> Pausado há: <b class="timer-pausa" data-inicio="${m.pausa_inicio}">${min}m ${seg}s</b> / 30:00</div>`;
-                tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px;">PAUSADO</span>`;
-            } else {
-                tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>`;
-            }
-
-            const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
-
-            return `
-            <div class="card-membro" style="${isPausado ? 'border-color: rgba(245,158,11,0.4);' : ''}">
-                <div style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
-                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                    ${tagPausa}
-                </div>
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-                    <i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: <b>${nomeEquipe}</b>
-                </div>
-                ${timerPausa}
-                ${botoes}
-            </div>`;
-        }).join('');
-
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-        window.loopTimerMembros = setInterval(() => {
-            document.querySelectorAll('.timer-pausa').forEach(el => {
-                const inicio = new Date(el.getAttribute('data-inicio')).getTime();
-                const diffMs = Date.now() - inicio;
-                const min = Math.floor(diffMs / 60000);
-                const seg = Math.floor((diffMs % 60000) / 1000);
-                el.textContent = `${min}m ${seg}s`;
-
-                if (min >= 30) {
-                    clearInterval(window.loopTimerMembros);
-                    window.carregarMembrosAtivos();
-                }
-            });
-        }, 1000);
-    }
-
-    window.fecharListaMembros = function() {
-        document.getElementById('modalMembros').classList.remove('aberto');
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-    }
-</script>
-    <!-- ========== CORREÇÃO DE BUGS E MELHORIAS ========== -->
-<script>
-    window.salvarPerfil = async function() {
-        const pass = localStorage.getItem('passaporte'); 
-        const frase = document.getElementById('input-frase').value;
-        
-        let updateData = { frase_status: frase };
-        
-        if (fotoBase64Temp && fotoBase64Temp.length > 10) {
-            updateData.foto_url = fotoBase64Temp;
-        }
-        
-        await sb.from('membros').update(updateData).eq('passaporte', pass);
-        
-        if(updateData.foto_url) { 
-            document.getElementById('img-avatar-mini').src = updateData.foto_url; 
-            document.getElementById('img-avatar-gaveta').src = updateData.foto_url; 
-        }
-        fecharModalPerfil(); 
-        if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Perfil atualizado!", "sucesso");
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-        if(typeof carregarDadosUsuario === 'function') carregarDadosUsuario();
-    });
-
-    window.carregarMembrosAtivos = async function() {
-        const lista = document.getElementById('listaMembros');
-        const passLogado = localStorage.getItem('passaporte');
-        if(!lista) return;
-        
-        if (lista.innerHTML.includes('Buscando...') || lista.innerHTML === '') {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-        }
-
-        const { data: checkAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        window.souAdminMembros = (checkAdmin === true);
-
-        const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome, equipe_id, pausa_inicio, pausa_fim').is('saida', null);
-        const { data: equipes } = await sb.from('equipes').select('id, nome');
-        
-        if (error) {
-            lista.innerHTML = '<div style="text-align:center; color:red;">Erro ao carregar membros.</div>';
-            return;
-        }
-
-        const equipesMap = {};
-        (equipes || []).forEach(e => equipesMap[e.id] = e.nome);
-
-        const agora = new Date();
-        let atualizouBanco = false;
-
-        for (let m of ativos) {
-            if (m.pausa_inicio && !m.pausa_fim) {
-                const inicioPausa = new Date(m.pausa_inicio);
-                const minutosPausado = (agora - inicioPausa) / 1000 / 60;
-                
-                if (minutosPausado >= 30) {
-                    await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null);
-                    atualizouBanco = true;
-                }
-            }
-        }
-
-        if(atualizouBanco) {
-            return window.carregarMembrosAtivos();
-        }
-
-        document.getElementById('membrosAtivos').textContent = ativos.length;
-
-        if (ativos.length === 0) {
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
-            return;
-        }
-
-        lista.innerHTML = ativos.map(m => {
-            let botoes = '';
-            const isPausado = (m.pausa_inicio && !m.pausa_fim);
-
-            if (window.souAdminMembros) {
-                botoes = `
-                    <div style="display:flex; gap:6px; margin-top:8px; border-top:1px solid #334155; padding-top:8px;">
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:8px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:12px; font-weight:bold; cursor:pointer;">
-                            <i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}
-                        </button>
-                        <button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:12px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button>
-                    </div>
-                `;
-            }
-
-            let timerPausa = '';
-            let tagPausa = '';
-            if (isPausado) {
-                const diffMs = Date.now() - new Date(m.pausa_inicio).getTime();
-                const min = Math.floor(diffMs / 60000);
-                const seg = Math.floor((diffMs % 60000) / 1000);
-                timerPausa = `<div style="font-size:11px; color:#f59e0b; margin-top:6px; background:rgba(245,158,11,0.1); padding:4px; border-radius:4px; text-align:center;"><i class="fas fa-hourglass-half"></i> Pausado há: <b class="timer-pausa" data-inicio="${m.pausa_inicio}">${min}m ${seg}s</b> / 30:00</div>`;
-                tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px;">PAUSADO</span>`;
-            } else {
-                tagPausa = `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>`;
-            }
-
-            const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
-
-            return `
-            <div class="card-membro" style="${isPausado ? 'border-color: rgba(245,158,11,0.4);' : ''}">
-                <div style="display:flex; justify-content:space-between; align-items:center; width: 100%;">
-                    <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                    ${tagPausa}
-                </div>
-                <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-                    <i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: <b>${nomeEquipe}</b>
-                </div>
-                ${timerPausa}
-                ${botoes}
-            </div>`;
-        }).join('');
-
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-        window.loopTimerMembros = setInterval(() => {
-            document.querySelectorAll('.timer-pausa').forEach(el => {
-                const inicio = new Date(el.getAttribute('data-inicio')).getTime();
-                const diffMs = Date.now() - inicio;
-                const min = Math.floor(diffMs / 60000);
-                const seg = Math.floor((diffMs % 60000) / 1000);
-                el.textContent = `${min}m ${seg}s`;
-
-                if (min >= 30) {
-                    clearInterval(window.loopTimerMembros);
-                    window.carregarMembrosAtivos();
-                }
-            });
-        }, 1000);
-    }
-
-    window.fecharListaMembros = function() {
-        document.getElementById('modalMembros').classList.remove('aberto');
-        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
-    }
-</script>
-    <script>
-    // ========== CORREÇÃO DEFINITIVA DA GAVETA (METAS 1500, 6000, 15000) ==========
-    window.abrirGaveta = async function() {
-        document.getElementById('fundoGaveta').classList.add('aberto'); 
-        document.getElementById('gavetaPerfil').classList.add('aberta');
-        
-        // Força o nome "Meu Perfil"
-        const titulo = document.querySelector('#gavetaPerfil .gaveta-topo h3');
-        if(titulo) titulo.innerText = "Meu Perfil";
-
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-
-        const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', pass).single();
-
-        if (data) {
-            const xpAtual = data.xp_total || 0;
-            
-            // MATEMÁTICA AJUSTADA AQUI
-            let xpTotal = 1500;
-            let proximoNivel = "Executor";
-
-            if (xpAtual >= 1500 && xpAtual < 6000) {
-                xpTotal = 6000;
-                proximoNivel = "Raiz";
-            } else if (xpAtual >= 6000) {
-                xpTotal = 15000;
-                proximoNivel = "Vigia";
-            }
-
-            document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
-            document.getElementById('gavetaProximoNivel').textContent = proximoNivel;
-            
-            const elBarra = document.getElementById('gavetaXpBarra');
-            const elTexto = document.getElementById('gavetaXpTexto');
-
-            if (xpAtual < 0) {
-                elTexto.style.color = "#ef4444";
-                elBarra.style.width = `0%`;
-            } else {
-                elTexto.style.color = "#cbd5e1";
-                let porcentagem = (xpAtual / xpTotal) * 100;
-                if (porcentagem > 100) porcentagem = 100;
-                elBarra.style.width = `${porcentagem}%`;
-            }
-        }
     };
 
-    window.fecharGaveta = function() {
-        document.getElementById('fundoGaveta').classList.remove('aberto'); 
-        document.getElementById('gavetaPerfil').classList.remove('aberta');
-    }
-    </script>
+    window.resolverTicketChat = async function() {
+        if(!confirm("Finalizar atendimento?")) return;
+        await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
+        window.voltarParaListaTickets();
+    };
+
+    document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
+</script>
 </body>
 </html>
