@@ -805,6 +805,49 @@
         </div>
     </div>
 </div>
+<script>
+    // ========== FORÇAR CLIQUES DOS CARDS (MODO EMERGÊNCIA) ==========
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        // 1. Pega todos os cards do painel
+        const cards = document.querySelectorAll('.card');
+        
+        cards.forEach(card => {
+            const texto = card.innerText;
+
+            // Se o card tiver o texto de "Tickets"
+            if (texto.includes('Tickets')) {
+                card.onclick = function() {
+                    document.getElementById('modalTickets').classList.add('aberto');
+                    if(typeof window.carregarTickets === 'function') window.carregarTickets();
+                };
+            }
+            
+            // Se o card tiver o texto de "Membros Ativos"
+            if (texto.includes('Membros Ativos')) {
+                card.onclick = function() {
+                    document.getElementById('modalMembros').classList.add('aberto');
+                    if(typeof window.carregarMembrosAtivos === 'function') window.carregarMembrosAtivos();
+                };
+            }
+
+            // Se o card tiver o texto de "Faltas" ou "Frequência"
+            if (texto.includes('Faltas') || texto.includes('Frequência')) {
+                card.onclick = function() {
+                    document.getElementById('modalFrequencia').classList.add('aberto');
+                    if(typeof window.carregarFrequencia === 'function') window.carregarFrequencia();
+                };
+            }
+
+            // Se o card tiver o texto de "Gerenciar"
+            if (texto.includes('Gerenciar')) {
+                card.onclick = function() {
+                    document.getElementById('modalGerenciar').classList.add('aberto');
+                    if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros();
+                };
+            }
+        });
+    });
 </script>
 </body>
 </html>
