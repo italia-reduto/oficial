@@ -603,20 +603,92 @@
     window.resolverTicketChat = async function() { if(!confirm("Finalizar atendimento?")) return; await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId); window.voltarParaListaTickets(); };
 
     document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
-</script>
-    <script>
-    // Força o card de Faltas a abrir a janela certa
+<script>
+    // ========== CRIAR E ABRIR A JANELA DE FALTAS ==========
     document.addEventListener("DOMContentLoaded", () => {
+        // 1. Cria a janela na tela (escondida por padrão)
+        const modalHTML = `
+        <div class="fundo-modal" id="modalFaltas" onclick="if(event.target === this) document.getElementById('modalFaltas').classList.remove('aberto')">
+            <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+                <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Faltas e Presenças</h3>
+                    <button class="lista-fechar" onclick="document.getElementById('modalFaltas').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+                </div>
+                <div id="faltasCorpo" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                    <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
+                </div>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        // 2. Encontra o card de Faltas e diz o que ele deve fazer
         const cards = document.querySelectorAll('.card');
         cards.forEach(card => {
             if (card.innerText.includes('Faltas')) {
                 card.onclick = function() {
-                    // Por enquanto, só avisa que clicou (a janela vem no próximo passo)
-                    alert('Botão de Faltas configurado com sucesso!');
+                    document.getElementById('modalFaltas').classList.add('aberto');
+                    window.carregarFaltasMembro();
                 };
             }
         });
     });
-    </script>
+
+    // 3. Busca os dados no banco e desenha os quadradinhos
+    window.carregarFaltasMembro = async function() {
+        const corpo = document.getElementById('faltasCorpo');
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+
+        try {
+            const { data, error } = await sb.rpc('resumo_membro', { p_passaporte: pass });
+            if (error) throw error;
+            
+            const resumo = data || { p: 0, f: 0, j: 0, dias: [] };
+            const dias = Array.isArray(resumo.dias) ? resumo.dias : [];
+
+            let html = `
+            <div style="display:flex; gap:10px; margin-bottom:20px;">
+                <div style="flex:1; background:rgba(34,197,94,.1); padding:15px; border-radius:8px; text-align:center; border: 1px solid rgba(34,197,94,0.3);">
+                    <div style="font-size:24px; font-weight:bold; color:#22c55e;">${resumo.p || 0}</div>
+                    <div style="font-size:11px; font-weight:700; color:#22c55e;">Presenças</div>
+                </div>
+                <div style="flex:1; background:rgba(239,68,68,.1); padding:15px; border-radius:8px; text-align:center; border: 1px solid rgba(239,68,68,0.3);">
+                    <div style="font-size:24px; font-weight:bold; color:#ef4444;">${resumo.f || 0}</div>
+                    <div style="font-size:11px; font-weight:700; color:#ef4444;">Faltas</div>
+                </div>
+                <div style="flex:1; background:rgba(245,158,11,.1); padding:15px; border-radius:8px; text-align:center; border: 1px solid rgba(245,158,11,0.3);">
+                    <div style="font-size:24px; font-weight:bold; color:#f59e0b;">${resumo.j || 0}</div>
+                    <div style="font-size:11px; font-weight:700; color:#f59e0b;">Justificadas</div>
+                </div>
+            </div>
+            <div style="font-size: 13px; font-weight: bold; color: #cbd5e1; margin-bottom: 10px; display:flex; justify-content:space-between;">
+                <span>Dias marcados</span>
+                <span style="color:#64748b;">${dias.length}</span>
+            </div>`;
+
+            if (dias.length > 0) {
+                html += dias.map(d => {
+                    const dataArr = String(d.data).split('-');
+                    const dataFormatada = `${dataArr[2]}/${dataArr[1]}/${dataArr[0]}`;
+                    const cor = d.status === 'P' ? '#22c55e' : d.status === 'F' ? '#ef4444' : '#f59e0b';
+                    const nomeStatus = d.status === 'P' ? 'Presença' : d.status === 'F' ? 'Falta' : 'Justificado';
+                    
+                    return `
+                    <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <div style="font-size: 13px; font-weight: 600; color: #fff;">${dataFormatada}</div>
+                        <div style="font-size: 11px; font-weight: 700; color: ${cor}; border: 1px solid ${cor}; padding: 4px 8px; border-radius: 6px; background: rgba(0,0,0,0.2);">${nomeStatus}</div>
+                    </div>`;
+                }).join('');
+            } else {
+                html += '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum dia marcado ainda.</div>';
+            }
+
+            corpo.innerHTML = html;
+        } catch (erro) {
+            console.error(erro);
+            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#ef4444;">Erro ao carregar dados.</div>';
+        }
+    };
+</script>
 </body>
 </html>
