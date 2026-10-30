@@ -849,5 +849,29 @@
         });
     });
 </script>
+    <script>
+    // TESTE DE EMERGÊNCIA: FALTAS E PRESENÇAS
+    document.body.addEventListener('click', function(evento) {
+        // Pega o elemento que foi clicado
+        let alvo = evento.target;
+        
+        // Sobe na tela até achar o card
+        while (alvo && alvo !== document) {
+            if (alvo.classList && alvo.classList.contains('card')) {
+                if (alvo.innerText.includes('Faltas')) {
+                    // Achou o card de Faltas! Vamos tentar abrir a janela.
+                    let janela = document.getElementById('modalFrequencia');
+                    if (janela) {
+                        janela.classList.add('aberto');
+                    } else {
+                        alert('ERRO: A janela (modalFrequencia) não existe no seu HTML!');
+                    }
+                    break;
+                }
+            }
+            alvo = alvo.parentNode;
+        }
+    });
+    </script>
 </body>
 </html>
