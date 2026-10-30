@@ -690,5 +690,34 @@
         }
     };
 </script>
+    <script>
+    // INTERCEPTOR AGRESSIVO
+    document.addEventListener('click', function(evento) {
+        const card = evento.target.closest('.card');
+        if (card && card.innerText.includes('Faltas')) {
+            
+            // O SEGURANÇA PARA O CLIQUE AQUI
+            evento.preventDefault();
+            evento.stopPropagation();
+            evento.stopImmediatePropagation();
+
+            // Prova visual que o código rodou (pode apagar esse alerta depois)
+            alert("O interceptador pegou o clique! Abrindo Faltas...");
+
+            // Garante que a Frequência fecha
+            const freq = document.getElementById('modalFrequencia');
+            if (freq) freq.classList.remove('aberto');
+
+            // Abre a janela de Faltas
+            const faltas = document.getElementById('modalFaltas');
+            if (faltas) {
+                faltas.classList.add('aberto');
+                if (typeof window.carregarFaltasMembro === 'function') {
+                    window.carregarFaltasMembro();
+                }
+            }
+        }
+    }, true); // O 'true' é o que garante a interceptação antes do HTML
+    </script>
 </body>
 </html>
