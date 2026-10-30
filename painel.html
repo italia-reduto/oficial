@@ -604,5 +604,19 @@
 
     document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
 </script>
+    <script>
+    // Força o card de Faltas a abrir a janela certa
+    document.addEventListener("DOMContentLoaded", () => {
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            if (card.innerText.includes('Faltas')) {
+                card.onclick = function() {
+                    // Por enquanto, só avisa que clicou (a janela vem no próximo passo)
+                    alert('Botão de Faltas configurado com sucesso!');
+                };
+            }
+        });
+    });
+    </script>
 </body>
 </html>
