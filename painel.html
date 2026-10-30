@@ -803,6 +803,41 @@
             });
         }
     }, true); // O true garante a interceptação
-    </script>
+        <script>
+    // ========== MANUTENÇÃO EXCLUSIVA DO CARD DE FALTAS ==========
+    document.addEventListener("DOMContentLoaded", () => {
+        
+        // 1. Cria o Cartão Azul de Manutenção
+        const modalHTML = `
+        <div class="fundo-modal" id="modalManutencao" onclick="if(event.target===this) this.classList.remove('aberto')">
+            <div class="caixa-modal" style="background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%); border: 1px solid #3b82f6; border-radius: 18px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);">
+                <div style="background: rgba(59, 130, 246, 0.15); border-radius: 50%; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <i class="fas fa-tools" style="font-size: 28px; color: #60a5fa;"></i>
+                </div>
+                <h3 style="color: #fff; font-size: 22px; margin-bottom: 10px;">Em Manutenção</h3>
+                <p style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin-bottom: 25px;">Estamos trabalhando para melhorar esta área. Por favor, tente novamente mais tarde.</p>
+                <button onclick="document.getElementById('modalManutencao').classList.remove('aberto')" style="width: 100%; padding: 14px; border-radius: 10px; border: none; background: #3b82f6; color: white; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.2s;">Entendido</button>
+            </div>
+        </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+        // 2. Intercepta APENAS o clique no card "Faltas e Presenças"
+        document.addEventListener('click', function(evento) {
+            const card = evento.target.closest('.card');
+            
+            // Verifica se o card existe e se o texto é EXATAMENTE o de faltas
+            if (card && card.innerText.includes('Faltas e Presenças')) {
+                
+                // Impede que a ação antiga (abrir a janela bugada) aconteça
+                evento.preventDefault();
+                evento.stopPropagation();
+                evento.stopImmediatePropagation();
+
+                // Abre o cartão de manutenção
+                document.getElementById('modalManutencao').classList.add('aberto');
+            }
+        }, true); // O 'true' é essencial para interceptar antes do HTML
+    });
+</script>
 </body>
 </html>
