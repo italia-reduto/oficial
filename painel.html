@@ -892,5 +892,53 @@
         </div>
     </div>
 </div>
+    <!-- JANELA DE MEMBROS ATIVOS -->
+<div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) document.getElementById('modalMembros').classList.remove('aberto')">
+    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Membros Ativos</h3>
+            <button class="lista-fechar" onclick="document.getElementById('modalMembros').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+        </div>
+        <div id="listaMembros" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
+        </div>
+    </div>
+</div>
+    <script>
+    // ========== CONTADOR E CLIQUE DOS MEMBROS ATIVOS ==========
+    document.addEventListener("DOMContentLoaded", () => {
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+
+        // 1. Puxa a contagem de membros online para o card
+        sb.from('pontos').select('*', { count: 'exact', head: true }).is('saida', null).then(({ count }) => {
+            const el = document.getElementById('membrosAtivos');
+            if(el) el.textContent = count || 0;
+        });
+
+        // 2. Força o clique no card de Membros Ativos
+        // (Usando o mesmo truque que funcionou na Frequência)
+        document.body.addEventListener('click', function(evento) {
+            let alvo = evento.target;
+            while (alvo && alvo !== document) {
+                if (alvo.classList && alvo.classList.contains('card')) {
+                    if (alvo.innerText.includes('Membros Ativos')) {
+                        let janela = document.getElementById('modalMembros');
+                        if (janela) {
+                            janela.classList.add('aberto');
+                            if(typeof window.carregarMembrosAtivos === 'function') {
+                                window.carregarMembrosAtivos();
+                            }
+                        } else {
+                            alert('ERRO: A janela (modalMembros) não existe no HTML!');
+                        }
+                        break;
+                    }
+                }
+                alvo = alvo.parentNode;
+            }
+        });
+    });
+    </script>
 </body>
 </html>
