@@ -8,9 +8,8 @@
     <title>ITÁLIA · PAINEL</title>
     
     <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -26,7 +25,6 @@
     
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; outline: none !important; }
-        *:focus, *:focus-visible { outline: none !important; box-shadow: none !important; }
         html, body { min-height: 100vh; background: linear-gradient(180deg, #000000 0%, #0f172a 100%); color: #ffffff; font-family: 'Inter', sans-serif; padding-bottom: 80px; }
         
         .banner-topo { width: 100%; height: 200px; position: relative; overflow: hidden; }
@@ -59,30 +57,31 @@
         .card-titulo { font-size: 13px; color: #94a3b8; font-weight: 500; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
         .card-titulo i { font-size: 14px; color: #60a5fa; }
         .card-valor { font-size: 22px; font-weight: 700; color: #fff; }
-                .card-aviso { background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 14px; padding: 20px; grid-column: 1 / -1; }
+        .card-aviso { background: rgba(15, 23, 42, 0.55); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 14px; padding: 20px; grid-column: 1 / -1; }
         .card-clicavel { cursor: pointer; transition: border-color 0.25s ease; }
         .card-dica { font-size: 11px; color: #64748b; margin-top: 4px; }
-                /* ========== GAVETA E MENUS ========== */
+
+        /* GAVETA */
         .fundo-gaveta { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 1000; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         .fundo-gaveta.aberto { opacity: 1; visibility: visible; }
         .gaveta-perfil { position: fixed; top: 0; left: 0; bottom: 0; width: 80%; max-width: 340px; background: linear-gradient(180deg, #0f172a 0%, #020617 100%); border-right: 1px solid rgba(96, 165, 250, 0.2); z-index: 1001; transform: translateX(-100%); transition: transform 0.3s ease; display: flex; flex-direction: column; padding: 24px; overflow-y: auto; }
         .gaveta-perfil.aberta { transform: translateX(0); }
-        .gaveta-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-shrink: 0; }
+        .gaveta-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .gaveta-topo h3 { font-size: 18px; font-weight: 700; color: #fff; }
         .gaveta-topo button { background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer; }
-        .gaveta-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover; margin: 0 auto 16px; background: #1e293b; display: block; flex-shrink: 0; }
-        .gaveta-info { text-align: center; margin-bottom: 24px; flex-shrink: 0; }
+        .gaveta-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid #3b82f6; object-fit: cover; margin: 0 auto 16px; background: #1e293b; display: block; }
+        .gaveta-info { text-align: center; margin-bottom: 24px; }
         .gaveta-nome { font-size: 20px; font-weight: 700; color: #fff; }
         .gaveta-cargo { font-size: 14px; color: #60a5fa; font-weight: 600; margin-top: 4px; }
-        .gaveta-xp-box { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 24px; flex-shrink: 0; }
+        .gaveta-xp-box { background: rgba(15, 23, 42, 0.8); border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 24px; }
         .gaveta-xp-texto { display: flex; justify-content: space-between; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 8px; }
         .gaveta-barra-fundo { width: 100%; height: 10px; background: #1e293b; border-radius: 999px; overflow: hidden; }
         .gaveta-barra-preenchida { height: 100%; background: linear-gradient(90deg, #3b82f6, #60a5fa); border-radius: 999px; transition: width 1s ease; width: 0%; }
-        .btn-gaveta { width: 100%; height: 48px; flex-shrink: 0; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid #334155; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .gaveta-footer { margin-top: auto; padding-top: 20px; text-align: center; font-size: 12px; color: #64748b; flex-shrink: 0; }
+        .btn-gaveta { width: 100%; height: 48px; padding: 12px; border-radius: 8px; background: #1e293b; border: 1px solid #334155; color: white; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .gaveta-footer { margin-top: auto; padding-top: 20px; text-align: center; font-size: 12px; color: #64748b; }
 
-        /* ========== MODAIS GERAIS ========== */
-        .fundo-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
+        /* MODAIS GERAIS */
+        .fundo-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 2000; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 24px; }
         .fundo-modal.aberto { opacity: 1; visibility: visible; }
         .caixa-modal { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(96,165,250,0.2); border-radius: 18px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center; }
         .icone-modal { width: 56px; height: 56px; border-radius: 50%; background: rgba(96,165,250,0.15); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
@@ -97,8 +96,8 @@
         .menu-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #94a3b8; text-decoration: none; font-size: 11px; cursor: pointer; background: none; border: none; }
         .menu-item.ativo { color: #60a5fa; }
         .menu-item i { font-size: 20px; margin-bottom: 2px; }
-        
-        /* ========== ESTILOS DO SUPORTE ========== */
+
+        /* CHAT DO SUPORTE */
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .msg-card { display: flex; gap: 12px; background: #1e293b; border: 1px solid #334155; border-left: 4px solid #3b82f6; border-radius: 8px; padding: 12px; margin-bottom: 10px; }
         .msg-card.admin { border-left-color: #22c55e; }
@@ -111,11 +110,17 @@
         .msg-card.admin .msg-tag { background: #166534; color: #86efac; }
         .msg-hora { font-size: 11px; color: #64748b; margin-left: auto; }
         .msg-body { font-size: 14px; color: #e2e8f0; line-height: 1.4; word-break: break-word; }
-        .msg-img { max-width: 100%; border-radius: 8px; margin-top: 8px; cursor: pointer; border: 1px solid rgba(255,255,255,0.1); }
-        
-        /* ========== ESTILOS DE MEMBROS ========== */
-        .card-membro { padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; margin-bottom: 8px; }
-        .btn-acao-membro { flex:1; padding:8px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:4px; }
+
+        .fq-busca { background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px; }
+        .fq-busca input { flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px; }
+        .fq-item { padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .fq-btn { width: 34px; height: 34px; border-radius: 8px; border: 1px solid; background: transparent; font-size: 13px; font-weight: 800; cursor: pointer; }
+        .fq-btn.P { color: #22c55e; border-color: rgba(34, 197, 94, 0.4); }
+        .fq-btn.P.on { background: #22c55e; color: #000; border-color: #22c55e; }
+        .fq-btn.F { color: #ef4444; border-color: rgba(239, 68, 68, 0.4); }
+        .fq-btn.F.on { background: #ef4444; color: #fff; border-color: #ef4444; }
+        .fq-btn.J { color: #f59e0b; border-color: rgba(245, 158, 11, 0.4); }
+        .fq-btn.J.on { background: #f59e0b; color: #000; border-color: #f59e0b; }
     </style>
 </head>
 <body>
@@ -124,7 +129,7 @@
         <button class="botao-sair" onclick="abrirModalSair()"><i class="fas fa-sign-out-alt"></i> Sair</button>
     </div>
 
-    <div class="conteudo" id="conteudoPrincipal">
+    <div class="conteudo">
         <div class="cabecalho-saudacao">
             <img id="img-avatar-mini" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="avatar-mini" onclick="abrirGaveta()" alt="Perfil">
             <h1 class="saudacao">Olá, <span id="nomeUsuario">Membro</span></h1>
@@ -144,9 +149,9 @@
                 <div class="card-valor" id="valor-tickets-painel">0</div>
                 <div class="card-dica">Toque para abrir suporte</div>
             </div>
-            <div class="card card-clicavel" onclick="abrirModalFaltas()">
+            <div class="card card-clicavel" onclick="abrirFrequencia()">
                 <div class="card-titulo">Faltas e Presenças <i class="fas fa-user-check"></i></div>
-                <div class="card-valor" style="font-size: 18px;" id="valor-presencas">0P · 0F · 0J</div>
+                <div class="card-valor" id="valor-presencas" style="font-size: 18px;">0P · 0F · 0J</div>
             </div>
             <div class="card card-clicavel" onclick="abrirListaMembros()">
                 <div class="card-titulo">Membros Ativos <i class="fas fa-users"></i></div>
@@ -168,11 +173,11 @@
     <!-- GAVETA DE PERFIL -->
     <div class="fundo-gaveta" id="fundoGaveta" onclick="fecharGaveta()"></div>
     <div class="gaveta-perfil" id="gavetaPerfil">
-        <div class="gaveta-topo"><h3>Meu Dossiê</h3><button onclick="fecharGaveta()"><i class="fas fa-times"></i></button></div>
+        <div class="gaveta-topo"><h3>Meu Perfil</h3><button onclick="fecharGaveta()"><i class="fas fa-times"></i></button></div>
         <img id="img-avatar-gaveta" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" class="gaveta-avatar">
         <div class="gaveta-info"><div class="gaveta-nome" id="gavetaNome">Membro</div><div class="gaveta-cargo" id="gavetaCargo">Cargo</div></div>
         <div class="gaveta-xp-box">
-            <div class="gaveta-xp-texto"><span>Respeito (XP)</span><span id="gavetaXpTexto">0 / 1.000</span></div>
+            <div class="gaveta-xp-texto"><span>Respeito (XP)</span><span id="gavetaXpTexto">0 / 1.500</span></div>
             <div class="gaveta-barra-fundo"><div class="gaveta-barra-preenchida" id="gavetaXpBarra"></div></div>
             <p style="font-size: 11px; color: #64748b; margin-top: 8px; text-align: center;">Próximo Nível: <span id="gavetaProximoNivel">Executor</span></p>
         </div>
@@ -186,105 +191,146 @@
         <a href="equipe.html" class="menu-item"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="#" class="menu-item" onclick="abrirModalTickets(); return false;"><i class="fas fa-headset"></i><span>Suporte</span></a>
     </nav>
-        <!-- MODAL SAIR -->
-<div class="fundo-modal" id="modalSair" onclick="if(event.target === this) fecharModalSair()">
-    <div class="caixa-modal">
-        <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
-        <h3 class="titulo-modal">Deseja sair?</h3>
-        <p class="texto-modal">Você voltará para a tela de acesso.</p>
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalSair()">Cancelar</button>
-            <button class="botao-confirmar" onclick="confirmarSaida()">Sair</button>
+
+    <!-- MODAL SAIR -->
+    <div class="fundo-modal" id="modalSair" onclick="if(event.target === this) fecharModalSair()">
+        <div class="caixa-modal">
+            <div class="icone-modal"><i class="fas fa-right-from-bracket"></i></div>
+            <h3 class="titulo-modal">Deseja sair?</h3>
+            <p class="texto-modal">Você voltará para a tela de acesso.</p>
+            <div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalSair()">Cancelar</button><button class="botao-confirmar" onclick="confirmarSaida()">Sair</button></div>
         </div>
     </div>
-</div>
 
-<!-- MODAL AVISO -->
-<div class="fundo-modal" id="modalAviso" onclick="if(event.target === this) fecharModalAviso()">
-    <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
-        <h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3>
-        <textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; resize: none;"></textarea>
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button>
-            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button>
+    <!-- MODAL AVISO -->
+    <div class="fundo-modal" id="modalAviso" onclick="if(event.target === this) fecharModalAviso()">
+        <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
+            <h3 class="titulo-modal" style="margin-bottom: 20px;">Postar Aviso</h3>
+            <textarea id="input-aviso" placeholder="Ex: Reunião geral hoje às 20h..." style="width: 100%; height: 80px; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; font-family: inherit; resize: none;"></textarea>
+            <div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalAviso()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarAviso()">Publicar</button></div>
         </div>
     </div>
-</div>
 
-<!-- MODAL EDITAR PERFIL -->
-<div class="fundo-modal" id="modalPerfil" onclick="if(event.target === this) fecharModalPerfil()">
-    <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
-        <h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3>
-        <input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
-        <input type="text" id="input-frase" placeholder="Sua frase..." style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button>
-            <button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button>
+    <!-- MODAL EDITAR PERFIL -->
+    <div class="fundo-modal" id="modalPerfil" onclick="if(event.target === this) fecharModalPerfil()">
+        <div class="caixa-modal" style="max-width: 400px; padding: 24px;">
+            <h3 class="titulo-modal" style="margin-bottom: 20px;">Editar Perfil</h3>
+            <input type="file" id="input-foto-arquivo" accept="image/*" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
+            <input type="text" id="input-frase" placeholder="Sua frase..." style="width: 100%; padding: 12px; margin-bottom: 20px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white;">
+            <div class="botoes-modal"><button class="botao-cancelar" onclick="fecharModalPerfil()">Cancelar</button><button class="botao-confirmar" style="background: linear-gradient(135deg, #3b82f6, #2563eb);" onclick="salvarPerfil()">Salvar</button></div>
         </div>
     </div>
-</div>
 
-<!-- MODAL MEMBROS (O MEGA AJUSTE) -->
-<div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Membros Ativos</h3>
-            <button class="lista-fechar" onclick="fecharListaMembros()" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+    <!-- JANELA DE MEMBROS -->
+    <div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) fecharListaMembros()">
+        <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+            <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Membros Ativos</h3>
+                <button class="lista-fechar" onclick="fecharListaMembros()" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="listaMembros" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
-        <div class="lista-corpo" id="listaMembros" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;"></div>
     </div>
-</div>
-<!-- MODAL SUPORTE (TICKETS) -->
-<div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
-            <h3 style="font-size: 20px; font-weight: 700; color: #fff;" id="titulo-modal-suporte">Central de Suporte</h3>
-            <button onclick="fecharModalTickets()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;"><i class="fas fa-times"></i></button>
-        </div>
-        
-        <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
-            <div style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;" id="resumoTickets"></div>
-            <div class="lista-corpo" id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
 
-            <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
-                    <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span></button>
-                    <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span></button>
-                    <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span></button>
+    <!-- JANELA GERENCIAR MEMBROS -->
+    <div class="fundo-modal" id="modalGerenciar" onclick="if(event.target === this) document.getElementById('modalGerenciar').classList.remove('aberto')">
+        <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 85vh; display: flex; flex-direction: column;">
+            <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Gerenciar Membros</h3>
+                <button class="lista-fechar" onclick="document.getElementById('modalGerenciar').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-search" style="color:#60a5fa;"></i>
+                <input type="text" id="buscaTodos" placeholder="Buscar por nome ou passaporte..." oninput="window.filtrarTodosMembros()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
+            </div>
+            <div id="listaTodosMembros" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL DE AÇÃO (XP / ADVERTÊNCIA) -->
+    <div class="fundo-modal" id="modalAcao" onclick="if(event.target === this) fecharModalAcao()">
+        <div class="caixa-modal" style="max-width: 360px; padding: 24px;">
+            <h3 id="acao-titulo" style="font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff;">Ação</h3>
+            <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px;">Membro: <b id="acao-nome-alvo" style="color:#60a5fa;">---</b></p>
+            <div id="campo-quantidade-box">
+                <input type="number" id="acao-quantidade" placeholder="Quantidade de XP" value="50" min="1" style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none;">
+            </div>
+            <input type="text" id="acao-motivo" placeholder="Digite o motivo..." value="" style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none;">
+            <div class="botoes-modal">
+                <button class="botao-cancelar" onclick="fecharModalAcao()">Cancelar</button>
+                <button class="botao-confirmar" id="btn-acao-confirmar" onclick="confirmarAcao()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA DE FREQUÊNCIA -->
+    <div class="fundo-modal" id="modalFrequencia" onclick="if(event.target === this) document.getElementById('modalFrequencia').classList.remove('aberto')">
+        <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;">
+            <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Frequência</h3>
+                <button class="lista-fechar" onclick="document.getElementById('modalFrequencia').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
+                <i class="fas fa-calendar-day" style="color:#60a5fa;"></i>
+                <input type="date" id="freqData" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark;" onchange="window.carregarFrequencia()">
+            </div>
+            <div id="freqCorpo" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JANELA DO SUPORTE -->
+    <div class="fundo-modal" id="modalTickets" onclick="if(event.target === this) fecharModalTickets()">
+        <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <h3 style="font-size: 20px; font-weight: 700; color: #fff;" id="titulo-modal-suporte">Central de Suporte</h3>
+                <button onclick="fecharModalTickets()" style="background: transparent; border: none; color: #94a3b8; font-size: 20px; cursor: pointer;"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div id="tela-lista-tickets" style="display: flex; flex-direction: column; flex: 1; overflow: hidden;">
+                <div style="margin-bottom: 10px; text-align: center; font-size: 13px; color: #94a3b8;" id="resumoTickets"></div>
+                <div id="corpoTickets" style="flex: 1; overflow-y: auto; max-height: 35vh; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+
+                <div id="tela-abertura-ticket" style="border-top: 1px solid #334155; padding-top: 15px; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px;">
+                        <button onclick="selecionarCategoria('Bug')" id="btn-cat-Bug" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-code" style="font-size: 18px; color: #60a5fa;"></i> <span>Bug</span></button>
+                        <button onclick="selecionarCategoria('Player')" id="btn-cat-Player" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-shield-alt" style="font-size: 18px; color: #f87171;"></i> <span>Jogador</span></button>
+                        <button onclick="selecionarCategoria('Justificativa')" id="btn-cat-Justificativa" class="btn-categoria" style="background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 12px 5px; color: #cbd5e1; font-size: 11px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 5px;"><i class="fas fa-file-signature" style="font-size: 18px; color: #f59e0b;"></i> <span>Justificar</span></button>
+                    </div>
+                    <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
+                        <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
+                        <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold; color: white; border: none;" onclick="criarTicket()">Enviar Ticket</button>
+                    </div>
                 </div>
-                <div id="div-descricao" style="display: none; flex-direction: column; gap: 10px; margin-top: 5px;">
-                    <textarea id="input-ticket" placeholder="Descreva sua solicitação..." style="width: 100%; height: 70px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; resize: none;"></textarea>
-                    <button class="botao-confirmar" style="width: 100%; padding: 12px; border-radius: 10px; background: linear-gradient(135deg, #3b82f6, #2563eb); font-weight: bold; color: white; border: none;" onclick="criarTicket()">Enviar Ticket</button>
+
+                <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
+                    <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                    <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
+                    <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
                 </div>
             </div>
 
-            <div id="tela-espera-ticket" style="display: none; border-top: 1px solid #334155; padding-top: 20px; text-align: center; flex-direction: column; align-items: center; gap: 15px;">
-                <div style="width: 50px; height: 50px; border: 4px solid #334155; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <h4 style="color: #60a5fa; font-size: 16px;">Aguardando um líder assumir...</h4>
-                <button onclick="fecharModalTickets()" style="margin-top: 10px; background: transparent; border: 1px solid #334155; padding: 8px 16px; border-radius: 8px; color: #94a3b8; cursor: pointer;">Fechar</button>
-            </div>
-        </div>
-
-        <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
-            <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
-                    <div><h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4><span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span></div>
+            <div id="tela-chat-ticket" style="display: none; flex-direction: column; height: 60vh; max-height: 500px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #334155; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button onclick="voltarParaListaTickets()" style="background: transparent; border: none; color: #60a5fa; font-size: 16px; cursor: pointer;"><i class="fas fa-arrow-left"></i></button>
+                        <div><h4 style="margin: 0; color: #fff; font-size: 15px;" id="chat-titulo">Conversa</h4><span style="font-size: 11px; color: #94a3b8;" id="chat-subtitulo"></span></div>
+                    </div>
+                    <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;"><i class="fas fa-check"></i> Finalizar</button>
                 </div>
-                <button id="btn-resolver-chat" onclick="resolverTicketChat()" style="display: none; background: rgba(34, 197, 94, 0.1); border: 1px solid #22c55e; color: #22c55e; padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: bold; cursor: pointer;"><i class="fas fa-check"></i> Finalizar</button>
-            </div>
-            <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
-            <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
-                <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;"><i class="fas fa-paperclip"></i></label>
-                <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
-                <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
-                <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
+                <div id="chat-mensagens" style="flex: 1; overflow-y: auto; padding-right: 5px;"></div>
+                <div style="display: flex; gap: 8px; margin-top: 15px; flex-shrink: 0; align-items: center;">
+                    <label for="input-arquivo-chat" style="cursor: pointer; background: #1e293b; border: 1px solid #334155; border-radius: 8px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; color: #60a5fa; font-size: 18px;"><i class="fas fa-paperclip"></i></label>
+                    <input type="file" id="input-arquivo-chat" accept="image/*,video/*" style="display: none;" onchange="enviarArquivoChat(this)">
+                    <input type="text" id="input-chat-msg" placeholder="Digite sua mensagem..." style="flex: 1; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; outline: none;">
+                    <button onclick="enviarMensagemChat()" style="background: #3b82f6; border: none; border-radius: 8px; width: 45px; height: 45px; color: white; cursor: pointer; font-size: 16px;"><i class="fas fa-paper-plane"></i></button>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <script>
-    // ========== RELÓGIO ==========
+    // ========== RELÓGIO E PERFIL ==========
     function atualizarRelogio() {
         const agora = new Date(); const brasilia = new Date(agora.toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
         document.getElementById('horaAtual').textContent = `${String(brasilia.getHours()).padStart(2, '0')}:${String(brasilia.getMinutes()).padStart(2, '0')}:${String(brasilia.getSeconds()).padStart(2, '0')}`;
@@ -292,67 +338,44 @@
     }
     atualizarRelogio(); setInterval(atualizarRelogio, 1000);
 
-    // ========== GAVETA ==========
-    window.abrirGaveta = async function() {
-        document.getElementById('fundoGaveta').classList.add('aberto'); 
-        document.getElementById('gavetaPerfil').classList.add('aberta');
-        
-        const titulo = document.querySelector('#gavetaPerfil .gaveta-topo h3');
-        if(titulo) titulo.innerText = "Meu Perfil";
+    let isAdmin = false;
 
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-
-        const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', pass).single();
-
-        if (data) {
-            const xpAtual = data.xp_total || 0;
-            
-            let xpTotal = 1500;
-            let proximoNivel = "Executor";
-
-            if (xpAtual >= 1500 && xpAtual < 6000) { xpTotal = 6000; proximoNivel = "Raiz"; } 
-            else if (xpAtual >= 6000) { xpTotal = 15000; proximoNivel = "Vigia"; }
-
-            document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
-            document.getElementById('gavetaProximoNivel').textContent = proximoNivel;
-            
-            const elBarra = document.getElementById('gavetaXpBarra');
-            const elTexto = document.getElementById('gavetaXpTexto');
-
-            if (xpAtual < 0) {
-                elTexto.style.color = "#ef4444"; elBarra.style.width = `0%`;
-            } else {
-                elTexto.style.color = "#cbd5e1";
-                let porcentagem = (xpAtual / xpTotal) * 100;
-                if (porcentagem > 100) porcentagem = 100;
-                elBarra.style.width = `${porcentagem}%`;
-            }
-        }
-    };
-    window.fecharGaveta = function() {
-        document.getElementById('fundoGaveta').classList.remove('aberto'); document.getElementById('gavetaPerfil').classList.remove('aberta');
-    }
-
-    // ========== DADOS DO USUÁRIO ==========
     async function carregarDadosUsuario() {
         const pass = localStorage.getItem('passaporte');
         if (!pass) { window.location.href = 'login.html'; return; }
-        const { data } = await sb.from('membros').select('nome, passaporte, cargo, foto_url').eq('passaporte', pass).single();
+        const { data } = await sb.from('membros').select('nome, passaporte, cargo, foto_url, xp_total').eq('passaporte', pass).single();
         if (data) {
-            document.getElementById('nomeUsuario').textContent = data.nome || 'Membro'; 
-            document.getElementById('passaporteUsuario').textContent = data.passaporte; 
-            document.getElementById('cargoUsuario').textContent = data.cargo || '—';
-            document.getElementById('gavetaNome').textContent = data.nome || 'Membro'; 
-            document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo'; 
-            document.getElementById('gavetaPassaporte').textContent = data.passaporte;
+            document.getElementById('nomeUsuario').textContent = data.nome || 'Membro'; document.getElementById('passaporteUsuario').textContent = data.passaporte; document.getElementById('cargoUsuario').textContent = data.cargo || '—';
+            document.getElementById('gavetaNome').textContent = data.nome || 'Membro'; document.getElementById('gavetaCargo').textContent = data.cargo || 'Sem Cargo'; document.getElementById('gavetaPassaporte').textContent = data.passaporte;
             const fotoFinal = data.foto_url || "https://cdn-icons-png.flaticon.com/512/149/149071.png";
             document.getElementById('img-avatar-mini').src = fotoFinal; document.getElementById('img-avatar-gaveta').src = fotoFinal;
+
+            const cargosPermitidos = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+            if (cargosPermitidos.includes(data.cargo)) { isAdmin = true; }
         }
     }
     carregarDadosUsuario();
 
-    // ========== EDITAR PERFIL ==========
+    window.abrirGaveta = async function() {
+        document.getElementById('fundoGaveta').classList.add('aberto'); document.getElementById('gavetaPerfil').classList.add('aberta');
+        const pass = localStorage.getItem('passaporte');
+        if(!pass) return;
+        const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', pass).single();
+        if (data) {
+            const xpAtual = data.xp_total || 0;
+            let xpTotal = 1500; let proximoNivel = "Executor";
+            if (xpAtual >= 1500 && xpAtual < 6000) { xpTotal = 6000; proximoNivel = "Raiz"; } 
+            else if (xpAtual >= 6000) { xpTotal = 15000; proximoNivel = "Vigia"; }
+            document.getElementById('gavetaXpTexto').textContent = `${xpAtual} / ${xpTotal}`;
+            document.getElementById('gavetaProximoNivel').textContent = proximoNivel;
+            const elBarra = document.getElementById('gavetaXpBarra'); const elTexto = document.getElementById('gavetaXpTexto');
+            if (xpAtual < 0) { elTexto.style.color = "#ef4444"; elBarra.style.width = `0%`; } 
+            else { elTexto.style.color = "#cbd5e1"; let pct = (xpAtual / xpTotal) * 100; if(pct>100)pct=100; elBarra.style.width = `${pct}%`; }
+        }
+    };
+    window.fecharGaveta = function() { document.getElementById('fundoGaveta').classList.remove('aberto'); document.getElementById('gavetaPerfil').classList.remove('aberta'); };
+
+    // ========== EDITAR PERFIL, AVISOS E SAIR ==========
     let fotoBase64Temp = "";
     function abrirModalEditarPerfil() { document.getElementById('modalPerfil').classList.add('aberto'); }
     function fecharModalPerfil() { document.getElementById('modalPerfil').classList.remove('aberto'); }
@@ -364,18 +387,10 @@
         let updateData = { frase_status: frase };
         if (fotoBase64Temp && fotoBase64Temp.length > 10) updateData.foto_url = fotoBase64Temp;
         await sb.from('membros').update(updateData).eq('passaporte', pass);
-        if(updateData.foto_url) { 
-            document.getElementById('img-avatar-mini').src = updateData.foto_url; document.getElementById('img-avatar-gaveta').src = updateData.foto_url; 
-        }
+        if(updateData.foto_url) { document.getElementById('img-avatar-mini').src = updateData.foto_url; document.getElementById('img-avatar-gaveta').src = updateData.foto_url; }
         fecharModalPerfil(); if(typeof mostrarToastAdmin === 'function') mostrarToastAdmin("Perfil atualizado!", "sucesso");
     }
 
-    // ========== SAIR ==========
-    function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
-    function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
-    function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
-
-    // ========== AVISOS ==========
     function abrirModalAviso() { document.getElementById('modalAviso').classList.add('aberto'); }
     function fecharModalAviso() { document.getElementById('modalAviso').classList.remove('aberto'); }
     async function carregarAvisoRecente() {
@@ -388,604 +403,206 @@
         fecharModalAviso(); carregarAvisoRecente();
     }
     carregarAvisoRecente(); setInterval(carregarAvisoRecente, 30000);
+    setTimeout(() => { if(isAdmin) document.getElementById('btn-editar-aviso').style.display = 'inline-block'; }, 1000);
+
+    function abrirModalSair() { document.getElementById('modalSair').classList.add('aberto'); }
+    function fecharModalSair() { document.getElementById('modalSair').classList.remove('aberto'); }
+    function confirmarSaida() { localStorage.removeItem('passaporte'); window.location.href = 'login.html'; }
+
+    // ========== CONTADOR MEMBROS ATIVOS E GERENCIAR ==========
+    document.addEventListener("DOMContentLoaded", () => {
+        sb.from('pontos').select('*', { count: 'exact', head: true }).is('saida', null).then(({ count }) => {
+            const el = document.getElementById('membrosAtivos'); if(el) el.textContent = count || 0;
+        });
+
+        setTimeout(() => {
+            if (isAdmin) {
+                const grade = document.querySelector('.grade-cards');
+                const cardAviso = document.querySelector('.card-aviso'); 
+                if (grade && cardAviso && !document.getElementById('cardGerencia')) {
+                    const cardAdmin = document.createElement('div');
+                    cardAdmin.id = 'cardGerencia'; cardAdmin.className = 'card card-clicavel'; cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
+                    cardAdmin.innerHTML = `
+                        <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
+                        <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
+                        <div class="card-dica">Toque para gerenciar XP e punições</div>
+                    `;
+                    cardAdmin.onclick = () => { document.getElementById('modalGerenciar').classList.add('aberto'); window.carregarTodosMembros(); };
+                    grade.insertBefore(cardAdmin, cardAviso);
+                }
+            }
+        }, 1500);
+    });
     </script>
     <script>
-    // ========== VERIFICAÇÃO DE ADMIN E CRIAÇÃO DO CARD ==========
-    let souAdminMembros = false;
-    let listaTodosMembrosGlobal = [];
     window.tipoAcaoAtual = null; window.passAlvoAtual = null; window.funcaoPosAcao = null;
-
-    document.addEventListener("DOMContentLoaded", async () => {
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-        
-        const { data } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-        if (data === true) { 
-            document.getElementById('btn-editar-aviso').style.display = 'inline-block';
-            souAdminMembros = true;
-            
-            const grade = document.querySelector('.grade-cards');
-            const cardAviso = document.querySelector('.card-aviso'); 
-            if (grade && cardAviso && !document.getElementById('cardGerencia')) {
-                const cardAdmin = document.createElement('div');
-                cardAdmin.id = 'cardGerencia';
-                cardAdmin.className = 'card card-clicavel';
-                cardAdmin.style.border = "1px solid rgba(245, 158, 11, 0.4)"; 
-                cardAdmin.innerHTML = `
-                    <div class="card-titulo">Gerenciar Membros <i class="fas fa-user-cog" style="color: #f59e0b;"></i></div>
-                    <div class="card-valor" style="font-size: 16px; color: #f59e0b;">Acesso Restrito</div>
-                    <div class="card-dica">Toque para gerenciar XP e punições</div>
-                `;
-                cardAdmin.onclick = () => {
-                    document.getElementById('modalGerenciar').classList.add('aberto');
-                    window.carregarTodosMembros();
-                };
-                grade.insertBefore(cardAdmin, cardAviso);
-            }
-        }
-    });
-
-    // ========== MODAL DE AÇÃO (XP / ADVERTÊNCIA) ==========
     window.abrirModalAcao = function(tipo, passAlvo, nomeAlvo, callback) {
         window.tipoAcaoAtual = tipo; window.passAlvoAtual = passAlvo; window.funcaoPosAcao = callback;
-        const titulo = document.getElementById('acao-titulo');
-        const boxQtd = document.getElementById('campo-quantidade-box');
-        const btn = document.getElementById('btn-acao-confirmar');
-
-        document.getElementById('acao-nome-alvo').innerText = nomeAlvo;
-        btn.disabled = false; btn.innerText = "Confirmar";
-
-        if (tipo === 'xp') {
-            titulo.innerText = "Enviar Recompensa (XP)"; boxQtd.style.display = 'block';
-            document.getElementById('acao-quantidade').value = "50"; document.getElementById('acao-motivo').value = "Ato de bravura";
-            btn.style.background = "linear-gradient(135deg, #3b82f6, #2563eb)";
-        } else if (tipo === 'tirar_xp') {
-            titulo.innerText = "Tirar XP (Punição)"; boxQtd.style.display = 'block';
-            document.getElementById('acao-quantidade').value = "200"; document.getElementById('acao-motivo').value = "Punição aplicada";
-            btn.style.background = "linear-gradient(135deg, #f59e0b, #d97706)";
-        } else if (tipo === 'advertencia') {
-            titulo.innerText = "Aplicar Advertência"; boxQtd.style.display = 'none'; 
-            document.getElementById('acao-motivo').value = "Quebra de regras"; btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)";
-        } else if (tipo === 'retirar_advertencia') {
-            titulo.innerText = "Retirar Advertência"; boxQtd.style.display = 'none'; 
-            document.getElementById('acao-motivo').value = "Bom comportamento"; btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)";
-        }
+        const titulo = document.getElementById('acao-titulo'); const boxQtd = document.getElementById('campo-quantidade-box'); const btn = document.getElementById('btn-acao-confirmar');
+        document.getElementById('acao-nome-alvo').innerText = nomeAlvo; btn.disabled = false; btn.innerText = "Confirmar";
+        if (tipo === 'xp') { titulo.innerText = "Enviar Recompensa (XP)"; boxQtd.style.display = 'block'; document.getElementById('acao-quantidade').value = "50"; document.getElementById('acao-motivo').value = "Ato de bravura"; btn.style.background = "linear-gradient(135deg, #3b82f6, #2563eb)"; } 
+        else if (tipo === 'tirar_xp') { titulo.innerText = "Tirar XP (Punição)"; boxQtd.style.display = 'block'; document.getElementById('acao-quantidade').value = "200"; document.getElementById('acao-motivo').value = "Punição aplicada"; btn.style.background = "linear-gradient(135deg, #f59e0b, #d97706)"; } 
+        else if (tipo === 'advertencia') { titulo.innerText = "Aplicar Advertência"; boxQtd.style.display = 'none'; document.getElementById('acao-motivo').value = "Quebra de regras"; btn.style.background = "linear-gradient(135deg, #ef4444, #dc2626)"; } 
+        else if (tipo === 'retirar_advertencia') { titulo.innerText = "Retirar Advertência"; boxQtd.style.display = 'none'; document.getElementById('acao-motivo').value = "Bom comportamento"; btn.style.background = "linear-gradient(135deg, #22c55e, #16a34a)"; }
         document.getElementById('modalAcao').classList.add('aberto');
     };
     window.fecharModalAcao = function() { document.getElementById('modalAcao').classList.remove('aberto'); };
-
     window.confirmarAcao = async function() {
-        const btn = document.getElementById('btn-acao-confirmar');
-        btn.innerText = "Processando..."; btn.disabled = true;
-
-        if (window.tipoAcaoAtual === 'xp') {
-            const qtd = parseInt(document.getElementById('acao-quantidade').value);
-            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
-            if (data) await sb.from('membros').update({ xp_total: (data.xp_total || 0) + qtd }).eq('passaporte', window.passAlvoAtual);
-        } else if (window.tipoAcaoAtual === 'tirar_xp') {
-            const qtd = parseInt(document.getElementById('acao-quantidade').value);
-            const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single();
-            if (data) await sb.from('membros').update({ xp_total: (data.xp_total || 0) - qtd }).eq('passaporte', window.passAlvoAtual);
-        } else if (window.tipoAcaoAtual === 'advertencia') {
-            const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', window.passAlvoAtual).single();
-            if (data) await sb.from('membros').update({ xp_total: Math.floor((data.xp_total || 0) * 0.8), advertencias: (data.advertencias || 0) + 1 }).eq('passaporte', window.passAlvoAtual);
-        } else if (window.tipoAcaoAtual === 'retirar_advertencia') {
-            const { data } = await sb.from('membros').select('advertencias').eq('passaporte', window.passAlvoAtual).single();
-            if (data && data.advertencias > 0) await sb.from('membros').update({ advertencias: data.advertencias - 1 }).eq('passaporte', window.passAlvoAtual);
-        }
-
+        const btn = document.getElementById('btn-acao-confirmar'); btn.innerText = "Processando..."; btn.disabled = true;
+        if (window.tipoAcaoAtual === 'xp') { const qtd = parseInt(document.getElementById('acao-quantidade').value); const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single(); if (data) await sb.from('membros').update({ xp_total: (data.xp_total || 0) + qtd }).eq('passaporte', window.passAlvoAtual); } 
+        else if (window.tipoAcaoAtual === 'tirar_xp') { const qtd = parseInt(document.getElementById('acao-quantidade').value); const { data } = await sb.from('membros').select('xp_total').eq('passaporte', window.passAlvoAtual).single(); if (data) await sb.from('membros').update({ xp_total: (data.xp_total || 0) - qtd }).eq('passaporte', window.passAlvoAtual); } 
+        else if (window.tipoAcaoAtual === 'advertencia') { const { data } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', window.passAlvoAtual).single(); if (data) await sb.from('membros').update({ xp_total: Math.floor((data.xp_total || 0) * 0.8), advertencias: (data.advertencias || 0) + 1 }).eq('passaporte', window.passAlvoAtual); } 
+        else if (window.tipoAcaoAtual === 'retirar_advertencia') { const { data } = await sb.from('membros').select('advertencias').eq('passaporte', window.passAlvoAtual).single(); if (data && data.advertencias > 0) await sb.from('membros').update({ advertencias: data.advertencias - 1 }).eq('passaporte', window.passAlvoAtual); }
         if(localStorage.getItem('passaporte') === window.passAlvoAtual) window.abrirGaveta();
         if(typeof window.funcaoPosAcao === 'function') window.funcaoPosAcao();
         window.fecharModalAcao();
     };
-    </script>
-    <script>
-    // ========== MÓDULO DE FREQUÊNCIA ==========
-    let listaFrequenciaAtual = [];
-    
-    window.abrirFrequencia = function() {
-        document.getElementById('modalFrequencia').classList.add('aberto');
-        const hoje = new Date().toLocaleDateString('en-CA');
-        document.getElementById('freqData').value = hoje;
-        document.getElementById('freqBusca').value = '';
-        window.carregarFrequencia();
-    };
 
-    window.carregarFrequencia = async function() {
-        const dataSel = document.getElementById('freqData').value;
-        const corpo = document.getElementById('freqCorpo');
-        const passLogado = localStorage.getItem('passaporte');
-
-        if (!dataSel) return;
-        corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando dados...</div>';
-
-        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) });
-        const ehLider = isAdmin === true;
-
-        const { data: membros } = await sb.from('membros').select('nome, passaporte');
-        const { data: presencas } = await sb.from('presencas').select('*').eq('data', dataSel);
-        
-        const inicioDia = `${dataSel}T00:00:00.000Z`;
-        const fimDia = `${dataSel}T23:59:59.999Z`;
-        const { data: pontosDia } = await sb.from('pontos').select('passaporte, entrada').gte('entrada', inicioDia).lte('entrada', fimDia);
-
-        const mapaPresencas = {};
-        (presencas || []).forEach(p => mapaPresencas[String(p.passaporte)] = p.status);
-        const mapaPontos = new Set();
-        (pontosDia || []).forEach(p => mapaPontos.add(String(p.passaporte)));
-
-        listaFrequenciaAtual = (membros || []).map(m => {
-            let status = mapaPresencas[String(m.passaporte)];
-            // Se não tem status, mas bateu ponto, já marca como Presença
-            if (!status && mapaPontos.has(String(m.passaporte))) status = 'P';
-            return { ...m, status: status || null };
-        }).sort((a, b) => a.nome.localeCompare(b.nome));
-
-        window.renderizarFrequencia(ehLider);
-    };
-
-    window.renderizarFrequencia = function(ehLider) {
-        const corpo = document.getElementById('freqCorpo');
-        const legenda = document.getElementById('fqLegenda');
-        let qtdP = 0, qtdF = 0, qtdJ = 0;
-
-        if (listaFrequenciaAtual.length === 0) { 
-            corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro.</div>'; 
-            return; 
-        }
-
-        corpo.innerHTML = listaFrequenciaAtual.map(m => {
-            if (m.status === 'P') qtdP++; if (m.status === 'F') qtdF++; if (m.status === 'J') qtdJ++;
-            let acoes = '';
-            
-            if (ehLider) {
-                acoes = `
-                <div class="fq-botoes">
-                    <button class="fq-btn P ${m.status === 'P' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'P')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.4); background: ${m.status === 'P' ? '#22c55e' : 'transparent'}; color: ${m.status === 'P' ? '#000' : '#22c55e'}; font-weight: bold; cursor: pointer;">P</button>
-                    <button class="fq-btn F ${m.status === 'F' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'F')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(239, 68, 68, 0.4); background: ${m.status === 'F' ? '#ef4444' : 'transparent'}; color: ${m.status === 'F' ? '#fff' : '#ef4444'}; font-weight: bold; cursor: pointer;">F</button>
-                    <button class="fq-btn J ${m.status === 'J' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'J')" style="width: 34px; height: 34px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.4); background: ${m.status === 'J' ? '#f59e0b' : 'transparent'}; color: ${m.status === 'J' ? '#000' : '#f59e0b'}; font-weight: bold; cursor: pointer;">J</button>
-                </div>`;
-            } else {
-                const tag = m.status === 'P' ? '<span style="color:#22c55e; font-weight:bold;">PRESENÇA</span>' : m.status === 'F' ? '<span style="color:#ef4444; font-weight:bold;">FALTA</span>' : m.status === 'J' ? '<span style="color:#f59e0b; font-weight:bold;">JUSTIFICADO</span>' : '<span style="color:#64748b;">-</span>';
-                acoes = tag;
-            }
-            
+    let listaTodosMembrosGlobal = [];
+    window.carregarTodosMembros = async function() {
+        const lista = document.getElementById('listaTodosMembros'); if(!lista) return;
+        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        const { data: membros } = await sb.from('membros').select('nome, passaporte, cargo, xp_total, advertencias').order('nome');
+        listaTodosMembrosGlobal = membros || [];
+        lista.innerHTML = listaTodosMembrosGlobal.map(m => {
+            const xp = m.xp_total || 0; const adv = m.advertencias || 0;
+            let corBorda = adv > 0 ? 'rgba(239, 68, 68, 0.4)' : (xp < 0 ? 'rgba(245, 158, 11, 0.4)' : 'rgba(96, 165, 250, 0.12)');
             return `
-            <div class="fq-item" style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <div class="fq-item-info" style="display: flex; flex-direction: column; gap: 2px;">
-                    <div class="fq-item-nome" style="font-size: 14px; font-weight: 600; color: #fff;">${m.nome}</div>
-                    <div class="fq-item-pass" style="font-size: 11px; color: #94a3b8;">Pass: ${m.passaporte}</div>
+            <div class="membro-item-fixo" style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid ${corBorda}; border-radius: 12px; margin-bottom: 8px;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <div><div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div><div style="font-size: 11px; color: #94a3b8;">Pass: ${m.passaporte} | Cargo: ${m.cargo || 'Sem cargo'}</div></div>
+                    <div style="text-align:right;"><div style="font-size: 12px; font-weight: bold; color: ${xp < 0 ? '#ef4444' : '#60a5fa'};">${xp} XP</div>${adv > 0 ? `<div style="font-size: 10px; color: #ef4444; font-weight: bold;">⚠️ ${adv} Adv.</div>` : ''}</div>
                 </div>
-                ${acoes}
+                <div style="display:flex; gap: 6px; margin-top: 10px; border-top: 1px solid #334155; padding-top: 10px;">
+                    <button onclick="window.abrirModalAcao('xp', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-star"></i> Dar XP</button>
+                    <button onclick="window.abrirModalAcao('tirar_xp', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-minus-circle"></i> Tirar XP</button>
+                    ${adv > 0 ? `<button onclick="window.abrirModalAcao('retirar_advertencia', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(34,197,94,0.1); color:#22c55e; border:1px solid rgba(34,197,94,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-check-circle"></i> Retirar Adv.</button>` : `<button onclick="window.abrirModalAcao('advertencia', '${m.passaporte}', '${m.nome}', () => window.carregarTodosMembros())" style="flex:1; padding:8px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-exclamation-triangle"></i> Advertir</button>`}
+                </div>
             </div>`;
         }).join('');
-
-        document.getElementById('resumoP').innerText = qtdP;
-        document.getElementById('resumoF').innerText = qtdF;
-        document.getElementById('resumoJ').innerText = qtdJ;
-        if(ehLider) legenda.style.display = 'block';
     };
-
-    window.marcarPresenca = async function(passAlvo, novoStatus) {
-        const dataSel = document.getElementById('freqData').value;
-        const membro = listaFrequenciaAtual.find(m => String(m.passaporte) === String(passAlvo));
-        const statusFinal = (membro.status === novoStatus) ? null : novoStatus; // Clicar no mesmo botão desmarca
-        membro.status = statusFinal;
-        window.renderizarFrequencia(true);
-
-        if (statusFinal === null) {
-            await sb.from('presencas').delete().eq('passaporte', passAlvo).eq('data', dataSel);
-        } else {
-            const { data: existe } = await sb.from('presencas').select('id').eq('passaporte', passAlvo).eq('data', dataSel).single();
-            if (existe) await sb.from('presencas').update({ status: statusFinal }).eq('id', existe.id);
-            else await sb.from('presencas').insert([{ passaporte: passAlvo, data: dataSel, status: statusFinal }]);
-        }
+    window.filtrarTodosMembros = function() {
+        const termo = document.getElementById('buscaTodos').value.toLowerCase();
+        document.querySelectorAll('.membro-item-fixo').forEach(item => { item.style.display = item.innerText.toLowerCase().includes(termo) ? 'block' : 'none'; });
     };
     </script>
     <script>
-    // ========== SISTEMA DE SUPORTE ==========
-    let categoriaSelecionada = null;
-    let ticketAtualChatId = null;
-    let chatSubscription = null; 
-
-    window.abrirModalTickets = function() {
-        document.getElementById('modalTickets').classList.add('aberto');
-        window.voltarParaListaTickets();
-        document.getElementById('input-ticket').value = '';
-        categoriaSelecionada = null;
-        document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-        document.getElementById('div-descricao').style.display = 'none';
-        window.carregarTickets();
+    window.abrirListaMembros = function() { document.getElementById('modalMembros').classList.add('aberto'); window.carregarMembrosAtivos(); };
+    window.fecharListaMembros = function() { document.getElementById('modalMembros').classList.remove('aberto'); if(window.loopTimerMembros) clearInterval(window.loopTimerMembros); };
+    window.carregarMembrosAtivos = async function() {
+        const lista = document.getElementById('listaMembros'); if(!lista) return;
+        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        const [resPontos, resMembros, resEquipes] = await Promise.all([
+            sb.from('pontos').select('passaporte, nome, equipe_id, entrada, pausa_inicio, pausa_fim').is('saida', null),
+            sb.from('membros').select('passaporte, xp_total, advertencias'),
+            sb.from('equipes').select('id, nome')
+        ]);
+        const ativos = resPontos.data || []; const membrosDados = resMembros.data || []; const equipes = resEquipes.data || [];
+        const membrosMap = {}; membrosDados.forEach(m => membrosMap[String(m.passaporte)] = m);
+        const equipesMap = {}; equipes.forEach(e => equipesMap[e.id] = e.nome);
+        const agora = new Date(); let atualizouBanco = false;
+        for (let m of ativos) { if (m.pausa_inicio && !m.pausa_fim) { const min = (agora - new Date(m.pausa_inicio)) / 1000 / 60; if (min >= 30) { await sb.from('pontos').update({ saida: agora.toISOString() }).eq('passaporte', m.passaporte).is('saida', null); atualizouBanco = true; } } }
+        if(atualizouBanco) return window.carregarMembrosAtivos();
+        document.getElementById('membrosAtivos').textContent = ativos.length;
+        if (ativos.length === 0) { lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>'; return; }
+        lista.innerHTML = ativos.map(m => {
+            const isPausado = (m.pausa_inicio && !m.pausa_fim);
+            const dados = membrosMap[String(m.passaporte)] || { xp_total: 0, advertencias: 0 };
+            const nomeEquipe = equipesMap[m.equipe_id] || 'Sem Equipe';
+            let botoes = '';
+            if (isAdmin) { botoes = `<div style="display:flex; gap: 6px; margin-top: 8px; border-top: 1px solid #334155; padding-top: 8px; flex-wrap: wrap;"><button onclick="window.abrirModalAcao('xp', '${m.passaporte}', '${m.nome}', () => window.carregarMembrosAtivos())" style="flex:1; padding:6px; border-radius:6px; background:rgba(96,165,250,0.1); color:#60a5fa; border:1px solid rgba(96,165,250,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-star"></i> Dar XP</button><button onclick="window.abrirModalAcao('tirar_xp', '${m.passaporte}', '${m.nome}', () => window.carregarMembrosAtivos())" style="flex:1; padding:6px; border-radius:6px; background:rgba(245,158,11,0.1); color:#f59e0b; border:1px solid rgba(245,158,11,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-minus-circle"></i> Tirar XP</button><button onclick="window.adminAcaoPonto('${m.passaporte}', '${isPausado ? 'retomar' : 'pausar'}')" style="flex:1; padding:6px; border-radius:6px; background:rgba(${isPausado ? '34,197,94' : '245,158,11'},0.1); color:${isPausado ? '#22c55e' : '#f59e0b'}; border:1px solid ${isPausado ? '#22c55e' : '#f59e0b'}; font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-${isPausado ? 'play' : 'pause'}"></i> ${isPausado ? 'Retomar' : 'Pausar'}</button><button onclick="window.adminAcaoPonto('${m.passaporte}', 'encerrar')" style="flex:1; padding:6px; border-radius:6px; background:rgba(239,68,68,0.1); color:#ef4444; border:1px solid rgba(239,68,68,0.3); font-size:11px; font-weight:bold; cursor:pointer;"><i class="fas fa-stop"></i> Encerrar</button></div>`; }
+            let tagStatus = isPausado ? `<span style="font-size: 10px; font-weight: 700; color: #f59e0b; border:1px solid #f59e0b; padding:2px 6px; border-radius:4px;">PAUSADO</span>` : `<span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>`;
+            let corBorda = dados.advertencias > 0 ? 'rgba(239, 68, 68, 0.4)' : (dados.xp_total < 0 ? 'rgba(245, 158, 11, 0.4)' : 'rgba(96, 165, 250, 0.12)');
+            return `<div class="card-membro" style="border-color: ${corBorda}; padding: 12px; background: rgba(30, 64, 175, 0.08); border-radius: 12px; margin-bottom: 8px;"><div style="display:flex; justify-content:space-between; align-items:center;"><div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>${tagStatus}</div><div style="display:flex; justify-content:space-between; align-items:center; margin-top: 4px;"><div style="font-size: 11px; color: #94a3b8;"><i class="fas fa-id-card"></i> Pass: ${m.passaporte} | <i class="fas fa-users"></i> Equipe: ${nomeEquipe}</div><div style="font-size: 12px; font-weight: bold; color: ${dados.xp_total < 0 ? '#ef4444' : '#60a5fa'};">${dados.xp_total} XP ${dados.advertencias > 0 ? `| ⚠️ ${dados.advertencias} Adv` : ''}</div></div><div style="font-size: 13px; color: ${isPausado ? '#f59e0b' : '#22c55e'}; margin-top: 6px; font-weight: 600; display:flex; align-items:center; gap:5px;"><i class="fas fa-stopwatch"></i> <span class="cronometro-jornada" data-entrada="${m.entrada}" data-pausa-inicio="${m.pausa_inicio || ''}" data-pausa-fim="${m.pausa_fim || ''}">00:00:00</span></div>${botoes}</div>`;
+        }).join('');
+        if(window.loopTimerMembros) clearInterval(window.loopTimerMembros);
+        window.loopTimerMembros = setInterval(() => { document.querySelectorAll('.cronometro-jornada').forEach(el => { const entrada = new Date(el.getAttribute('data-entrada')).getTime(); const pInicioStr = el.getAttribute('data-pausa-inicio'); const pFimStr = el.getAttribute('data-pausa-fim'); const pInicio = pInicioStr ? new Date(pInicioStr).getTime() : null; const pFim = pFimStr ? new Date(pFimStr).getTime() : null; let tempoBrutoMs = Date.now() - entrada; let tempoPausaMs = 0; if (pInicio) { if (pFim) { tempoPausaMs = pFim - pInicio; } else { tempoPausaMs = Date.now() - pInicio; } } let tempoLiquidoMs = tempoBrutoMs - tempoPausaMs; if (tempoLiquidoMs < 0) tempoLiquidoMs = 0; const h = Math.floor(tempoLiquidoMs / 3600000); const m = Math.floor((tempoLiquidoMs % 3600000) / 60000); const s = Math.floor((tempoLiquidoMs % 60000) / 1000); el.textContent = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`; }); }, 1000);
     };
+    window.adminAcaoPonto = async function(passAlvo, acao) {
+        if (!confirm(`Deseja ${acao} o ponto do passaporte ${passAlvo}?`)) return;
+        const agora = new Date().toISOString(); let updateData = {};
+        if (acao === 'pausar') updateData = { pausa_inicio: agora };
+        if (acao === 'retomar') updateData = { pausa_fim: agora };
+        if (acao === 'encerrar') updateData = { saida: agora };
+        const { error } = await sb.from('pontos').update(updateData).eq('passaporte', passAlvo).is('saida', null);
+        if (!error) window.carregarMembrosAtivos();
+    };
+    </script>
+    <script>
+    let listaFrequenciaAtual = [];
+    window.abrirFrequencia = function() {
+        document.getElementById('modalFrequencia').classList.add('aberto');
+        const hoje = new Date().toLocaleDateString('en-CA'); document.getElementById('freqData').value = hoje;
+        window.carregarFrequencia();
+    };
+    window.carregarFrequencia = async function() {
+        const dataSel = document.getElementById('freqData').value; const corpo = document.getElementById('freqCorpo'); const passLogado = localStorage.getItem('passaporte');
+        if (!dataSel) return; corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
+        const { data: isAdminCheck } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(passLogado) }); const ehLider = isAdminCheck === true;
+        const { data: membros } = await sb.from('membros').select('nome, passaporte');
+        const { data: presencas } = await sb.from('presencas').select('*').eq('data', dataSel);
+        const inicioDia = `${dataSel}T00:00:00.000Z`; const fimDia = `${dataSel}T23:59:59.999Z`;
+        const { data: pontosDia } = await sb.from('pontos').select('passaporte, entrada').gte('entrada', inicioDia).lte('entrada', fimDia);
+        const mapaPresencas = {}; (presencas || []).forEach(p => mapaPresencas[String(p.passaporte)] = p.status);
+        const mapaPontos = new Set(); (pontosDia || []).forEach(p => mapaPontos.add(String(p.passaporte)));
+        listaFrequenciaAtual = (membros || []).map(m => { let status = mapaPresencas[String(m.passaporte)]; if (!status && mapaPontos.has(String(m.passaporte))) status = 'P'; return { ...m, status: status || null }; }).sort((a, b) => a.nome.localeCompare(b.nome));
+        window.renderizarFrequencia(ehLider);
+    };
+    window.renderizarFrequencia = function(ehLider) {
+        const corpo = document.getElementById('freqCorpo');
+        if (listaFrequenciaAtual.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro.</div>'; return; }
+        corpo.innerHTML = listaFrequenciaAtual.map(m => {
+            let acoes = '';
+            if (ehLider) { acoes = `<div class="fq-botoes" style="display:flex; gap:6px;"><button class="fq-btn P ${m.status === 'P' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'P')">P</button><button class="fq-btn F ${m.status === 'F' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'F')">F</button><button class="fq-btn J ${m.status === 'J' ? 'on' : ''}" onclick="window.marcarPresenca('${m.passaporte}', 'J')">J</button></div>`; } else { const tag = m.status === 'P' ? '<span style="color:#22c55e; font-weight:bold;">PRESENÇA</span>' : m.status === 'F' ? '<span style="color:#ef4444; font-weight:bold;">FALTA</span>' : m.status === 'J' ? '<span style="color:#f59e0b; font-weight:bold;">JUSTIFICADO</span>' : '<span style="color:#64748b;">-</span>'; acoes = tag; }
+            return `<div class="fq-item"><div class="fq-item-info"><div class="fq-item-nome">${m.nome}</div><div class="fq-item-pass">Pass: ${m.passaporte}</div></div>${acoes}</div>`;
+        }).join('');
+    };
+    window.marcarPresenca = async function(passAlvo, novoStatus) {
+        const dataSel = document.getElementById('freqData').value; const membro = listaFrequenciaAtual.find(m => String(m.passaporte) === String(passAlvo)); const statusFinal = (membro.status === novoStatus) ? null : novoStatus;
+        membro.status = statusFinal; window.renderizarFrequencia(true);
+        if (statusFinal === null) { await sb.from('presencas').delete().eq('passaporte', passAlvo).eq('data', dataSel); } 
+        else { const { data: existe } = await sb.from('presencas').select('id').eq('passaporte', passAlvo).eq('data', dataSel).single(); if (existe) await sb.from('presencas').update({ status: statusFinal }).eq('id', existe.id); else await sb.from('presencas').insert([{ passaporte: passAlvo, data: dataSel, status: statusFinal }]); }
+    };
+    </script>
+    <script>
+    let categoriaSelecionada = null; let ticketAtualChatId = null; let chatSubscription = null; 
+    window.abrirModalTickets = function() { document.getElementById('modalTickets').classList.add('aberto'); window.voltarParaListaTickets(); document.getElementById('input-ticket').value = ''; categoriaSelecionada = null; document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; }); document.getElementById('div-descricao').style.display = 'none'; window.carregarTickets(); };
     window.fecharModalTickets = function() { document.getElementById('modalTickets').classList.remove('aberto'); };
-    
-    window.selecionarCategoria = function(cat) {
-        if (categoriaSelecionada === cat) { 
-            categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; 
-        } else { 
-            categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; 
-        }
-        document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; });
-        if (categoriaSelecionada) { 
-            const btn = document.getElementById('btn-cat-' + categoriaSelecionada); 
-            if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } 
-        }
-    };
-
-    window.criarTicket = async function() {
-        const texto = document.getElementById('input-ticket').value;
-        const pass = localStorage.getItem('passaporte');
-        const nome = document.getElementById('nomeUsuario').textContent;
-        if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; }
-        
-        const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true;
-        await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]);
-        
-        document.getElementById('tela-abertura-ticket').style.display = 'none';
-        document.getElementById('tela-espera-ticket').style.display = 'flex';
-        window.carregarTickets(); 
-        btn.innerText = "Enviar Ticket"; btn.disabled = false;
-    };
-
+    window.selecionarCategoria = function(cat) { if (categoriaSelecionada === cat) { categoriaSelecionada = null; document.getElementById('div-descricao').style.display = 'none'; } else { categoriaSelecionada = cat; document.getElementById('div-descricao').style.display = 'flex'; } document.querySelectorAll('.btn-categoria').forEach(b => { b.style.borderColor = '#334155'; b.style.background = '#1e293b'; }); if (categoriaSelecionada) { const btn = document.getElementById('btn-cat-' + categoriaSelecionada); if(btn) { btn.style.borderColor = '#60a5fa'; btn.style.background = 'rgba(96, 165, 250, 0.1)'; } } };
+    window.criarTicket = async function() { const texto = document.getElementById('input-ticket').value; const pass = localStorage.getItem('passaporte'); const nome = document.getElementById('nomeUsuario').textContent; if(!categoriaSelecionada || !texto.trim()) { alert("Preencha todos os campos."); return; } const btn = event.target; btn.innerText = "Enviando..."; btn.disabled = true; await sb.from('tickets').insert([{ passaporte: pass, nome_autor: nome, mensagem: texto, categoria: categoriaSelecionada }]); document.getElementById('tela-abertura-ticket').style.display = 'none'; document.getElementById('tela-espera-ticket').style.display = 'flex'; window.carregarTickets(); btn.innerText = "Enviar Ticket"; btn.disabled = false; };
     window.carregarTickets = async function() {
-        const corpo = document.getElementById('corpoTickets');
-        const pass = localStorage.getItem('passaporte');
-        const nomeEu = document.getElementById('nomeUsuario').textContent;
+        const corpo = document.getElementById('corpoTickets'); const pass = localStorage.getItem('passaporte'); const nomeEu = document.getElementById('nomeUsuario').textContent;
         corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando...</div>';
-        
-        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-        const ehLider = isAdmin === true;
-        
-        let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false });
-        if (!ehLider) query = query.eq('passaporte', pass);
-        
+        const { data: isAdminCheck } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) }); const ehLider = isAdminCheck === true;
+        let query = sb.from('tickets').select('*').in('status', ['aberto', 'atendimento']).order('criado_em', { ascending: false }); if (!ehLider) query = query.eq('passaporte', pass);
         const { data, error } = await query;
         if (error) { corpo.innerHTML = '<div style="color: red;">Erro.</div>'; return; }
         if (data.length === 0) { corpo.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum ticket ativo.</div>'; return; }
-        
-        corpo.innerHTML = data.map(t => {
-            const isAberto = t.status === 'aberto'; 
-            const isAtendimento = t.status === 'atendimento'; 
-            const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`;
-            const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass);
-            
-            return `
-            <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
-                    <div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div>
-                    <span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span>
-                </div>
-                <div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>
-                ${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}
-                <div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>
-                ${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}
-                ${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}
-            </div>`;
-        }).join('');
+        corpo.innerHTML = data.map(t => { const isAberto = t.status === 'aberto'; const isAtendimento = t.status === 'atendimento'; const souEuAssumi = t.lider_assumiu === `Líder (${nomeEu})`; const podeAbrirChat = isAtendimento && (souEuAssumi || t.passaporte === pass); return `<div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-left: 3px solid ${isAberto ? '#f59e0b' : '#3b82f6'}; border-radius: 12px; margin-bottom: 8px;"><div style="display: flex; justify-content: space-between; margin-bottom: 5px;"><div style="font-size: 13px; font-weight: 600; color: #fff;">${t.nome_autor}</div><span style="font-size: 10px; font-weight: 700; color: ${isAberto ? '#f59e0b' : '#22c55e'};">${t.status.toUpperCase()}</span></div><div style="font-size: 11px; color: #60a5fa; margin-bottom: 5px;">[ ${t.categoria} ]</div>${isAtendimento ? `<div style="font-size: 11px; color: #22c55e; margin-bottom: 5px;">Atendido por: ${t.lider_assumiu}</div>` : ''}<div style="font-size: 13px; color: #cbd5e1; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">${t.mensagem}</div>${(ehLider && isAberto) ? `<button onclick="window.assumirTicket(${t.id})" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #3b82f6; background: rgba(59, 130, 246, 0.1); color: #3b82f6; font-weight: bold; font-size: 12px; cursor: pointer;">Assumir Ticket</button>` : ''}${podeAbrirChat ? `<button onclick="window.abrirChatTicket(${t.id}, '${t.nome_autor}', '${t.passaporte}')" style="width: 100%; margin-top: 10px; padding: 8px; border-radius: 8px; border: 1px solid #22c55e; background: rgba(34, 197, 94, 0.1); color: #22c55e; font-weight: bold; font-size: 12px; cursor: pointer;">Abrir Chat</button>` : ''}</div>`; }).join('');
     };
-
-    window.assumirTicket = async function(id) {
-        const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`;
-        await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id);
-        window.carregarTickets();
-    };
-
-    window.voltarParaListaTickets = function() {
-        document.getElementById('tela-chat-ticket').style.display = 'none';
-        document.getElementById('tela-lista-tickets').style.display = 'flex';
-        document.getElementById('btn-resolver-chat').style.display = 'none';
-        document.getElementById('tela-espera-ticket').style.display = 'none';
-        document.getElementById('tela-abertura-ticket').style.display = 'flex';
-        ticketAtualChatId = null;
-        if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
-        window.carregarTickets();
-    };
-
+    window.assumirTicket = async function(id) { const nome = `Líder (${document.getElementById('nomeUsuario').textContent})`; await sb.from('tickets').update({ status: 'atendimento', lider_assumiu: nome }).eq('id', id); window.carregarTickets(); };
+    window.voltarParaListaTickets = function() { document.getElementById('tela-chat-ticket').style.display = 'none'; document.getElementById('tela-lista-tickets').style.display = 'flex'; document.getElementById('btn-resolver-chat').style.display = 'none'; document.getElementById('tela-espera-ticket').style.display = 'none'; document.getElementById('tela-abertura-ticket').style.display = 'flex'; ticketAtualChatId = null; if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; } window.carregarTickets(); };
     window.abrirChatTicket = async function(id, nomeAutor, passaporte) {
-        ticketAtualChatId = id;
-        document.getElementById('tela-lista-tickets').style.display = 'none';
-        document.getElementById('tela-chat-ticket').style.display = 'flex';
-        document.getElementById('chat-titulo').innerText = "Ticket #" + id;
-        document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`;
-        document.getElementById('input-chat-msg').value = "";
-        
-        const pass = localStorage.getItem('passaporte');
-        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-        document.getElementById('btn-resolver-chat').style.display = (isAdmin === true) ? 'block' : 'none';
-        
+        ticketAtualChatId = id; document.getElementById('tela-lista-tickets').style.display = 'none'; document.getElementById('tela-chat-ticket').style.display = 'flex'; document.getElementById('chat-titulo').innerText = "Ticket #" + id; document.getElementById('chat-subtitulo').innerText = `Solicitante: ${nomeAutor} (${passaporte})`; document.getElementById('input-chat-msg').value = "";
+        const pass = localStorage.getItem('passaporte'); const { data: isAdminCheck } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) }); document.getElementById('btn-resolver-chat').style.display = (isAdminCheck === true) ? 'block' : 'none';
         await window.carregarMensagens();
-
-        // Tempo real no chat
-        if (chatSubscription) sb.removeChannel(chatSubscription);
-        chatSubscription = sb.channel('chat-' + id)
-            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => {
-                window.carregarMensagens();
-            }).subscribe();
+        if (chatSubscription) sb.removeChannel(chatSubscription); chatSubscription = sb.channel('chat-' + id).on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'mensagens_ticket', filter: `ticket_id=eq.${id}` }, payload => { window.carregarMensagens(); }).subscribe();
     };
-
     window.carregarMensagens = async function() {
-        if(!ticketAtualChatId) return;
-        const chatBox = document.getElementById('chat-mensagens');
+        if(!ticketAtualChatId) return; const chatBox = document.getElementById('chat-mensagens');
         const { data } = await sb.from('mensagens_ticket').select('*').eq('ticket_id', ticketAtualChatId).order('criado_em', { ascending: true });
-        
-        if (data.length === 0) { 
-            chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; 
-        } else {
-            chatBox.innerHTML = data.map(m => {
-                const isLider = m.autor.includes("Líder"); 
-                const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                return `
-                    <div class="msg-card ${isLider ? 'admin' : ''}">
-                        <div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div>
-                        <div class="msg-content">
-                            <div class="msg-header"><span class="msg-nome">${m.autor}</span><span class="msg-tag">${isLider ? 'LIDERANÇA' : 'MEMBRO'}</span><span class="msg-hora">${hora}</span></div>
-                            <div class="msg-body">${m.mensagem || ''}</div>
-                        </div>
-                    </div>`;
-            }).join('');
-        }
+        if (data.length === 0) { chatBox.innerHTML = `<div style="text-align:center; color:#64748b; font-size:12px;">Nenhuma mensagem.</div>`; } 
+        else { chatBox.innerHTML = data.map(m => { const isLider = m.autor.includes("Líder"); const hora = new Date(m.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); return `<div class="msg-card ${isLider ? 'admin' : ''}"><div class="msg-avatar"><i class="fas fa-${isLider ? 'user-shield' : 'user'}"></i></div><div class="msg-content"><div class="msg-header"><span class="msg-nome">${m.autor}</span><span class="msg-tag">${isLider ? 'LIDERANÇA' : 'MEMBRO'}</span><span class="msg-hora">${hora}</span></div><div class="msg-body">${m.mensagem || ''}</div></div></div>`; }).join(''); }
         setTimeout(() => { chatBox.scrollTop = chatBox.scrollHeight; }, 100);
     };
-
     window.enviarMensagemChat = async function() {
-        const input = document.getElementById('input-chat-msg'); const texto = input.value.trim();
-        if(!texto || !ticketAtualChatId) return;
-        const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte');
-        const { data: isAdmin } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) });
-        const autor = isAdmin === true ? `Líder (${nomeEu})` : "Jogador";
-        input.value = ""; 
-        await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
+        const input = document.getElementById('input-chat-msg'); const texto = input.value.trim(); if(!texto || !ticketAtualChatId) return;
+        const nomeEu = document.getElementById('nomeUsuario').textContent; const pass = localStorage.getItem('passaporte'); const { data: isAdminCheck } = await sb.rpc('eh_admin_ponto', { p_passaporte: String(pass) }); const autor = isAdminCheck === true ? `Líder (${nomeEu})` : "Jogador";
+        input.value = ""; await sb.from('mensagens_ticket').insert([{ ticket_id: ticketAtualChatId, autor: autor, mensagem: texto }]);
     };
-
-    window.resolverTicketChat = async function() {
-        if(!confirm("Finalizar atendimento?")) return;
-        await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId);
-        window.voltarParaListaTickets();
-    };
+    window.resolverTicketChat = async function() { if(!confirm("Finalizar atendimento?")) return; await sb.from('tickets').update({ status: 'resolvido' }).eq('id', ticketAtualChatId); window.voltarParaListaTickets(); };
 
     document.getElementById('input-chat-msg')?.addEventListener('keypress', (e) => { if (e.key === 'Enter') window.enviarMensagemChat(); });
-        <!-- JANELA GERENCIAR MEMBROS -->
-<div class="fundo-modal" id="modalGerenciar" onclick="if(event.target === this) document.getElementById('modalGerenciar').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 85vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Gerenciar Membros</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalGerenciar').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-search" style="color:#60a5fa;"></i>
-            <input type="text" id="buscaTodos" placeholder="Buscar por nome ou passaporte..." oninput="window.filtrarTodosMembros()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
-        </div>
-        <div id="listaTodosMembros" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
-        </div>
-    </div>
-</div>
-
-<!-- MODAL DE AÇÃO (XP / ADVERTÊNCIA) -->
-<div class="fundo-modal" id="modalAcao" onclick="if(event.target === this) fecharModalAcao()">
-    <div class="caixa-modal" style="max-width: 360px; padding: 24px;">
-        <h3 id="acao-titulo" style="font-size: 20px; font-weight: 700; margin-bottom: 5px; color: #fff; text-align: center;">Ação</h3>
-        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 20px; text-align: center;">Membro: <b id="acao-nome-alvo" style="color:#60a5fa;">---</b></p>
-        <div id="campo-quantidade-box">
-            <input type="number" id="acao-quantidade" placeholder="Quantidade de XP" value="50" min="1" style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none;">
-        </div>
-        <input type="text" id="acao-motivo" placeholder="Digite o motivo..." value="" style="width: 100%; padding: 12px; margin-bottom: 12px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #fff; font-family: inherit; font-size: 14px; outline: none;">
-        <div class="botoes-modal">
-            <button class="botao-cancelar" onclick="fecharModalAcao()">Cancelar</button>
-            <button class="botao-confirmar" id="btn-acao-confirmar" onclick="confirmarAcao()">Confirmar</button>
-        </div>
-    </div>
-</div>
-
-<!-- JANELA DE FREQUÊNCIA -->
-<div class="fundo-modal" id="modalFrequencia" onclick="if(event.target === this) document.getElementById('modalFrequencia').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Frequência</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalFrequencia').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-calendar-day" style="color:#60a5fa;"></i>
-            <input type="date" id="freqData" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark;" onchange="carregarFrequencia()">
-        </div>
-        <div class="fq-resumo" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 15px;">
-            <div class="fq-card p" style="background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.3); color: #22c55e; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoP" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Presenças</span></div>
-            <div class="fq-card f" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: #ef4444; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoF" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Faltas</span></div>
-            <div class="fq-card j" style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); color: #f59e0b; padding: 10px; border-radius: 8px; text-align: center; display: flex; flex-direction: column; gap: 2px;"><b id="resumoJ" style="font-size: 18px;">0</b><span style="font-size: 10px; font-weight: 700;">Justificativas</span></div>
-        </div>
-        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px 12px; margin-bottom: 15px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-search" style="color:#60a5fa;"></i>
-            <input type="text" id="freqBusca" placeholder="Buscar membro..." oninput="filtrarFrequencia()" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:14px;">
-        </div>
-        <div id="freqCorpo" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
-        </div>
-        <div class="fq-legenda" id="fqLegenda" style="display: none; font-size: 10px; color: #64748b; text-align: center; margin-top: 10px;">
-            <i class="fas fa-info-circle"></i> P: +50 XP | J: +10 XP | F: -200 XP e Bloqueio
-        </div>
-    </div>
-</div>
-<script>
-    // ========== FORÇAR CLIQUES DOS CARDS (MODO EMERGÊNCIA) ==========
-    document.addEventListener("DOMContentLoaded", () => {
-        
-        // 1. Pega todos os cards do painel
-        const cards = document.querySelectorAll('.card');
-        
-        cards.forEach(card => {
-            const texto = card.innerText;
-
-            // Se o card tiver o texto de "Tickets"
-            if (texto.includes('Tickets')) {
-                card.onclick = function() {
-                    document.getElementById('modalTickets').classList.add('aberto');
-                    if(typeof window.carregarTickets === 'function') window.carregarTickets();
-                };
-            }
-            
-            // Se o card tiver o texto de "Membros Ativos"
-            if (texto.includes('Membros Ativos')) {
-                card.onclick = function() {
-                    document.getElementById('modalMembros').classList.add('aberto');
-                    if(typeof window.carregarMembrosAtivos === 'function') window.carregarMembrosAtivos();
-                };
-            }
-
-            // Se o card tiver o texto de "Faltas" ou "Frequência"
-            if (texto.includes('Faltas') || texto.includes('Frequência')) {
-                card.onclick = function() {
-                    document.getElementById('modalFrequencia').classList.add('aberto');
-                    if(typeof window.carregarFrequencia === 'function') window.carregarFrequencia();
-                };
-            }
-
-            // Se o card tiver o texto de "Gerenciar"
-            if (texto.includes('Gerenciar')) {
-                card.onclick = function() {
-                    document.getElementById('modalGerenciar').classList.add('aberto');
-                    if(typeof window.carregarTodosMembros === 'function') window.carregarTodosMembros();
-                };
-            }
-        });
-    });
 </script>
-    <script>
-    // TESTE DE EMERGÊNCIA: FALTAS E PRESENÇAS
-    document.body.addEventListener('click', function(evento) {
-        // Pega o elemento que foi clicado
-        let alvo = evento.target;
-        
-        // Sobe na tela até achar o card
-        while (alvo && alvo !== document) {
-            if (alvo.classList && alvo.classList.contains('card')) {
-                if (alvo.innerText.includes('Faltas')) {
-                    // Achou o card de Faltas! Vamos tentar abrir a janela.
-                    let janela = document.getElementById('modalFrequencia');
-                    if (janela) {
-                        janela.classList.add('aberto');
-                    } else {
-                        alert('ERRO: A janela (modalFrequencia) não existe no seu HTML!');
-                    }
-                    break;
-                }
-            }
-            alvo = alvo.parentNode;
-        }
-    });
-    </script>
-    <!-- JANELA DE FREQUÊNCIA (A QUE ESTAVA FALTANDO) -->
-<div class="fundo-modal" id="modalFrequencia" onclick="if(event.target === this) document.getElementById('modalFrequencia').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 90vh; display: flex; flex-direction: column;">
-        
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Frequência</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalFrequencia').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-
-        <div style="background: rgba(2,6,23,.5); border:1px solid rgba(96,165,250,.25); border-radius:12px; padding:10px; margin-bottom:15px; display:flex; align-items:center; gap:10px;">
-            <i class="fas fa-calendar-day" style="color:#60a5fa;"></i>
-            <input type="date" id="freqData" style="flex:1; background:transparent; border:none; outline:none; color:#fff; font-family:inherit; font-size:15px; font-weight:600; color-scheme:dark;" onchange="window.carregarFrequencia()">
-        </div>
-
-        <div id="freqCorpo" style="flex: 1; overflow-y: auto; padding-right: 5px; display: flex; flex-direction: column; gap: 8px;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Carregando membros...</div>
-        </div>
-    </div>
-</div>
-    <!-- JANELA DE MEMBROS ATIVOS -->
-<div class="fundo-modal" id="modalMembros" onclick="if(event.target === this) document.getElementById('modalMembros').classList.remove('aberto')">
-    <div class="caixa-lista" style="background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.92)); border: 1px solid rgba(96, 165, 250, 0.2); border-radius: 24px; padding: 22px 18px 18px; max-width: 440px; width: 100%; max-height: 80vh; display: flex; flex-direction: column;">
-        <div class="lista-topo" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <h3 class="lista-titulo" style="font-size: 20px; font-weight: 700; color:#fff;">Membros Ativos</h3>
-            <button class="lista-fechar" onclick="document.getElementById('modalMembros').classList.remove('aberto')" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer;"><i class="fas fa-times"></i></button>
-        </div>
-        <div id="listaMembros" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-            <div style="text-align:center; padding:20px; color:#64748b;">Carregando...</div>
-        </div>
-    </div>
-</div>
-    <script>
-    // ========== CONTADOR E CLIQUE DOS MEMBROS ATIVOS ==========
-    document.addEventListener("DOMContentLoaded", () => {
-        const pass = localStorage.getItem('passaporte');
-        if(!pass) return;
-
-        // 1. Puxa a contagem de membros online para o card
-        sb.from('pontos').select('*', { count: 'exact', head: true }).is('saida', null).then(({ count }) => {
-            const el = document.getElementById('membrosAtivos');
-            if(el) el.textContent = count || 0;
-        });
-
-        // 2. Força o clique no card de Membros Ativos
-        // (Usando o mesmo truque que funcionou na Frequência)
-        document.body.addEventListener('click', function(evento) {
-            let alvo = evento.target;
-            while (alvo && alvo !== document) {
-                if (alvo.classList && alvo.classList.contains('card')) {
-                    if (alvo.innerText.includes('Membros Ativos')) {
-                        let janela = document.getElementById('modalMembros');
-                        if (janela) {
-                            janela.classList.add('aberto');
-                            if(typeof window.carregarMembrosAtivos === 'function') {
-                                window.carregarMembrosAtivos();
-                            }
-                        } else {
-                            alert('ERRO: A janela (modalMembros) não existe no HTML!');
-                        }
-                        break;
-                    }
-                }
-                alvo = alvo.parentNode;
-            }
-        });
-    });
-    </script>
-    <script>
-    // ========== CARREGAR MEMBROS ATIVOS (VERSÃO BLINDADA) ==========
-    window.carregarMembrosAtivos = async function() {
-        const lista = document.getElementById('listaMembros');
-        if(!lista) return; // Se não achar a div, para.
-        
-        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando membros...</div>';
-
-        try {
-            // 1. Puxa quem está com ponto aberto
-            const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome').is('saida', null);
-            
-            if (error) throw error;
-
-            // Atualiza o numerozinho no painel principal
-            const elContador = document.getElementById('membrosAtivos');
-            if (elContador) elContador.textContent = ativos.length;
-
-            if (ativos.length === 0) {
-                lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
-                return;
-            }
-
-            // 2. Monta o HTML simples de cada membro
-            let html = '';
-            ativos.forEach(m => {
-                html += `
-                <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; margin-bottom: 8px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
-                        <span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>
-                    </div>
-                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
-                        Passaporte: ${m.passaporte}
-                    </div>
-                </div>`;
-            });
-
-            // 3. Coloca na tela
-            lista.innerHTML = html;
-
-        } catch (erro) {
-            console.error(erro);
-            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#ef4444;">Erro ao carregar a lista. Tente novamente.</div>';
-        }
-    };
-    </script>
 </body>
 </html>
