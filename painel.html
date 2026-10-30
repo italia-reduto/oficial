@@ -940,5 +940,52 @@
         });
     });
     </script>
+    <script>
+    // ========== CARREGAR MEMBROS ATIVOS (VERSÃO BLINDADA) ==========
+    window.carregarMembrosAtivos = async function() {
+        const lista = document.getElementById('listaMembros');
+        if(!lista) return; // Se não achar a div, para.
+        
+        lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Buscando membros...</div>';
+
+        try {
+            // 1. Puxa quem está com ponto aberto
+            const { data: ativos, error } = await sb.from('pontos').select('passaporte, nome').is('saida', null);
+            
+            if (error) throw error;
+
+            // Atualiza o numerozinho no painel principal
+            const elContador = document.getElementById('membrosAtivos');
+            if (elContador) elContador.textContent = ativos.length;
+
+            if (ativos.length === 0) {
+                lista.innerHTML = '<div style="text-align:center; padding:20px; color:#64748b;">Nenhum membro em jornada.</div>';
+                return;
+            }
+
+            // 2. Monta o HTML simples de cada membro
+            let html = '';
+            ativos.forEach(m => {
+                html += `
+                <div style="padding: 12px; background: rgba(30, 64, 175, 0.08); border: 1px solid rgba(96, 165, 250, 0.12); border-radius: 12px; margin-bottom: 8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="font-size: 14px; font-weight: 700; color: #fff;">${m.nome}</div>
+                        <span style="font-size: 10px; font-weight: 700; color: #22c55e; border:1px solid #22c55e; padding:2px 6px; border-radius:4px;">ON</span>
+                    </div>
+                    <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+                        Passaporte: ${m.passaporte}
+                    </div>
+                </div>`;
+            });
+
+            // 3. Coloca na tela
+            lista.innerHTML = html;
+
+        } catch (erro) {
+            console.error(erro);
+            lista.innerHTML = '<div style="text-align:center; padding:20px; color:#ef4444;">Erro ao carregar a lista. Tente novamente.</div>';
+        }
+    };
+    </script>
 </body>
 </html>
