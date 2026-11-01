@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <meta name="color-scheme" content="dark">
+    <title>Itália 2.0 | Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            color-scheme: dark;
+            --verde: #22c55e;
+            --fundo: #0a0f0d;
+            --vidro: rgba(15, 23, 20, 0.6);
+            --borda: rgba(34, 197, 94, 0.2);
+            --texto: #f3f4f6;
+            --texto-mutado: #9ca3af;
+        }
+
+        * { 
+            margin: 0; padding: 0; box-sizing: border-box; 
+            font-family: 'Inter', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        html { background-color: #0a0f0d; overflow-x: hidden; }
+
+        body {
+            background-color: var(--fundo);
+            color: var(--texto);
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .anim-entrada { animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
+        .fundo-degrade {
+            position: fixed; inset: 0;
+            background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%),
+                        radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%);
+            z-index: -2;
+        }
+        .grade-fundo {
+            position: fixed; inset: 0;
+            background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px; z-index: -1;
+            mask-image: radial-gradient(circle at center, black 10%, transparent 90%);
+            -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%);
+        }
+        .particula {
+            position: fixed; bottom: -10px; background-color: var(--verde);
+            border-radius: 50%; box-shadow: 0 0 10px var(--verde);
+            opacity: 0; animation: subir linear infinite; z-index: 5;
+        }
+        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; }
+        .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; }
+        .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; }
+        .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; }
+        .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
+        @keyframes subir {
+            0% { transform: translateY(0) scale(1); opacity: 0; }
+            20% { opacity: 0.6; } 80% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+        }
+
+        .container-principal {
+            width: 100%; max-width: 800px;
+            display: flex; flex-direction: column; gap: 15px;
+            position: relative; z-index: 10;
+            margin-top: 20px; padding-bottom: 120px;
+        }
+      /* CARTÃO DE PERFIL */
+.cartao-perfil {
+    background: var(--vidro);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--borda); border-radius: 16px; padding: 25px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    display: flex; align-items: center; gap: 20px; position: relative;
+}
+.cartao-perfil::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+    background: var(--verde); border-radius: 16px 0 0 16px;
+}
+.avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    border: 2px solid var(--verde); background: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: bold; color: var(--verde);
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+    background-size: cover; background-position: center; flex-shrink: 0;
+}
+.info-perfil { flex: 1; }
+.nome { font-family: 'Oswald', sans-serif; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.cargo { font-size: 13px; color: var(--verde); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+.passaporte { font-size: 12px; color: var(--texto-mutado); }
+.xp-container { margin-top: 10px; }
+.xp-textos { display: flex; justify-content: space-between; font-size: 10px; color: var(--texto-mutado); margin-bottom: 5px; font-weight: 500;}
+.xp-textos span:last-child { color: var(--verde); font-weight: bold;}
+.xp-barra-bg { width: 100%; height: 4px; background: rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden; }
+.xp-barra-preenchida { height: 100%; background: var(--verde); width: 0%; box-shadow: 0 0 10px var(--verde); transition: width 1s ease; }
+
+.btn-config {
+    position: absolute; top: 15px; right: 15px;
+    width: 35px; height: 35px; background: rgba(0,0,0,0.3);
+    border: 1px solid var(--borda); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--texto-mutado); font-size: 16px;
+    cursor: pointer; z-index: 10; transition: 0.3s;
+}
+.btn-config:hover { color: var(--verde); border-color: var(--verde); transform: rotate(90deg); }
+
+/* MÉTRICAS */
+.grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.card-metrica {
+    background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--borda); border-radius: 12px; padding: 15px; text-align: left; transition: 0.3s;
+}
+.metrica-topo {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    color: var(--texto-mutado); display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 5px;
+}
+.metrica-topo i { font-size: 14px; }
+.metrica-valor { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
+.metrica-sub { font-size: 10px; color: rgba(255,255,255,0.3); }
+
+/* AÇÕES RÁPIDAS */
+.grid-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.card-acao {
+    background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--borda); border-radius: 12px;
+    padding: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+    cursor: pointer; transition: 0.3s; position: relative; overflow: hidden;
+}
+.card-acao:hover { border-color: rgba(34, 197, 94, 0.5); background: rgba(34, 197, 94, 0.05); }
+.card-acao i { font-size: 24px; color: var(--verde); }
+.card-acao span { font-family: 'Oswald', sans-serif; font-size: 15px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+.card-acao p { font-size: 11px; color: var(--texto-mutado); }
+
+/* SINO PULSANTE */
+.icone-sino { position: absolute; top: 15px; right: 15px; color: #ef4444; font-size: 16px; animation: pulsar-sino 1.5s infinite; }
+.icone-sino-titulo { color: #ef4444; font-size: 14px; margin-left: 10px; animation: pulsar-sino 1.5s infinite; }
+@keyframes pulsar-sino {
+    0% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.1) rotate(10deg); }
+    50% { transform: scale(1) rotate(-10deg); } 75% { transform: scale(1.1) rotate(10deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+/* AVISOS */
+.painel-avisos {
+    background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--borda); border-radius: 12px;
+    padding: 20px; margin-top: 5px; display: flex; flex-direction: column; gap: 15px; position: relative;
+}
+.painel-topo h3 {
+    font-family: 'Oswald', sans-serif; font-size: 16px; letter-spacing: 1px;
+    text-transform: uppercase; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.05);
+    padding-bottom: 10px; display: flex; align-items: center;
+}
+.lista-avisos { display: flex; flex-direction: column; gap: 10px; }
+.aviso-item {
+    background: rgba(0,0,0,0.3); border-left: 3px solid var(--verde);
+    padding: 15px; border-radius: 0 8px 8px 0; transition: 0.3s;
+}
+.aviso-texto { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
+.aviso-vazio { font-size: 13px; color: var(--texto-mutado); text-align: center; padding: 10px 0; }
+              /* MODAIS (MEMBROS E CONFIG) */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            z-index: 2000; align-items: center; justify-content: center;
+            padding: 20px; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .modal-overlay.ativo { display: flex; opacity: 1; }
+        
+        .modal-conteudo {
+            background: var(--vidro);
+            border: 1px solid var(--borda); border-radius: 16px;
+            width: 100%; max-width: 500px; 
+            max-height: 80vh;
+            display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transform: scale(0.9) translateY(20px); opacity: 0;
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+            overflow: hidden;
+        }
+        .modal-overlay.ativo .modal-conteudo { transform: scale(1) translateY(0); opacity: 1; }
+        
+        .modal-header {
+            padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;
+        }
+        .modal-header h2 { font-family: 'Oswald', sans-serif; font-size: 20px; color: var(--verde); text-transform: uppercase; display: flex; gap: 10px; align-items: center;}
+        .btn-fechar { background: transparent; border: none; color: var(--texto-mutado); font-size: 20px; cursor: pointer; }
+        .btn-fechar:hover { color: #ef4444; }
+        
+        .modal-lista { 
+            padding: 20px; 
+            overflow-y: auto; 
+            max-height: 60vh; /* LIMITA A ALTURA E PERMITE ROLAR */
+            display: flex; flex-direction: column; gap: 10px; 
+            flex: 1;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* MEMBROS */
+        .membro-card {
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(0,0,0,0.3); padding: 12px 15px; border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .membro-info { display: flex; align-items: center; gap: 12px; }
+        .membro-avatar {
+            width: 40px; height: 40px; border-radius: 50%; background: #000;
+            border: 1px solid var(--borda); display: flex; align-items: center; justify-content: center;
+            font-family: 'Oswald'; color: var(--verde); font-size: 16px; background-size: cover; background-position: center;
+        }
+        .membro-dados h4 { font-size: 14px; color: #fff; margin-bottom: 2px; }
+        .membro-dados p { font-size: 11px; color: var(--texto-mutado); }
+        .status-online { width: 10px; height: 10px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 8px var(--verde); flex-shrink: 0;}
+
+        /* CONFIGURAÇÕES */
+        .config-secao { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 15px; }
+        .config-secao:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+        .config-titulo { font-family: 'Oswald', sans-serif; font-size: 13px; color: var(--verde); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .config-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; cursor: pointer; }
+        .config-info { display: flex; flex-direction: column; gap: 2px; }
+        .config-info-titulo { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--texto); font-weight: 500; }
+        .config-info-titulo i { width: 16px; text-align: center; color: var(--texto-mutado); }
+        .config-descricao { font-size: 10px; color: var(--texto-mutado); margin-left: 28px; line-height: 1.3; max-width: 200px; }
+        .config-badge { font-size: 11px; background: rgba(34, 197, 94, 0.1); color: var(--verde); padding: 3px 8px; border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .btn-config-acao { background: rgba(255,255,255,0.05); border: 1px solid var(--borda); color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: 0.3s; }
+        .btn-config-acao:hover { background: var(--verde); color: #000; }
+        .btn-config-acao.perigo { color: #ef4444; border-color: rgba(239,68,68,0.3); }
+        .btn-config-acao.perigo:hover { background: #ef4444; color: #fff; }
+
+        /* SWITCH */
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0;}
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #27272a; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--verde); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
+        /* ALERTA CUSTOMIZADO */
+        .alerta-custom {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: rgba(10, 15, 13, 0.95); border: 1px solid var(--verde); border-radius: 12px;
+            padding: 15px 20px; display: flex; align-items: center; gap: 15px;
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; min-width: 280px;
+            transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .alerta-custom.ativo { top: 20px; }
+        .alerta-custom i { font-size: 24px; color: var(--verde); }
+        .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500; }
+        .alerta-custom.erro { border-color: #ef4444; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2); }
+        .alerta-custom.erro i { color: #ef4444; }
+
+        /* MENU INFERIOR */
+        .menu-inferior {
+            position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px;
+            background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--borda); border-radius: 25px;
+            display: flex; justify-content: space-around; align-items: center;
+            padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+        .item-menu {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            text-decoration: none; color: var(--texto-mutado); font-size: 10px;
+            font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px;
+            cursor: pointer; border: 1px solid transparent;
+        }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+
+        /* CELULAR */
+        @media (max-width: 600px) {
+            .cartao-perfil { padding: 15px; gap: 15px; border-radius: 12px; }
+            .avatar { width: 60px; height: 60px; font-size: 24px; }
+            .nome { font-size: 20px; }
+            .cargo { font-size: 11px; }
+            .passaporte { font-size: 10px; }
+            .grid-metricas { gap: 8px; }
+            .card-metrica { padding: 10px; border-radius: 10px; }
+            .metrica-topo { font-size: 9px; flex-direction: row; align-items: center; }
+            .metrica-topo i { font-size: 12px; }
+            .metrica-valor { font-size: 22px; }
+            .metrica-sub { font-size: 8px; line-height: 1.1; display: block;}
+            .grid-acoes { grid-template-columns: 1fr; }
+            .painel-avisos { padding: 15px; }
+            .aviso-item { padding: 12px; }
+            .alerta-custom { min-width: 90%; }
+            .modal-lista { padding-bottom: 90px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="fundo-degrade"></div>
+    <div class="grade-fundo"></div>
+    <div class="particula p1"></div>
+    <div class="particula p2"></div>
+    <div class="particula p3"></div>
+    <div class="particula p4"></div>
+    <div class="particula p5"></div>
+
+    <main class="container-principal">
+        <!-- CARTÃO DE PERFIL -->
+        <div class="cartao-perfil anim-entrada delay-1">
+            <div class="btn-config" onclick="abrirModalConfig()">
+                <i class="fas fa-cog"></i>
+            </div>
+
+            <div class="avatar" id="avatar-inicial">?</div>
+            <div class="info-perfil">
+                <h1 class="nome" id="nome-membro">Carregando...</h1>
+                <p class="cargo" id="cargo-membro">---</p>
+                <p class="passaporte">Passaporte: <span id="passaporte-membro" style="color: #fff;">---</span></p>
+                
+                <div class="xp-container">
+                    <div class="xp-textos">
+                        <span>XP</span>
+                        <span id="xp-texto">0 / 1000</span>
+                    </div>
+                    <div class="xp-barra-bg">
+                        <div class="xp-barra-preenchida" id="xp-barra"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÉTRICAS -->
+        <div class="grid-metricas anim-entrada delay-2">
+            <div class="card-metrica">
+                <div class="metrica-topo">Presenças <i class="fas fa-check-circle" style="color: #22c55e;"></i></div>
+                <div class="metrica-valor" style="color: #22c55e;" id="kpi-presencas">0</div>
+                <div class="metrica-sub">Registros</div>
+            </div>
+            
+            <div class="card-metrica">
+                <div class="metrica-topo">Faltas <i class="fas fa-times-circle" style="color: #ef4444;"></i></div>
+                <div class="metrica-valor" style="color: #ef4444;" id="kpi-faltas">0</div>
+                <div class="metrica-sub">Sem Just.</div>
+            </div>
+
+            <div class="card-metrica">
+                <div class="metrica-topo">Advertências <i class="fas fa-exclamation-triangle" style="color: #eab308;"></i></div>
+                <div class="metrica-valor" style="color: #eab308;" id="kpi-advertencias">0</div>
+                <div class="metrica-sub">Punições</div>
+            </div>
+        </div>
+
+        <!-- AÇÕES RÁPIDAS -->
+        <div class="grid-acoes anim-entrada delay-3">
+            <div class="card-acao" onclick="abrirModalMembros()">
+                <i class="fas fa-users"></i>
+                <span>Membros</span>
+                <p>Ver todos os membros da organização</p>
+            </div>
+            <div class="card-acao" onclick="abrirModalTicket()">
+                <i class="fas fa-bell icone-sino" id="notif-ticket" style="display: none;"></i>
+                <i class="fas fa-headset"></i>
+                <span>Ticket Recente</span>
+                <p id="status-ticket">Nenhum ticket aberto</p>
+            </div>
+        </div>
+
+        <!-- MURAL DE AVISOS -->
+        <div class="painel-avisos anim-entrada delay-4">
+            <div class="painel-topo">
+                <h3>
+                    <i class="fas fa-bullhorn" style="color: var(--verde); margin-right: 8px;"></i> Comunicados
+                    <i class="fas fa-bell icone-sino-titulo" id="notif-aviso" style="display: none;"></i>
+                </h3>
+            </div>
+            <div id="lista-avisos" class="lista-avisos">
+                <p class="aviso-vazio">Nenhum aviso recente.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- SISTEMA DE ALERTA VERDE -->
+    <div class="alerta-custom" id="alerta-site">
+        <i class="fas fa-check-circle" id="alerta-icone"></i>
+        <p id="alerta-texto">Mensagem</p>
+    </div>
+
+    <!-- MODAL DE MEMBROS -->
+    <div class="modal-overlay" id="modal-membros">
+        <div class="modal-conteudo">
+            <div class="modal-header">
+                <h2><i class="fas fa-users"></i> Membros da Itália</h2>
+                <button class="btn-fechar" onclick="fecharModalMembros()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-lista" id="lista-membros-modal">
+                <p class="aviso-vazio">Carregando membros...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIGURAÇÕES -->
+    <div class="modal-overlay" id="modal-config">
+        <div class="modal-conteudo" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Configurações</h2>
+                <button class="btn-fechar" onclick="fecharModalConfig()"><i class="fas fa-times"></i></button>
+            </div>
+            
+            <div class="modal-lista" style="padding: 15px 20px; padding-bottom: 90px;">
+                
+                <!-- SEÇÃO 1: PERFIL -->
+                <div class="config-secao">
+                    <h3 class="config-titulo">Perfil e Identidade</h3>
+                    <div class="config-item" onclick="document.getElementById('input-foto').click()">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-image"></i> <span>Foto de Perfil</span></div>
+                            <div class="config-descricao">Escolha uma imagem da sua galeria.</div>
+                        </div>
+                        <button class="btn-config-acao">Mudar</button>
+                    </div>
+                    <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="processarFoto(this)">
+                </div>
+
+                <!-- SEÇÃO 2: NOTIFICAÇÕES -->
+                <div class="config-secao">
+                    <h3 class="config-titulo">Notificações</h3>
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-bell"></i> <span>Notificações no Navegador</span></div>
+                            <div class="config-descricao">Receba alertas no celular sobre avisos e tickets.</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="switch-notificacao" onchange="toggleNotificacoes(this)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-mobile-alt"></i> <span>Vibração e Som</span></div>
+                            <div class="config-descricao">O celular vibra quando algo novo chegar.</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="switch-som" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO 3: SEGURANÇA -->
+                <div class="config-secao">
+                    <h3 class="config-titulo">Segurança</h3>
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-laptop"></i> <span>Sessões Ativas</span></div>
+                            <div class="config-descricao">Dispositivos conectados na sua conta.</div>
+                        </div>
+                        <span class="config-badge">1 Ativa</span>
+                    </div>
+                    <div class="config-item" onclick="customAlert('Saindo...', 'erro'); setTimeout(sair, 1000);">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-sign-out-alt" style="color: #ef4444;"></i> <span style="color: #ef4444;">Sair da Conta</span></div>
+                            <div class="config-descricao">Encerra sua sessão neste dispositivo.</div>
+                        </div>
+                        <button class="btn-config-acao perigo">Sair</button>
+                    </div>
+                </div>
+
+                <!-- SEÇÃO 4: INTERFACE -->
+                <div class="config-secao">
+                    <h3 class="config-titulo">Interface</h3>
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-magic"></i> <span>Efeito de Partículas</span></div>
+                            <div class="config-descricao">Desligue se seu celular estiver fraco.</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="switch-particulas" checked onchange="toggleParticulas(this)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-tachometer-alt"></i> <span>Modo Performance</span></div>
+                            <div class="config-descricao">Desliga o vidro e deixa o site mais rápido.</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="switch-performance" onchange="togglePerformance(this)">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MENU INFERIOR FLUTUANTE -->
+    <nav class="menu-inferior">
+        <a href="#" class="item-menu ativo" onclick="mudarMenu(this); return false;"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-users"></i><span>Equipe</span></a>
+        <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+                          </nav>
+                              <script>
+        let membroLogado = null;
+
+        // 1. SISTEMA DE ALERTA VERDE (PONTO 6)
+        function customAlert(mensagem, tipo = 'sucesso') {
+            const alerta = document.getElementById('alerta-site');
+            const icone = document.getElementById('alerta-icone');
+            const texto = document.getElementById('alerta-texto');
+
+            texto.innerText = mensagem;
+            if (tipo === 'erro') {
+                alerta.classList.add('erro');
+                icone.className = 'fas fa-times-circle';
+            } else {
+                alerta.classList.remove('erro');
+                icone.className = 'fas fa-check-circle';
+            }
+            alerta.classList.add('ativo');
+            setTimeout(() => alerta.classList.remove('ativo'), 3000);
+        }
+
+        // 2. NAVEGAÇÃO E MODAIS
+        function mudarMenu(elementoClicado) {
+            document.querySelectorAll('.item-menu').forEach(btn => btn.classList.remove('ativo'));
+            elementoClicado.classList.add('ativo');
+        }
+
+        function abrirModalMembros() {
+            document.getElementById('modal-membros').classList.add('ativo');
+            document.body.style.overflow = 'hidden'; // Trava fundo
+            carregarMembrosModal();
+        }
+        function fecharModalMembros() {
+            document.getElementById('modal-membros').classList.remove('ativo');
+            document.body.style.overflow = 'auto'; // Libera fundo
+        }
+
+        function abrirModalConfig() {
+            document.getElementById('modal-config').classList.add('ativo');
+            document.body.style.overflow = 'hidden';
+        }
+        function fecharModalConfig() {
+            document.getElementById('modal-config').classList.remove('ativo');
+            document.body.style.overflow = 'auto';
+        }
+
+        function abrirModalTicket() {
+            customAlert("A tela de tickets será construída no próximo passo!");
+        }
+
+        // Fecha os modais se clicar fora
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('ativo');
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        });
+
+        // 3. CARREGAMENTO DO DASHBOARD
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            membroLogado = JSON.parse(logado);
+            document.getElementById('nome-membro').innerText = membroLogado.nome;
+            document.getElementById('cargo-membro').innerText = membroLogado.cargo;
+            document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
+            document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
+
+            const { data, error } = await sb.from('membros').select('xp_total, foto_url, advertencias').eq('passaporte', membroLogado.passaporte).single();
+            if (data && !error) atualizarInterfacePerfil(data);
+
+            carregarAvisos();
+            verificarTicketRecente(membroLogado.passaporte);
+            carregarPresencasEFaltas(membroLogado.passaporte);
+            
+            if (Notification.permission === 'granted') {
+                document.getElementById('switch-notificacao').checked = true;
+            }
+        });
+
+        function atualizarInterfacePerfil(data) {
+            const xp = data.xp_total || 0;
+            document.getElementById('xp-texto').innerText = `${xp} / 1000`;
+            let porcentagem = (xp / 1000) * 100;
+            if (porcentagem > 100) porcentagem = 100;
+            setTimeout(() => { document.getElementById('xp-barra').style.width = porcentagem + "%"; }, 300);
+            document.getElementById('kpi-advertencias').innerText = data.advertencias || 0;
+
+            if (data.foto_url) {
+                const avatar = document.getElementById('avatar-inicial');
+                avatar.style.backgroundImage = `url('${data.foto_url}')`;
+                avatar.innerText = ''; 
+            }
+        }
+
+        async function carregarPresencasEFaltas(passaporte) {
+            try {
+                const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
+                const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
+                if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
+                if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
+            } catch (error) { console.error("Erro", error); }
+        }
+
+        async function carregarAvisos() {
+            const container = document.getElementById('lista-avisos');
+            const { data, error } = await sb.from('avisos').select('*').order('criado_em', { ascending: false }).limit(3);
+            if (error || !data || data.length === 0) return;
+            document.getElementById('notif-aviso').style.display = 'inline-block';
+
+            let html = '';
+            data.forEach(aviso => {
+                const textoAviso = aviso.texto || 'Sem detalhes.';
+                const autorAviso = aviso.autor || 'Liderança';
+                let dataFormatada = 'Recentemente';
+                if (aviso.criado_em) dataFormatada = new Date(aviso.criado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+
+                html += `
+                    <div class="aviso-item">
+                        <div class="aviso-texto">${textoAviso}</div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px;">
+                            <span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${autorAviso}</span>
+                            <span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        async function carregarMembrosModal() {
+            const container = document.getElementById('lista-membros-modal');
+            const { data, error } = await sb.from('membros').select('nome, cargo, passaporte, foto_url').order('nome', { ascending: true });
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<p class="aviso-vazio">Nenhum membro encontrado.</p>';
+                return;
+            }
+            let html = '';
+            data.forEach(m => {
+                const inicial = m.nome.charAt(0).toUpperCase();
+                const foto = m.foto_url ? m.foto_url : null;
+                const avatarStyle = foto ? `background-image: url('${foto}'); background-size: cover; background-position: center;` : '';
+                html += `
+                    <div class="membro-card">
+                        <div class="membro-info">
+                            <div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div>
+                            <div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div>
+                        </div>
+                        <div class="status-online"></div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        async function verificarTicketRecente(passaporte) {
+            const { data, error } = await sb.from('tickets').select('*').eq('passaporte', passaporte).order('criado_em', { ascending: false }).limit(1).single();
+            if (error || !data) return;
+            const statusText = document.getElementById('status-ticket');
+            const sino = document.getElementById('notif-ticket');
+            if (data.status === 'em_andamento' && data.lider_assumiu) {
+                statusText.innerText = "Líder assumiu o ticket!";
+                statusText.style.color = "#eab308";
+                sino.style.display = 'block';
+            } else {
+                statusText.innerText = "Ticket aberto (aguardando)";
+                statusText.style.color = "var(--texto-mutado)";
+                sino.style.display = 'none';
+            }
+        }
+
+        // 4. FUNÇÕES DA ENGRENAGEM
+        async function processarFoto(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const base64String = e.target.result;
+                    const { error } = await sb.from('membros').update({ foto_url: base64String }).eq('passaporte', membroLogado.passaporte);
+                    if (!error) {
+                        customAlert("Foto atualizada com sucesso!");
+                        const avatar = document.getElementById('avatar-inicial');
+                        avatar.style.backgroundImage = `url('${base64String}')`;
+                        avatar.innerText = '';
+                    } else {
+                        customAlert("Erro ao salvar foto.", "erro");
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        async function toggleNotificacoes(checkbox) {
+            if (checkbox.checked) {
+                const permissao = await Notification.requestPermission();
+                if (permissao === 'granted') {
+                    customAlert("Notificações ativadas!");
+                    new Notification("Portal Itália", { body: "Você receberá alertas aqui.", icon: "https://cdn-icons-png.flaticon.com/512/281/281764.png" });
+                } else {
+                    customAlert("Permissão negada.", "erro");
+                    checkbox.checked = false;
+                }
+            }
+        }
+
+        function toggleParticulas(checkbox) {
+            document.querySelectorAll('.particula').forEach(p => p.style.display = checkbox.checked ? 'block' : 'none');
+        }
+
+        function togglePerformance(checkbox) {
+            const elementosVidro = document.querySelectorAll('.cartao-perfil, .card-metrica, .card-acao, .painel-avisos, .menu-inferior, .modal-conteudo');
+            if (checkbox.checked) {
+                elementosVidro.forEach(el => {
+                    el.style.backdropFilter = 'none'; el.style.webkitBackdropFilter = 'none'; el.style.backgroundColor = '#111613';
+                });
+                document.querySelectorAll('.particula').forEach(p => p.style.display = 'none');
+                document.getElementById('switch-particulas').checked = false;
+            } else {
+                elementosVidro.forEach(el => {
+                    el.style.backdropFilter = 'blur(20px)'; el.style.webkitBackdropFilter = 'blur(20px)'; el.style.backgroundColor = '';
+                });
+                document.querySelectorAll('.particula').forEach(p => p.style.display = 'block');
+                document.getElementById('switch-particulas').checked = true;
+            }
+        }
+
+        function sair() {
+            sessionStorage.removeItem('membro_logado');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
