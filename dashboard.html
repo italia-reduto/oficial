@@ -427,18 +427,23 @@
     </div>
 
     <!-- MODAL DE MEMBROS -->
-    <div class="modal-overlay" id="modal-membros">
-        <div class="modal-conteudo">
-            <div class="modal-header">
-                <h2><i class="fas fa-users"></i> Membros da Itália</h2>
-                <button class="btn-fechar" onclick="fecharModalMembros()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-lista" id="lista-membros-modal">
-                <p class="aviso-vazio">Carregando membros...</p>
-            </div>
+<div class="modal-overlay" id="modal-membros">
+    <div class="modal-conteudo" style="max-width: 500px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-users"></i> Membros da Itália</h2>
+            <button class="btn-fechar" onclick="fecharModalMembros()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <!-- BARRA DE BUSCA -->
+        <div style="padding: 15px 20px 0 20px;">
+            <input type="text" class="busca-membros" id="input-busca-membros" placeholder="Buscar por nome ou passaporte..." oninput="filtrarMembros()">
+        </div>
+
+        <div class="modal-lista" id="lista-membros-modal">
+            <p class="aviso-vazio">Carregando membros...</p>
         </div>
     </div>
-
+</div>
     <!-- MODAL DE CONFIGURAÇÕES -->
     <div class="modal-overlay" id="modal-config">
         <div class="modal-conteudo" style="max-width: 450px;">
@@ -675,30 +680,95 @@
             container.innerHTML = html;
         }
 
-        async function carregarMembrosModal() {
-            const container = document.getElementById('lista-membros-modal');
-            const { data, error } = await sb.from('membros').select('nome, cargo, passaporte, foto_url').order('nome', { ascending: true });
-            if (error || !data || data.length === 0) {
-                container.innerHTML = '<p class="aviso-vazio">Nenhum membro encontrado.</p>';
-                return;
-            }
-            let html = '';
-            data.forEach(m => {
-                const inicial = m.nome.charAt(0).toUpperCase();
-                const foto = m.foto_url ? m.foto_url : null;
-                const avatarStyle = foto ? `background-image: url('${foto}'); background-size: cover; background-position: center;` : '';
-                html += `
-                    <div class="membro-card">
-                        <div class="membro-info">
-                            <div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div>
-                            <div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div>
-                        </div>
-                        <div class="status-online"></div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
+        let todosMembros = [];
+
+async function carregarMembrosModal() {
+    const container = document.getElementById('lista-membros-modal');
+    container.innerHTML = '<p class="aviso-vazio">Carregando membros...</p>';
+
+    try {
+        // 1. Puxa os membros (rápido)
+        const { data: membros, error } = await sb.from('membros').select('nome, cargo, passaporte, foto_url').order('nome');
+        
+        if (error || !membros) throw new Error("Erro ao buscar membros");
+
+        // 2. Monta a lista na tela IMEDIATAMENTE (todos offline por enquanto)
+        todosMembros = membros.map(m => ({ ...m, online: false }));
+        filtrarMembros(); // Desenha a tela na hora
+
+        // 3. Busca os pontos em segundo plano
+        const hoje = new Date().toISOString().split('T')[0];
+        const { data: presencas } = await sb.from('presencas')
+            .select('passaporte')
+            .eq('data', hoje)
+            .eq('status', 'presente');
+
+        if (presencas && presencas.length > 0) {
+            // Cria a lista de passaportes de quem tá online
+            const onlineHoje = presencas.map(p => String(p.passaporte));
+            
+            // Atualiza a lista
+            todosMembros = membros.map(m => ({
+                ...m,
+                online: onlineHoje.includes(String(m.passaporte))
+            }));
+
+            // Redesenha a tela só com a atualização verde
+            filtrarMembros(); 
         }
+
+    } catch (err) {
+        container.innerHTML = '<p class="aviso-vazio">Erro ao carregar membros.</p>';
+    }
+}
+
+function filtrarMembros() {
+    const termo = document.getElementById('input-busca-membros').value.toLowerCase();
+    const container = document.getElementById('lista-membros-modal');
+
+    const filtrados = todosMembros.filter(m => 
+        m.nome.toLowerCase().includes(termo) || 
+        String(m.passaporte).includes(termo)
+    );
+
+    const online = filtrados.filter(m => m.online);
+    const offline = filtrados.filter(m => !m.online);
+
+    let html = '';
+
+    if (online.length > 0) {
+        html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: var(--verde); font-size: 8px;"></i> Em Serviço (${online.length})</div>`;
+        online.forEach(m => { html += criarCardMembro(m, true); });
+    }
+
+    if (offline.length > 0) {
+        html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: #ef4444; font-size: 8px;"></i> Fora de Serviço (${offline.length})</div>`;
+        offline.forEach(m => { html += criarCardMembro(m, false); });
+    }
+
+    if (html === '') {
+        html = '<p class="aviso-vazio">Nenhum membro encontrado.</p>';
+    }
+
+    container.innerHTML = html;
+}
+
+function criarCardMembro(m, isOnline) {
+    const inicial = m.nome.charAt(0).toUpperCase();
+    const foto = m.foto_url ? m.foto_url : null;
+    const avatarStyle = foto ? `background-image: url('${foto}'); background-size: cover; background-position: center;` : '';
+    const statusClass = isOnline ? 'status-online' : 'status-offline';
+
+    return `
+        <div class="membro-card">
+            <div class="membro-info">
+                <div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div>
+                <div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div>
+            </div>
+            <div class="${statusClass}"></div>
+        </div>
+    `;
+}
 
         async function verificarTicketRecente(passaporte) {
             const { data, error } = await sb.from('tickets').select('*').eq('passaporte', passaporte).order('criado_em', { ascending: false }).limit(1).single();
