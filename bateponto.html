@@ -88,9 +88,9 @@
         
         <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 10px;">Selecione um plantão disponível abaixo:</p>
 
-        <!-- LISTA DE PLANTÕES (Gerada pelo JavaScript) -->
+        <!-- AQUI O JAVASCRIPT VAI COLOCAR OS CARDS -->
         <div id="lista-plantoes">
-            <p style="color: var(--texto-mutado); text-align: center;">Carregando plantões...</p>
+            <p style="color: var(--texto-mutado); text-align: center; padding: 20px;">Carregando horários de Brasília...</p>
         </div>
     </div>
 
@@ -99,22 +99,23 @@
         <i class="fas fa-check-circle" id="alerta-icone"></i>
         <p id="alerta-texto">Mensagem</p>
     </div>
-        <script>
+</body>
+</html>
+    <script>
         let membroLogado = null;
 
-        // Função que pega a hora certa de Brasília
+        // ==========================================
+        // 1. A MÁGICA DO HORÁRIO DE BRASÍLIA
+        // ==========================================
+        
+        // Pega a hora exata de Brasília independente do fuso do celular
         function getHoraBrasilia() {
             const agora = new Date();
             const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
             return new Date(utc - (3 * 3600000)); 
         }
 
-        // Transforma em formato HH:MM
-        function getHoraFormatada(date) {
-            return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
-        }
-
-        // Verifica o status do plantão baseado no horário atual
+        // Verifica o status do plantão baseado no horário de Brasília
         function verificarStatusHorario(horarioInicio, horarioFim) {
             const agora = getHoraBrasilia();
             const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
@@ -124,13 +125,13 @@
             let minutosInicio = (hInicio * 60) + mInicio;
             let minutosFim = (hFim * 60) + mFim;
 
-            // Se o plantão vira a madrugada (ex: 23:00 às 01:00)
+            // Se o plantão virar a madrugada (ex: 23:00 às 01:00)
             if (minutosFim < minutosInicio) {
                 if (minutosAgora < minutosFim) minutosAgora += 24 * 60;
                 minutosFim += 24 * 60;
             }
             
-            const tolerancia = 15; // 15 minutos
+            const tolerancia = 15; // 15 minutos de tolerância
             const janelaAbertura = minutosInicio - tolerancia;
             const janelaFechamento = minutosInicio + tolerancia;
 
@@ -143,7 +144,9 @@
             }
         }
 
-        // Carrega os plantões ao abrir a página
+        // ==========================================
+        // 2. CARREGAR OS PLANTÕES NA TELA
+        // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
@@ -155,19 +158,20 @@
         async function carregarPlantoes() {
             const container = document.getElementById('lista-plantoes');
             
-            // Puxa os plantões do banco
-            const { data, error } = await sb.from('plantoes').select('*').order('horario_inicio');
-            if (error || !data) {
-                container.innerHTML = '<p style="color: red;">Erro ao carregar plantões.</p>';
+            // 1. Pega os dados da tabela 'plantoes' no Supabase (precisa estar vazia ou com a grade padrão)
+            const { data: plantoes, error } = await sb.from('plantoes').select('*').order('horario_inicio');
+            
+            // Se a tabela estiver vazia, a gente usa um fallback (opcional)
+            if (error || !plantoes || plantoes.length === 0) {
+                container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado no banco.</p>';
                 return;
             }
 
-            // Puxa quem já está com ponto aberto hoje para contar as vagas
-            const hoje = getHoraBrasilia().toISOString().split('T')[0];
+            // 2. Puxa quantos membros já estão com ponto aberto pra contar as vagas
             const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
 
             let html = '';
-            data.forEach(p => {
+            plantoes.forEach(p => {
                 const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
                 const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
                 const restantes = p.vagas_totais - ocupadas;
@@ -182,13 +186,12 @@
                     classeCard = 'aberto';
                     btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
                 } else if (status === 'em_andamento') {
-                    classeCard = '';
                     btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
                 } else {
-                    classeCard = '';
                     btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
                 }
 
+                // Calcula a porcentagem de vagas preenchidas
                 const porcentagem = (ocupadas / p.vagas_totais) * 100;
 
                 html += `
@@ -201,7 +204,7 @@
                             <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
                         </div>
                         <div class="vagas-texto">
-                            <span>Vagas preenchidas: ${ocupadas}/${p.vagas_totais}</span>
+                            <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
                             <span>${restantes} restantes</span>
                         </div>
                         ${btnHtml}
@@ -212,14 +215,17 @@
             container.innerHTML = html;
         }
 
-        // Função de clicar em entrar no plantão
+        // ==========================================
+        // 3. AÇÃO DE ENTRAR NO PLANTÃO
+        // ==========================================
         async function entrarPlantao(id, nome) {
             if (!confirm(`Deseja entrar no plantão: ${nome}?`)) return;
             
-            const btn = event.target;
+            const btn = event.target.closest('.btn-acao-plantao');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
             btn.disabled = true;
 
+            // Salva o ponto no banco de dados com o ID do plantão
             const { error } = await sb.from('pontos').insert([{
                 passaporte: membroLogado.passaporte,
                 nome: membroLogado.nome,
@@ -230,21 +236,34 @@
 
             if (!error) {
                 customAlert("Você entrou no plantão!", "sucesso");
+                // Redireciona de volta pro dashboard pra ele ver o perfil ativo
                 setTimeout(() => window.location.href = 'dashboard.html', 1500);
             } else {
-                customAlert("Erro ao entrar no plantão.", "erro");
+                console.error(error);
+                customAlert("Erro ao entrar. Pode ser que o plantão tenha lotado.", "erro");
                 btn.innerHTML = 'ENTRAR AGORA';
                 btn.disabled = false;
             }
         }
 
+        // ==========================================
+        // 4. SISTEMA DE ALERTA
+        // ==========================================
         function customAlert(mensagem, tipo = 'sucesso') {
             const alerta = document.getElementById('alerta-site');
             const icone = document.getElementById('alerta-icone');
             const texto = document.getElementById('alerta-texto');
+            
+            if (!alerta) return;
             texto.innerText = mensagem;
-            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
-            else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
+            
+            if (tipo === 'erro') { 
+                alerta.classList.add('erro'); 
+                icone.className = 'fas fa-times-circle'; 
+            } else { 
+                alerta.classList.remove('erro'); 
+                icone.className = 'fas fa-check-circle'; 
+            }
             alerta.classList.add('ativo');
             setTimeout(() => alerta.classList.remove('ativo'), 3000);
         }
