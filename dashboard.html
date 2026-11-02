@@ -49,7 +49,6 @@
         @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
 
         .container-principal { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; margin-top: 20px; padding-bottom: 120px; }
-
         .cartao-perfil { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); display: flex; align-items: center; gap: 20px; position: relative; }
         .cartao-perfil::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--verde); border-radius: 16px 0 0 16px; }
         .avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--verde); background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: bold; color: var(--verde); box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); background-size: cover; background-position: center; flex-shrink: 0; }
@@ -57,7 +56,6 @@
         .nome { font-family: 'Oswald', sans-serif; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
         .cargo { font-size: 13px; color: var(--verde); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
         .passaporte { font-size: 12px; color: var(--texto-mutado); }
-
         .progressao-container { margin-top: 15px; display: flex; flex-direction: column; gap: 6px; }
         .progressao-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
         .cargo-atual { color: #a1a1aa; }
@@ -67,7 +65,6 @@
         .progressao-xp-texto { font-size: 10px; color: #9ca3af; text-align: right; }
         .btn-config { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 16px; cursor: pointer; z-index: 10; transition: 0.3s; }
         .btn-config:hover { color: var(--verde); border-color: var(--verde); transform: rotate(90deg); }
-
         .card-promocao { display: none; background: rgba(15, 23, 20, 0.9); border: 1px solid var(--verde); border-radius: 12px; padding: 20px; box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); position: relative; overflow: hidden; animation: pulsar-borda 2s infinite; }
         .card-promocao.ativo { display: block; }
         @keyframes pulsar-borda { 0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); } 50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.6); } }
@@ -77,8 +74,7 @@
         .promocao-textos p { font-size: 12px; color: #9ca3af; line-height: 1.4; }
         .btn-ciente { margin-top: 15px; width: 100%; padding: 12px; background: var(--verde); color: #000; border: none; border-radius: 6px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .btn-ciente:hover { background: #4ade80; transform: scale(1.02); }
-
-        .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+                .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card-metrica { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 15px; text-align: left; transition: 0.3s; }
         .metrica-topo { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .metrica-topo i { font-size: 14px; }
@@ -103,27 +99,6 @@
         .aviso-texto { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
         .aviso-vazio { font-size: 13px; color: var(--texto-mutado); text-align: center; padding: 10px 0; }
 
-        /* TELA DE PONTO */
-        .view-ponto { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 500px; margin: 0 auto; padding-top: 20px; }
-        .status-ponto-texto { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; color: var(--texto-mutado); margin-bottom: 20px; transition: color 0.3s; }
-        .status-ponto-texto.ativo { color: var(--verde); text-shadow: 0 0 10px rgba(34,197,94,0.5); }
-        .scanner-ponto { position: relative; width: 200px; height: 200px; border-radius: 50%; background: rgba(0,0,0,0.4); border: 2px solid rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; transition: 0.3s; }
-        .scanner-ponto.ativo { border-color: var(--verde); box-shadow: 0 0 30px rgba(34, 197, 94, 0.3), inset 0 0 20px rgba(34, 197, 94, 0.1); animation: pulsar-scanner 2s infinite; }
-        @keyframes pulsar-scanner { 0% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2), inset 0 0 10px rgba(34, 197, 94, 0.1); } 50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.6), inset 0 0 20px rgba(34, 197, 94, 0.3); } 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2), inset 0 0 10px rgba(34, 197, 94, 0.1); } }
-        .scanner-ponto i { font-size: 80px; color: var(--texto-mutado); transition: 0.3s; }
-        .scanner-ponto.ativo i { color: var(--verde); animation: piscar-icone 2s infinite; }
-        @keyframes piscar-icone { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .cronometro { position: absolute; bottom: -30px; background: #0a0f0d; padding: 5px 15px; border-radius: 20px; border: 1px solid var(--borda); font-family: 'Oswald', sans-serif; font-size: 20px; color: #fff; display: none; }
-        .cronometro.ativo { display: block; }
-        .botoes-ponto { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 30px;}
-        .btn-ponto { width: 100%; padding: 18px; border-radius: 12px; border: none; font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-ponto.iniciar { background: var(--verde); color: #000; box-shadow: 0 5px 15px rgba(34,197,94,0.3); }
-        .btn-ponto.iniciar:hover { background: #4ade80; transform: translateY(-2px); }
-        .btn-ponto.encerrar { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
-        .btn-ponto.encerrar:hover { background: #ef4444; color: #fff; }
-        .btn-ponto.bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; transform: none !important; box-shadow: none; }
-
-        /* MODAIS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.ativo { display: flex; opacity: 1; }
         .modal-conteudo { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; width: 100%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; overflow: hidden; }
@@ -133,6 +108,7 @@
         .btn-fechar { background: transparent; border: none; color: var(--texto-mutado); font-size: 20px; cursor: pointer; }
         .btn-fechar:hover { color: #ef4444; }
         .modal-lista { padding: 20px; overflow-y: auto; max-height: 60vh; display: flex; flex-direction: column; gap: 10px; flex: 1; -webkit-overflow-scrolling: touch; }
+        
         .busca-membros { width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 15px; }
         .busca-membros:focus { border-color: var(--verde); }
         .categoria-membros { font-family: 'Oswald', sans-serif; font-size: 12px; color: var(--texto-mutado); text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
@@ -174,8 +150,31 @@
         .alerta-custom.erro i { color: #ef4444; }
 
         .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px;
-                    <body>
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+
+        @media (max-width: 600px) {
+            .cartao-perfil { padding: 15px; gap: 15px; border-radius: 12px; }
+            .avatar { width: 60px; height: 60px; font-size: 24px; }
+            .nome { font-size: 20px; }
+            .cargo { font-size: 11px; }
+            .passaporte { font-size: 10px; }
+            .grid-metricas { gap: 8px; }
+            .card-metrica { padding: 10px; border-radius: 10px; }
+            .metrica-topo { font-size: 9px; flex-direction: row; align-items: center; }
+            .metrica-topo i { font-size: 12px; }
+            .metrica-valor { font-size: 22px; }
+            .metrica-sub { font-size: 8px; line-height: 1.1; display: block;}
+            .grid-acoes { grid-template-columns: 1fr; }
+            .painel-avisos { padding: 15px; }
+            .aviso-item { padding: 12px; }
+            .alerta-custom { min-width: 90%; }
+            .modal-lista { padding-bottom: 90px; }
+        }
+    </style>
+</head>
+<body>
     <!-- FUNDO ANIMADO -->
     <div class="fundo-degrade"></div>
     <div class="grade-fundo"></div>
@@ -185,7 +184,7 @@
     <div class="particula p4"></div>
     <div class="particula p5"></div>
 
-    <!-- ===== TELA PRINCIPAL (DASHBOARD) ===== -->
+    <!-- TELA PRINCIPAL (DASHBOARD) -->
     <main class="container-principal">
         <!-- CARTÃO DE PERFIL -->
         <div class="cartao-perfil anim-entrada delay-1">
@@ -232,13 +231,11 @@
                 <div class="metrica-valor" style="color: #22c55e;" id="kpi-presencas">0</div>
                 <div class="metrica-sub">Registros</div>
             </div>
-            
             <div class="card-metrica">
                 <div class="metrica-topo">Faltas <i class="fas fa-times-circle" style="color: #ef4444;"></i></div>
                 <div class="metrica-valor" style="color: #ef4444;" id="kpi-faltas">0</div>
                 <div class="metrica-sub">Sem Just.</div>
             </div>
-
             <div class="card-metrica">
                 <div class="metrica-topo">Advertências <i class="fas fa-exclamation-triangle" style="color: #eab308;"></i></div>
                 <div class="metrica-valor" style="color: #eab308;" id="kpi-advertencias">0</div>
@@ -275,32 +272,12 @@
         </div>
     </main>
 
-    <!-- ===== TELA DE PONTO ===== -->
-    <div class="view-ponto" id="tela-ponto">
-        <div class="status-ponto-texto" id="status-ponto-texto">Fora de Serviço</div>
-        
-        <div class="scanner-ponto" id="scanner-ponto">
-            <i class="fas fa-fingerprint"></i>
-            <div class="cronometro" id="cronometro-ponto">00:00:00</div>
-        </div>
-
-        <div class="botoes-ponto" id="botoes-ponto">
-            <button class="btn-ponto iniciar" id="btn-bater-ponto" onclick="baterPonto()">
-                <i class="fas fa-play"></i> Bater Ponto
-            </button>
-            <button class="btn-ponto encerrar" id="btn-encerrar-ponto" style="display: none;" onclick="encerrarPonto()">
-                <i class="fas fa-stop"></i> Encerrar Ponto
-            </button>
-        </div>
-    </div>
-
     <!-- SISTEMA DE ALERTA VERDE -->
     <div class="alerta-custom" id="alerta-site">
         <i class="fas fa-check-circle" id="alerta-icone"></i>
         <p id="alerta-texto">Mensagem</p>
     </div>
 
-    <!-- ===== MODAIS ===== -->
     <!-- MODAL DE MEMBROS -->
     <div class="modal-overlay" id="modal-membros">
         <div class="modal-conteudo" style="max-width: 500px;">
@@ -377,329 +354,199 @@
 
     <!-- MENU INFERIOR FLUTUANTE -->
     <nav class="menu-inferior">
-        <a href="#" class="item-menu ativo" onclick="mudarMenu(this); return false;"><i class="fas fa-home"></i><span>Início</span></a>
-        <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-id-card"></i><span>Perfil</span></a>
-    </nav>
-                    <script>
-    let membroLogado = null;
-    let todosMembros = [];
-    let intervaloCronometro = null;
-    let pontoAtualId = null;
-    let isProcessandoPonto = false; 
+        <a href="#" class="item-menu ativo" onclick="mudarMenu(this, 'inicio'); return false;"><i class="fas fa-home"></i><span>Início</span></a>
+        <!-- O Ponto agora redireciona para a página separada -->
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="#" class="item-menu" onclick="customAlert('Aba Equipe em breve!'); return false;"><i class="fas fa-users"></i><span>Equipe</span></a>
+        <a href="#" class="item-menu" onclick="customAlert('Aba Perfil em breve!'); return false;"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+                                </nav>
+                                    <script>
+        let membroLogado = null;
+        let todosMembros = [];
 
-    window.addEventListener('DOMContentLoaded', async () => {
-        const logado = sessionStorage.getItem('membro_logado');
-        if (!logado) return window.location.href = 'login.html';
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
 
-        membroLogado = JSON.parse(logado);
-        
-        document.getElementById('nome-membro').innerText = membroLogado.nome;
-        document.getElementById('cargo-membro').innerText = membroLogado.cargo;
-        document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
-        document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
+            membroLogado = JSON.parse(logado);
+            document.getElementById('nome-membro').innerText = membroLogado.nome;
+            document.getElementById('cargo-membro').innerText = membroLogado.cargo;
+            document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
+            document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
 
-        const { data, error } = await sb.from('membros').select('xp_total, foto_url, advertencias').eq('passaporte', membroLogado.passaporte).single();
-        
-        if (data && !error) {
-            document.getElementById('kpi-advertencias').innerText = data.advertencias || 0;
-            if (data.foto_url) {
-                const avatar = document.getElementById('avatar-inicial');
-                avatar.style.backgroundImage = `url('${data.foto_url}')`;
-                avatar.innerText = ''; 
+            const { data, error } = await sb.from('membros').select('xp_total, foto_url, advertencias').eq('passaporte', membroLogado.passaporte).single();
+            
+            if (data && !error) {
+                document.getElementById('kpi-advertencias').innerText = data.advertencias || 0;
+                if (data.foto_url) {
+                    const avatar = document.getElementById('avatar-inicial');
+                    avatar.style.backgroundImage = `url('${data.foto_url}')`;
+                    avatar.innerText = ''; 
+                }
+                calcularProgressao(data.xp_total || 0, data.cargo);
             }
-            calcularProgressao(data.xp_total || 0, data.cargo);
-        }
 
-        carregarAvisos();
-        carregarPresencasEFaltas(membroLogado.passaporte);
-        verificarTicketRecente(membroLogado.passaporte);
-        carregarMembrosRapido(); 
-    });
+            carregarAvisos();
+            carregarPresencasEFaltas(membroLogado.passaporte);
+            verificarTicketRecente(membroLogado.passaporte);
+            carregarMembrosRapido(); 
+        });
 
-    const CARGOS_ESCALA = [
-        { nome: 'Novato', xp_min: 0, xp_max: 500 },
-        { nome: 'Executor', xp_min: 500, xp_max: 1500 },
-        { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
-        { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
-        { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
-    ];
+        // ===== PROGRESSÃO =====
+        const CARGOS_ESCALA = [
+            { nome: 'Novato', xp_min: 0, xp_max: 500 },
+            { nome: 'Executor', xp_min: 500, xp_max: 1500 },
+            { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
+            { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
+            { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
+        ];
 
-    function calcularProgressao(xpTotal, nomeCargoAtual) {
-        let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
-        if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
-            document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
-            document.getElementById('label-cargo-proximo').innerText = 'MAX';
-            document.getElementById('barra-progressao').style.width = '100%';
-            document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
-            return;
-        }
-        if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
+        function calcularProgressao(xpTotal, nomeCargoAtual) {
+            let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
+            if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
+                document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
+                return;
+            }
+            if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
 
-        let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
-        if (!proximoNivel) {
+            let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
+            if (!proximoNivel) {
+                document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
+                return;
+            }
+
             document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-            document.getElementById('label-cargo-proximo').innerText = 'MAX';
-            document.getElementById('barra-progressao').style.width = '100%';
-            document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
-            return;
+            document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
+            const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
+            const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
+            let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
+            if (porcentagem > 100) porcentagem = 100;
+
+            document.getElementById('barra-progressao').style.width = porcentagem + '%';
+            document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
+
+            const avisoVisto = localStorage.getItem('promocao_vista_' + proximoNivel.nome);
+            if (xpTotal >= proximoNivel.xp_min && !avisoVisto) {
+                document.getElementById('card-promocao').classList.add('ativo');
+                document.getElementById('cargo-promocao-texto').innerText = proximoNivel.nome;
+            }
         }
 
-        document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-        document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
-        const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
-        const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
-        let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
-        if (porcentagem > 100) porcentagem = 100;
-
-        document.getElementById('barra-progressao').style.width = porcentagem + '%';
-        document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
-
-        const avisoVisto = localStorage.getItem('promocao_vista_' + proximoNivel.nome);
-        if (xpTotal >= proximoNivel.xp_min && !avisoVisto) {
-            document.getElementById('card-promocao').classList.add('ativo');
-            document.getElementById('cargo-promocao-texto').innerText = proximoNivel.nome;
+        function confirmarPromocao() {
+            const cargoProximo = document.getElementById('cargo-promocao-texto').innerText;
+            localStorage.setItem('promocao_vista_' + cargoProximo, 'sim');
+            document.getElementById('card-promocao').classList.remove('ativo');
+            customAlert("Print registrado! Avise a liderança.", "sucesso");
         }
-    }
 
-    function confirmarPromocao() {
-        const cargoProximo = document.getElementById('cargo-promocao-texto').innerText;
-        localStorage.setItem('promocao_vista_' + cargoProximo, 'sim');
-        document.getElementById('card-promocao').classList.remove('ativo');
-        customAlert("Print registrado! Avise a liderança.", "sucesso");
-         }
+        // ===== DADOS =====
         async function carregarPresencasEFaltas(passaporte) {
-    try {
-        const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
-        const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
-        if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
-        if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
-    } catch (error) { console.error(error); }
-}
-
-async function carregarAvisos() {
-    const container = document.getElementById('lista-avisos');
-    const { data, error } = await sb.from('avisos').select('*').order('criado_em', { ascending: false }).limit(3);
-    if (error || !data || data.length === 0) return;
-    
-    document.getElementById('notif-aviso').style.display = 'inline-block';
-    let html = '';
-    data.forEach(aviso => {
-        const textoAviso = aviso.texto || 'Sem detalhes.';
-        const autorAviso = aviso.autor || 'Liderança';
-        let dataFormatada = 'Recentemente';
-        if (aviso.criado_em) dataFormatada = new Date(aviso.criado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-        html += `<div class="aviso-item"><div class="aviso-texto">${textoAviso}</div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px;"><span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${autorAviso}</span><span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span></div></div>`;
-    });
-    container.innerHTML = html;
-}
-
-async function verificarTicketRecente(passaporte) {
-    const { data, error } = await sb.from('tickets').select('*').eq('passaporte', passaporte).order('criado_em', { ascending: false }).limit(1).single();
-    if (error || !data) return;
-    const statusText = document.getElementById('status-ticket');
-    const sino = document.getElementById('notif-ticket');
-    if (data.status === 'em_andamento' && data.lider_assumiu) {
-        statusText.innerText = "Líder assumiu o ticket!";
-        statusText.style.color = "#eab308";
-        sino.style.display = 'block';
-    } else {
-        statusText.innerText = "Ticket aberto (aguardando)";
-        statusText.style.color = "var(--texto-mutado)";
-        sino.style.display = 'none';
-    }
-}
-
-async function carregarMembrosRapido() {
-    const { data: membros, error } = await sb.from('membros').select('nome, cargo, passaporte, foto_url').order('nome');
-    if (error || !membros) return;
-    todosMembros = membros.map(m => ({ ...m, online: false }));
-    const hoje = new Date().toISOString().split('T')[0];
-    const { data: presencas } = await sb.from('presencas').select('passaporte').eq('data', hoje).eq('status', 'presente');
-    if (presencas && presencas.length > 0) {
-        const onlineHoje = presencas.map(p => String(p.passaporte));
-        todosMembros = todosMembros.map(m => ({ ...m, online: onlineHoje.includes(String(m.passaporte)) }));
-    }
-}
-
-function abrirModalMembros() {
-    document.getElementById('modal-membros').classList.add('ativo');
-    document.body.style.overflow = 'hidden';
-    if (todosMembros.length > 0) { filtrarMembros(); } else {
-        document.getElementById('lista-membros-modal').innerHTML = '<p class="aviso-vazio">Buscando membros...</p>';
-        carregarMembrosRapido().then(filtrarMembros);
-    }
-}
-
-function fecharModalMembros() {
-    document.getElementById('modal-membros').classList.remove('ativo');
-    document.body.style.overflow = 'auto';
-}
-
-function filtrarMembros() {
-    const termo = document.getElementById('input-busca-membros').value.toLowerCase();
-    const container = document.getElementById('lista-membros-modal');
-    if (!container) return;
-    const filtrados = todosMembros.filter(m => (m.nome && m.nome.toLowerCase().includes(termo)) || (m.passaporte && String(m.passaporte).includes(termo)));
-    const online = filtrados.filter(m => m.online);
-    const offline = filtrados.filter(m => !m.online);
-    let html = '';
-    if (online.length > 0) {
-        html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: var(--verde); font-size: 8px;"></i> Em Serviço (${online.length})</div>`;
-        online.forEach(m => { html += criarCardMembro(m, true); });
-    }
-    if (offline.length > 0) {
-        html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: #ef4444; font-size: 8px;"></i> Fora de Serviço (${offline.length})</div>`;
-        offline.forEach(m => { html += criarCardMembro(m, false); });
-    }
-    if (html === '') html = '<p class="aviso-vazio">Nenhum membro encontrado.</p>';
-    container.innerHTML = html;
-}
-
-function criarCardMembro(m, isOnline) {
-    const inicial = m.nome ? m.nome.charAt(0).toUpperCase() : '?';
-    const foto = m.foto_url ? m.foto_url : null;
-    const avatarStyle = foto ? `background-image: url('${foto}'); background-size: cover; background-position: center;` : '';
-    const statusClass = isOnline ? 'status-online' : 'status-offline';
-    return `<div class="membro-card"><div class="membro-info"><div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div><div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div></div><div class="${statusClass}"></div></div>`;
+            try {
+                const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
+                const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
+                if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
+                if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
+            } catch (error) { console.error(error); }
         }
-                function mudarMenu(elementoClicado) {
-            document.querySelectorAll('.item-menu').forEach(btn => btn.classList.remove('ativo'));
-            elementoClicado.classList.add('ativo');
-            const aba = elementoClicado.innerText.trim();
-            const containerPrincipal = document.querySelector('.container-principal');
-            const telaPonto = document.getElementById('tela-ponto');
 
-            if (aba === 'Ponto') {
-                containerPrincipal.style.display = 'none';
-                telaPonto.style.display = 'flex';
-                verificarStatusPonto(); 
+        async function carregarAvisos() {
+            const container = document.getElementById('lista-avisos');
+            const { data, error } = await sb.from('avisos').select('*').order('criado_em', { ascending: false }).limit(3);
+            if (error || !data || data.length === 0) return;
+            
+            document.getElementById('notif-aviso').style.display = 'inline-block';
+            let html = '';
+            data.forEach(aviso => {
+                const textoAviso = aviso.texto || 'Sem detalhes.';
+                const autorAviso = aviso.autor || 'Liderança';
+                let dataFormatada = 'Recentemente';
+                if (aviso.criado_em) dataFormatada = new Date(aviso.criado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+                html += `<div class="aviso-item"><div class="aviso-texto">${textoAviso}</div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px;"><span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${autorAviso}</span><span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span></div></div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        async function verificarTicketRecente(passaporte) {
+            const { data, error } = await sb.from('tickets').select('*').eq('passaporte', passaporte).order('criado_em', { ascending: false }).limit(1).single();
+            if (error || !data) return;
+            const statusText = document.getElementById('status-ticket');
+            const sino = document.getElementById('notif-ticket');
+            if (data.status === 'em_andamento' && data.lider_assumiu) {
+                statusText.innerText = "Líder assumiu o ticket!";
+                statusText.style.color = "#eab308";
+                sino.style.display = 'block';
             } else {
-                containerPrincipal.style.display = 'flex';
-                telaPonto.style.display = 'none';
-                if (intervaloCronometro) clearInterval(intervaloCronometro); 
+                statusText.innerText = "Ticket aberto (aguardando)";
+                statusText.style.color = "var(--texto-mutado)";
+                sino.style.display = 'none';
             }
         }
 
-        async function verificarStatusPonto() {
-            if (!membroLogado) return;
-            const btnIniciar = document.getElementById('btn-bater-ponto');
-            const btnEncerrar = document.getElementById('btn-encerrar-ponto');
-            const statusTexto = document.getElementById('status-ponto-texto');
-            const scanner = document.getElementById('scanner-ponto');
-            const cronometroEl = document.getElementById('cronometro-ponto');
-
-            const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).order('criado_em', { ascending: false }).limit(1).maybeSingle();
-
-            if (data) {
-                if (data.status === 'aberto') {
-                    pontoAtualId = data.id;
-                    statusTexto.innerText = 'Em Serviço';
-                    statusTexto.classList.add('ativo');
-                    scanner.classList.add('ativo');
-                    btnIniciar.style.display = 'none';
-                    btnEncerrar.style.display = 'flex';
-                    btnEncerrar.classList.remove('bloqueado');
-                    cronometroEl.classList.add('ativo');
-                    iniciarCronometro(data.entrada);
-                    return; 
-                }
-                
-                if (data.status === 'fechado' && data.saida) {
-                    const agora = new Date();
-                    const dataFechamento = new Date(data.saida);
-                    const diferencaMinutos = Math.floor((agora - dataFechamento) / 1000 / 60);
-                    if (diferencaMinutos < 15) {
-                        const tempoRestante = 15 - diferencaMinutos;
-                        statusTexto.innerText = 'Aguarde...';
-                        statusTexto.classList.remove('ativo');
-                        scanner.classList.remove('ativo');
-                        btnEncerrar.style.display = 'none';
-                        btnIniciar.style.display = 'flex';
-                        btnIniciar.classList.add('bloqueado');
-                        btnIniciar.innerHTML = `<i class="fas fa-clock"></i> Aguarde ${tempoRestante} min`;
-                        cronometroEl.classList.remove('ativo');
-                        if (window.cooldownTimer) clearTimeout(window.cooldownTimer);
-                        window.cooldownTimer = setTimeout(verificarStatusPonto, tempoRestante * 60 * 1000);
-                        return;
-                    }
-                }
+        // ===== MEMBROS =====
+        async function carregarMembrosRapido() {
+            const { data: membros, error } = await sb.from('membros').select('nome, cargo, passaporte, foto_url').order('nome');
+            if (error || !membros) return;
+            todosMembros = membros.map(m => ({ ...m, online: false }));
+            const hoje = new Date().toISOString().split('T')[0];
+            const { data: presencas } = await sb.from('presencas').select('passaporte').eq('data', hoje).eq('status', 'presente');
+            if (presencas && presencas.length > 0) {
+                const onlineHoje = presencas.map(p => String(p.passaporte));
+                todosMembros = todosMembros.map(m => ({ ...m, online: onlineHoje.includes(String(m.passaporte)) }));
             }
-            resetarInterfacePonto();
         }
 
-        function resetarInterfacePonto() {
-            pontoAtualId = null;
-            if (intervaloCronometro) clearInterval(intervaloCronometro);
-            document.getElementById('status-ponto-texto').innerText = 'Fora de Serviço';
-            document.getElementById('status-ponto-texto').classList.remove('ativo');
-            document.getElementById('scanner-ponto').classList.remove('ativo');
-            document.getElementById('cronometro-ponto').classList.remove('ativo');
-            const btnIniciar = document.getElementById('btn-bater-ponto');
-            btnIniciar.style.display = 'flex';
-            btnIniciar.classList.remove('bloqueado');
-            btnIniciar.innerHTML = '<i class="fas fa-play"></i> Bater Ponto';
-            document.getElementById('btn-encerrar-ponto').style.display = 'none';
+        function abrirModalMembros() {
+            document.getElementById('modal-membros').classList.add('ativo');
+            document.body.style.overflow = 'hidden';
+            if (todosMembros.length > 0) { filtrarMembros(); } else {
+                document.getElementById('lista-membros-modal').innerHTML = '<p class="aviso-vazio">Buscando membros...</p>';
+                carregarMembrosRapido().then(filtrarMembros);
+            }
         }
 
-        function iniciarCronometro(horarioEntrada) {
-            if (intervaloCronometro) clearInterval(intervaloCronometro);
-            const cronometroEl = document.getElementById('cronometro-ponto');
-            const dataEntrada = new Date(horarioEntrada);
-            intervaloCronometro = setInterval(() => {
-                const agora = new Date();
-                const diferenca = agora - dataEntrada;
-                if (diferenca < 0) return;
-                const horas = Math.floor(diferenca / (1000 * 60 * 60));
-                const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-                const segundos = Math.floor((diferenca / 1000) % 60);
-                cronometroEl.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-            }, 1000);
+        function fecharModalMembros() {
+            document.getElementById('modal-membros').classList.remove('ativo');
+            document.body.style.overflow = 'auto';
         }
 
-        async function baterPonto() {
-            if (isProcessandoPonto) return; 
-            isProcessandoPonto = true;
-            const btn = document.getElementById('btn-bater-ponto');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
-            try {
-                await sb.from('pontos').insert([{ passaporte: membroLogado.passaporte, nome: membroLogado.nome, entrada: new Date().toISOString(), status: 'aberto' }]);
-                customAlert("Ponto iniciado com sucesso!", "sucesso");
-                verificarStatusPonto();
-            } catch (err) {
-                customAlert("Erro ao bater ponto.", "erro");
-                btn.innerHTML = '<i class="fas fa-play"></i> Bater Ponto';
-            } finally { isProcessandoPonto = false; }
+        function filtrarMembros() {
+            const termo = document.getElementById('input-busca-membros').value.toLowerCase();
+            const container = document.getElementById('lista-membros-modal');
+            if (!container) return;
+            const filtrados = todosMembros.filter(m => (m.nome && m.nome.toLowerCase().includes(termo)) || (m.passaporte && String(m.passaporte).includes(termo)));
+            const online = filtrados.filter(m => m.online);
+            const offline = filtrados.filter(m => !m.online);
+            let html = '';
+            if (online.length > 0) {
+                html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: var(--verde); font-size: 8px;"></i> Em Serviço (${online.length})</div>`;
+                online.forEach(m => { html += criarCardMembro(m, true); });
+            }
+            if (offline.length > 0) {
+                html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: #ef4444; font-size: 8px;"></i> Fora de Serviço (${offline.length})</div>`;
+                offline.forEach(m => { html += criarCardMembro(m, false); });
+            }
+            if (html === '') html = '<p class="aviso-vazio">Nenhum membro encontrado.</p>';
+            container.innerHTML = html;
         }
 
-        async function encerrarPonto() {
-            if (isProcessandoPonto || !pontoAtualId) return; 
-            if (!confirm("Deseja encerrar o seu turno agora?")) return;
-            isProcessandoPonto = true;
-            const btn = document.getElementById('btn-encerrar-ponto');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Encerrando...';
-            try {
-                const { data: pontoData } = await sb.from('pontos').select('*').eq('id', pontoAtualId).single();
-                const entrada = new Date(pontoData.entrada);
-                const saida = new Date();
-                const diferencaMinutos = (saida - entrada) / 1000 / 60;
-                await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtualId);
-                if (diferencaMinutos >= 30) {
-                    const { data: membroData } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
-                    const novoXP = (membroData.xp_total || 0) + 20;
-                    await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', membroLogado.passaporte);
-                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
-                    customAlert("Turno encerrado! Você ganhou +20 XP.", "sucesso");
-                    calcularProgressao(novoXP, membroLogado.cargo);
-                    carregarPresencasEFaltas(membroLogado.passaporte);
-                } else {
-                    customAlert("Turno encerrado, mas não atingiu 30 min para ganhar XP.");
-                }
-                verificarStatusPonto();
-            } catch (err) {
-                customAlert("Erro ao encerrar o ponto.", "erro");
-            } finally { isProcessandoPonto = false; }
+        function criarCardMembro(m, isOnline) {
+            const inicial = m.nome ? m.nome.charAt(0).toUpperCase() : '?';
+            const foto = m.foto_url ? m.foto_url : null;
+            const avatarStyle = foto ? `background-image: url('${foto}'); background-size: cover; background-position: center;` : '';
+            const statusClass = isOnline ? 'status-online' : 'status-offline';
+            return `<div class="membro-card"><div class="membro-info"><div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div><div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div></div><div class="${statusClass}"></div></div>`;
+        }
+
+        // ===== CONFIGS E ALERTAS =====
+        function mudarMenu(el, aba) {
+            document.querySelectorAll('.item-menu').forEach(btn => btn.classList.remove('ativo'));
+            el.classList.add('ativo');
         }
 
         function abrirModalConfig() { document.getElementById('modal-config').classList.add('ativo'); document.body.style.overflow = 'hidden'; }
