@@ -16,6 +16,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
     <style>
+        // BLOQUEIO DE MANUTENÇÃO
+const urlParams = new URLSearchParams(window.location.search);
+if (!urlParams.has('mestre')) {
+    alert("🛠️ O SISTEMA ESTÁ EM MANUTENÇÃO. O acesso voltará em breve!");
+    window.location.href = "index.html";
+        }
         :root {
             color-scheme: dark;
             --verde: #22c55e;
