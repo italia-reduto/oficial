@@ -156,65 +156,90 @@
         });
 
         async function carregarPlantoes() {
-            const container = document.getElementById('lista-plantoes');
-            
-            // 1. Pega os dados da tabela 'plantoes' no Supabase (precisa estar vazia ou com a grade padrão)
-            const { data: plantoes, error } = await sb.from('plantoes').select('*').order('horario_inicio');
-            
-            // Se a tabela estiver vazia, a gente usa um fallback (opcional)
-            if (error || !plantoes || plantoes.length === 0) {
-                container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado no banco.</p>';
-                return;
-            }
+    const container = document.getElementById('lista-plantoes');
+    
+    // 1. Puxa os dados do Supabase (o .order do banco não é o suficiente aqui)
+    const { data: plantoes, error } = await sb.from('plantoes').select('*');
+    
+    if (error || !plantoes || plantoes.length === 0) {
+        container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado no banco.</p>';
+        return;
+    }
 
-            // 2. Puxa quantos membros já estão com ponto aberto pra contar as vagas
-            const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
+    // 2. ORDENAÇÃO INTELIGENTE: Define o peso de cada horário
+    const ordemHorarios = {
+        '14:00': 1,
+        '16:00': 2,
+        '18:00': 3,
+        '20:00': 4,
+        '22:00': 5,
+        '00:00': 6
+    };
 
-            let html = '';
-            plantoes.forEach(p => {
-                const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
-                const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-                const restantes = p.vagas_totais - ocupadas;
-                
-                let classeCard = '';
-                let btnHtml = '';
+    plantoes.sort((a, b) => {
+        let pesoA = ordemHorarios[a.horario_inicio] || 99;
+        let pesoB = ordemHorarios[b.horario_inicio] || 99;
+        return pesoA - pesoB;
+    });
 
-                if (restantes <= 0) {
-                    classeCard = 'lotado';
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
-                } else if (status === 'aberto') {
-                    classeCard = 'aberto';
-                    btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
-                } else if (status === 'em_andamento') {
-                    btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
-                } else {
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
-                }
+    // 3. Puxa quem está com ponto aberto
+    const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
 
-                // Calcula a porcentagem de vagas preenchidas
-                const porcentagem = (ocupadas / p.vagas_totais) * 100;
+    let html = '';
+    plantoes.forEach(p => {
+        const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
+        const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
+        const restantes = p.vagas_totais - ocupadas;
+        
+        let classeCard = '';
+        let btnHtml = '';
+        let iconeHtml = '';
 
-                html += `
-                    <div class="card-plantao ${classeCard}">
-                        <div class="card-header">
-                            <span class="card-nome">${p.nome}</span>
-                            <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
-                        </div>
-                        <div class="vagas-barra">
-                            <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
-                        </div>
-                        <div class="vagas-texto">
-                            <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
-                            <span>${restantes} restantes</span>
-                        </div>
-                        ${btnHtml}
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
+        // 4. LÓGICA DE ÍCONES
+        if (p.tipo === 'rota') {
+            iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
+        } else if (p.tipo === 'venda') {
+            iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
+        } else if (p.tipo === 'apoio') {
+            iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
+        } else {
+            iconeHtml = '<i class="fas fa-clock" style="color: var(--texto-mutado); margin-right: 8px;"></i>';
         }
 
+        if (restantes <= 0) {
+            classeCard = 'lotado';
+            btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
+        } else if (status === 'aberto') {
+            classeCard = 'aberto';
+            btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
+        } else if (status === 'em_andamento') {
+            btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
+        } else {
+            btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
+        }
+
+        const porcentagem = (ocupadas / p.vagas_totais) * 100;
+
+        html += `
+            <div class="card-plantao ${classeCard}">
+                <div class="card-header">
+                    <span class="card-nome">${iconeHtml} ${p.nome}</span>
+                    <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
+                </div>
+                <div class="vagas-barra">
+                    <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
+                </div>
+                <div class="vagas-texto">
+                    <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
+                    <span>${restantes} restantes</span>
+                </div>
+                ${btnHtml}
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+        }
         // ==========================================
         // 3. AÇÃO DE ENTRAR NO PLANTÃO
         // ==========================================
