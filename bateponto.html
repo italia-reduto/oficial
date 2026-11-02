@@ -118,7 +118,7 @@
         }
 
         function verificarStatusHorario(horarioInicio, horarioFim) {
-            const minutosAgora = getMinutosBrasilia();
+            let minutosAgora = getMinutosBrasilia();
             
             const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
             const [hFim, mFim] = horarioFim.split(':').map(Number);
