@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
-    <title>Itália 2.0 | Bater Ponto</title>
+    <title>Itália 2.0 | Plantões</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
-    <scriptk src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
         const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
@@ -19,7 +19,6 @@
 
     <style>
         :root {
-            color-scheme: dark;
             --verde: #22c55e;
             --fundo: #0a0f0d;
             --vidro: rgba(15, 23, 20, 0.6);
@@ -29,9 +28,8 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         html { background-color: #0a0f0d; overflow-x: hidden; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
 
-        /* FUNDO ANIMADO */
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
         .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
         .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 5; }
@@ -42,50 +40,38 @@
         .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
         @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
 
-        /* TELA DE PONTO */
-        .view-ponto { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 500px; position: relative; z-index: 10; }
-        .status-ponto-texto { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; color: var(--texto-mutado); margin-bottom: 20px; transition: color 0.3s; }
-        .status-ponto-texto.ativo { color: var(--verde); text-shadow: 0 0 10px rgba(34,197,94,0.5); }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; padding-bottom: 40px; }
+        .topo { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .btn-voltar { width: 40px; height: 40px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 18px; cursor: pointer; text-decoration: none; transition: 0.3s; }
+        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
+        .titulo { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
         
-        .scanner-ponto { position: relative; width: 200px; height: 200px; border-radius: 50%; background: rgba(0,0,0,0.4); border: 2px solid rgba(34, 197, 94, 0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 30px; transition: 0.3s; }
-        .scanner-ponto.ativo { border-color: var(--verde); box-shadow: 0 0 30px rgba(34, 197, 94, 0.3), inset 0 0 20px rgba(34, 197, 94, 0.1); animation: pulsar-scanner 2s infinite; }
-        @keyframes pulsar-scanner { 0% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2), inset 0 0 10px rgba(34, 197, 94, 0.1); } 50% { box-shadow: 0 0 40px rgba(34, 197, 94, 0.6), inset 0 0 20px rgba(34, 197, 94, 0.3); } 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2), inset 0 0 10px rgba(34, 197, 94, 0.1); } }
-        .scanner-ponto i { font-size: 80px; color: var(--texto-mutado); transition: 0.3s; }
-        .scanner-ponto.ativo i { color: var(--verde); animation: piscar-icone 2s infinite; }
-        @keyframes piscar-icone { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .card-plantao { background: var(--vidro); backdrop-filter: blur(20px); border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid var(--borda); transition: 0.3s; }
+        .card-plantao.aberto { border-color: var(--verde); box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
+        .card-plantao.lotado { opacity: 0.5; }
+        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .card-nome { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; }
+        .card-horario { font-size: 12px; color: var(--texto-mutado); }
         
-        .cronometro { position: absolute; bottom: -30px; background: #0a0f0d; padding: 5px 15px; border-radius: 20px; border: 1px solid var(--borda); font-family: 'Oswald', sans-serif; font-size: 20px; color: #fff; display: none; }
-        .cronometro.ativo { display: block; }
-
-        .botoes-ponto { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-top: 30px;}
-        .btn-ponto { width: 100%; padding: 18px; border-radius: 12px; border: none; font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-ponto.iniciar { background: var(--verde); color: #000; box-shadow: 0 5px 15px rgba(34,197,94,0.3); }
-        .btn-ponto.iniciar:hover { background: #4ade80; transform: translateY(-2px); }
-        .btn-ponto.encerrar { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid #ef4444; }
-        .btn-ponto.encerrar:hover { background: #ef4444; color: #fff; }
-        .btn-ponto.bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; transform: none !important; box-shadow: none; }
-
-        /* ALERTA CUSTOMIZADO */
+        .vagas-barra { width: 100%; height: 6px; background: #27272a; border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
+        .vagas-preenchida { height: 100%; background: var(--verde); transition: 0.3s; }
+        .vagas-texto { font-size: 11px; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 15px; }
+        
+        .btn-acao-plantao { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-entrar { background: var(--verde); color: #000; }
+        .btn-entrar:hover { background: #4ade80; }
+        .btn-bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; }
+        .btn-em-andamento { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid #eab308; }
+        
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--verde); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; min-width: 280px; transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .alerta-custom.ativo { top: 20px; }
         .alerta-custom i { font-size: 24px; color: var(--verde); }
         .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500; }
         .alerta-custom.erro { border-color: #ef4444; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2); }
         .alerta-custom.erro i { color: #ef4444; }
-
-        /* BOTÃO VOLTAR */
-        .btn-voltar { position: absolute; top: 20px; left: 20px; width: 45px; height: 45px; background: var(--vidro); backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 20px; cursor: pointer; z-index: 100; transition: 0.3s; text-decoration: none;}
-        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
-
-        @media (max-width: 600px) {
-            .scanner-ponto { width: 160px; height: 160px; }
-            .scanner-ponto i { font-size: 60px; }
-            .alerta-custom { min-width: 90%; }
-        }
     </style>
 </head>
 <body>
-    <!-- FUNDO ANIMADO -->
     <div class="fundo-degrade"></div>
     <div class="grade-fundo"></div>
     <div class="particula p1"></div>
@@ -94,34 +80,174 @@
     <div class="particula p4"></div>
     <div class="particula p5"></div>
 
-    <!-- BOTÃO VOLTAR -->
-    <a href="dashboard.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
-
-    <!-- TELA DE PONTO -->
-    <div class="view-ponto" id="tela-ponto">
-        <div class="status-ponto-texto" id="status-ponto-texto">Fora de Serviço</div>
-        
-        <div class="scanner-ponto" id="scanner-ponto">
-            <i class="fas fa-fingerprint"></i>
-            <div class="cronometro" id="cronometro-ponto">00:00:00</div>
+    <div class="container">
+        <div class="topo">
+            <a href="dashboard.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="titulo">Plantões</h1>
         </div>
+        
+        <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 10px;">Selecione um plantão disponível abaixo:</p>
 
-        <div class="botoes-ponto" id="botoes-ponto">
-            <button class="btn-ponto iniciar" id="btn-bater-ponto" onclick="baterPonto()">
-                <i class="fas fa-play"></i> Bater Ponto
-            </button>
-            <button class="btn-ponto encerrar" id="btn-encerrar-ponto" style="display: none;" onclick="encerrarPonto()">
-                <i class="fas fa-stop"></i> Encerrar Ponto
-            </button>
+        <!-- LISTA DE PLANTÕES (Gerada pelo JavaScript) -->
+        <div id="lista-plantoes">
+            <p style="color: var(--texto-mutado); text-align: center;">Carregando plantões...</p>
         </div>
     </div>
 
-    <!-- SISTEMA DE ALERTA VERDE -->
+    <!-- SISTEMA DE ALERTA -->
     <div class="alerta-custom" id="alerta-site">
         <i class="fas fa-check-circle" id="alerta-icone"></i>
         <p id="alerta-texto">Mensagem</p>
     </div>
+        <script>
+        let membroLogado = null;
 
-    <!-- O Script virá na próxima parte -->
+        // Função que pega a hora certa de Brasília
+        function getHoraBrasilia() {
+            const agora = new Date();
+            const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
+            return new Date(utc - (3 * 3600000)); 
+        }
+
+        // Transforma em formato HH:MM
+        function getHoraFormatada(date) {
+            return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
+        }
+
+        // Verifica o status do plantão baseado no horário atual
+        function verificarStatusHorario(horarioInicio, horarioFim) {
+            const agora = getHoraBrasilia();
+            const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
+            const [hFim, mFim] = horarioFim.split(':').map(Number);
+            
+            let minutosAgora = (agora.getHours() * 60) + agora.getMinutes();
+            let minutosInicio = (hInicio * 60) + mInicio;
+            let minutosFim = (hFim * 60) + mFim;
+
+            // Se o plantão vira a madrugada (ex: 23:00 às 01:00)
+            if (minutosFim < minutosInicio) {
+                if (minutosAgora < minutosFim) minutosAgora += 24 * 60;
+                minutosFim += 24 * 60;
+            }
+            
+            const tolerancia = 15; // 15 minutos
+            const janelaAbertura = minutosInicio - tolerancia;
+            const janelaFechamento = minutosInicio + tolerancia;
+
+            if (minutosAgora >= janelaAbertura && minutosAgora <= janelaFechamento) {
+                return 'aberto';
+            } else if (minutosAgora > janelaFechamento && minutosAgora < minutosFim) {
+                return 'em_andamento';
+            } else {
+                return 'fechado';
+            }
+        }
+
+        // Carrega os plantões ao abrir a página
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+            membroLogado = JSON.parse(logado);
+            
+            carregarPlantoes();
+        });
+
+        async function carregarPlantoes() {
+            const container = document.getElementById('lista-plantoes');
+            
+            // Puxa os plantões do banco
+            const { data, error } = await sb.from('plantoes').select('*').order('horario_inicio');
+            if (error || !data) {
+                container.innerHTML = '<p style="color: red;">Erro ao carregar plantões.</p>';
+                return;
+            }
+
+            // Puxa quem já está com ponto aberto hoje para contar as vagas
+            const hoje = getHoraBrasilia().toISOString().split('T')[0];
+            const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
+
+            let html = '';
+            data.forEach(p => {
+                const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
+                const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
+                const restantes = p.vagas_totais - ocupadas;
+                
+                let classeCard = '';
+                let btnHtml = '';
+
+                if (restantes <= 0) {
+                    classeCard = 'lotado';
+                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
+                } else if (status === 'aberto') {
+                    classeCard = 'aberto';
+                    btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
+                } else if (status === 'em_andamento') {
+                    classeCard = '';
+                    btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
+                } else {
+                    classeCard = '';
+                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
+                }
+
+                const porcentagem = (ocupadas / p.vagas_totais) * 100;
+
+                html += `
+                    <div class="card-plantao ${classeCard}">
+                        <div class="card-header">
+                            <span class="card-nome">${p.nome}</span>
+                            <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
+                        </div>
+                        <div class="vagas-barra">
+                            <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
+                        </div>
+                        <div class="vagas-texto">
+                            <span>Vagas preenchidas: ${ocupadas}/${p.vagas_totais}</span>
+                            <span>${restantes} restantes</span>
+                        </div>
+                        ${btnHtml}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // Função de clicar em entrar no plantão
+        async function entrarPlantao(id, nome) {
+            if (!confirm(`Deseja entrar no plantão: ${nome}?`)) return;
+            
+            const btn = event.target;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
+            btn.disabled = true;
+
+            const { error } = await sb.from('pontos').insert([{
+                passaporte: membroLogado.passaporte,
+                nome: membroLogado.nome,
+                entrada: getHoraBrasilia().toISOString(),
+                status: 'aberto',
+                plantao_id: id
+            }]);
+
+            if (!error) {
+                customAlert("Você entrou no plantão!", "sucesso");
+                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+            } else {
+                customAlert("Erro ao entrar no plantão.", "erro");
+                btn.innerHTML = 'ENTRAR AGORA';
+                btn.disabled = false;
+            }
+        }
+
+        function customAlert(mensagem, tipo = 'sucesso') {
+            const alerta = document.getElementById('alerta-site');
+            const icone = document.getElementById('alerta-icone');
+            const texto = document.getElementById('alerta-texto');
+            texto.innerText = mensagem;
+            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
+            else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
+            alerta.classList.add('ativo');
+            setTimeout(() => alerta.classList.remove('ativo'), 3000);
+        }
+    </script>
 </body>
 </html>
