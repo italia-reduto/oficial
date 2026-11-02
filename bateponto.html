@@ -159,106 +159,107 @@
             
             carregarPlantoes();
         });
-
-        async function carregarPlantoes() {
-            const container = document.getElementById('lista-plantoes');
-            
-            try {
-                const { data: plantoes, error } = await sb.from('plantoes').select('*');
-                
-                if (error) throw new Error("Erro no banco: " + error.message);
-                if (!plantoes || plantoes.length === 0) {
-                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>';
-                    return;
-                }
-
-                const ordemHorarios = { '14:00': 1, '16:00': 2, '18:00': 3, '20:00': 4, '22:00': 5, '00:00': 6 };
-                let ativos = [];
-                let futuros = [];
-                let encerrados = [];
-
-                plantoes.forEach(p => {
-                    const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
-                    p._status = status;
-                    
-                    if (status === 'aberto' || status === 'em_andamento') {
-                        ativos.push(p);
-                    } else if (status === 'aguardando') {
-                        futuros.push(p);
-                    } else {
-                        encerrados.push(p);
-                    }
-                });
-
-                const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
-                ativos.sort(ordenar);
-                futuros.sort(ordenar);
-                encerrados.sort(ordenar);
-
-                const plantoesOrdenados = [...ativos, ...futuros, ...encerrados];
-
-                const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
-
-                let html = '';
-                plantoesOrdenados.forEach(p => {
-                    const status = p._status;
-                    const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-                    const restantes = p.vagas_totais - ocupadas;
-                    
-                    let classeCard = '';
-                    let btnHtml = '';
-                    let iconeHtml = '';
-
-                    if (p.tipo === 'rota') {
-                        iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
-                    } else if (p.tipo === 'venda') {
-                        iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
-                    } else if (p.tipo === 'apoio') {
-                        iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
-                    }
-
-                    if (status === 'encerrado') {
-                        classeCard = 'lotado';
-                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-times"></i> ENCERRADO</button>`;
-                    } else if (restantes <= 0) {
-                        classeCard = 'lotado';
-                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
-                    } else if (status === 'aberto') {
-                        classeCard = 'aberto';
-                        btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
-                    } else if (status === 'em_andamento') {
-                        btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
-                    } else {
-                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
-                    }
-
-                    const porcentagem = (ocupadas / p.vagas_totais) * 100;
-
-                    html += `
-                        <div class="card-plantao ${classeCard}">
-                            <div class="card-header">
-                                <span class="card-nome">${iconeHtml} ${p.nome}</span>
-                                <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
-                            </div>
-                            <div class="vagas-barra">
-                                <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
-                            </div>
-                            <div class="vagas-texto">
-                                <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
-                                <span>${restantes} restantes</span>
-                            </div>
-                            ${btnHtml}
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = `<p style="color: #ef4444; text-align: center;">Erro ao carregar plantões. Tente novamente.</p>`;
-            }
+async function carregarPlantoes() {
+    const container = document.getElementById('lista-plantoes');
+    
+    try {
+        const { data: plantoes, error } = await sb.from('plantoes').select('*');
+        
+        if (error) throw new Error("Tabela plantoes: " + error.message);
+        if (!plantoes || plantoes.length === 0) {
+            container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>';
+            return;
         }
+
+        const { data: pontosHoje, error: errPontos } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
+        if (errPontos) throw new Error("Tabela pontos: " + errPontos.message);
+
+        const ordemHorarios = { '14:00': 1, '16:00': 2, '18:00': 3, '20:00': 4, '22:00': 5, '00:00': 6 };
+        let ativos = [];
+        let futuros = [];
+        let encerrados = [];
+
+        plantoes.forEach(p => {
+            const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
+            p._status = status;
+            
+            if (status === 'aberto' || status === 'em_andamento') {
+                ativos.push(p);
+            } else if (status === 'aguardando') {
+                futuros.push(p);
+            } else {
+                encerrados.push(p);
+            }
+        });
+
+        const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
+        ativos.sort(ordenar);
+        futuros.sort(ordenar);
+        encerrados.sort(ordenar);
+
+        const plantoesOrdenados = [...ativos, ...futuros, ...encerrados];
+
+        let html = '';
+        plantoesOrdenados.forEach(p => {
+            const status = p._status;
+            const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
+            const restantes = p.vagas_totais - ocupadas;
+            
+            let classeCard = '';
+            let btnHtml = '';
+            let iconeHtml = '';
+
+            if (p.tipo === 'rota') {
+                iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
+            } else if (p.tipo === 'venda') {
+                iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
+            } else if (p.tipo === 'apoio') {
+                iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
+            }
+
+            if (status === 'encerrado') {
+                classeCard = 'lotado';
+                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-times"></i> ENCERRADO</button>`;
+            } else if (restantes <= 0) {
+                classeCard = 'lotado';
+                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
+            } else if (status === 'aberto') {
+                classeCard = 'aberto';
+                btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
+            } else if (status === 'em_andamento') {
+                btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
+            } else {
+                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
+            }
+
+            const porcentagem = (ocupadas / p.vagas_totais) * 100;
+
+            html += `
+                <div class="card-plantao ${classeCard}">
+                    <div class="card-header">
+                        <span class="card-nome">${iconeHtml} ${p.nome}</span>
+                        <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
+                    </div>
+                    <div class="vagas-barra">
+                        <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
+                    </div>
+                    <div class="vagas-texto">
+                        <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
+                        <span>${restantes} restantes</span>
+                    </div>
+                    ${btnHtml}
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        // Vai mostrar o erro exato na tela pra gente descobrir o que é
+        container.innerHTML = `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px; border-radius: 8px; font-size: 13px; text-align: center;">${err.message}</div>`;
+    }
+}
 
         // ==========================================
         // 3. AÇÃO DE ENTRAR NO PLANTÃO
