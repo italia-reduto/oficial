@@ -197,8 +197,7 @@ async function carregarPlantoes() {
         futuros.sort(ordenar);
         encerrados.sort(ordenar);
 
-        const plantoesOrdenados = [...ativos, ...futuros, ...encerrados];
-
+        const plantoesOrdenados = [...ativos, ...futuros];
         let html = '';
         plantoesOrdenados.forEach(p => {
             const status = p._status;
