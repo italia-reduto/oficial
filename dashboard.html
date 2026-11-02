@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
-    <title>Itália 2.0 | Plantões</title>
+    <title>Itália 2.0 | Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
@@ -19,6 +19,7 @@
 
     <style>
         :root {
+            color-scheme: dark;
             --verde: #22c55e;
             --fundo: #0a0f0d;
             --vidro: rgba(15, 23, 20, 0.6);
@@ -30,6 +31,13 @@
         html { background-color: #0a0f0d; overflow-x: hidden; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
 
+        @keyframes slideUpFade { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .anim-entrada { animation: slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
         .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
         .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 5; }
@@ -40,38 +48,134 @@
         .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
         @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
 
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; padding-bottom: 40px; }
-        .topo { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-        .btn-voltar { width: 40px; height: 40px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 18px; cursor: pointer; text-decoration: none; transition: 0.3s; }
-        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
-        .titulo { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+        .container-principal { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; margin-top: 20px; padding-bottom: 120px; }
+        .cartao-perfil { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5); display: flex; align-items: center; gap: 20px; position: relative; }
+        .cartao-perfil::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--verde); border-radius: 16px 0 0 16px; }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--verde); background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: bold; color: var(--verde); box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); background-size: cover; background-position: center; flex-shrink: 0; }
+        .info-perfil { flex: 1; }
+        .nome { font-family: 'Oswald', sans-serif; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .cargo { font-size: 13px; color: var(--verde); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .passaporte { font-size: 12px; color: var(--texto-mutado); }
+        .progressao-container { margin-top: 15px; display: flex; flex-direction: column; gap: 6px; }
+        .progressao-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .cargo-atual { color: #a1a1aa; }
+        .cargo-proximo { color: var(--verde); }
+        .progressao-barra-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; position: relative; }
+        .progressao-barra-fill { height: 100%; background: linear-gradient(90deg, #166534, var(--verde)); width: 0%; border-radius: 10px; transition: width 1s ease; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+        .progressao-xp-texto { font-size: 10px; color: #9ca3af; text-align: right; }
+        .btn-config { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 16px; cursor: pointer; z-index: 10; transition: 0.3s; }
+        .btn-config:hover { color: var(--verde); border-color: var(--verde); transform: rotate(90deg); }
+        .card-promocao { display: none; background: rgba(15, 23, 20, 0.9); border: 1px solid var(--verde); border-radius: 12px; padding: 20px; box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); position: relative; overflow: hidden; animation: pulsar-borda 2s infinite; }
+        .card-promocao.ativo { display: block; }
+        @keyframes pulsar-borda { 0%, 100% { box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); } 50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.6); } }
+        .promocao-conteudo { display: flex; align-items: center; gap: 15px; }
+        .promocao-icone { font-size: 40px; color: #eab308; filter: drop-shadow(0 0 10px rgba(234, 179, 8, 0.5)); }
+        .promocao-textos h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; text-transform: uppercase; margin-bottom: 5px; }
+        .promocao-textos p { font-size: 12px; color: #9ca3af; line-height: 1.4; }
+        .btn-ciente { margin-top: 15px; width: 100%; padding: 12px; background: var(--verde); color: #000; border: none; border-radius: 6px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 14px; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
+        .btn-ciente:hover { background: #4ade80; transform: scale(1.02); }
+                .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .card-metrica { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 15px; text-align: left; transition: 0.3s; }
+        .metrica-topo { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .metrica-topo i { font-size: 14px; }
+        .metrica-valor { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
+        .metrica-sub { font-size: 10px; color: rgba(255,255,255,0.3); }
+
+        .grid-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .card-acao { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; }
+        .card-acao:hover { border-color: rgba(34, 197, 94, 0.5); background: rgba(34, 197, 94, 0.05); }
+        .card-acao i { font-size: 24px; color: var(--verde); }
+        .card-acao span { font-family: 'Oswald', sans-serif; font-size: 15px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .card-acao p { font-size: 11px; color: var(--texto-mutado); }
+
+        .icone-sino { position: absolute; top: 15px; right: 15px; color: #ef4444; font-size: 16px; animation: pulsar-sino 1.5s infinite; }
+        .icone-sino-titulo { color: #ef4444; font-size: 14px; margin-left: 10px; animation: pulsar-sino 1.5s infinite; }
+        @keyframes pulsar-sino { 0% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.1) rotate(10deg); } 50% { transform: scale(1) rotate(-10deg); } 75% { transform: scale(1.1) rotate(10deg); } 100% { transform: scale(1) rotate(0deg); } }
+
+        .painel-avisos { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; margin-top: 5px; display: flex; flex-direction: column; gap: 15px; position: relative; }
+        .painel-topo h3 { font-family: 'Oswald', sans-serif; font-size: 16px; letter-spacing: 1px; text-transform: uppercase; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 10px; display: flex; align-items: center; }
+        .lista-avisos { display: flex; flex-direction: column; gap: 10px; }
+        .aviso-item { background: rgba(0,0,0,0.3); border-left: 3px solid var(--verde); padding: 15px; border-radius: 0 8px 8px 0; transition: 0.3s; }
+        .aviso-texto { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
+        .aviso-vazio { font-size: 13px; color: var(--texto-mutado); text-align: center; padding: 10px 0; }
+
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
+        .modal-overlay.ativo { display: flex; opacity: 1; }
+        .modal-conteudo { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; width: 100%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; overflow: hidden; }
+        .modal-overlay.ativo .modal-conteudo { transform: scale(1) translateY(0); opacity: 1; }
+        .modal-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+        .modal-header h2 { font-family: 'Oswald', sans-serif; font-size: 20px; color: var(--verde); text-transform: uppercase; display: flex; gap: 10px; align-items: center;}
+        .btn-fechar { background: transparent; border: none; color: var(--texto-mutado); font-size: 20px; cursor: pointer; }
+        .btn-fechar:hover { color: #ef4444; }
+        .modal-lista { padding: 20px; overflow-y: auto; max-height: 60vh; display: flex; flex-direction: column; gap: 10px; flex: 1; -webkit-overflow-scrolling: touch; }
         
-        .card-plantao { background: var(--vidro); backdrop-filter: blur(20px); border-radius: 12px; padding: 20px; margin-bottom: 12px; border: 1px solid var(--borda); transition: 0.3s; }
-        .card-plantao.aberto { border-color: var(--verde); box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
-        .card-plantao.lotado { opacity: 0.5; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .card-nome { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; }
-        .card-horario { font-size: 12px; color: var(--texto-mutado); }
-        
-        .vagas-barra { width: 100%; height: 6px; background: #27272a; border-radius: 10px; overflow: hidden; margin-bottom: 10px; }
-        .vagas-preenchida { height: 100%; background: var(--verde); transition: 0.3s; }
-        .vagas-texto { font-size: 11px; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 15px; }
-        
-        .btn-acao-plantao { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-entrar { background: var(--verde); color: #000; }
-        .btn-entrar:hover { background: #4ade80; }
-        .btn-bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; }
-        .btn-em-andamento { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid #eab308; }
-        
+        .busca-membros { width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 15px; }
+        .busca-membros:focus { border-color: var(--verde); }
+        .categoria-membros { font-family: 'Oswald', sans-serif; font-size: 12px; color: var(--texto-mutado); text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
+        .categoria-membros::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+        .membro-card { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.3); padding: 12px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .membro-info { display: flex; align-items: center; gap: 12px; }
+        .membro-avatar { width: 40px; height: 40px; border-radius: 50%; background: #000; border: 1px solid var(--borda); display: flex; align-items: center; justify-content: center; font-family: 'Oswald'; color: var(--verde); font-size: 16px; background-size: cover; background-position: center; }
+        .membro-dados h4 { font-size: 14px; color: #fff; margin-bottom: 2px; }
+        .membro-dados p { font-size: 11px; color: var(--texto-mutado); }
+        .status-online { width: 10px; height: 10px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 8px var(--verde); flex-shrink: 0;}
+        .status-offline { width: 10px; height: 10px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 8px #ef4444; flex-shrink: 0;}
+
+        .config-secao { border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 15px; }
+        .config-secao:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0;}
+        .config-titulo { font-family: 'Oswald', sans-serif; font-size: 13px; color: var(--verde); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+        .config-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; cursor: pointer; }
+        .config-info { display: flex; flex-direction: column; gap: 2px; }
+        .config-info-titulo { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--texto); font-weight: 500; }
+        .config-info-titulo i { width: 16px; text-align: center; color: var(--texto-mutado); }
+        .config-descricao { font-size: 10px; color: var(--texto-mutado); margin-left: 28px; line-height: 1.3; max-width: 200px; }
+        .config-badge { font-size: 11px; background: rgba(34, 197, 94, 0.1); color: var(--verde); padding: 3px 8px; border-radius: 10px; border: 1px solid rgba(34, 197, 94, 0.2); }
+        .btn-config-acao { background: rgba(255,255,255,0.05); border: 1px solid var(--borda); color: #fff; padding: 5px 12px; border-radius: 6px; font-size: 11px; cursor: pointer; transition: 0.3s; }
+        .btn-config-acao:hover { background: var(--verde); color: #000; }
+        .btn-config-acao.perigo { color: #ef4444; border-color: rgba(239,68,68,0.3); }
+        .btn-config-acao.perigo:hover { background: #ef4444; color: #fff; }
+
+        .switch { position: relative; display: inline-block; width: 40px; height: 22px; flex-shrink: 0;}
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #27272a; transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--verde); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--verde); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; min-width: 280px; transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .alerta-custom.ativo { top: 20px; }
         .alerta-custom i { font-size: 24px; color: var(--verde); }
         .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500; }
         .alerta-custom.erro { border-color: #ef4444; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2); }
         .alerta-custom.erro i { color: #ef4444; }
+
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+
+        @media (max-width: 600px) {
+            .cartao-perfil { padding: 15px; gap: 15px; border-radius: 12px; }
+            .avatar { width: 60px; height: 60px; font-size: 24px; }
+            .nome { font-size: 20px; }
+            .cargo { font-size: 11px; }
+            .passaporte { font-size: 10px; }
+            .grid-metricas { gap: 8px; }
+            .card-metrica { padding: 10px; border-radius: 10px; }
+            .metrica-topo { font-size: 9px; flex-direction: row; align-items: center; }
+            .metrica-topo i { font-size: 12px; }
+            .metrica-valor { font-size: 22px; }
+            .metrica-sub { font-size: 8px; line-height: 1.1; display: block;}
+            .grid-acoes { grid-template-columns: 1fr; }
+            .painel-avisos { padding: 15px; }
+            .aviso-item { padding: 12px; }
+            .alerta-custom { min-width: 90%; }
+            .modal-lista { padding-bottom: 90px; }
+        }
     </style>
 </head>
 <body>
+    <!-- FUNDO ANIMADO -->
     <div class="fundo-degrade"></div>
     <div class="grade-fundo"></div>
     <div class="particula p1"></div>
@@ -80,174 +184,419 @@
     <div class="particula p4"></div>
     <div class="particula p5"></div>
 
-    <div class="container">
-        <div class="topo">
-            <a href="dashboard.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
-            <h1 class="titulo">Plantões</h1>
-        </div>
-        
-        <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 10px;">Selecione um plantão disponível abaixo:</p>
+    <!-- TELA PRINCIPAL (DASHBOARD) -->
+    <main class="container-principal">
+        <!-- CARTÃO DE PERFIL -->
+        <div class="cartao-perfil anim-entrada delay-1">
+            <div class="btn-config" onclick="abrirModalConfig()">
+                <i class="fas fa-cog"></i>
+            </div>
 
-        <!-- LISTA DE PLANTÕES (Gerada pelo JavaScript) -->
-        <div id="lista-plantoes">
-            <p style="color: var(--texto-mutado); text-align: center;">Carregando plantões...</p>
+            <div class="avatar" id="avatar-inicial">?</div>
+            <div class="info-perfil">
+                <h1 class="nome" id="nome-membro">Carregando...</h1>
+                <p class="cargo" id="cargo-membro">---</p>
+                <p class="passaporte">Passaporte: <span id="passaporte-membro" style="color: #fff;">---</span></p>
+                
+                <div class="progressao-container" id="area-progressao">
+                    <div class="progressao-labels">
+                        <span class="cargo-atual" id="label-cargo-atual">Carregando</span>
+                        <span class="cargo-proximo" id="label-cargo-proximo">---</span>
+                    </div>
+                    <div class="progressao-barra-bg">
+                        <div class="progressao-barra-fill" id="barra-progressao"></div>
+                    </div>
+                    <div class="progressao-xp-texto" id="texto-progressao">0 XP</div>
+                </div>
+            </div>
         </div>
-    </div>
 
-    <!-- SISTEMA DE ALERTA -->
+        <!-- CARD DE PROMOÇÃO -->
+        <div class="card-promocao anim-entrada delay-2" id="card-promocao">
+            <div class="promocao-conteudo">
+                <i class="fas fa-trophy promocao-icone"></i>
+                <div class="promocao-textos">
+                    <h3>Promoção Disponível!</h3>
+                    <p>Você atingiu o XP necessário para o cargo de <strong id="cargo-promocao-texto">---</strong>.</p>
+                    <p style="font-size: 11px; margin-top: 5px; color: #eab308;">Tire um print e envie para a liderança.</p>
+                </div>
+            </div>
+            <button class="btn-ciente" onclick="confirmarPromocao()">Estou Ciente</button>
+        </div>
+
+        <!-- MÉTRICAS -->
+        <div class="grid-metricas anim-entrada delay-2">
+            <div class="card-metrica">
+                <div class="metrica-topo">Presenças <i class="fas fa-check-circle" style="color: #22c55e;"></i></div>
+                <div class="metrica-valor" style="color: #22c55e;" id="kpi-presencas">0</div>
+                <div class="metrica-sub">Registros</div>
+            </div>
+            <div class="card-metrica">
+                <div class="metrica-topo">Faltas <i class="fas fa-times-circle" style="color: #ef4444;"></i></div>
+                <div class="metrica-valor" style="color: #ef4444;" id="kpi-faltas">0</div>
+                <div class="metrica-sub">Sem Just.</div>
+            </div>
+            <div class="card-metrica">
+                <div class="metrica-topo">Advertências <i class="fas fa-exclamation-triangle" style="color: #eab308;"></i></div>
+                <div class="metrica-valor" style="color: #eab308;" id="kpi-advertencias">0</div>
+                <div class="metrica-sub">Punições</div>
+            </div>
+        </div>
+
+        <!-- AÇÕES RÁPIDAS -->
+        <div class="grid-acoes anim-entrada delay-3">
+            <div class="card-acao" onclick="abrirModalMembros()">
+                <i class="fas fa-users"></i>
+                <span>Membros</span>
+                <p>Ver todos os membros da organização</p>
+            </div>
+            <div class="card-acao" onclick="abrirModalTicket()">
+                <i class="fas fa-bell icone-sino" id="notif-ticket" style="display: none;"></i>
+                <i class="fas fa-headset"></i>
+                <span>Ticket Recente</span>
+                <p id="status-ticket">Nenhum ticket aberto</p>
+            </div>
+        </div>
+
+        <!-- MURAL DE AVISOS -->
+        <div class="painel-avisos anim-entrada delay-4">
+            <div class="painel-topo">
+                <h3>
+                    <i class="fas fa-bullhorn" style="color: var(--verde); margin-right: 8px;"></i> Comunicados
+                    <i class="fas fa-bell icone-sino-titulo" id="notif-aviso" style="display: none;"></i>
+                </h3>
+            </div>
+            <div id="lista-avisos" class="lista-avisos">
+                <p class="aviso-vazio">Nenhum aviso recente.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- SISTEMA DE ALERTA VERDE -->
     <div class="alerta-custom" id="alerta-site">
         <i class="fas fa-check-circle" id="alerta-icone"></i>
         <p id="alerta-texto">Mensagem</p>
     </div>
+
+    <!-- MODAL DE MEMBROS -->
+    <div class="modal-overlay" id="modal-membros">
+        <div class="modal-conteudo" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-users"></i> Membros da Itália</h2>
+                <button class="btn-fechar" onclick="fecharModalMembros()"><i class="fas fa-times"></i></button>
+            </div>
+            <div style="padding: 15px 20px 0 20px;">
+                <input type="text" class="busca-membros" id="input-busca-membros" placeholder="Buscar por nome ou passaporte..." oninput="filtrarMembros()">
+            </div>
+            <div class="modal-lista" id="lista-membros-modal">
+                <p class="aviso-vazio">Carregando membros...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIGURAÇÕES -->
+    <div class="modal-overlay" id="modal-config">
+        <div class="modal-conteudo" style="max-width: 450px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Configurações</h2>
+                <button class="btn-fechar" onclick="fecharModalConfig()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-lista" style="padding: 15px 20px; padding-bottom: 90px;">
+                
+                <div class="config-secao">
+                    <h3 class="config-titulo">Perfil e Identidade</h3>
+                    <div class="config-item" onclick="document.getElementById('input-foto').click()">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-image"></i> <span>Foto de Perfil</span></div>
+                            <div class="config-descricao">Escolha uma imagem da sua galeria.</div>
+                        </div>
+                        <button class="btn-config-acao">Mudar</button>
+                    </div>
+                    <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="processarFoto(this)">
+                </div>
+
+                <div class="config-secao">
+                    <h3 class="config-titulo">Notificações</h3>
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-bell"></i> <span>Notificações no Navegador</span></div>
+                            <div class="config-descricao">Receba alertas no celular sobre avisos e tickets.</div>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="switch-notificacao" onchange="toggleNotificacoes(this)"><span class="slider"></span></label>
+                    </div>
+                </div>
+
+                <div class="config-secao">
+                    <h3 class="config-titulo">Segurança</h3>
+                    <div class="config-item" onclick="customAlert('Saindo...', 'erro'); setTimeout(sair, 1000);">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-sign-out-alt" style="color: #ef4444;"></i> <span style="color: #ef4444;">Sair da Conta</span></div>
+                            <div class="config-descricao">Encerra sua sessão neste dispositivo.</div>
+                        </div>
+                        <button class="btn-config-acao perigo">Sair</button>
+                    </div>
+                </div>
+
+                <div class="config-secao">
+                    <h3 class="config-titulo">Interface</h3>
+                    <div class="config-item">
+                        <div class="config-info">
+                            <div class="config-info-titulo"><i class="fas fa-magic"></i> <span>Efeito de Partículas</span></div>
+                            <div class="config-descricao">Desligue se seu celular estiver fraco.</div>
+                        </div>
+                        <label class="switch"><input type="checkbox" id="switch-particulas" checked onchange="toggleParticulas(this)"><span class="slider"></span></label>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MENU INFERIOR FLUTUANTE -->
+    <nav class="menu-inferior">
+        <a href="#" class="item-menu ativo" onclick="mudarMenu(this, 'inicio'); return false;"><i class="fas fa-home"></i><span>Início</span></a>
+        <!-- O Ponto agora redireciona para a página separada -->
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="#" class="item-menu" onclick="customAlert('Aba Equipe em breve!'); return false;"><i class="fas fa-users"></i><span>Equipe</span></a>
+        <a href="#" class="item-menu" onclick="customAlert('Aba Perfil em breve!'); return false;"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+    </nav>
         <script>
         let membroLogado = null;
+        let todosMembros = [];
 
-        // Função que pega a hora certa de Brasília
-        function getHoraBrasilia() {
-            const agora = new Date();
-            const utc = agora.getTime() + (agora.getTimezoneOffset() * 60000);
-            return new Date(utc - (3 * 3600000)); 
-        }
-
-        // Transforma em formato HH:MM
-        function getHoraFormatada(date) {
-            return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
-        }
-
-        // Verifica o status do plantão baseado no horário atual
-        function verificarStatusHorario(horarioInicio, horarioFim) {
-            const agora = getHoraBrasilia();
-            const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
-            const [hFim, mFim] = horarioFim.split(':').map(Number);
-            
-            let minutosAgora = (agora.getHours() * 60) + agora.getMinutes();
-            let minutosInicio = (hInicio * 60) + mInicio;
-            let minutosFim = (hFim * 60) + mFim;
-
-            // Se o plantão vira a madrugada (ex: 23:00 às 01:00)
-            if (minutosFim < minutosInicio) {
-                if (minutosAgora < minutosFim) minutosAgora += 24 * 60;
-                minutosFim += 24 * 60;
-            }
-            
-            const tolerancia = 15; // 15 minutos
-            const janelaAbertura = minutosInicio - tolerancia;
-            const janelaFechamento = minutosInicio + tolerancia;
-
-            if (minutosAgora >= janelaAbertura && minutosAgora <= janelaFechamento) {
-                return 'aberto';
-            } else if (minutosAgora > janelaFechamento && minutosAgora < minutosFim) {
-                return 'em_andamento';
-            } else {
-                return 'fechado';
-            }
-        }
-
-        // Carrega os plantões ao abrir a página
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
+
             membroLogado = JSON.parse(logado);
+            document.getElementById('nome-membro').innerText = membroLogado.nome;
+            document.getElementById('cargo-membro').innerText = membroLogado.cargo;
+            document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
+            document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
+
+            const { data, error } = await sb.from('membros').select('xp_total, foto_url, advertencias').eq('passaporte', membroLogado.passaporte).single();
             
-            carregarPlantoes();
+            if (data && !error) {
+                document.getElementById('kpi-advertencias').innerText = data.advertencias || 0;
+                if (data.foto_url) {
+                    const avatar = document.getElementById('avatar-inicial');
+                    avatar.style.backgroundImage = `url('${data.foto_url}')`;
+                    avatar.innerText = ''; 
+                }
+                calcularProgressao(data.xp_total || 0, data.cargo);
+            }
+
+            carregarAvisos();
+            carregarPresencasEFaltas(membroLogado.passaporte);
+            verificarTicketRecente(membroLogado.passaporte);
+            carregarMembrosRapido(); 
         });
 
-        async function carregarPlantoes() {
-            const container = document.getElementById('lista-plantoes');
-            
-            // Puxa os plantões do banco
-            const { data, error } = await sb.from('plantoes').select('*').order('horario_inicio');
-            if (error || !data) {
-                container.innerHTML = '<p style="color: red;">Erro ao carregar plantões.</p>';
+        // ===== PROGRESSÃO =====
+        const CARGOS_ESCALA = [
+            { nome: 'Novato', xp_min: 0, xp_max: 500 },
+            { nome: 'Executor', xp_min: 500, xp_max: 1500 },
+            { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
+            { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
+            { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
+        ];
+
+        function calcularProgressao(xpTotal, nomeCargoAtual) {
+            let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
+            if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
+                document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
+                return;
+            }
+            if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
+
+            let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
+            if (!proximoNivel) {
+                document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
                 return;
             }
 
-            // Puxa quem já está com ponto aberto hoje para contar as vagas
-            const hoje = getHoraBrasilia().toISOString().split('T')[0];
-            const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
+            document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+            document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
+            const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
+            const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
+            let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
+            if (porcentagem > 100) porcentagem = 100;
 
+            document.getElementById('barra-progressao').style.width = porcentagem + '%';
+            document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
+
+            const avisoVisto = localStorage.getItem('promocao_vista_' + proximoNivel.nome);
+            if (xpTotal >= proximoNivel.xp_min && !avisoVisto) {
+                document.getElementById('card-promocao').classList.add('ativo');
+                document.getElementById('cargo-promocao-texto').innerText = proximoNivel.nome;
+            }
+        }
+
+        function confirmarPromocao() {
+            const cargoProximo = document.getElementById('cargo-promocao-texto').innerText;
+            localStorage.setItem('promocao_vista_' + cargoProximo, 'sim');
+            document.getElementById('card-promocao').classList.remove('ativo');
+            customAlert("Print registrado! Avise a liderança.", "sucesso");
+        }
+
+        // ===== DADOS =====
+        async function carregarPresencasEFaltas(passaporte) {
+            try {
+                const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
+                const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
+                if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
+                if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
+            } catch (error) { console.error(error); }
+        }
+
+        async function carregarAvisos() {
+            const container = document.getElementById('lista-avisos');
+            const { data, error } = await sb.from('avisos').select('*').order('criado_em', { ascending: false }).limit(3);
+            if (error || !data || data.length === 0) return;
+            
+            document.getElementById('notif-aviso').style.display = 'inline-block';
             let html = '';
-            data.forEach(p => {
-                const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
-                const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-                const restantes = p.vagas_totais - ocupadas;
-                
-                let classeCard = '';
-                let btnHtml = '';
-
-                if (restantes <= 0) {
-                    classeCard = 'lotado';
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
-                } else if (status === 'aberto') {
-                    classeCard = 'aberto';
-                    btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
-                } else if (status === 'em_andamento') {
-                    classeCard = '';
-                    btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
-                } else {
-                    classeCard = '';
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
-                }
-
-                const porcentagem = (ocupadas / p.vagas_totais) * 100;
-
-                html += `
-                    <div class="card-plantao ${classeCard}">
-                        <div class="card-header">
-                            <span class="card-nome">${p.nome}</span>
-                            <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
-                        </div>
-                        <div class="vagas-barra">
-                            <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
-                        </div>
-                        <div class="vagas-texto">
-                            <span>Vagas preenchidas: ${ocupadas}/${p.vagas_totais}</span>
-                            <span>${restantes} restantes</span>
-                        </div>
-                        ${btnHtml}
-                    </div>
-                `;
+            data.forEach(aviso => {
+                const textoAviso = aviso.texto || 'Sem detalhes.';
+                const autorAviso = aviso.autor || 'Liderança';
+                let dataFormatada = 'Recentemente';
+                if (aviso.criado_em) dataFormatada = new Date(aviso.criado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
+                html += `<div class="aviso-item"><div class="aviso-texto">${textoAviso}</div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px;"><span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${autorAviso}</span><span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span></div></div>`;
             });
-
             container.innerHTML = html;
         }
 
-        // Função de clicar em entrar no plantão
-        async function entrarPlantao(id, nome) {
-            if (!confirm(`Deseja entrar no plantão: ${nome}?`)) return;
-            
-            const btn = event.target;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
-            btn.disabled = true;
-
-            const { error } = await sb.from('pontos').insert([{
-                passaporte: membroLogado.passaporte,
-                nome: membroLogado.nome,
-                entrada: getHoraBrasilia().toISOString(),
-                status: 'aberto',
-                plantao_id: id
-            }]);
-
-            if (!error) {
-                customAlert("Você entrou no plantão!", "sucesso");
-                setTimeout(() => window.location.href = 'dashboard.html', 1500);
+        async function verificarTicketRecente(passaporte) {
+            const { data, error } = await sb.from('tickets').select('*').eq('passaporte', passaporte).order('criado_em', { ascending: false }).limit(1).single();
+            if (error || !data) return;
+            const statusText = document.getElementById('status-ticket');
+            const sino = document.getElementById('notif-ticket');
+            if (data.status === 'em_andamento' && data.lider_assumiu) {
+                statusText.innerText = "Líder assumiu o ticket!";
+                statusText.style.color = "#eab308";
+                sino.style.display = 'block';
             } else {
-                customAlert("Erro ao entrar no plantão.", "erro");
-                btn.innerHTML = 'ENTRAR AGORA';
-                btn.disabled = false;
+                statusText.innerText = "Ticket aberto (aguardando)";
+                statusText.style.color = "var(--texto-mutado)";
+                sino.style.display = 'none';
             }
         }
+
+        // ===== MEMBROS =====
+        async function carregarMembrosRapido() {
+            const { data: membros, error } = await sb.from('membros').select('nome, cargo, passaporte, foto_url').order('nome');
+            if (error || !membros) return;
+            todosMembros = membros.map(m => ({ ...m, online: false }));
+            const hoje = new Date().toISOString().split('T')[0];
+            const { data: presencas } = await sb.from('presencas').select('passaporte').eq('data', hoje).eq('status', 'presente');
+            if (presencas && presencas.length > 0) {
+                const onlineHoje = presencas.map(p => String(p.passaporte));
+                todosMembros = todosMembros.map(m => ({ ...m, online: onlineHoje.includes(String(m.passaporte)) }));
+            }
+        }
+
+        function abrirModalMembros() {
+            document.getElementById('modal-membros').classList.add('ativo');
+            document.body.style.overflow = 'hidden';
+            if (todosMembros.length > 0) { filtrarMembros(); } else {
+                document.getElementById('lista-membros-modal').innerHTML = '<p class="aviso-vazio">Buscando membros...</p>';
+                carregarMembrosRapido().then(filtrarMembros);
+            }
+        }
+
+        function fecharModalMembros() {
+            document.getElementById('modal-membros').classList.remove('ativo');
+            document.body.style.overflow = 'auto';
+        }
+
+        function filtrarMembros() {
+            const termo = document.getElementById('input-busca-membros').value.toLowerCase();
+            const container = document.getElementById('lista-membros-modal');
+            if (!container) return;
+            const filtrados = todosMembros.filter(m => (m.nome && m.nome.toLowerCase().includes(termo)) || (m.passaporte && String(m.passaporte).includes(termo)));
+            const online = filtrados.filter(m => m.online);
+            const offline = filtrados.filter(m => !m.online);
+            let html = '';
+            if (online.length > 0) {
+                html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: var(--verde); font-size: 8px;"></i> Em Serviço (${online.length})</div>`;
+                online.forEach(m => { html += criarCardMembro(m, true); });
+            }
+            if (offline.length > 0) {
+                html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: #ef4444; font-size: 8px;"></i> Fora de Serviço (${offline.length})</div>`;
+                offline.forEach(m => { html += criarCardMembro(m, false); });
+            }
+            if (html === '') html = '<p class="aviso-vazio">Nenhum membro encontrado.</p>';
+            container.innerHTML = html;
+        }
+
+        function criarCardMembro(m, isOnline) {
+            const inicial = m.nome ? m.nome.charAt(0).toUpperCase() : '?';
+            const foto = m.foto_url ? m.foto_url : null;
+            const avatarStyle = foto ? `background-image: url('${foto}'); background-size: cover; background-position: center;` : '';
+            const statusClass = isOnline ? 'status-online' : 'status-offline';
+            return `<div class="membro-card"><div class="membro-info"><div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div><div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div></div><div class="${statusClass}"></div></div>`;
+        }
+
+        // ===== CONFIGS E ALERTAS =====
+        function mudarMenu(el, aba) {
+            document.querySelectorAll('.item-menu').forEach(btn => btn.classList.remove('ativo'));
+            el.classList.add('ativo');
+        }
+
+        function abrirModalConfig() { document.getElementById('modal-config').classList.add('ativo'); document.body.style.overflow = 'hidden'; }
+        function fecharModalConfig() { document.getElementById('modal-config').classList.remove('ativo'); document.body.style.overflow = 'auto'; }
+        function abrirModalTicket() { customAlert("A tela de tickets será construída no próximo passo!"); }
 
         function customAlert(mensagem, tipo = 'sucesso') {
             const alerta = document.getElementById('alerta-site');
             const icone = document.getElementById('alerta-icone');
             const texto = document.getElementById('alerta-texto');
+            if (!alerta) return;
             texto.innerText = mensagem;
             if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
             else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
             alerta.classList.add('ativo');
             setTimeout(() => alerta.classList.remove('ativo'), 3000);
         }
+
+        async function processarFoto(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const base64String = e.target.result;
+                    const { error } = await sb.from('membros').update({ foto_url: base64String }).eq('passaporte', membroLogado.passaporte);
+                    if (!error) {
+                        customAlert("Foto atualizada com sucesso!");
+                        document.getElementById('avatar-inicial').style.backgroundImage = `url('${base64String}')`;
+                        document.getElementById('avatar-inicial').innerText = '';
+                    } else { customAlert("Erro ao salvar foto.", "erro"); }
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        async function toggleNotificacoes(checkbox) {
+            if (checkbox.checked) {
+                const permissao = await Notification.requestPermission();
+                if (permissao === 'granted') { customAlert("Notificações ativadas!"); new Notification("Portal Itália", { body: "Você receberá alertas aqui." }); } 
+                else { customAlert("Permissão negada.", "erro"); checkbox.checked = false; }
+            }
+        }
+
+        function toggleParticulas(checkbox) { document.querySelectorAll('.particula').forEach(p => p.style.display = checkbox.checked ? 'block' : 'none'); }
+        function sair() { sessionStorage.removeItem('membro_logado'); window.location.href = 'login.html'; }
+
+        document.querySelectorAll('.modal-overlay').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) { this.classList.remove('ativo'); document.body.style.overflow = 'auto'; }
+            });
+        });
     </script>
 </body>
 </html>
