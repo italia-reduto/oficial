@@ -62,6 +62,22 @@
         .btn-entrar:hover { background: #4ade80; }
         .btn-bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; }
         .btn-em-andamento { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid #eab308; }
+
+        /* ESTILO DO CARD COM IMAGEM DE FUNDO */
+        .card-plantao.com-imagem {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .card-plantao.com-imagem::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.7) 100%);
+            z-index: -1;
+        }
         
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--verde); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; min-width: 280px; transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .alerta-custom.ativo { top: 20px; }
@@ -101,18 +117,17 @@
         let membroLogado = null;
 
         // ==========================================
-        // 1. HORA OFICIAL DE BRASÍLIA (À PROVA DE FALHAS)
+        // 1. HORA OFICIAL DE BRASÍLIA
         // ==========================================
         function getMinutosBrasilia() {
             const agora = new Date();
-            // Formata a hora para o fuso de São Paulo (Brasília)
             const formatter = new Intl.DateTimeFormat('pt-BR', {
                 timeZone: 'America/Sao_Paulo',
                 hour: '2-digit',
                 minute: '2-digit',
                 hour12: false
             });
-            const horaStr = formatter.format(agora); // Retorna "HH:MM"
+            const horaStr = formatter.format(agora); 
             const [h, m] = horaStr.split(':').map(Number);
             return (h * 60) + m;
         }
@@ -126,7 +141,6 @@
             let minutosInicio = (hInicio * 60) + mInicio;
             let minutosFim = (hFim * 60) + mFim;
 
-            // Trata plantão que vira a madrugada (ex: 22:00 às 00:00)
             if (minutosFim <= minutosInicio) {
                 minutosFim += 24 * 60;
                 if (minutosAgora < minutosInicio) {
@@ -150,118 +164,113 @@
         }
 
         // ==========================================
-        // 2. CARREGAR OS PLANTÕES NA TELA
+        // 2. CARREGAR OS PLANTÕES
         // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
             membroLogado = JSON.parse(logado);
-            
             carregarPlantoes();
         });
-async function carregarPlantoes() {
-    const container = document.getElementById('lista-plantoes');
-    
-    try {
-        const { data: plantoes, error } = await sb.from('plantoes').select('*');
-        
-        if (error) throw new Error("Tabela plantoes: " + error.message);
-        if (!plantoes || plantoes.length === 0) {
-            container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>';
-            return;
+
+        async function carregarPlantoes() {
+            const container = document.getElementById('lista-plantoes');
+            
+            try {
+                const { data: plantoes, error } = await sb.from('plantoes').select('*');
+                if (error) throw new Error("Tabela plantoes: " + error.message);
+                if (!plantoes || plantoes.length === 0) {
+                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>';
+                    return;
+                }
+
+                const { data: pontosHoje, error: errPontos } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
+                if (errPontos) throw new Error("Tabela pontos: " + errPontos.message);
+
+                const ordemHorarios = { '02:00': 0, '04:00': 1, '06:00': 2, '08:00': 3, '10:00': 4, '12:00': 5, '14:00': 6, '16:00': 7, '18:00': 8, '20:00': 9, '22:00': 10, '00:00': 11 };
+                let ativos = [];
+                let futuros = [];
+
+                plantoes.forEach(p => {
+                    const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
+                    p._status = status;
+                    if (status === 'aberto' || status === 'em_andamento') {
+                        ativos.push(p);
+                    } else if (status === 'aguardando') {
+                        futuros.push(p);
+                    }
+                });
+
+                const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
+                ativos.sort(ordenar);
+                futuros.sort(ordenar);
+
+                const plantoesOrdenados = [...ativos, ...futuros];
+
+                let html = '';
+                plantoesOrdenados.forEach(p => {
+                    const status = p._status;
+                    const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
+                    const restantes = p.vagas_totais - ocupadas;
+                    
+                    let classeCard = '';
+                    let btnHtml = '';
+                    let iconeHtml = '';
+                    let classeImagem = '';
+                    let estiloFundo = '';
+
+                    if (p.tipo === 'rota') {
+                        iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
+                        classeImagem = 'com-imagem';
+                        estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793656299217.jpg');`;
+                    } else if (p.tipo === 'venda') {
+                        iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
+                    } else if (p.tipo === 'apoio') {
+                        iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
+                    }
+
+                    if (restantes <= 0) {
+                        classeCard = 'lotado';
+                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
+                    } else if (status === 'aberto') {
+                        classeCard = 'aberto';
+                        btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
+                    } else if (status === 'em_andamento') {
+                        btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
+                    } else {
+                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
+                    }
+
+                    const porcentagem = (ocupadas / p.vagas_totais) * 100;
+
+                    html += `
+                        <div class="card-plantao ${classeCard} ${classeImagem}" style="${estiloFundo}">
+                            <div class="card-header">
+                                <span class="card-nome">${iconeHtml} ${p.nome}</span>
+                                <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
+                            </div>
+                            <div class="vagas-barra">
+                                <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
+                            </div>
+                            <div class="vagas-texto">
+                                <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
+                                <span>${restantes} restantes</span>
+                            </div>
+                            ${btnHtml}
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px; border-radius: 8px; font-size: 13px; text-align: center;">${err.message}</div>`;
+            }
         }
 
-        const { data: pontosHoje, error: errPontos } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
-        if (errPontos) throw new Error("Tabela pontos: " + errPontos.message);
-
-        const ordemHorarios = { '14:00': 1, '16:00': 2, '18:00': 3, '20:00': 4, '22:00': 5, '00:00': 6 };
-        let ativos = [];
-        let futuros = [];
-        let encerrados = [];
-
-        plantoes.forEach(p => {
-            const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
-            p._status = status;
-            
-            if (status === 'aberto' || status === 'em_andamento') {
-                ativos.push(p);
-            } else if (status === 'aguardando') {
-                futuros.push(p);
-            } else {
-                encerrados.push(p);
-            }
-        });
-
-        const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
-        ativos.sort(ordenar);
-        futuros.sort(ordenar);
-        encerrados.sort(ordenar);
-
-        const plantoesOrdenados = [...ativos, ...futuros];
-        let html = '';
-        plantoesOrdenados.forEach(p => {
-            const status = p._status;
-            const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-            const restantes = p.vagas_totais - ocupadas;
-            
-            let classeCard = '';
-            let btnHtml = '';
-            let iconeHtml = '';
-
-            if (p.tipo === 'rota') {
-                iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
-            } else if (p.tipo === 'venda') {
-                iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
-            } else if (p.tipo === 'apoio') {
-                iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
-            }
-
-            if (status === 'encerrado') {
-                classeCard = 'lotado';
-                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-times"></i> ENCERRADO</button>`;
-            } else if (restantes <= 0) {
-                classeCard = 'lotado';
-                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
-            } else if (status === 'aberto') {
-                classeCard = 'aberto';
-                btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
-            } else if (status === 'em_andamento') {
-                btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
-            } else {
-                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
-            }
-
-            const porcentagem = (ocupadas / p.vagas_totais) * 100;
-
-            html += `
-                <div class="card-plantao ${classeCard}">
-                    <div class="card-header">
-                        <span class="card-nome">${iconeHtml} ${p.nome}</span>
-                        <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
-                    </div>
-                    <div class="vagas-barra">
-                        <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
-                    </div>
-                    <div class="vagas-texto">
-                        <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
-                        <span>${restantes} restantes</span>
-                    </div>
-                    ${btnHtml}
-                </div>
-            `;
-        });
-
-        container.innerHTML = html;
-
-    } catch (err) {
-        console.error(err);
-        // Vai mostrar o erro exato na tela pra gente descobrir o que é
-        container.innerHTML = `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px; border-radius: 8px; font-size: 13px; text-align: center;">${err.message}</div>`;
-    }
-}
-
         // ==========================================
-        // 3. AÇÃO DE ENTRAR NO PLANTÃO
+        // 3. ENTRAR NO PLANTÃO
         // ==========================================
         async function entrarPlantao(id, nome) {
             if (!confirm(`Deseja entrar no plantão: ${nome}?`)) return;
