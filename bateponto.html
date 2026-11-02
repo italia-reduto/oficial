@@ -89,7 +89,7 @@
         <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 10px;">Selecione um plantão disponível abaixo:</p>
 
         <div id="lista-plantoes">
-            <p style="color: var(--texto-mutado); text-align: center; padding: 20px;">Carregando horários de Brasília...</p>
+            <p style="color: var(--texto-mutado); text-align: center; padding: 20px;">Carregando...</p>
         </div>
     </div>
 
@@ -101,26 +101,24 @@
         let membroLogado = null;
 
         // ==========================================
-        // 1. A MÁGICA DO HORÁRIO DE BRASÍLIA (CORRIGIDA)
+        // 1. HORA OFICIAL DE BRASÍLIA (À PROVA DE FALHAS)
         // ==========================================
-        
-        // Pega a hora exata de Brasília (UTC-3)
-        function getHoraBrasilia() {
+        function getMinutosBrasilia() {
             const agora = new Date();
-            const utcMs = agora.getTime();
-            const brasiliaMs = utcMs - (3 * 60 * 60 * 1000);
-            return new Date(brasiliaMs);
+            // Formata a hora para o fuso de São Paulo (Brasília)
+            const formatter = new Intl.DateTimeFormat('pt-BR', {
+                timeZone: 'America/Sao_Paulo',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+            const horaStr = formatter.format(agora); // Retorna "HH:MM"
+            const [h, m] = horaStr.split(':').map(Number);
+            return (h * 60) + m;
         }
 
-        // Calcula os minutos totais do dia no horário de Brasília (ex: 17:51 = 1071 min)
-        function getMinutosAgora() {
-            const agora = getHoraBrasilia();
-            return (agora.getUTCHours() * 60) + agora.getUTCMinutes();
-        }
-
-        // Verifica se o plantão tá Aberto, Em Andamento, Encerrado ou Aguardando
         function verificarStatusHorario(horarioInicio, horarioFim) {
-            const minutosAgora = getMinutosAgora();
+            const minutosAgora = getMinutosBrasilia();
             
             const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
             const [hFim, mFim] = horarioFim.split(':').map(Number);
@@ -129,26 +127,25 @@
             let minutosFim = (hFim * 60) + mFim;
 
             // Trata plantão que vira a madrugada (ex: 22:00 às 00:00)
-            if (minutosFim < minutosInicio) {
+            if (minutosFim <= minutosInicio) {
                 minutosFim += 24 * 60;
-                // Se agora for antes do fim (ex: 01:00 da manhã), ajusta os minutos atuais
                 if (minutosAgora < minutosInicio) {
                     minutosAgora += 24 * 60;
                 }
             }
             
-            const tolerancia = 15; // 15 minutos de tolerância
+            const tolerancia = 15; 
             const janelaAbertura = minutosInicio - tolerancia;
             const janelaFechamento = minutosInicio + tolerancia;
 
             if (minutosAgora >= janelaAbertura && minutosAgora <= janelaFechamento) {
-                return 'aberto'; // Pode entrar
+                return 'aberto'; 
             } else if (minutosAgora > janelaFechamento && minutosAgora < minutosFim) {
-                return 'em_andamento'; // Já começou, não pode mais entrar
+                return 'em_andamento'; 
             } else if (minutosAgora >= minutosFim) {
-                return 'encerrado'; // Já acabou
+                return 'encerrado'; 
             } else {
-                return 'aguardando'; // Ainda não chegou a hora
+                return 'aguardando'; 
             }
         }
 
@@ -166,103 +163,101 @@
         async function carregarPlantoes() {
             const container = document.getElementById('lista-plantoes');
             
-            // 1. Puxa os dados da tabela 'plantoes'
-            const { data: plantoes, error } = await sb.from('plantoes').select('*');
-            
-            if (error || !plantoes || plantoes.length === 0) {
-                container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>';
-                return;
+            try {
+                const { data: plantoes, error } = await sb.from('plantoes').select('*');
+                
+                if (error) throw new Error("Erro no banco: " + error.message);
+                if (!plantoes || plantoes.length === 0) {
+                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>';
+                    return;
+                }
+
+                const ordemHorarios = { '14:00': 1, '16:00': 2, '18:00': 3, '20:00': 4, '22:00': 5, '00:00': 6 };
+                let ativos = [];
+                let futuros = [];
+                let encerrados = [];
+
+                plantoes.forEach(p => {
+                    const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
+                    p._status = status;
+                    
+                    if (status === 'aberto' || status === 'em_andamento') {
+                        ativos.push(p);
+                    } else if (status === 'aguardando') {
+                        futuros.push(p);
+                    } else {
+                        encerrados.push(p);
+                    }
+                });
+
+                const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
+                ativos.sort(ordenar);
+                futuros.sort(ordenar);
+                encerrados.sort(ordenar);
+
+                const plantoesOrdenados = [...ativos, ...futuros, ...encerrados];
+
+                const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
+
+                let html = '';
+                plantoesOrdenados.forEach(p => {
+                    const status = p._status;
+                    const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
+                    const restantes = p.vagas_totais - ocupadas;
+                    
+                    let classeCard = '';
+                    let btnHtml = '';
+                    let iconeHtml = '';
+
+                    if (p.tipo === 'rota') {
+                        iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
+                    } else if (p.tipo === 'venda') {
+                        iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
+                    } else if (p.tipo === 'apoio') {
+                        iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
+                    }
+
+                    if (status === 'encerrado') {
+                        classeCard = 'lotado';
+                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-times"></i> ENCERRADO</button>`;
+                    } else if (restantes <= 0) {
+                        classeCard = 'lotado';
+                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
+                    } else if (status === 'aberto') {
+                        classeCard = 'aberto';
+                        btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
+                    } else if (status === 'em_andamento') {
+                        btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
+                    } else {
+                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
+                    }
+
+                    const porcentagem = (ocupadas / p.vagas_totais) * 100;
+
+                    html += `
+                        <div class="card-plantao ${classeCard}">
+                            <div class="card-header">
+                                <span class="card-nome">${iconeHtml} ${p.nome}</span>
+                                <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
+                            </div>
+                            <div class="vagas-barra">
+                                <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
+                            </div>
+                            <div class="vagas-texto">
+                                <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
+                                <span>${restantes} restantes</span>
+                            </div>
+                            ${btnHtml}
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = `<p style="color: #ef4444; text-align: center;">Erro ao carregar plantões. Tente novamente.</p>`;
             }
-
-            // 2. Define a ordem dos horários
-            const ordemHorarios = { '14:00': 1, '16:00': 2, '18:00': 3, '20:00': 4, '22:00': 5, '00:00': 6 };
-
-            // 3. Separa os plantões em 3 grupos
-            let ativos = [];
-            let futuros = [];
-            let encerrados = [];
-
-            plantoes.forEach(p => {
-                const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
-                p._status = status;
-                
-                if (status === 'aberto' || status === 'em_andamento') {
-                    ativos.push(p);
-                } else if (status === 'aguardando') {
-                    futuros.push(p);
-                } else {
-                    encerrados.push(p);
-                }
-            });
-
-            // 4. Ordena cada grupo pelo horário
-            const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
-            ativos.sort(ordenar);
-            futuros.sort(ordenar);
-            encerrados.sort(ordenar);
-
-            // 5. Junta tudo na ordem: Ativos (topo), Futuros (meio), Encerrados (final)
-            const plantoesOrdenados = [...ativos, ...futuros, ...encerrados];
-
-            // 6. Puxa os pontos abertos para calcular as vagas
-            const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').eq('status', 'aberto');
-
-            let html = '';
-            plantoesOrdenados.forEach(p => {
-                const status = p._status;
-                const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-                const restantes = p.vagas_totais - ocupadas;
-                
-                let classeCard = '';
-                let btnHtml = '';
-                let iconeHtml = '';
-
-                // Lógica de Ícones
-                if (p.tipo === 'rota') {
-                    iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
-                } else if (p.tipo === 'venda') {
-                    iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
-                } else if (p.tipo === 'apoio') {
-                    iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
-                }
-
-                // Lógica de Status do Card e Botão
-                if (status === 'encerrado') {
-                    classeCard = 'lotado';
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-times"></i> ENCERRADO</button>`;
-                } else if (restantes <= 0) {
-                    classeCard = 'lotado';
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
-                } else if (status === 'aberto') {
-                    classeCard = 'aberto';
-                    btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
-                } else if (status === 'em_andamento') {
-                    btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
-                } else {
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
-                }
-
-                const porcentagem = (ocupadas / p.vagas_totais) * 100;
-
-                html += `
-                    <div class="card-plantao ${classeCard}">
-                        <div class="card-header">
-                            <span class="card-nome">${iconeHtml} ${p.nome}</span>
-                            <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
-                        </div>
-                        <div class="vagas-barra">
-                            <div class="vagas-preenchida" style="width: ${porcentagem}%"></div>
-                        </div>
-                        <div class="vagas-texto">
-                            <span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span>
-                            <span>${restantes} restantes</span>
-                        </div>
-                        ${btnHtml}
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
         }
 
         // ==========================================
@@ -275,19 +270,21 @@
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
             btn.disabled = true;
 
-            const { error } = await sb.from('pontos').insert([{
-                passaporte: membroLogado.passaporte,
-                nome: membroLogado.nome,
-                entrada: getHoraBrasilia().toISOString(),
-                status: 'aberto',
-                plantao_id: id
-            }]);
+            try {
+                const { error } = await sb.from('pontos').insert([{
+                    passaporte: membroLogado.passaporte,
+                    nome: membroLogado.nome,
+                    entrada: new Date().toISOString(),
+                    status: 'aberto',
+                    plantao_id: id
+                }]);
 
-            if (!error) {
+                if (error) throw error;
+
                 customAlert("Você entrou no plantão!", "sucesso");
                 setTimeout(() => window.location.href = 'dashboard.html', 1500);
-            } else {
-                console.error(error);
+            } catch (err) {
+                console.error(err);
                 customAlert("Erro ao entrar. O plantão pode ter lotado.", "erro");
                 btn.innerHTML = 'ENTRAR AGORA';
                 btn.disabled = false;
