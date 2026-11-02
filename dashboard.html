@@ -318,6 +318,22 @@
             .alerta-custom { min-width: 90%; }
             .modal-lista { padding-bottom: 90px; }
         }
+        /* ESTILOS DO MODAL DE MEMBROS */
+.busca-membros {
+    width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5);
+    border: 1px solid var(--borda); border-radius: 8px; color: #fff;
+    font-family: 'Inter', sans-serif; outline: none; margin-bottom: 15px;
+}
+.busca-membros:focus { border-color: var(--verde); }
+
+.categoria-membros {
+    font-family: 'Oswald', sans-serif; font-size: 12px; color: var(--texto-mutado);
+    text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0;
+    display: flex; align-items: center; gap: 8px;
+}
+.categoria-membros::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.1); }
+
+.status-offline { width: 10px; height: 10px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 8px #ef4444; flex-shrink: 0;}
     </style>
 </head>
 <body>
