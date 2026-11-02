@@ -103,7 +103,7 @@
         .aviso-texto { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
         .aviso-vazio { font-size: 13px; color: var(--texto-mutado); text-align: center; padding: 10px 0; }
 
-        /* ===== CSS DA TELA DE PONTO ===== */
+        /* TELA DE PONTO */
         .view-ponto { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; max-width: 500px; margin: 0 auto; padding-top: 20px; }
         .status-ponto-texto { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 2px; color: var(--texto-mutado); margin-bottom: 20px; transition: color 0.3s; }
         .status-ponto-texto.ativo { color: var(--verde); text-shadow: 0 0 10px rgba(34,197,94,0.5); }
@@ -123,7 +123,7 @@
         .btn-ponto.encerrar:hover { background: #ef4444; color: #fff; }
         .btn-ponto.bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; transform: none !important; box-shadow: none; }
 
-        /* ===== MODAIS E ALERTAS ===== */
+        /* MODAIS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.ativo { display: flex; opacity: 1; }
         .modal-conteudo { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; width: 100%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; overflow: hidden; }
@@ -174,7 +174,7 @@
         .alerta-custom.erro i { color: #ef4444; }
 
         .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px;
                     <body>
     <!-- FUNDO ANIMADO -->
     <div class="fundo-degrade"></div>
@@ -185,7 +185,7 @@
     <div class="particula p4"></div>
     <div class="particula p5"></div>
 
-    <!-- ===== TELA DO DASHBOARD (INÍCIO) ===== -->
+    <!-- ===== TELA PRINCIPAL (DASHBOARD) ===== -->
     <main class="container-principal">
         <!-- CARTÃO DE PERFIL -->
         <div class="cartao-perfil anim-entrada delay-1">
@@ -382,7 +382,7 @@
         <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-id-card"></i><span>Perfil</span></a>
     </nav>
-        <script>
+                    <script>
     let membroLogado = null;
     let todosMembros = [];
     let intervaloCronometro = null;
@@ -428,7 +428,6 @@
 
     function calcularProgressao(xpTotal, nomeCargoAtual) {
         let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
-        
         if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
             document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
             document.getElementById('label-cargo-proximo').innerText = 'MAX';
@@ -449,7 +448,6 @@
 
         document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
         document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
-        
         const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
         const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
         let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
@@ -470,9 +468,8 @@
         localStorage.setItem('promocao_vista_' + cargoProximo, 'sim');
         document.getElementById('card-promocao').classList.remove('ativo');
         customAlert("Print registrado! Avise a liderança.", "sucesso");
-        }
-        // ===== 3. DADOS DO DASHBOARD (Avisos, Faltas, Tickets) =====
-async function carregarPresencasEFaltas(passaporte) {
+         }
+        async function carregarPresencasEFaltas(passaporte) {
     try {
         const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
         const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
@@ -493,15 +490,7 @@ async function carregarAvisos() {
         const autorAviso = aviso.autor || 'Liderança';
         let dataFormatada = 'Recentemente';
         if (aviso.criado_em) dataFormatada = new Date(aviso.criado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-        html += `
-            <div class="aviso-item">
-                <div class="aviso-texto">${textoAviso}</div>
-                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px;">
-                    <span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${autorAviso}</span>
-                    <span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span>
-                </div>
-            </div>
-        `;
+        html += `<div class="aviso-item"><div class="aviso-texto">${textoAviso}</div><div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px;"><span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${autorAviso}</span><span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span></div></div>`;
     });
     container.innerHTML = html;
 }
@@ -509,10 +498,8 @@ async function carregarAvisos() {
 async function verificarTicketRecente(passaporte) {
     const { data, error } = await sb.from('tickets').select('*').eq('passaporte', passaporte).order('criado_em', { ascending: false }).limit(1).single();
     if (error || !data) return;
-    
     const statusText = document.getElementById('status-ticket');
     const sino = document.getElementById('notif-ticket');
-    
     if (data.status === 'em_andamento' && data.lider_assumiu) {
         statusText.innerText = "Líder assumiu o ticket!";
         statusText.style.color = "#eab308";
@@ -524,13 +511,10 @@ async function verificarTicketRecente(passaporte) {
     }
 }
 
-// ===== 4. SISTEMA DE MEMBROS =====
 async function carregarMembrosRapido() {
     const { data: membros, error } = await sb.from('membros').select('nome, cargo, passaporte, foto_url').order('nome');
     if (error || !membros) return;
-    
     todosMembros = membros.map(m => ({ ...m, online: false }));
-
     const hoje = new Date().toISOString().split('T')[0];
     const { data: presencas } = await sb.from('presencas').select('passaporte').eq('data', hoje).eq('status', 'presente');
     if (presencas && presencas.length > 0) {
@@ -542,9 +526,7 @@ async function carregarMembrosRapido() {
 function abrirModalMembros() {
     document.getElementById('modal-membros').classList.add('ativo');
     document.body.style.overflow = 'hidden';
-    if (todosMembros.length > 0) {
-        filtrarMembros(); 
-    } else {
+    if (todosMembros.length > 0) { filtrarMembros(); } else {
         document.getElementById('lista-membros-modal').innerHTML = '<p class="aviso-vazio">Buscando membros...</p>';
         carregarMembrosRapido().then(filtrarMembros);
     }
@@ -559,12 +541,10 @@ function filtrarMembros() {
     const termo = document.getElementById('input-busca-membros').value.toLowerCase();
     const container = document.getElementById('lista-membros-modal');
     if (!container) return;
-
     const filtrados = todosMembros.filter(m => (m.nome && m.nome.toLowerCase().includes(termo)) || (m.passaporte && String(m.passaporte).includes(termo)));
     const online = filtrados.filter(m => m.online);
     const offline = filtrados.filter(m => !m.online);
     let html = '';
-
     if (online.length > 0) {
         html += `<div class="categoria-membros"><i class="fas fa-circle" style="color: var(--verde); font-size: 8px;"></i> Em Serviço (${online.length})</div>`;
         online.forEach(m => { html += criarCardMembro(m, true); });
@@ -582,21 +562,11 @@ function criarCardMembro(m, isOnline) {
     const foto = m.foto_url ? m.foto_url : null;
     const avatarStyle = foto ? `background-image: url('${foto}'); background-size: cover; background-position: center;` : '';
     const statusClass = isOnline ? 'status-online' : 'status-offline';
-    return `
-        <div class="membro-card">
-            <div class="membro-info">
-                <div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div>
-                <div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div>
-            </div>
-            <div class="${statusClass}"></div>
-        </div>
-    `;
+    return `<div class="membro-card"><div class="membro-info"><div class="membro-avatar" style="${avatarStyle}">${foto ? '' : inicial}</div><div class="membro-dados"><h4>${m.nome}</h4><p>Passaporte: ${m.passaporte} • ${m.cargo}</p></div></div><div class="${statusClass}"></div></div>`;
         }
-                // ===== 5. NAVEGAÇÃO E TELA DE PONTO =====
-        function mudarMenu(elementoClicado) {
+                function mudarMenu(elementoClicado) {
             document.querySelectorAll('.item-menu').forEach(btn => btn.classList.remove('ativo'));
             elementoClicado.classList.add('ativo');
-
             const aba = elementoClicado.innerText.trim();
             const containerPrincipal = document.querySelector('.container-principal');
             const telaPonto = document.getElementById('tela-ponto');
@@ -614,16 +584,13 @@ function criarCardMembro(m, isOnline) {
 
         async function verificarStatusPonto() {
             if (!membroLogado) return;
-
             const btnIniciar = document.getElementById('btn-bater-ponto');
             const btnEncerrar = document.getElementById('btn-encerrar-ponto');
             const statusTexto = document.getElementById('status-ponto-texto');
             const scanner = document.getElementById('scanner-ponto');
             const cronometroEl = document.getElementById('cronometro-ponto');
 
-            const { data, error } = await sb.from('pontos')
-                .select('*').eq('passaporte', membroLogado.passaporte)
-                .order('criado_em', { ascending: false }).limit(1).maybeSingle();
+            const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).order('criado_em', { ascending: false }).limit(1).maybeSingle();
 
             if (data) {
                 if (data.status === 'aberto') {
@@ -643,7 +610,6 @@ function criarCardMembro(m, isOnline) {
                     const agora = new Date();
                     const dataFechamento = new Date(data.saida);
                     const diferencaMinutos = Math.floor((agora - dataFechamento) / 1000 / 60);
-
                     if (diferencaMinutos < 15) {
                         const tempoRestante = 15 - diferencaMinutos;
                         statusTexto.innerText = 'Aguarde...';
@@ -654,7 +620,6 @@ function criarCardMembro(m, isOnline) {
                         btnIniciar.classList.add('bloqueado');
                         btnIniciar.innerHTML = `<i class="fas fa-clock"></i> Aguarde ${tempoRestante} min`;
                         cronometroEl.classList.remove('ativo');
-                        
                         if (window.cooldownTimer) clearTimeout(window.cooldownTimer);
                         window.cooldownTimer = setTimeout(verificarStatusPonto, tempoRestante * 60 * 1000);
                         return;
@@ -667,12 +632,10 @@ function criarCardMembro(m, isOnline) {
         function resetarInterfacePonto() {
             pontoAtualId = null;
             if (intervaloCronometro) clearInterval(intervaloCronometro);
-
             document.getElementById('status-ponto-texto').innerText = 'Fora de Serviço';
             document.getElementById('status-ponto-texto').classList.remove('ativo');
             document.getElementById('scanner-ponto').classList.remove('ativo');
             document.getElementById('cronometro-ponto').classList.remove('ativo');
-            
             const btnIniciar = document.getElementById('btn-bater-ponto');
             btnIniciar.style.display = 'flex';
             btnIniciar.classList.remove('bloqueado');
@@ -684,12 +647,10 @@ function criarCardMembro(m, isOnline) {
             if (intervaloCronometro) clearInterval(intervaloCronometro);
             const cronometroEl = document.getElementById('cronometro-ponto');
             const dataEntrada = new Date(horarioEntrada);
-
             intervaloCronometro = setInterval(() => {
                 const agora = new Date();
                 const diferenca = agora - dataEntrada;
                 if (diferenca < 0) return;
-
                 const horas = Math.floor(diferenca / (1000 * 60 * 60));
                 const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
                 const segundos = Math.floor((diferenca / 1000) % 60);
@@ -697,64 +658,38 @@ function criarCardMembro(m, isOnline) {
             }, 1000);
         }
 
-        // ===== 6. AÇÕES DE BATER E ENCERRAR PONTO =====
         async function baterPonto() {
             if (isProcessandoPonto) return; 
             isProcessandoPonto = true;
             const btn = document.getElementById('btn-bater-ponto');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
-
             try {
-                const { data, error } = await sb.from('pontos').insert([{
-                    passaporte: membroLogado.passaporte,
-                    nome: membroLogado.nome,
-                    entrada: new Date().toISOString(),
-                    status: 'aberto'
-                }]).select().single();
-
-                if (error) throw error;
+                await sb.from('pontos').insert([{ passaporte: membroLogado.passaporte, nome: membroLogado.nome, entrada: new Date().toISOString(), status: 'aberto' }]);
                 customAlert("Ponto iniciado com sucesso!", "sucesso");
                 verificarStatusPonto();
             } catch (err) {
-                console.error(err);
                 customAlert("Erro ao bater ponto.", "erro");
                 btn.innerHTML = '<i class="fas fa-play"></i> Bater Ponto';
-            } finally {
-                isProcessandoPonto = false;
-            }
+            } finally { isProcessandoPonto = false; }
         }
 
         async function encerrarPonto() {
             if (isProcessandoPonto || !pontoAtualId) return; 
             if (!confirm("Deseja encerrar o seu turno agora?")) return;
-
             isProcessandoPonto = true;
             const btn = document.getElementById('btn-encerrar-ponto');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Encerrando...';
-
             try {
                 const { data: pontoData } = await sb.from('pontos').select('*').eq('id', pontoAtualId).single();
                 const entrada = new Date(pontoData.entrada);
                 const saida = new Date();
                 const diferencaMinutos = (saida - entrada) / 1000 / 60;
-
-                await sb.from('pontos').update({
-                    status: 'fechado',
-                    saida: saida.toISOString()
-                }).eq('id', pontoAtualId);
-
+                await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtualId);
                 if (diferencaMinutos >= 30) {
                     const { data: membroData } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
                     const novoXP = (membroData.xp_total || 0) + 20;
-
                     await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', membroLogado.passaporte);
-                    await sb.from('presencas').insert([{
-                        passaporte: membroLogado.passaporte,
-                        status: 'presente',
-                        data: saida.toISOString().split('T')[0],
-                        marcado_por_nome: 'Sistema'
-                    }]);
-
+                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
                     customAlert("Turno encerrado! Você ganhou +20 XP.", "sucesso");
                     calcularProgressao(novoXP, membroLogado.cargo);
                     carregarPresencasEFaltas(membroLogado.passaporte);
@@ -763,22 +698,12 @@ function criarCardMembro(m, isOnline) {
                 }
                 verificarStatusPonto();
             } catch (err) {
-                console.error(err);
                 customAlert("Erro ao encerrar o ponto.", "erro");
-            } finally {
-                isProcessandoPonto = false;
-            }
+            } finally { isProcessandoPonto = false; }
         }
 
-        // ===== 7. CONFIGURAÇÕES E ALERTAS =====
-        function abrirModalConfig() {
-            document.getElementById('modal-config').classList.add('ativo');
-            document.body.style.overflow = 'hidden';
-        }
-        function fecharModalConfig() {
-            document.getElementById('modal-config').classList.remove('ativo');
-            document.body.style.overflow = 'auto';
-        }
+        function abrirModalConfig() { document.getElementById('modal-config').classList.add('ativo'); document.body.style.overflow = 'hidden'; }
+        function fecharModalConfig() { document.getElementById('modal-config').classList.remove('ativo'); document.body.style.overflow = 'auto'; }
         function abrirModalTicket() { customAlert("A tela de tickets será construída no próximo passo!"); }
 
         function customAlert(mensagem, tipo = 'sucesso') {
@@ -786,67 +711,43 @@ function criarCardMembro(m, isOnline) {
             const icone = document.getElementById('alerta-icone');
             const texto = document.getElementById('alerta-texto');
             if (!alerta) return;
-            
             texto.innerText = mensagem;
-            if (tipo === 'erro') {
-                alerta.classList.add('erro');
-                icone.className = 'fas fa-times-circle';
-            } else {
-                alerta.classList.remove('erro');
-                icone.className = 'fas fa-check-circle';
-            }
+            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
+            else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
             alerta.classList.add('ativo');
             setTimeout(() => alerta.classList.remove('ativo'), 3000);
         }
 
         async function processarFoto(input) {
             if (input.files && input.files[0]) {
-                const file = input.files[0];
                 const reader = new FileReader();
                 reader.onload = async function(e) {
                     const base64String = e.target.result;
                     const { error } = await sb.from('membros').update({ foto_url: base64String }).eq('passaporte', membroLogado.passaporte);
                     if (!error) {
                         customAlert("Foto atualizada com sucesso!");
-                        const avatar = document.getElementById('avatar-inicial');
-                        avatar.style.backgroundImage = `url('${base64String}')`;
-                        avatar.innerText = '';
-                    } else {
-                        customAlert("Erro ao salvar foto. Tente uma imagem menor.", "erro");
-                    }
+                        document.getElementById('avatar-inicial').style.backgroundImage = `url('${base64String}')`;
+                        document.getElementById('avatar-inicial').innerText = '';
+                    } else { customAlert("Erro ao salvar foto.", "erro"); }
                 };
-                reader.readAsDataURL(file);
+                reader.readAsDataURL(input.files[0]);
             }
         }
 
         async function toggleNotificacoes(checkbox) {
             if (checkbox.checked) {
                 const permissao = await Notification.requestPermission();
-                if (permissao === 'granted') {
-                    customAlert("Notificações ativadas!");
-                    new Notification("Portal Itália", { body: "Você receberá alertas aqui." });
-                } else {
-                    customAlert("Permissão negada.", "erro");
-                    checkbox.checked = false;
-                }
+                if (permissao === 'granted') { customAlert("Notificações ativadas!"); new Notification("Portal Itália", { body: "Você receberá alertas aqui." }); } 
+                else { customAlert("Permissão negada.", "erro"); checkbox.checked = false; }
             }
         }
 
-        function toggleParticulas(checkbox) {
-            document.querySelectorAll('.particula').forEach(p => p.style.display = checkbox.checked ? 'block' : 'none');
-        }
-
-        function sair() {
-            sessionStorage.removeItem('membro_logado');
-            window.location.href = 'login.html';
-        }
+        function toggleParticulas(checkbox) { document.querySelectorAll('.particula').forEach(p => p.style.display = checkbox.checked ? 'block' : 'none'); }
+        function sair() { sessionStorage.removeItem('membro_logado'); window.location.href = 'login.html'; }
 
         document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    this.classList.remove('ativo');
-                    document.body.style.overflow = 'auto';
-                }
+                if (e.target === this) { this.classList.remove('ativo'); document.body.style.overflow = 'auto'; }
             });
         });
     </script>
