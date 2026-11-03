@@ -73,26 +73,26 @@
         .cronometro-display { font-family: 'Oswald'; font-size: 48px; color: #fff; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
         .status-pausa-texto { font-family: 'Oswald'; font-size: 16px; color: var(--amarelo); text-transform: uppercase; margin-bottom: 20px; display: none; }
         
+        /* NOVO: BARRA DE XP */
+        .xp-container { width: 100%; margin-bottom: 20px; background: rgba(0,0,0,0.4); border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
+        .xp-texto { font-size: 11px; color: var(--texto-mutado); margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .xp-texto span { color: var(--verde); font-weight: bold; }
+        .xp-barra-bg { width: 100%; height: 8px; background: #27272a; border-radius: 10px; overflow: hidden; }
+        .xp-barra-fill { height: 100%; background: var(--verde); width: 0%; transition: width 1s linear; box-shadow: 0 0 10px var(--verde); }
+
         .botoes-cronometro { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 20px; }
         .btn-pausa { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border: 1px solid var(--amarelo); padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; width: 100%; }
-        .btn-pausa:hover { background: var(--amarelo); color: #000; }
         .btn-voltar-servico { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; width: 100%; display: none; }
-        .btn-voltar-servico:hover { background: var(--verde); color: #000; }
         .btn-encerrar { width: 100%; padding: 15px; background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border: 1px solid var(--vermelho); border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .btn-encerrar:hover { background: var(--vermelho); color: #fff; }
 
-        .painel-historico { width: 100%; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; text-align: left; }
-        .historico-item { font-size: 12px; color: var(--texto-mutado); margin-bottom: 5px; display: flex; justify-content: space-between; }
-        .historico-item strong { color: #fff; }
-
-        .modal-justificar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
-        .modal-justificar.ativo { display: flex; }
-        .modal-content-justificar { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; width: 100%; max-width: 400px; text-align: center; }
-        .modal-content-justificar h3 { font-family: 'Oswald'; color: var(--amarelo); font-size: 20px; margin-bottom: 10px; }
-        .modal-content-justificar p { font-size: 13px; color: var(--texto-mutado); margin-bottom: 15px; }
-        .modal-content-justificar textarea { width: 100%; height: 80px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); border-radius: 8px; color: #fff; padding: 10px; font-family: 'Inter'; outline: none; margin-bottom: 15px; resize: none; }
-        .modal-content-justificar textarea:focus { border-color: var(--verde); }
-        .btn-justificar { background: var(--verde); color: #000; border: none; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; width: 100%; cursor: pointer; }
+        /* MODAL DE CONFIRMAÇÃO CUSTOMIZADO */
+        .modal-confirmar { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-confirmar.ativo { display: flex; }
+        .modal-content-confirmar { background: var(--fundo); border: 1px solid var(--verde); border-radius: 16px; padding: 25px; width: 100%; max-width: 350px; text-align: center; box-shadow: 0 0 30px rgba(34, 197, 94, 0.2); }
+        .modal-content-confirmar p { font-size: 15px; color: #fff; margin-bottom: 25px; line-height: 1.5; }
+        .botoes-confirmar { display: flex; gap: 10px; }
+        .btn-sim { flex: 1; background: var(--verde); color: #000; border: none; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .btn-nao { flex: 1; background: transparent; color: var(--vermelho); border: 1px solid var(--vermelho); padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; }
 
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--verde); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; min-width: 280px; transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .alerta-custom.ativo { top: 20px; }
@@ -127,34 +127,42 @@
         <div id="tela-cronometro">
             <h2 class="cronometro-titulo">Em Serviço</h2>
             <p id="nome-plantao-ativo" class="cronometro-nome">Carregando...</p>
+            
             <div id="cronometro-display" class="cronometro-display">00:00:00</div>
             <p id="status-pausa-texto" class="status-pausa-texto">Turno Pausado</p>
             
+            <!-- BARRA DE XP -->
+            <div class="xp-container">
+                <div class="xp-texto">
+                    <span id="xp-status-texto">Faltam 30 min para +20 XP</span>
+                    <span id="xp-porcentagem">0%</span>
+                </div>
+                <div class="xp-barra-bg">
+                    <div class="xp-barra-fill" id="xp-barra-preenchida"></div>
+                </div>
+            </div>
+
             <div class="botoes-cronometro">
                 <button onclick="pausarTurno()" id="btn-pausar" class="btn-pausa"><i class="fas fa-pause"></i> Pausar Turno</button>
                 <button onclick="retomarTurno()" id="btn-retomar" class="btn-voltar-servico"><i class="fas fa-play"></i> Retomar Serviço</button>
             </div>
 
             <button onclick="encerrarTurno()" class="btn-encerrar"><i class="fas fa-stop"></i> Encerrar Turno</button>
+        </div>
+    </div>
 
-            <div class="painel-historico" id="painel-historico">
-                <div class="historico-item"><span>Entrada:</span> <strong id="hist-entrada">--:--</strong></div>
-                <div class="historico-item"><span>Tempo em Serviço:</span> <strong id="hist-tempo">00:00:00</strong></div>
-                <div class="historico-item"><span>Pausas:</span> <strong id="hist-pausas">0</strong></div>
+    <!-- MODAL DE CONFIRMAÇÃO CUSTOMIZADO (Substitui o confirm do navegador) -->
+    <div class="modal-confirmar" id="modal-confirmar">
+        <div class="modal-content-confirmar">
+            <p id="texto-confirmar">Tem certeza?</p>
+            <div class="botoes-confirmar">
+                <button class="btn-nao" onclick="responderConfirmacao(false)">Cancelar</button>
+                <button class="btn-sim" onclick="responderConfirmacao(true)">Confirmar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE JUSTIFICATIVA -->
-    <div class="modal-justificar" id="modal-justificar">
-        <div class="modal-content-justificar">
-            <h3><i class="fas fa-exclamation-triangle"></i> Justificar Ausência</h3>
-            <p>Escreva o motivo da sua ausência ou atraso. A liderança irá analisar.</p>
-            <textarea id="texto-justificativa" placeholder="Ex: Caiu a internet, tive um imprevisto..."></textarea>
-            <button class="btn-justificar" onclick="enviarJustificativa()">Enviar Justificativa</button>
-        </div>
-    </div>
-
+    <!-- SISTEMA DE ALERTA VERDE -->
     <div class="alerta-custom" id="alerta-site">
         <i class="fas fa-check-circle" id="alerta-icone"></i>
         <p id="alerta-texto">Mensagem</p>
@@ -163,10 +171,8 @@
     let membroLogado = null;
     let intervaloCronometro = null;
     let pontoAtual = null;
+    let acaoPendente = null; 
 
-    // ==========================================
-    // 1. HORA OFICIAL DE BRASÍLIA
-    // ==========================================
     function getMinutosBrasilia() {
         const agora = new Date();
         const formatter = new Intl.DateTimeFormat('pt-BR', {
@@ -198,9 +204,6 @@
         return 'aguardando'; 
     }
 
-    // ==========================================
-    // 2. CARREGAR OS PLANTÕES OU O CRONÔMETRO
-    // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
         const logado = sessionStorage.getItem('membro_logado');
         if (!logado) return window.location.href = 'login.html';
@@ -214,7 +217,6 @@
         const subtitulo = document.getElementById('subtitulo-plantoes');
         
         try {
-            // 1. Verifica se o membro já está em algum plantão ativo (ou pausado)
             const { data: pontoAberto } = await sb.from('pontos')
                 .select('*, plantoes(nome, horario_fim)')
                 .eq('passaporte', membroLogado.passaporte)
@@ -231,21 +233,20 @@
                 const fimPlantao = pontoAberto.plantoes ? pontoAberto.plantoes.horario_fim : '23:59';
                 
                 document.getElementById('nome-plantao-ativo').innerText = nomePlantao;
-                document.getElementById('hist-entrada').innerText = new Date(pontoAberto.entrada).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 
                 if (pontoAberto.status === 'pausado') {
                     document.getElementById('status-pausa-texto').style.display = 'block';
                     document.getElementById('cronometro-display').style.color = 'var(--amarelo)';
                     document.getElementById('btn-pausar').style.display = 'none';
                     document.getElementById('btn-retomar').style.display = 'block';
+                    document.getElementById('cronometro-display').innerText = "PAUSADO";
                 } else {
                     document.getElementById('status-pausa-texto').style.display = 'none';
                     document.getElementById('cronometro-display').style.color = '#fff';
                     document.getElementById('btn-pausar').style.display = 'block';
                     document.getElementById('btn-retomar').style.display = 'none';
+                    iniciarCronometro(pontoAberto.entrada, fimPlantao);
                 }
-
-                iniciarCronometro(pontoAberto.entrada, fimPlantao, pontoAberto.status);
                 return; 
             }
 
@@ -280,7 +281,6 @@
             plantoesOrdenados.forEach((p, index) => {
                 let status = p._status;
                 
-                // MÁGICA DO TESTE: O PRIMEIRO CARD SEMPRE FICA ABERTO
                 if (index === 0 && status !== 'aberto') status = 'aberto';
 
                 const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
@@ -337,193 +337,170 @@
         }
     }
                 // ==========================================
-        // 3. CRONÔMETRO E PAUSAS
+        // 3. CRONÔMETRO, PAUSAS E XP
         // ==========================================
-        function iniciarCronometro(horarioEntrada, horarioFim, statusPonto) {
+        function iniciarCronometro(horarioEntrada, horarioFim) {
             if (intervaloCronometro) clearInterval(intervaloCronometro);
             const display = document.getElementById('cronometro-display');
             const dataEntrada = new Date(horarioEntrada);
+            const barraXP = document.getElementById('xp-barra-preenchida');
+            const textoXP = document.getElementById('xp-status-texto');
+            const porcXP = document.getElementById('xp-porcentagem');
 
-            // Só atualiza a tela se não estiver pausado
-            if (statusPonto !== 'pausado') {
-                intervaloCronometro = setInterval(async () => {
-                    const agora = new Date();
-                    const diferenca = agora - dataEntrada;
-                    if (diferenca < 0) return;
+            intervaloCronometro = setInterval(async () => {
+                const agora = new Date();
+                const diferenca = agora - dataEntrada;
+                if (diferenca < 0) return;
 
-                    const horas = Math.floor(diferenca / (1000 * 60 * 60));
-                    const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-                    const segundos = Math.floor((diferenca / 1000) % 60);
-                    display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+                const horas = Math.floor(diferenca / (1000 * 60 * 60));
+                const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
+                const segundos = Math.floor((diferenca / 1000) % 60);
+                display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
 
-                    // Verifica se o horário fim do plantão já passou
-                    const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-                    const horaAgoraStr = formatter.format(agora);
-                    
-                    if (horaAgoraStr >= horarioFim) {
-                        clearInterval(intervaloCronometro);
-                        customAlert("O horário do plantão acabou. Fechando automaticamente...", "erro");
-                        await encerrarTurnoAutomatico();
-                    }
-                }, 1000);
-            } else {
-                // Se estiver pausado, mostra o tempo que ele ficou parado
-                display.innerText = "PAUSADO";
+                // Lógica da Barra de XP (30 minutos = 100%)
+                const minutosTotais = diferenca / 1000 / 60;
+                let porcentagem = (minutosTotais / 30) * 100;
+                if (porcentagem > 100) porcentagem = 100;
+                
+                barraXP.style.width = porcentagem + '%';
+                porcXP.innerText = Math.floor(porcentagem) + '%';
+                
+                if (porcentagem >= 100) {
+                    textoXP.innerText = "XP Garantido! +20 XP";
+                    textoXP.style.color = "var(--verde)";
+                } else {
+                    const faltam = 30 - Math.floor(minutosTotais);
+                    textoXP.innerText = `Faltam ${faltam} min para +20 XP`;
+                    textoXP.style.color = "var(--texto-mutado)";
+                }
+
+                // Verifica fim do plantão
+                const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
+                const horaAgoraStr = formatter.format(agora);
+                
+                if (horaAgoraStr >= horarioFim) {
+                    clearInterval(intervaloCronometro);
+                    customAlert("O horário do plantão acabou. Fechando automaticamente...", "erro");
+                    await processarEncerramento(pontoAtual);
+                }
+            }, 1000);
+        }
+
+        // ==========================================
+        // 4. AÇÕES (Confirmar, Entrar, Pausar, Encerrar)
+        // ==========================================
+        function mostrarConfirmacao(mensagem, acao) {
+            document.getElementById('texto-confirmar').innerText = mensagem;
+            document.getElementById('modal-confirmar').classList.add('ativo');
+            acaoPendente = acao;
+        }
+
+        function responderConfirmacao(resposta) {
+            document.getElementById('modal-confirmar').classList.remove('ativo');
+            if (resposta && acaoPendente) {
+                acaoPendente();
             }
+            acaoPendente = null;
+        }
+
+        async function entrarPlantao(id, nome) {
+            mostrarConfirmacao(`Deseja entrar no plantão: ${nome}?`, async () => {
+                customAlert(`Entrando em ${nome}...`, "sucesso");
+                setTimeout(async () => {
+                    try {
+                        const { error } = await sb.from('pontos').insert([{
+                            passaporte: membroLogado.passaporte,
+                            nome: membroLogado.nome,
+                            entrada: new Date().toISOString(),
+                            status: 'aberto',
+                            plantao_id: id
+                        }]);
+                        if (error) throw error;
+                        customAlert("Você entrou no plantão!", "sucesso");
+                        setTimeout(() => window.location.reload(), 1500);
+                    } catch (err) {
+                        customAlert("Erro ao entrar: " + err.message, "erro");
+                    }
+                }, 500);
+            });
         }
 
         async function pausarTurno() {
-            if (!pontoAtual) return;
-            if (!confirm("Deseja pausar o seu turno? O tempo não contará enquanto estiver pausado.")) return;
-
-            try {
-                const { error } = await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString() }).eq('id', pontoAtual.id);
-                if (error) throw error;
-                customAlert("Turno pausado. Bom descanso!", "sucesso");
-                setTimeout(() => window.location.reload(), 1000);
-            } catch (err) {
-                customAlert("Erro ao pausar o turno.", "erro");
-            }
+            mostrarConfirmacao("Deseja pausar o seu turno? O tempo não contará enquanto estiver pausado.", async () => {
+                try {
+                    const { error } = await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString() }).eq('id', pontoAtual.id);
+                    if (error) throw error;
+                    customAlert("Turno pausado.", "sucesso");
+                    setTimeout(() => window.location.reload(), 1000);
+                } catch (err) { customAlert("Erro ao pausar.", "erro"); }
+            });
         }
 
         async function retomarTurno() {
-            if (!pontoAtual) return;
-            if (!confirm("Deseja retomar o seu turno agora?")) return;
+            mostrarConfirmacao("Deseja retomar o seu turno agora?", async () => {
+                try {
+                    const agora = new Date();
+                    const pausaInicio = new Date(pontoAtual.pausa_inicio);
+                    const tempoPausadoMinutos = (agora - pausaInicio) / 1000 / 60;
+                    const entradaOriginal = new Date(pontoAtual.entrada);
+                    const novaEntrada = new Date(entradaOriginal.getTime() + (tempoPausadoMinutos * 60000));
 
-            try {
-                const agora = new Date();
-                const pausaInicio = new Date(pontoAtual.pausa_inicio);
-                const tempoPausadoMinutos = (agora - pausaInicio) / 1000 / 60;
-
-                // Atualiza o status e calcula a nova hora de entrada (empurrando o tempo que ficou pausado)
-                const entradaOriginal = new Date(pontoAtual.entrada);
-                const novaEntrada = new Date(entradaOriginal.getTime() + (tempoPausadoMinutos * 60000));
-
-                const { error } = await sb.from('pontos').update({ 
-                    status: 'aberto', 
-                    pausa_fim: agora.toISOString(),
-                    entrada: novaEntrada.toISOString() // Compensa o tempo pausado
-                }).eq('id', pontoAtual.id);
-
-                if (error) throw error;
-                customAlert("Turno retomado!", "sucesso");
-                setTimeout(() => window.location.reload(), 1000);
-            } catch (err) {
-                customAlert("Erro ao retomar o turno.", "erro");
-            }
+                    const { error } = await sb.from('pontos').update({ 
+                        status: 'aberto', pausa_fim: agora.toISOString(), entrada: novaEntrada.toISOString()
+                    }).eq('id', pontoAtual.id);
+                    
+                    if (error) throw error;
+                    customAlert("Turno retomado!", "sucesso");
+                    setTimeout(() => window.location.reload(), 1000);
+                } catch (err) { customAlert("Erro ao retomar.", "erro"); }
+            });
         }
 
-        // ==========================================
-        // 4. ENCERRAR TURNO (Manual e Automático)
-        // ==========================================
         async function encerrarTurno() {
-            if (!pontoAtual) return;
-            if (!confirm("Deseja encerrar o seu turno agora?")) return;
-            await processarEncerramento(pontoAtual);
-        }
-
-        async function encerrarTurnoAutomatico() {
-            if (!pontoAtual) return;
-            await processarEncerramento(pontoAtual);
+            mostrarConfirmacao("Tem certeza que deseja encerrar o seu turno agora?", async () => {
+                await processarEncerramento(pontoAtual);
+            });
         }
 
         async function processarEncerramento(ponto) {
+            if (!ponto) return;
             try {
                 const entrada = new Date(ponto.entrada);
                 const saida = new Date();
                 const diferencaMinutos = (saida - entrada) / 1000 / 60;
 
-                // Fecha o ponto
                 await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', ponto.id);
 
-                // Se ficou mais de 30 min (considerando o tempo pausado), ganha XP. Se não, falta.
                 if (diferencaMinutos >= 30) {
                     const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
                     const novoXP = (membro.xp_total || 0) + 20;
                     await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', membroLogado.passaporte);
-                    await sb.from('presencas').insert([{ 
-                        passaporte: membroLogado.passaporte, 
-                        status: 'presente', 
-                        data: saida.toISOString().split('T')[0], 
-                        marcado_por_nome: 'Sistema' 
-                    }]);
+                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
                     customAlert("Turno encerrado! Você ganhou +20 XP.", "sucesso");
                 } else {
-                    await sb.from('presencas').insert([{ 
-                        passaporte: membroLogado.passaporte, 
-                        status: 'falta', 
-                        data: saida.toISOString().split('T')[0], 
-                        marcado_por_nome: 'Sistema' 
-                    }]);
+                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'falta', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
                     customAlert("Turno encerrado. Menos de 30 min: falta registrada.", "erro");
                 }
                 setTimeout(() => window.location.reload(), 2000);
-
             } catch (err) {
-                console.error(err);
                 customAlert("Erro ao encerrar o turno.", "erro");
             }
         }
 
         // ==========================================
-        // 5. ENTRAR NO PLANTÃO E JUSTIFICAR
-        // ==========================================
-        async function entrarPlantao(id, nome) {
-            customAlert(`Confirmando entrada em: ${nome}...`, "sucesso");
-
-            setTimeout(async () => {
-                try {
-                    const { error } = await sb.from('pontos').insert([{
-                        passaporte: membroLogado.passaporte,
-                        nome: membroLogado.nome,
-                        entrada: new Date().toISOString(),
-                        status: 'aberto',
-                        plantao_id: id
-                    }]);
-
-                    if (error) throw error;
-
-                    customAlert("Você entrou no plantão! Redirecionando...", "sucesso");
-                    setTimeout(() => window.location.reload(), 1500);
-                } catch (err) {
-                    console.error(err);
-                    customAlert("Erro ao entrar: " + err.message, "erro");
-                }
-            }, 1000);
-        }
-
-        // Justificativa (Exemplo de como abrir o modal quando o cara perde a hora)
-        function abrirModalJustificar() {
-            document.getElementById('modal-justificar').classList.add('ativo');
-        }
-
-        function enviarJustificativa() {
-            const texto = document.getElementById('texto-justificativa').value;
-            if (!texto.trim()) {
-                customAlert("Escreva o motivo da justificativa.", "erro");
-                return;
-            }
-            customAlert("Justificativa enviada! Aguarde a liderança.", "sucesso");
-            document.getElementById('modal-justificar').classList.remove('ativo');
-        }
-
-        // ==========================================
-        // 6. SISTEMA DE ALERTA
+        // 5. ALERTA VERDE CUSTOMIZADO
         // ==========================================
         function customAlert(mensagem, tipo = 'sucesso') {
             const alerta = document.getElementById('alerta-site');
             const icone = document.getElementById('alerta-icone');
             const texto = document.getElementById('alerta-texto');
-            
             if (!alerta) return;
-            texto.innerText = mensagem;
             
+            texto.innerText = mensagem;
             if (tipo === 'erro') { 
-                alerta.classList.add('erro'); 
-                icone.className = 'fas fa-times-circle'; 
+                alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; 
             } else { 
-                alerta.classList.remove('erro'); 
-                icone.className = 'fas fa-check-circle'; 
+                alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; 
             }
             alerta.classList.add('ativo');
             setTimeout(() => alerta.classList.remove('ativo'), 3000);
