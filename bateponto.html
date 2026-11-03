@@ -345,34 +345,31 @@
         // 4. ENTRAR NO PLANTÃO
         // ==========================================
         async function entrarPlantao(id, nome) {
-            if (!confirm(`Deseja entrar no plantão: ${nome}?`)) return;
-            
-            const btn = event.target.closest('.btn-acao-plantao');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
-            btn.disabled = true;
+    // Troquei o confirm feio por uma confirmação usando o alerta bonito
+    customAlert(`Confirmando entrada em: ${nome}...`, "sucesso");
 
-            try {
-                const { error } = await sb.from('pontos').insert([{
-                    passaporte: membroLogado.passaporte,
-                    nome: membroLogado.nome,
-                    entrada: new Date().toISOString(),
-                    status: 'aberto',
-                    plantao_id: id
-                }]);
+    // Espera 1 segundo (pra dar tempo do alerta aparecer) e executa a lógica
+    setTimeout(async () => {
+        try {
+            const { error } = await sb.from('pontos').insert([{
+                passaporte: membroLogado.passaporte,
+                nome: membroLogado.nome,
+                entrada: new Date().toISOString(),
+                status: 'aberto',
+                plantao_id: id
+            }]);
 
-                if (error) throw error;
+            if (error) throw error;
 
-                customAlert("Você entrou no plantão!", "sucesso");
-                setTimeout(() => window.location.reload(), 1500);
+            customAlert("Você entrou no plantão! Redirecionando...", "sucesso");
+            setTimeout(() => window.location.reload(), 1500);
 
-            } catch (err) {
-                console.error(err);
-                customAlert("Erro ao entrar. O plantão pode ter lotado.", "erro");
-                btn.innerHTML = 'ENTRAR AGORA';
-                btn.disabled = false;
-            }
+        } catch (err) {
+            console.error(err);
+            customAlert("Erro ao entrar: " + err.message, "erro");
         }
-
+    }, 1000);
+        }
         // ==========================================
         // 5. SISTEMA DE ALERTA
         // ==========================================
