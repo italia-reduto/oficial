@@ -289,13 +289,110 @@
             } catch (e) { alert("Erro ao encerrar."); }
         }
 
-        // STUBS para implementar depois
         async function carregarJustificativas() {
-            const c = document.getElementById('lista-justificativas-admin');
-            const { data } = await sb.from('presencas').select('*').eq('status', 'falta').eq('status_justificativa', 'pendente');
-            if (!data || data.length === 0) { c.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhuma pendência.</p>'; return; }
-            c.innerHTML = '<p style="color: var(--verde); font-size: 13px;">Funcionalidade de aprovar/recusar em breve.</p>';
+    const container = document.getElementById('lista-justificativas-admin');
+    container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Buscando pendências...</p>';
+    
+    try {
+        // Puxa as faltas pendentes
+        const { data: faltas, error } = await sb.from('presencas')
+            .select('*')
+            .eq('status', 'falta')
+            .eq('status_justificativa', 'pendente')
+            .order('data', { ascending: false });
+
+        if (error) throw error;
+
+        if (!faltas || faltas.length === 0) {
+            container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhuma justificativa pendente no momento.</p>';
+            return;
         }
+
+        // Busca os nomes de todo mundo de uma vez para não pesar o banco
+        const { data: membros } = await sb.from('membros').select('passaporte, nome');
+        const mapaMembros = {};
+        if (membros) membros.forEach(m => { mapaMembros[String(m.passaporte)] = m.nome; });
+
+        let html = '';
+        faltas.forEach(f => {
+            const nomeMembro = mapaMembros[String(f.passaporte)] || 'Desconhecido';
+            const dataFormatada = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
+            
+            // Formata o motivo (se for os IDs do sistema, coloca maiúsculo)
+            let motivo = f.justificativa || 'Sem justificativa';
+            if(motivo === 'medica') motivo = 'Emergência Médica';
+            if(motivo === 'escola') motivo = 'Escola / Trabalho';
+            if(motivo === 'tecnico') motivo = 'Problema Técnico';
+            if(motivo === 'transporte') motivo = 'Transporte';
+
+            html += `
+                <div class="card-lista" style="align-items: flex-start; flex-direction: column; gap: 15px;">
+                    <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start;">
+                        <div class="card-lista-info">
+                            <h4 style="font-size: 16px;">${nomeMembro} <span style="font-size: 11px; color: var(--texto-mutado);">(Passaporte: ${f.passaporte})</span></h4>
+                            <p>Falta no dia: <strong style="color: var(--vermelho);">${dataFormatada}</strong></p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 6px; border: 1px solid rgba(255,255,255,0.1); text-align: right; max-width: 150px;">
+                            <p style="font-size: 10px; color: var(--texto-mutado); text-transform: uppercase;">Motivo</p>
+                            <p style="font-size: 12px; color: #fff;">${motivo}</p>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; width: 100%;">
+                        <button class="btn-acao btn-verde" style="flex: 1;" onclick="aprovarJustificativa('${f.id}', '${f.passaporte}')">Aprovar (Presença)</button>
+                        <button class="btn-acao btn-vermelho" style="flex: 1;" onclick="recusarJustificativa('${f.id}')">Recusar (Manter Falta)</button>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+
+    } catch (err) {
+        container.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center;">Erro: ${err.message}</p>`;
+    }
+}
+
+// Função para Aprovar
+async function aprovarJustificativa(idPresenca, passaporteMembro) {
+    if (!confirm("Aprovar esta justificativa? A falta será removida e o membro ganhará +20 XP.")) return;
+
+    try {
+        // 1. Atualiza a presença de 'falta' para 'presente' e limpa o status justificativa
+        await sb.from('presencas').update({ 
+            status: 'presente', 
+            status_justificativa: 'aprovada'
+        }).eq('id', idPresenca);
+
+        // 2. Dá os +20 XP para o membro
+        const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', passaporteMembro).single();
+        if (membro) {
+            await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', passaporteMembro);
+        }
+
+        alert("Justificativa aprovada com sucesso. Falta convertida em presença.");
+        carregarJustificativas(); // Atualiza a lista
+        carregarResumo(); // Atualiza os números da tela inicial
+    } catch (err) {
+        alert("Erro ao aprovar: " + err.message);
+    }
+}
+
+// Função para Recusar
+async function recusarJustificativa(idPresenca) {
+    if (!confirm("Recusar esta justificativa? A falta continuará no histórico do membro.")) return;
+
+    try {
+        // Apenas marca que foi recusada, a falta continua
+        await sb.from('presencas').update({ 
+            status_justificativa: 'recusada' 
+        }).eq('id', idPresenca);
+
+        alert("Justificativa recusada.");
+        carregarJustificativas(); // Atualiza a lista
+        carregarResumo(); // Atualiza os números da tela inicial
+    } catch (err) {
+        alert("Erro ao recusar: " + err.message);
+    }
+}
         
         async function carregarMembros() {
             const c = document.getElementById('lista-membros-admin');
