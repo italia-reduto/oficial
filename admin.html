@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
-    <title>Itália 2.0 | Painel Admin</title>
+    <title>Itália OS | Painel Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
@@ -19,187 +19,173 @@
 
     <style>
         :root {
-            --verde: #22c55e;
-            --fundo: #0a0f0d;
-            --vidro: rgba(15, 23, 20, 0.6);
-            --borda: rgba(34, 197, 94, 0.2);
-            --texto: #f3f4f6;
-            --texto-mutado: #9ca3af;
-            --amarelo: #eab308;
-            --vermelho: #ef4444;
+            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.8);
+            --borda: rgba(34, 197, 94, 0.15); --texto: #f3f4f6; --texto-mutado: #9ca3af;
+            --amarelo: #eab308; --vermelho: #ef4444;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        html { background-color: var(--fundo); overflow-x: hidden; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; position: relative; overflow: hidden; }
-
-        /* FUNDO */
-        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.1) 0%, transparent 50%); z-index: -2; }
-        .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.02) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
-
-        /* LAYOUT GERAL */
-        .layout-admin { display: flex; width: 100%; min-height: 100vh; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; overflow: hidden; }
         
-        /* MENU LATERAL (DESKTOP) */
-        .sidebar { width: 260px; background: var(--vidro); backdrop-filter: blur(20px); border-right: 1px solid var(--borda); display: flex; flex-direction: column; position: fixed; top: 0; bottom: 0; left: 0; z-index: 100; }
-        .sidebar-logo { padding: 20px; font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: var(--verde); border-bottom: 1px solid var(--borda); display: flex; align-items: center; gap: 10px; }
-        .sidebar-menu { flex: 1; padding: 20px 10px; display: flex; flex-direction: column; gap: 5px; }
-        .nav-item { display: flex; align-items: center; gap: 15px; padding: 12px 15px; border-radius: 8px; color: var(--texto-mutado); text-decoration: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
-        .nav-item:hover { background: rgba(255,255,255,0.03); color: #fff; }
-        .nav-item.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); }
-        .nav-item i { width: 20px; text-align: center; }
-        .sidebar-user { padding: 20px; border-top: 1px solid var(--borda); display: flex; align-items: center; justify-content: space-between; }
+        /* FUNDO SUTIL */
+        .bg-fundo { position: fixed; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.05) 0%, transparent 60%); z-index: -1; }
+
+        /* LAYOUT */
+        .layout { display: flex; width: 100%; height: 100vh; }
+        
+        /* SIDEBAR DESKTOP */
+        .sidebar { width: 240px; background: rgba(10, 15, 13, 0.95); border-right: 1px solid var(--borda); display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-logo { padding: 20px; font-family: 'Oswald'; font-size: 20px; font-weight: 700; color: var(--verde); border-bottom: 1px solid var(--borda); display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
+        .menu { flex: 1; padding: 15px 10px; display: flex; flex-direction: column; gap: 5px; }
+        .nav-btn { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-radius: 8px; background: transparent; border: none; color: var(--texto-mutado); font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: left; width: 100%; }
+        .nav-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
+        .nav-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); font-weight: 600; }
+        .nav-btn i { width: 18px; text-align: center; }
+        .sidebar-user { padding: 15px 20px; border-top: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; }
         .user-info h4 { font-size: 13px; color: #fff; }
         .user-info p { font-size: 11px; color: var(--verde); text-transform: uppercase; }
-        .btn-sair { background: transparent; border: none; color: var(--vermelho); cursor: pointer; font-size: 16px; transition: 0.3s; }
-        .btn-sair:hover { color: #fff; }
+        .btn-sair { background: none; border: none; color: var(--vermelho); cursor: pointer; font-size: 16px; }
 
-        /* CONTEÚDO PRINCIPAL */
-        .conteudo-principal { flex: 1; margin-left: 260px; padding: 30px; display: flex; flex-direction: column; gap: 20px; min-height: 100vh; }
-        .topo-mobile { display: none; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 28px; text-transform: uppercase; letter-spacing: 1px; color: #fff; margin-bottom: 5px; }
-        .subtitulo-pagina { font-size: 13px; color: var(--texto-mutado); }
+        /* MAIN CONTENT */
+        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px; height: 100%; }
+        .topo { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .titulo { font-family: 'Oswald'; font-size: 26px; text-transform: uppercase; color: #fff; }
+        .subtitulo { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
 
-        /* CARDS DE RESUMO (DASHBOARD) */
-        .grid-resumo { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
-        .card-resumo { background: var(--vidro); backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 5px; }
-        .card-resumo h4 { font-size: 12px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
-        .card-resumo .numero { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; color: #fff; }
-        .card-resumo .numero.verde { color: var(--verde); }
-        .card-resumo .numero.vermelho { color: var(--vermelho); }
+        /* VIEWS */
+        .view { display: none; animation: fadeIn 0.3s; }
+        .view.ativa { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* ÁREAS DE CONTEÚDO (ABAS) */
-        .view-section { display: none; animation: aparecer 0.3s ease; }
-        .view-section.ativa { display: block; }
-        @keyframes aparecer { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        /* CARDS DE RESUMO (COMPACTOS) */
+        .grid-kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .kpi { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 15px 20px; display: flex; flex-direction: column; gap: 5px; }
+        .kpi-header { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); display: flex; justify-content: space-between; letter-spacing: 1px;}
+        .kpi-valor { font-family: 'Oswald'; font-size: 28px; color: #fff; font-weight: 700; }
+        .kpi-valor.alerta { color: var(--vermelho); }
 
-        .painel { background: var(--vidro); backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; }
-        .painel-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 15px; }
-        .painel-header h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; }
+        /* PAINÉIS E LISTAS */
+        .painel { background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; }
+        .painel-header { font-family: 'Oswald'; font-size: 16px; color: #fff; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;}
+        
+        .card-lista { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        .card-lista-info h4 { font-size: 14px; color: #fff; margin-bottom: 2px; }
+        .card-lista-info p { font-size: 11px; color: var(--texto-mutado); }
+        
+        .btn-acao { padding: 8px 15px; border-radius: 6px; font-family: 'Oswald'; font-size: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase;}
+        .btn-vermelho { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
+        .btn-vermelho:hover { background: var(--vermelho); color: #fff; }
+        .btn-verde { background: rgba(34, 197, 94, 0.1); color: var(--verde); border-color: rgba(34, 197, 94, 0.3); }
+        .btn-verde:hover { background: var(--verde); color: #000; }
 
-        /* MENU MOBILE (RODAPÉ) */
-        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: var(--vidro); backdrop-filter: blur(20px); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px; z-index: 1000; }
-        .mobile-item { display: flex; flex-direction: column; align-items: center; gap: 5px; color: var(--texto-mutado); font-size: 10px; cursor: pointer; transition: 0.3s; }
-        .mobile-item.ativo { color: var(--verde); }
-        .mobile-item i { font-size: 18px; }
+        /* MOBILE BOTTOM NAV */
+        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(10,15,13,0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 12px 5px; z-index: 1000; }
+        .mob-item { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--texto-mutado); font-size: 9px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.2s; width: 20%; }
+        .mob-item i { font-size: 18px; }
+        .mob-item.ativo { color: var(--verde); }
 
-        /* RESPONSIVIDADE (CELULAR) */
+        /* RESPONSIVIDADE */
         @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); } /* Esconde o menu lateral */
-            .conteudo-principal { margin-left: 0; padding: 20px; padding-bottom: 80px; }
-            .topo-mobile { display: flex; }
+            .sidebar { display: none; }
             .mobile-nav { display: flex; }
-            .titulo-pagina { font-size: 24px; }
+            .main { padding: 20px 15px; padding-bottom: 90px; }
+            .grid-kpi { grid-template-columns: 1fr; gap: 10px; }
+            .kpi { flex-direction: row; justify-content: space-between; align-items: center; padding: 15px; }
+            .kpi-header { flex-direction: column; align-items: flex-start; gap: 3px; }
+            .kpi-valor { font-size: 24px; }
+            .topo { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
     </style>
-  </head>
-  <body>
-    <div class="fundo-degrade"></div>
-    <div class="grade-fundo"></div>
+</head>
+<body>
+    <div class="bg-fundo"></div>
 
-    <div class="layout-admin">
-        <!-- MENU LATERAL (DESKTOP) -->
+    <div class="layout">
+        <!-- SIDEBAR DESKTOP -->
         <aside class="sidebar">
-            <div class="sidebar-logo">
-                <i class="fas fa-shield-alt"></i> ITÁLIA OS
+            <div class="sidebar-logo"><i class="fas fa-shield-alt"></i> ITÁLIA OS</div>
+            <div class="menu">
+                <button class="nav-btn ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-home"></i> Visão Geral</button>
+                <button class="nav-btn" onclick="mudarAba('plantoes', this)"><i class="fas fa-clock"></i> Plantões Ativos</button>
+                <button class="nav-btn" onclick="mudarAba('justificativas', this)"><i class="fas fa-file-signature"></i> Justificativas</button>
+                <button class="nav-btn" onclick="mudarAba('membros', this)"><i class="fas fa-users"></i> Membros</button>
+                <button class="nav-btn" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i> Tickets</button>
             </div>
-            <nav class="sidebar-menu">
-                <a class="nav-item ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-home"></i> Visão Geral</a>
-                <a class="nav-item" onclick="mudarAba('plantoes', this)"><i class="fas fa-clock"></i> Plantões</a>
-                <a class="nav-item" onclick="mudarAba('justificativas', this)"><i class="fas fa-file-signature"></i> Justificativas</a>
-                <a class="nav-item" onclick="mudarAba('membros', this)"><i class="fas fa-users"></i> Membros</a>
-                <a class="nav-item" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i> Tickets</a>
-            </nav>
             <div class="sidebar-user">
                 <div class="user-info">
-                    <h4 id="admin-nome">Carregando...</h4>
-                    <p id="admin-cargo">Liderança</p>
+                    <h4 id="adm-nome">Líder</h4>
+                    <p id="adm-cargo">Coordenador</p>
                 </div>
                 <button class="btn-sair" onclick="sair()"><i class="fas fa-sign-out-alt"></i></button>
             </div>
         </aside>
 
         <!-- CONTEÚDO PRINCIPAL -->
-        <main class="conteudo-principal">
-            <!-- TOPO MOBILE -->
-            <div class="topo-mobile">
-                <div class="sidebar-logo" style="border: none; padding: 0;"><i class="fas fa-shield-alt"></i> ITÁLIA OS</div>
-                <button class="btn-sair" onclick="sair()"><i class="fas fa-sign-out-alt"></i></button>
+        <main class="main">
+            <div class="topo">
+                <div>
+                    <h1 class="titulo" id="titulo-pagina">Visão Geral</h1>
+                    <p class="subtitulo">Controle operacional da organização.</p>
+                </div>
             </div>
 
-            <div>
-                <h1 class="titulo-pagina" id="titulo-pagina">Visão Geral</h1>
-                <p class="subtitulo-pagina">Controle total da organização em tempo real.</p>
-            </div>
-
-            <!-- ABA: VISÃO GERAL -->
-            <section id="view-inicio" class="view-section ativa">
-                <div class="grid-resumo">
-                    <div class="card-resumo">
-                        <h4>Membros Ativos <i class="fas fa-users" style="color: var(--verde);"></i></h4>
-                        <div class="numero" id="resumo-membros">0</div>
+            <!-- ABA: INÍCIO -->
+            <section id="view-inicio" class="view ativa">
+                <div class="grid-kpi">
+                    <div class="kpi">
+                        <div class="kpi-header">Membros <i class="fas fa-users" style="color: var(--verde);"></i></div>
+                        <div class="kpi-valor" id="kpi-membros">0</div>
                     </div>
-                    <div class="card-resumo">
-                        <h4>Pontos Abertos <i class="fas fa-clock" style="color: var(--amarelo);"></i></h4>
-                        <div class="numero" id="resumo-pontos">0</div>
+                    <div class="kpi">
+                        <div class="kpi-header">Na Rua <i class="fas fa-clock" style="color: var(--amarelo);"></i></div>
+                        <div class="kpi-valor" id="kpi-pontos">0</div>
                     </div>
-                    <div class="card-resumo">
-                        <h4>Justificativas Pendentes <i class="fas fa-file-signature" style="color: var(--vermelho);"></i></h4>
-                        <div class="numero vermelho" id="resumo-justificativas">0</div>
+                    <div class="kpi">
+                        <div class="kpi-header">Pendências <i class="fas fa-file-signature" style="color: var(--vermelho);"></i></div>
+                        <div class="kpi-valor alerta" id="kpi-justificativas">0</div>
                     </div>
                 </div>
-
                 <div class="painel">
-                    <div class="painel-header">
-                        <h3>Avisos Rápidos</h3>
-                    </div>
-                    <p style="color: var(--texto-mutado); font-size: 13px;">O painel de avisos e métricas profundas será implementado aqui.</p>
+                    <div class="painel-header">Aviso da Liderança</div>
+                    <p style="font-size: 13px; color: var(--texto-mutado); line-height: 1.5;">Bem-vindo ao novo sistema de gestão. Aqui você tem controle total sobre os plantões e a equipe. Use as abas ao lado para navegar.</p>
                 </div>
             </section>
 
             <!-- ABA: PLANTÕES -->
-            <section id="view-plantoes" class="view-section">
+            <section id="view-plantoes" class="view">
                 <div class="painel">
-                    <div class="painel-header">
-                        <h3>Quem está em Serviço</h3>
-                    </div>
+                    <div class="painel-header">Quem está em Serviço</div>
                     <div id="lista-pontos-admin">
-                        <p style="color: var(--texto-mutado); font-size: 13px;">Carregando pontos...</p>
+                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Carregando...</p>
                     </div>
                 </div>
             </section>
 
             <!-- ABA: JUSTIFICATIVAS -->
-            <section id="view-justificativas" class="view-section">
+            <section id="view-justificativas" class="view">
                 <div class="painel">
-                    <div class="painel-header">
-                        <h3>Justificativas Pendentes</h3>
-                    </div>
+                    <div class="painel-header">Justificativas Pendentes</div>
                     <div id="lista-justificativas-admin">
-                        <p style="color: var(--texto-mutado); font-size: 13px;">Carregando justificativas...</p>
+                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Carregando...</p>
                     </div>
                 </div>
             </section>
 
             <!-- ABA: MEMBROS -->
-            <section id="view-membros" class="view-section">
+            <section id="view-membros" class="view">
                 <div class="painel">
-                    <div class="painel-header">
-                        <h3>Todos os Membros</h3>
-                    </div>
+                    <div class="painel-header">Gerenciamento de Membros</div>
                     <div id="lista-membros-admin">
-                        <p style="color: var(--texto-mutado); font-size: 13px;">Carregando membros...</p>
+                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Carregando...</p>
                     </div>
                 </div>
             </section>
 
             <!-- ABA: TICKETS -->
-            <section id="view-tickets" class="view-section">
+            <section id="view-tickets" class="view">
                 <div class="painel">
-                    <div class="painel-header">
-                        <h3>Tickets de Suporte</h3>
-                    </div>
+                    <div class="painel-header">Suporte</div>
                     <div id="lista-tickets-admin">
-                        <p style="color: var(--texto-mutado); font-size: 13px;">Nenhum ticket aberto.</p>
+                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhum ticket aberto.</p>
                     </div>
                 </div>
             </section>
@@ -208,118 +194,112 @@
 
     <!-- MENU MOBILE -->
     <nav class="mobile-nav">
-        <a class="mobile-item ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-home"></i><span>Início</span></a>
-        <a class="mobile-item" onclick="mudarAba('plantoes', this)"><i class="fas fa-clock"></i><span>Plantões</span></a>
-        <a class="mobile-item" onclick="mudarAba('justificativas', this)"><i class="fas fa-file-signature"></i><span>Justificar</span></a>
-        <a class="mobile-item" onclick="mudarAba('membros', this)"><i class="fas fa-users"></i><span>Membros</span></a>
-        <a class="mobile-item" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i><span>Tickets</span></a>
-  </nav>
-      <script>
+        <button class="mob-item ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-home"></i> Início</button>
+        <button class="mob-item" onclick="mudarAba('plantoes', this)"><i class="fas fa-clock"></i> Plantões</button>
+        <button class="mob-item" onclick="mudarAba('justificativas', this)"><i class="fas fa-file-signature"></i> Justificar</button>
+        <button class="mob-item" onclick="mudarAba('membros', this)"><i class="fas fa-users"></i> Membros</button>
+        <button class="mob-item" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i> Tickets</button>
+    </nav>
+        <script>
         let adminLogado = null;
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
-        // ==========================================
-        // 1. VERIFICAÇÃO DE ACESSO E INICIALIZAÇÃO
-        // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
 
             adminLogado = JSON.parse(logado);
-
-            // Verifica se é liderança
             if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
-                alert("Acesso negado. Área restrita para liderança.");
+                alert("Acesso negado. Área restrita.");
                 return window.location.href = 'dashboard.html';
             }
 
-            // Preenche os dados do líder no menu
-            document.getElementById('admin-nome').innerText = adminLogado.nome;
-            document.getElementById('admin-cargo').innerText = adminLogado.cargo;
+            document.getElementById('adm-nome').innerText = adminLogado.nome;
+            document.getElementById('adm-cargo').innerText = adminLogado.cargo;
 
-            // Puxa os dados para a Visão Geral
             carregarResumo();
+            carregarPontosAtivos(); // Já deixa a lista pronta em background
         });
 
-        // ==========================================
-        // 2. NAVEGAÇÃO ENTRE ABAS
-        // ==========================================
-        function mudarAba(aba, elementoClicado) {
-            // Esconde todas as telas
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('ativa'));
-            // Mostra a tela clicada
+        function mudarAba(aba, el) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('ativa'));
             document.getElementById(`view-${aba}`).classList.add('ativa');
 
-            // Atualiza a cor dos botões do menu lateral
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('ativo'));
-            // Atualiza a cor dos botões do menu mobile
-            document.querySelectorAll('.mobile-item').forEach(b => b.classList.remove('ativo'));
+            document.querySelectorAll('.nav-btn, .mob-item').forEach(b => b.classList.remove('ativo'));
+            // Sincroniza o botão clicado com o desktop e mobile
+            document.querySelectorAll(`[onclick*="'${aba}'"]`).forEach(b => b.classList.add('ativo'));
 
-            if (elementoClicado) {
-                elementoClicado.classList.add('ativo');
-            } else {
-                // Se a função foi chamada sem elemento específico (ex: por JS)
-                document.querySelector(`.nav-item[onclick*="'${aba}'"]`)?.classList.add('ativo');
-                document.querySelector(`.mobile-item[onclick*="'${aba}'"]`)?.classList.add('ativo');
-            }
+            const titulos = { inicio: 'Visão Geral', plantoes: 'Plantões Ativos', justificativas: 'Justificativas', membros: 'Membros', tickets: 'Suporte' };
+            document.getElementById('titulo-pagina').innerText = titulos[aba];
 
-            // Muda o título grande da página
-            const titulos = {
-                'inicio': 'Visão Geral',
-                'plantoes': 'Pontos Ativos',
-                'justificativas': 'Justificativas',
-                'membros': 'Membros',
-                'tickets': 'Suporte'
-            };
-            document.getElementById('titulo-pagina').innerText = titulos[aba] || 'Admin';
-
-            // Carrega os dados da aba clicada
             if (aba === 'plantoes') carregarPontosAtivos();
             if (aba === 'justificativas') carregarJustificativas();
             if (aba === 'membros') carregarMembros();
         }
 
-        // ==========================================
-        // 3. CARREGAR RESUMO (TELA INICIAL)
-        // ==========================================
         async function carregarResumo() {
             try {
-                // Conta total de membros
-                const { count: totalMembros } = await sb.from('membros').select('*', { count: 'exact', head: true });
-                document.getElementById('resumo-membros').innerText = totalMembros || 0;
-
-                // Conta quantos pontos estão abertos agora
-                const { count: pontosAbertos } = await sb.from('pontos').select('*', { count: 'exact', head: true }).in('status', ['aberto', 'pausado']);
-                document.getElementById('resumo-pontos').innerText = pontosAbertos || 0;
-
-                // Conta justificativas pendentes
-                const { count: justificativas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('status', 'falta').eq('status_justificativa', 'pendente');
-                document.getElementById('resumo-justificativas').innerText = justificativas || 0;
-
-            } catch (err) {
-                console.error("Erro ao carregar resumo:", err);
-            }
+                const { count: cMembros } = await sb.from('membros').select('*', { count: 'exact', head: true });
+                const { count: cPontos } = await sb.from('pontos').select('*', { count: 'exact', head: true }).in('status', ['aberto', 'pausado']);
+                const { count: cJust } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('status', 'falta').eq('status_justificativa', 'pendente');
+                
+                document.getElementById('kpi-membros').innerText = cMembros || 0;
+                document.getElementById('kpi-pontos').innerText = cPontos || 0;
+                document.getElementById('kpi-justificativas').innerText = cJust || 0;
+            } catch (e) { console.error(e); }
         }
 
-        // ==========================================
-        // 4. STUBS (SERÃO PREENCHIDOS NA PRÓXIMA PARTE)
-        // ==========================================
         async function carregarPontosAtivos() {
             const container = document.getElementById('lista-pontos-admin');
-            container.innerHTML = '<p style="color: var(--verde); font-size: 13px;">Buscando dados no banco...</p>';
-            // A lógica real de puxar quem tá online e o botão de "Forçar Encerramento" entra aqui.
+            try {
+                const { data: pontos } = await sb.from('pontos').select('*, plantoes(nome)').in('status', ['aberto', 'pausado']).order('entrada');
+                if (!pontos || pontos.length === 0) {
+                    container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Ninguém em serviço no momento.</p>';
+                    return;
+                }
+
+                let html = '';
+                pontos.forEach(p => {
+                    const mins = Math.floor((new Date() - new Date(p.entrada)) / 1000 / 60);
+                    const tempo = `${Math.floor(mins/60)}h ${mins%60}m`;
+                    const cor = p.status === 'pausado' ? 'var(--amarelo)' : 'var(--verde)';
+                    const nomePlantao = p.plantoes ? p.plantoes.nome : 'Plantão Excluído';
+
+                    html += `
+                        <div class="card-lista">
+                            <div class="card-lista-info">
+                                <h4>${p.nome} <span style="font-size:10px; color: ${cor};">● ${p.status.toUpperCase()}</span></h4>
+                                <p>${nomePlantao} • Tempo: ${tempo}</p>
+                            </div>
+                            <button class="btn-acao btn-vermelho" onclick="forcarEncerramento('${p.id}', '${p.nome}')">Forçar Saída</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch (e) { container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar.</p>`; }
         }
 
+        async function forcarEncerramento(id, nome) {
+            if (!confirm(`Tem certeza que deseja forçar a saída de ${nome}? Isso não dará XP a ele.`)) return;
+            try {
+                await sb.from('pontos').update({ status: 'fechado', saida: new Date().toISOString() }).eq('id', id);
+                alert(`Ponto de ${nome} encerrado.`);
+                carregarPontosAtivos();
+                carregarResumo();
+            } catch (e) { alert("Erro ao encerrar."); }
+        }
+
+        // STUBS para implementar depois
         async function carregarJustificativas() {
-            const container = document.getElementById('lista-justificativas-admin');
-            container.innerHTML = '<p style="color: var(--verde); font-size: 13px;">Buscando justificativas...</p>';
-            // A lógica real de aprovar/recusar entra aqui.
+            const c = document.getElementById('lista-justificativas-admin');
+            const { data } = await sb.from('presencas').select('*').eq('status', 'falta').eq('status_justificativa', 'pendente');
+            if (!data || data.length === 0) { c.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhuma pendência.</p>'; return; }
+            c.innerHTML = '<p style="color: var(--verde); font-size: 13px;">Funcionalidade de aprovar/recusar em breve.</p>';
         }
-
+        
         async function carregarMembros() {
-            const container = document.getElementById('lista-membros-admin');
-            container.innerHTML = '<p style="color: var(--verde); font-size: 13px;">Buscando membros...</p>';
-            // A lógica real de dar XP e advertências entra aqui.
+            const c = document.getElementById('lista-membros-admin');
+            c.innerHTML = '<p style="color: var(--verde); font-size: 13px;">Gestão de XP e Advertências em breve.</p>';
         }
 
         function sair() {
