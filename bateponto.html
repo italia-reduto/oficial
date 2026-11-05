@@ -455,15 +455,28 @@ function fecharModal(id) { document.getElementById(id).classList.remove('ativo')
 
 async function entrarPlantao(id, nome) {
     mostrarConfirmacao(`Deseja entrar no plantão: ${nome}?`, async () => {
+        const botoes = document.querySelectorAll('.btn-entrar');
+        botoes.forEach(b => b.disabled = true);
+
         customAlert(`Entrando em ${nome}...`, "sucesso");
-        setTimeout(async () => {
-            try {
-                const { error } = await sb.from('pontos').insert([{ passaporte: membroLogado.passaporte, nome: membroLogado.nome, entrada: new Date().toISOString(), status: 'aberto', plantao_id: id }]);
-                if (error) throw error;
-                customAlert("Você entrou!", "sucesso");
-                setTimeout(() => window.location.reload(), 1500);
-            } catch (err) { customAlert("Erro: " + err.message, "erro"); }
-        }, 500);
+        
+        try {
+            const { error } = await sb.from('pontos').insert([{
+                passaporte: membroLogado.passaporte,
+                nome: membroLogado.nome,
+                entrada: new Date().toISOString(),
+                status: 'aberto',
+                plantao_id: id
+            }]);
+            
+            if (error) throw error;
+            
+            customAlert("Você entrou no plantão!", "sucesso");
+            window.location.reload(); // Recarrega na hora, sem esperar
+        } catch (err) {
+            customAlert("Erro: " + err.message, "erro");
+            botoes.forEach(b => b.disabled = false);
+        }
     });
 }
 
