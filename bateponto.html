@@ -18,202 +18,120 @@
     </script>
 
     <style>
-        :root {
-            --verde: #22c55e;
-            --fundo: #0a0f0d;
-            --vidro: rgba(15, 23, 20, 0.6);
-            --borda: rgba(34, 197, 94, 0.2);
-            --texto: #f3f4f6;
-            --texto-mutado: #9ca3af;
-            --amarelo: #eab308;
-            --vermelho: #ef4444;
-        }
+        :root { --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         html { background-color: #0a0f0d; overflow-x: hidden; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
-
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
         .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
         .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 5; }
-        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; }
-        .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; }
-        .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; }
-        .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; }
-        .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
+        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; } .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; } .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; } .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; } .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
         @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
 
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; padding-bottom: 40px; }
-        .topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .topo { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
         .btn-voltar { width: 40px; height: 40px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 18px; cursor: pointer; text-decoration: none; transition: 0.3s; }
         .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
         .titulo { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
-        .btn-historico { background: var(--vidro); border: 1px solid var(--borda); color: var(--texto); padding: 8px 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
-        .btn-historico:hover { border-color: var(--verde); color: var(--verde); }
         
         #lista-plantoes { display: flex; flex-direction: column; gap: 12px; width: 100%; }
         .card-plantao { background: var(--vidro); backdrop-filter: blur(20px); border-radius: 12px; padding: 20px; border: 1px solid var(--borda); transition: 0.3s; position: relative; overflow: hidden; -webkit-mask-image: -webkit-radial-gradient(white, black); transform: translateZ(0); width: 100%; display: block; }
-        .card-plantao.aberto { border-color: var(--verde); box-shadow: 0 0 15px rgba(34, 197, 94, 0.2); }
+        .card-plantao.aberto { border-color: var(--verde); box-shadow: 0 0 15px rgba(34, 197, 94, 0.1); }
         .card-plantao.lotado { opacity: 0.5; }
         .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; position: relative; z-index: 2; }
         .card-nome { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; display: flex; align-items: center; }
         .card-horario { font-size: 12px; color: var(--texto-mutado); }
-        .vagas-barra { width: 100%; height: 6px; background: #27272a; border-radius: 10px; overflow: hidden; margin-bottom: 10px; position: relative; z-index: 2; }
+        .vagas-barra { width: 100%; height: 4px; background: #27272a; border-radius: 10px; overflow: hidden; margin-bottom: 10px; position: relative; z-index: 2; }
         .vagas-preenchida { height: 100%; background: var(--verde); transition: 0.3s; }
         .vagas-texto { font-size: 11px; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 15px; position: relative; z-index: 2; }
         .btn-acao-plantao { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; z-index: 2; }
-        .btn-entrar { background: var(--verde); color: #000; }
-        .btn-entrar:hover { background: #4ade80; }
+        .btn-entrar { background: var(--verde); color: #000; } .btn-entrar:hover { background: #4ade80; }
         .btn-bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; }
         .btn-em-andamento { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid #eab308; }
         .card-plantao.com-imagem { background-size: cover; background-position: center; background-repeat: no-repeat; }
         .card-plantao.com-imagem::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.7) 100%); z-index: 1; }
 
-        #tela-cronometro { display: none; flex-direction: column; align-items: center; justify-content: center; background: var(--vidro); padding: 30px 20px; border-radius: 16px; border: 1px solid var(--verde); box-shadow: 0 0 20px rgba(34, 197, 94, 0.2); text-align: center; }
-        .cronometro-titulo { font-family: 'Oswald'; color: var(--verde); font-size: 20px; text-transform: uppercase; margin-bottom: 5px; }
-        .cronometro-nome { font-size: 14px; color: #fff; margin-bottom: 20px; }
-        .cronometro-display { font-family: 'Oswald'; font-size: 48px; color: #fff; margin-bottom: 10px; text-shadow: 0 0 15px rgba(255,255,255,0.2); }
-        .status-pausa-texto { font-family: 'Oswald'; font-size: 16px; color: var(--amarelo); text-transform: uppercase; margin-bottom: 20px; display: none; }
-        
-        .xp-container { width: 100%; margin-bottom: 20px; background: rgba(0,0,0,0.4); border-radius: 10px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); }
-        .xp-texto { font-size: 11px; color: var(--texto-mutado); margin-bottom: 5px; display: flex; justify-content: space-between; }
-        .xp-texto span { color: var(--verde); font-weight: bold; }
-        .xp-barra-bg { width: 100%; height: 8px; background: #27272a; border-radius: 10px; overflow: hidden; }
-        .xp-barra-fill { height: 100%; background: var(--verde); width: 0%; transition: width 1s linear; box-shadow: 0 0 10px var(--verde); }
+        #tela-cronometro { display: none; flex-direction: column; background: var(--vidro); padding: 25px; border-radius: 16px; border: 1px solid var(--borda); text-align: left; }
+        .cronometro-display { font-family: 'Oswald'; font-size: 56px; color: #fff; line-height: 1; text-align: center; }
+        .xp-container { width: 100%; margin-top: 20px; }
+        .xp-texto { font-size: 11px; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .xp-barra-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .xp-barra-fill { height: 100%; background: var(--verde); width: 0%; transition: width 1s linear; }
+        .botoes-cronometro { display: flex; gap: 10px; margin-top: 25px; }
+        .btn-cronometro { flex: 1; background: transparent; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-pausa { color: var(--amarelo); border: 1px solid var(--amarelo); } .btn-retomar { color: var(--verde); border: 1px solid var(--verde); display: none; } .btn-encerrar { color: var(--vermelho); border: 1px solid var(--vermelho); }
 
-        .botoes-cronometro { display: flex; flex-direction: column; gap: 10px; width: 100%; margin-bottom: 20px; }
-        .btn-pausa { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border: 1px solid var(--amarelo); padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; width: 100%; }
-        .btn-voltar-servico { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; width: 100%; display: none; }
-        .btn-encerrar { width: 100%; padding: 15px; background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border: 1px solid var(--vermelho); border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-
-        /* MODAIS GERAIS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.ativo { display: flex; }
-        .modal-content { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; width: 100%; max-width: 450px; text-align: center; max-height: 85vh; overflow-y: auto; }
-        
-        /* CONFIRMAÇÃO */
-        .modal-confirmar p { font-size: 15px; color: #fff; margin-bottom: 25px; line-height: 1.5; }
-        .botoes-confirmar { display: flex; gap: 10px; }
-        .btn-sim { flex: 1; background: var(--verde); color: #000; border: none; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; }
-        .btn-nao { flex: 1; background: transparent; color: var(--vermelho); border: 1px solid var(--vermelho); padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .modal-content { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; width: 100%; max-width: 400px; text-align: center; max-height: 85vh; overflow-y: auto; }
+        .botoes-confirmar { display: flex; gap: 10px; } .btn-sim { flex: 1; background: var(--verde); color: #000; border: none; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; } .btn-nao { flex: 1; background: transparent; color: var(--vermelho); border: 1px solid var(--vermelho); padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; }
 
-        /* ALERTA CUSTOM */
+        .aviso-pulsante { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--vermelho); padding: 15px; border-radius: 10px; color: #fca5a5; font-size: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; text-align: left; line-height: 1.4; }
+        .aviso-pulsante i { font-size: 20px; color: var(--vermelho); animation: piscar 1s infinite; }
+        @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .grid-justificativas { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .card-justificativa { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .card-justificativa.selecionado { border-color: var(--verde); background: rgba(34, 197, 94, 0.1); }
+        .card-justificativa i { font-size: 20px; color: var(--verde); width: 25px; text-align: center; }
+        .card-justificativa .texto { text-align: left; }
+        .card-justificativa .texto h4 { font-family: 'Oswald'; font-size: 14px; color: #fff; margin-bottom: 2px; }
+        .card-justificativa .texto p { font-size: 11px; color: var(--texto-mutado); }
+        .input-outro { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); color: #fff; border-radius: 8px; font-family: 'Inter'; font-size: 13px; outline: none; margin-bottom: 15px; display: none; }
+        .input-outro:focus { border-color: var(--verde); }
+
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--verde); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; min-width: 280px; transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
         .alerta-custom.ativo { top: 20px; }
         .alerta-custom i { font-size: 24px; color: var(--verde); }
         .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500; }
         .alerta-custom.erro { border-color: #ef4444; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2); }
         .alerta-custom.erro i { color: #ef4444; }
-
-        /* HISTÓRICO E JUSTIFICATIVA */
-        .filtros-hist { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
-        .btn-filtro { background: var(--vidro); border: 1px solid var(--borda); color: var(--texto-mutado); padding: 8px 15px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-        .btn-filtro.ativo { background: var(--verde); color: #000; border-color: var(--verde); font-weight: bold; }
-        
-        .card-hist { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 15px; margin-bottom: 10px; text-align: left; }
-        .card-hist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px; }
-        .card-hist-data { font-family: 'Oswald'; font-size: 16px; color: #fff; }
-        .card-hist-status { font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 10px; }
-        .card-hist-status.presente { background: rgba(34, 197, 94, 0.1); color: var(--verde); }
-        .card-hist-status.falta { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); }
-        .card-hist-status.pendente { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); }
-        .card-hist-info { font-size: 12px; color: var(--texto-mutado); line-height: 1.6; }
-        
-        .btn-justificar-hist { width: 100%; margin-top: 10px; background: rgba(239,68,68,0.1); color: var(--vermelho); border: 1px solid var(--vermelho); padding: 10px; border-radius: 6px; font-family: 'Oswald'; cursor: pointer; transition: 0.3s; }
-        .btn-justificar-hist:hover { background: var(--vermelho); color: #fff; }
-
-        .aviso-pulsante { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--vermelho); padding: 15px; border-radius: 10px; color: #fca5a5; font-size: 13px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; animation: pulsar-perigo 2s infinite; text-align: left; }
-        .aviso-pulsante i { font-size: 20px; animation: piscar 1s infinite; }
-        @keyframes pulsar-perigo { 0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); } 50% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } }
-        @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
-        .grid-justificativas { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
-        .card-justificativa { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-        .card-justificativa:hover { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
-        .card-justificativa.selecionado { border-color: var(--verde); background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 10px rgba(34,197,94,0.2); }
-        .card-justificativa i { font-size: 24px; color: var(--verde); width: 30px; text-align: center; }
-        .card-justificativa .texto { text-align: left; }
-        .card-justificativa .texto h4 { font-family: 'Oswald'; font-size: 15px; color: #fff; margin-bottom: 2px; }
-        .card-justificativa .texto p { font-size: 11px; color: var(--texto-mutado); }
-        
-        .input-outro { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); color: #fff; border-radius: 8px; font-family: 'Inter'; font-size: 13px; outline: none; margin-bottom: 15px; display: none; }
-        .input-outro:focus { border-color: var(--verde); }
     </style>
 </head>
 <body>
-    <div class="fundo-degrade"></div>
-    <div class="grade-fundo"></div>
-    <div class="particula p1"></div>
-    <div class="particula p2"></div>
-    <div class="particula p3"></div>
-    <div class="particula p4"></div>
-    <div class="particula p5"></div>
+    <div class="fundo-degrade"></div><div class="grade-fundo"></div>
+    <div class="particula p1"></div><div class="particula p2"></div><div class="particula p3"></div><div class="particula p4"></div><div class="particula p5"></div>
 
     <div class="container">
         <div class="topo">
-            <div style="display: flex; align-items: center; gap: 15px;">
-                <a href="dashboard.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
-                <h1 class="titulo">Plantões</h1>
-            </div>
-            <button onclick="abrirHistorico()" class="btn-historico">
-                <i class="fas fa-history"></i> Registros
-            </button>
+            <a href="dashboard.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="titulo">Plantões</h1>
         </div>
         
         <p id="subtitulo-plantoes" style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 10px;">Selecione um plantão disponível abaixo:</p>
-
-        <div id="lista-plantoes">
-            <p style="color: var(--texto-mutado); text-align: center; padding: 20px;">Carregando...</p>
-        </div>
+        <div id="lista-plantoes"><p style="color: var(--texto-mutado); text-align: center; padding: 20px;">Carregando...</p></div>
 
         <div id="tela-cronometro">
-            <h2 class="cronometro-titulo">Em Serviço</h2>
-            <p id="nome-plantao-ativo" class="cronometro-nome">Carregando...</p>
-            <div id="cronometro-display" class="cronometro-display">00:00:00</div>
-            <p id="status-pausa-texto" class="status-pausa-texto">Turno Pausado</p>
-            
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 20px;">
+                <div>
+                    <h2 id="nome-plantao-ativo" style="font-family: 'Oswald'; font-size: 18px; color: #fff; margin-bottom: 2px;">Carregando...</h2>
+                    <p style="font-size: 12px; color: var(--texto-mutado);" id="horario-plantao-ativo">--:-- - --:--</p>
+                </div>
+                <div id="status-pausa-texto" style="font-family: 'Oswald'; font-size: 12px; color: var(--amarelo); text-transform: uppercase; display: none; background: rgba(234, 179, 8, 0.1); padding: 4px 8px; border-radius: 4px;">Pausado</div>
+            </div>
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div id="cronometro-display" class="cronometro-display">00:00:00</div>
+                <p style="font-size: 11px; color: var(--texto-mutado); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Tempo em Serviço</p>
+            </div>
             <div class="xp-container">
-                <div class="xp-texto">
-                    <span id="xp-status-texto">Faltam 30 min para +20 XP</span>
-                    <span id="xp-porcentagem">0%</span>
-                </div>
-                <div class="xp-barra-bg">
-                    <div class="xp-barra-fill" id="xp-barra-preenchida"></div>
-                </div>
+                <div class="xp-texto"><span id="xp-status-texto">Faltam 30 min para +20 XP</span><span id="xp-porcentagem">0%</span></div>
+                <div class="xp-barra-bg"><div class="xp-barra-fill" id="xp-barra-preenchida"></div></div>
             </div>
-
             <div class="botoes-cronometro">
-                <button onclick="pausarTurno()" id="btn-pausar" class="btn-pausa"><i class="fas fa-pause"></i> Pausar Turno</button>
-                <button onclick="retomarTurno()" id="btn-retomar" class="btn-voltar-servico"><i class="fas fa-play"></i> Retomar Serviço</button>
+                <button onclick="pausarTurno()" id="btn-pausar" class="btn-cronometro btn-pausa"><i class="fas fa-pause"></i> Pausar</button>
+                <button onclick="retomarTurno()" id="btn-retomar" class="btn-cronometro btn-retomar"><i class="fas fa-play"></i> Retomar</button>
+                <button onclick="solicitarEncerramento()" class="btn-cronometro btn-encerrar"><i class="fas fa-stop"></i> Encerrar</button>
             </div>
-            <button onclick="encerrarTurno()" class="btn-encerrar"><i class="fas fa-stop"></i> Encerrar Turno</button>
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMAÇÃO -->
-    <div class="modal-overlay modal-confirmar" id="modal-confirmar">
+    <!-- MODAL DE CONFIRMAÇÃO GERAL -->
+    <div class="modal-overlay" id="modal-confirmar">
         <div class="modal-content">
-            <p id="texto-confirmar">Tem certeza?</p>
+            <p id="texto-confirmar" style="font-size: 15px; color: #fff; margin-bottom: 25px; line-height: 1.5;">Tem certeza?</p>
             <div class="botoes-confirmar">
                 <button class="btn-nao" onclick="responderConfirmacao(false)">Cancelar</button>
                 <button class="btn-sim" onclick="responderConfirmacao(true)">Confirmar</button>
             </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE HISTÓRICO -->
-    <div class="modal-overlay" id="modal-historico">
-        <div class="modal-content">
-            <h3 style="color: var(--verde); margin-bottom: 15px; font-family: 'Oswald'; font-size: 22px;"><i class="fas fa-history"></i> Meus Registros</h3>
-            
-            <div class="filtros-hist">
-                <button class="btn-filtro" onclick="filtrarHistorico(7)">Últimos 7 dias</button>
-                <button class="btn-filtro ativo" onclick="filtrarHistorico(30)">Últimos 30 dias</button>
-            </div>
-
-            <div id="lista-historico" style="margin-bottom: 20px;">
-                <p style="color: var(--texto-mutado); font-size: 13px;">Carregando...</p>
-            </div>
-            <button class="btn-justificar" onclick="fecharModal('modal-historico')" style="background: transparent; border: 1px solid var(--verde); color: var(--verde);">Fechar</button>
         </div>
     </div>
 
@@ -222,393 +140,247 @@
         <div class="modal-content">
             <div class="aviso-pulsante">
                 <i class="fas fa-exclamation-circle"></i>
-                <div><strong>ATENÇÃO:</strong> Justificativas enviadas após as 00:00 do dia seguinte serão automaticamente recusadas pelo sistema.</div>
+                <div><strong>ATENÇÃO:</strong> Você está saindo antes dos 30 minutos. Isso resultará em uma falta. Justifique abaixo para que a liderança avalie.</div>
             </div>
-            
-            <h3 style="color: var(--vermelho); margin-bottom: 15px; font-family: 'Oswald'; font-size: 20px;">Justificar Falta</h3>
-            <p style="font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px;">Motivo da falta no dia <strong id="data-falta-justificar"></strong></p>
-            
-            <div class="grid-justificativas" id="lista-opcoes-justificativa">
-                <!-- Preenchido via JS -->
-            </div>
-
+            <div class="grid-justificativas" id="lista-opcoes-justificativa"></div>
             <input type="text" class="input-outro" id="input-outro" placeholder="Descreva o motivo (máx 100 letras)" maxlength="100">
-            
-            <button class="btn-justificar" onclick="enviarJustificativa()">Enviar Justificativa</button>
-            <button onclick="fecharModal('modal-justificativa')" style="width: 100%; background: transparent; border: none; color: var(--texto-mutado); margin-top: 10px; cursor: pointer; font-size: 12px;">Cancelar</button>
+            <button class="btn-sim" style="width: 100%; margin-bottom: 10px;" onclick="enviarJustificativa()">Enviar e Encerrar</button>
+            <button onclick="fecharModal('modal-justificativa')" style="width: 100%; background: transparent; border: none; color: var(--texto-mutado); cursor: pointer; font-size: 12px;">Cancelar e Voltar</button>
         </div>
     </div>
 
-    <div class="alerta-custom" id="alerta-site">
-        <i class="fas fa-check-circle" id="alerta-icone"></i>
-        <p id="alerta-texto">Mensagem</p>
-                </div>
-                <script>
-    let membroLogado = null;
-    let intervaloCronometro = null;
-    let pontoAtual = null;
-    let acaoPendente = null;
-    let idFaltaSelecionada = null;
-    let justificativaSelecionada = null;
+    <div class="alerta-custom" id="alerta-site"><i class="fas fa-check-circle" id="alerta-icone"></i><p id="alerta-texto">Mensagem</p></div>
+        <script>
+        let membroLogado = null;
+        let intervaloCronometro = null;
+        let pontoAtual = null;
+        let acaoPendente = null;
+        let justificativaSelecionada = null;
 
-    function getMinutosBrasilia() {
-        const agora = new Date();
-        const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-        const [h, m] = formatter.format(agora).split(':').map(Number);
-        return (h * 60) + m;
-    }
-
-    function verificarStatusHorario(horarioInicio, horarioFim) {
-        let minutosAgora = getMinutosBrasilia();
-        const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
-        const [hFim, mFim] = horarioFim.split(':').map(Number);
-        let minutosInicio = (hInicio * 60) + mInicio;
-        let minutosFim = (hFim * 60) + mFim;
-
-        if (minutosFim <= minutosInicio) {
-            minutosFim += 24 * 60;
-            if (minutosAgora < minutosInicio) minutosAgora += 24 * 60;
-        }
-        const tolerancia = 15; 
-        const janelaAbertura = minutosInicio - tolerancia;
-        const janelaFechamento = minutosInicio + tolerancia;
-
-        if (minutosAgora >= janelaAbertura && minutosAgora <= janelaFechamento) return 'aberto'; 
-        if (minutosAgora > janelaFechamento && minutosAgora < minutosFim) return 'em_andamento'; 
-        if (minutosAgora >= minutosFim) return 'encerrado'; 
-        return 'aguardando'; 
-    }
-
-    window.addEventListener('DOMContentLoaded', async () => {
-        const logado = sessionStorage.getItem('membro_logado');
-        if (!logado) return window.location.href = 'login.html';
-        membroLogado = JSON.parse(logado);
-        carregarPlantoes();
-    });
-
-    async function carregarPlantoes() {
-        const container = document.getElementById('lista-plantoes');
-        const telaCronometro = document.getElementById('tela-cronometro');
-        const subtitulo = document.getElementById('subtitulo-plantoes');
-        
-        try {
-            const { data: pontoAberto } = await sb.from('pontos').select('*, plantoes(nome, horario_fim)').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
-
-            if (pontoAberto) {
-                pontoAtual = pontoAberto;
-                container.style.display = 'none';
-                subtitulo.style.display = 'none';
-                telaCronometro.style.display = 'flex';
-                const nomePlantao = pontoAberto.plantoes ? pontoAberto.plantoes.nome : 'Plantão';
-                const fimPlantao = pontoAberto.plantoes ? pontoAberto.plantoes.horario_fim : '23:59';
-                document.getElementById('nome-plantao-ativo').innerText = nomePlantao;
-                
-                if (pontoAberto.status === 'pausado') {
-                    document.getElementById('status-pausa-texto').style.display = 'block';
-                    document.getElementById('cronometro-display').style.color = 'var(--amarelo)';
-                    document.getElementById('btn-pausar').style.display = 'none';
-                    document.getElementById('btn-retomar').style.display = 'block';
-                    document.getElementById('cronometro-display').innerText = "PAUSADO";
-                } else {
-                    document.getElementById('status-pausa-texto').style.display = 'none';
-                    document.getElementById('cronometro-display').style.color = '#fff';
-                    document.getElementById('btn-pausar').style.display = 'block';
-                    document.getElementById('btn-retomar').style.display = 'none';
-                    iniciarCronometro(pontoAberto.entrada, fimPlantao);
-                }
-                return; 
-            }
-
-            container.style.display = 'flex';
-            subtitulo.style.display = 'block';
-            telaCronometro.style.display = 'none';
-            
-            const { data: plantoes, error } = await sb.from('plantoes').select('*');
-            if (error) throw new Error("Erro: " + error.message);
-            if (!plantoes || plantoes.length === 0) {
-                container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>';
-                return;
-            }
-
-            const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').in('status', ['aberto', 'pausado']);
-            const ordemHorarios = { '02:00': 0, '04:00': 1, '06:00': 2, '08:00': 3, '10:00': 4, '12:00': 5, '14:00': 6, '16:00': 7, '18:00': 8, '20:00': 9, '22:00': 10, '00:00': 11 };
-            let ativos = [], futuros = [];
-
-            plantoes.forEach(p => {
-                const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
-                p._status = status;
-                if (status === 'aberto' || status === 'em_andamento') ativos.push(p);
-                else if (status === 'aguardando') futuros.push(p);
-            });
-
-            const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
-            ativos.sort(ordenar); futuros.sort(ordenar);
-            const plantoesOrdenados = [...ativos, ...futuros];
-
-            let html = '';
-            plantoesOrdenados.forEach((p, index) => {
-                let status = p._status;
-                if (index === 0 && status !== 'aberto') status = 'aberto'; // Mágica do teste
-
-                const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-                const restantes = p.vagas_totais - ocupadas;
-                
-                let classeCard = '', btnHtml = '', iconeHtml = '', classeImagem = '', estiloFundo = '';
-                if (p.tipo === 'rota') {
-                    iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>';
-                    classeImagem = 'com-imagem';
-                    estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793658013726.jpg');`;
-                } else if (p.tipo === 'venda') {
-                    iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>';
-                    classeImagem = 'com-imagem';
-                    estiloFundo = p.nome.toLowerCase().includes('lockpick') 
-                        ? `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659093972.jpg');`
-                        : `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659504717.jpg');`;
-                } else if (p.tipo === 'apoio') {
-                    iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>';
-                    classeImagem = 'com-imagem';
-                    estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659618901.jpg');`;
-                }
-
-                if (restantes <= 0) {
-                    classeCard = 'lotado';
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`;
-                } else if (status === 'aberto') {
-                    classeCard = 'aberto';
-                    btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`;
-                } else if (status === 'em_andamento') {
-                    btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`;
-                } else {
-                    btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`;
-                }
-
-                const porcentagem = (ocupadas / p.vagas_totais) * 100;
-                html += `
-                    <div class="card-plantao ${classeCard} ${classeImagem}" style="${estiloFundo}">
-                        <div class="card-header">
-                            <span class="card-nome">${iconeHtml} ${p.nome}</span>
-                            <span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span>
-                        </div>
-                        <div class="vagas-barra"><div class="vagas-preenchida" style="width: ${porcentagem}%"></div></div>
-                        <div class="vagas-texto"><span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span><span>${restantes} restantes</span></div>
-                        ${btnHtml}
-                    </div>`;
-            });
-            container.innerHTML = html;
-        } catch (err) {
-            console.error(err);
-            container.innerHTML = `<div style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #fca5a5; padding: 15px; border-radius: 8px; font-size: 13px; text-align: center;">${err.message}</div>`;
-        }
-    }
-                    function iniciarCronometro(horarioEntrada, horarioFim) {
-    if (intervaloCronometro) clearInterval(intervaloCronometro);
-    const display = document.getElementById('cronometro-display');
-    const dataEntrada = new Date(horarioEntrada);
-    const barraXP = document.getElementById('xp-barra-preenchida');
-    const textoXP = document.getElementById('xp-status-texto');
-    const porcXP = document.getElementById('xp-porcentagem');
-
-    intervaloCronometro = setInterval(async () => {
-        const agora = new Date();
-        const diferenca = agora - dataEntrada;
-        if (diferenca < 0) return;
-
-        const horas = Math.floor(diferenca / (1000 * 60 * 60));
-        const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-        const segundos = Math.floor((diferenca / 1000) % 60);
-        display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-
-        const minutosTotais = diferenca / 1000 / 60;
-        let porcentagem = (minutosTotais / 30) * 100;
-        if (porcentagem > 100) porcentagem = 100;
-        barraXP.style.width = porcentagem + '%';
-        porcXP.innerText = Math.floor(porcentagem) + '%';
-        
-        if (porcentagem >= 100) {
-            textoXP.innerText = "XP Garantido! +20 XP"; textoXP.style.color = "var(--verde)";
-        } else {
-            textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)";
-        }
-
-        const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-        if (formatter.format(agora) >= horarioFim) {
-            clearInterval(intervaloCronometro);
-            customAlert("O horário do plantão acabou. Fechando...", "erro");
-            await processarEncerramento(pontoAtual);
-        }
-    }, 1000);
-}
-
-function mostrarConfirmacao(mensagem, acao) {
-    document.getElementById('texto-confirmar').innerText = mensagem;
-    document.getElementById('modal-confirmar').classList.add('ativo');
-    acaoPendente = acao;
-}
-
-function responderConfirmacao(resposta) {
-    document.getElementById('modal-confirmar').classList.remove('ativo');
-    if (resposta && acaoPendente) acaoPendente();
-    acaoPendente = null;
-}
-
-function fecharModal(id) { document.getElementById(id).classList.remove('ativo'); }
-
-async function entrarPlantao(id, nome) {
-    mostrarConfirmacao(`Deseja entrar no plantão: ${nome}?`, async () => {
-        const botoes = document.querySelectorAll('.btn-entrar');
-        botoes.forEach(b => b.disabled = true);
-
-        customAlert(`Entrando em ${nome}...`, "sucesso");
-        
-        try {
-            const { error } = await sb.from('pontos').insert([{
-                passaporte: membroLogado.passaporte,
-                nome: membroLogado.nome,
-                entrada: new Date().toISOString(),
-                status: 'aberto',
-                plantao_id: id
-            }]);
-            
-            if (error) throw error;
-            
-            customAlert("Você entrou no plantão!", "sucesso");
-            window.location.reload(); // Recarrega na hora, sem esperar
-        } catch (err) {
-            customAlert("Erro: " + err.message, "erro");
-            botoes.forEach(b => b.disabled = false);
-        }
-    });
-}
-
-async function pausarTurno() {
-    mostrarConfirmacao("Deseja pausar o seu turno? O tempo não contará enquanto estiver pausado.", async () => {
-        try {
-            await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString() }).eq('id', pontoAtual.id);
-            customAlert("Turno pausado.", "sucesso");
-            setTimeout(() => window.location.reload(), 1000);
-        } catch (err) { customAlert("Erro ao pausar.", "erro"); }
-    });
-}
-
-async function retomarTurno() {
-    mostrarConfirmacao("Deseja retomar o seu turno agora?", async () => {
-        try {
+        function getMinutosBrasilia() {
             const agora = new Date();
-            const tempoPausadoMinutos = (agora - new Date(pontoAtual.pausa_inicio)) / 1000 / 60;
-            const novaEntrada = new Date(new Date(pontoAtual.entrada).getTime() + (tempoPausadoMinutos * 60000));
-            await sb.from('pontos').update({ status: 'aberto', pausa_fim: agora.toISOString(), entrada: novaEntrada.toISOString() }).eq('id', pontoAtual.id);
-            customAlert("Turno retomado!", "sucesso");
-            setTimeout(() => window.location.reload(), 1000);
-        } catch (err) { customAlert("Erro ao retomar.", "erro"); }
-    });
-}
-
-async function encerrarTurno() {
-    mostrarConfirmacao("Tem certeza que deseja encerrar o seu turno agora?", async () => {
-        await processarEncerramento(pontoAtual);
-    });
-}
-
-async function processarEncerramento(ponto) {
-    if (!ponto) return;
-    try {
-        const saida = new Date();
-        const diferencaMinutos = (saida - new Date(ponto.entrada)) / 1000 / 60;
-        await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', ponto.id);
-
-        if (diferencaMinutos >= 30) {
-            const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
-            await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', membroLogado.passaporte);
-            await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
-            customAlert("Turno encerrado! +20 XP.", "sucesso");
-        } else {
-            await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'falta', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
-            customAlert("Encerrado. Menos de 30 min: falta registrada.", "erro");
-        }
-        setTimeout(() => window.location.reload(), 2000);
-    } catch (err) { customAlert("Erro ao encerrar.", "erro"); }
-}
-
-// HISTÓRICO
-async function abrirHistorico() {
-    document.getElementById('modal-historico').classList.add('ativo');
-    filtrarHistorico(30);
-}
-
-async function filtrarHistorico(dias) {
-    document.querySelectorAll('.btn-filtro').forEach(b => b.classList.remove('ativo'));
-    event.target.classList.add('ativo');
-
-    const dataLimite = new Date();
-    dataLimite.setDate(dataLimite.getDate() - dias);
-    const dataStr = dataLimite.toISOString().split('T')[0];
-
-    const { data: registros } = await sb.from('presencas').select('*').eq('passaporte', membroLogado.passaporte).gte('data', dataStr).order('data', { ascending: false });
-
-    const container = document.getElementById('lista-historico');
-    if (!registros || registros.length === 0) {
-        container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px;">Nenhum registro encontrado.</p>';
-        return;
-    }
-
-    let html = '';
-    registros.forEach(reg => {
-        const dataFormatada = new Date(reg.data + 'T12:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-        const isFalta = reg.status === 'falta';
-        const isPendente = reg.status_justificativa === 'pendente';
-        
-        let statusTexto = isFalta ? 'FALTA' : 'PRESENTE';
-        let statusClasse = isFalta ? 'falta' : 'presente';
-        
-        if (isPendente) {
-            statusTexto = 'EM ANÁLISE'; statusClasse = 'pendente';
+            const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
+            const [h, m] = formatter.format(agora).split(':').map(Number);
+            return (h * 60) + m;
         }
 
-        html += `
-            <div class="card-hist">
-                <div class="card-hist-header">
-                    <span class="card-hist-data">${dataFormatada}</span>
-                    <span class="card-hist-status ${statusClasse}">${statusTexto}</span>
-                </div>
-                <div class="card-hist-info">
-                    ${reg.marcado_por_nome ? `Registrado por: ${reg.marcado_por_nome}` : ''}
-                </div>
-                ${isFalta && !isPendente ? `<button class="btn-justificar-hist" onclick="abrirJustificativa('${reg.id}', '${dataFormatada}')">Justificar Falta</button>` : ''}
-                ${isPendente ? `<p style="color: var(--amarelo); font-size: 11px; margin-top: 8px;"><i class="fas fa-clock"></i> Aguardando análise da liderança</p>` : ''}
-            </div>
-        `;
-    });
-    container.innerHTML = html;
+        function verificarStatusHorario(horarioInicio, horarioFim) {
+            let minutosAgora = getMinutosBrasilia();
+            const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
+            const [hFim, mFim] = horarioFim.split(':').map(Number);
+            let minutosInicio = (hInicio * 60) + mInicio;
+            let minutosFim = (hFim * 60) + mFim;
+            if (minutosFim <= minutosInicio) {
+                minutosFim += 24 * 60;
+                if (minutosAgora < minutosInicio) minutosAgora += 24 * 60;
+            }
+            const tolerancia = 15; 
+            if (minutosAgora >= (minutosInicio - tolerancia) && minutosAgora <= (minutosInicio + tolerancia)) return 'aberto'; 
+            if (minutosAgora > (minutosInicio + tolerancia) && minutosAgora < minutosFim) return 'em_andamento'; 
+            if (minutosAgora >= minutosFim) return 'encerrado'; 
+            return 'aguardando'; 
+        }
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+            membroLogado = JSON.parse(logado);
+            carregarPlantoes();
+        });
+
+        async function carregarPlantoes() {
+            const container = document.getElementById('lista-plantoes');
+            const telaCronometro = document.getElementById('tela-cronometro');
+            const subtitulo = document.getElementById('subtitulo-plantoes');
+            
+            try {
+                const { data: pontoAberto } = await sb.from('pontos').select('*, plantoes(nome, horario_inicio, horario_fim)').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+
+                if (pontoAberto) {
+                    pontoAtual = pontoAberto;
+                    container.style.display = 'none'; subtitulo.style.display = 'none'; telaCronometro.style.display = 'flex';
+                    document.getElementById('nome-plantao-ativo').innerText = pontoAberto.plantoes ? pontoAberto.plantoes.nome : 'Plantão';
+                    document.getElementById('horario-plantao-ativo').innerText = `${pontoAberto.plantoes.horario_inicio} - ${pontoAberto.plantoes.horario_fim}`;
+                    
+                    if (pontoAberto.status === 'pausado') {
+                        document.getElementById('status-pausa-texto').style.display = 'block';
+                        document.getElementById('cronometro-display').style.color = 'var(--amarelo)';
+                        document.getElementById('btn-pausar').style.display = 'none';
+                        document.getElementById('btn-retomar').style.display = 'block';
+                        document.getElementById('cronometro-display').innerText = "PAUSADO";
+                    } else {
+                        document.getElementById('status-pausa-texto').style.display = 'none';
+                        document.getElementById('cronometro-display').style.color = '#fff';
+                        document.getElementById('btn-pausar').style.display = 'block';
+                        document.getElementById('btn-retomar').style.display = 'none';
+                        iniciarCronometro(pontoAberto.entrada, pontoAberto.plantoes.horario_fim);
                     }
-                            // JUSTIFICATIVA
+                    return; 
+                }
+
+                container.style.display = 'flex'; subtitulo.style.display = 'block'; telaCronometro.style.display = 'none';
+                
+                const { data: plantoes, error } = await sb.from('plantoes').select('*');
+                if (error) throw new Error("Erro: " + error.message);
+                if (!plantoes || plantoes.length === 0) { container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>'; return; }
+
+                const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').in('status', ['aberto', 'pausado']);
+                const ordemHorarios = { '02:00': 0, '04:00': 1, '06:00': 2, '08:00': 3, '10:00': 4, '12:00': 5, '14:00': 6, '16:00': 7, '18:00': 8, '20:00': 9, '22:00': 10, '00:00': 11 };
+                let ativos = [], futuros = [];
+
+                plantoes.forEach(p => {
+                    const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
+                    p._status = status;
+                    if (status === 'aberto' || status === 'em_andamento') ativos.push(p);
+                    else if (status === 'aguardando') futuros.push(p);
+                });
+
+                const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
+                ativos.sort(ordenar); futuros.sort(ordenar);
+                const plantoesOrdenados = [...ativos, ...futuros];
+
+                let html = '';
+                plantoesOrdenados.forEach((p, index) => {
+                    let status = p._status;
+                    if (index === 0 && status !== 'aberto') status = 'aberto'; // O primeiro sempre fica aberto pra teste
+
+                    const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
+                    const restantes = p.vagas_totais - ocupadas;
+                    
+                    let classeCard = '', btnHtml = '', iconeHtml = '', classeImagem = '', estiloFundo = '';
+                    if (p.tipo === 'rota') { iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793658013726.jpg');`; } 
+                    else if (p.tipo === 'venda') { iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = p.nome.toLowerCase().includes('lockpick') ? `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659093972.jpg');` : `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659504717.jpg');`; } 
+                    else if (p.tipo === 'apoio') { iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659618901.jpg');`; }
+
+                    if (restantes <= 0) { classeCard = 'lotado'; btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`; } 
+                    else if (status === 'aberto') { classeCard = 'aberto'; btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`; } 
+                    else if (status === 'em_andamento') { btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`; } 
+                    else { btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`; }
+
+                    const porcentagem = (ocupadas / p.vagas_totais) * 100;
+                    html += `
+                        <div class="card-plantao ${classeCard} ${classeImagem}" style="${estiloFundo}">
+                            <div class="card-header"><span class="card-nome">${iconeHtml} ${p.nome}</span><span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span></div>
+                            <div class="vagas-barra"><div class="vagas-preenchida" style="width: ${porcentagem}%"></div></div>
+                            <div class="vagas-texto"><span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span><span>${restantes} restantes</span></div>
+                            ${btnHtml}
+                        </div>`;
+                });
+                container.innerHTML = html;
+            } catch (err) { container.innerHTML = `<div style="color: red; padding: 15px; text-align: center;">${err.message}</div>`; }
+        }
+
+        function iniciarCronometro(horarioEntrada, horarioFim) {
+            if (intervaloCronometro) clearInterval(intervaloCronometro);
+            const display = document.getElementById('cronometro-display');
+            const dataEntrada = new Date(horarioEntrada);
+            const barraXP = document.getElementById('xp-barra-preenchida');
+            const textoXP = document.getElementById('xp-status-texto');
+            const porcXP = document.getElementById('xp-porcentagem');
+
+            intervaloCronometro = setInterval(() => {
+                const agora = new Date();
+                const diferenca = agora - dataEntrada;
+                if (diferenca < 0) return;
+
+                const horas = Math.floor(diferenca / (1000 * 60 * 60));
+                const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
+                const segundos = Math.floor((diferenca / 1000) % 60);
+                display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+
+                const minutosTotais = diferenca / 1000 / 60;
+                let porcentagem = (minutosTotais / 30) * 100;
+                if (porcentagem > 100) porcentagem = 100;
+                barraXP.style.width = porcentagem + '%';
+                porcXP.innerText = Math.floor(porcentagem) + '%';
+                
+                if (porcentagem >= 100) { textoXP.innerText = "XP Garantido! +20 XP"; textoXP.style.color = "var(--verde)"; } 
+                else { textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)"; }
+
+                const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
+                if (formatter.format(agora) >= horarioFim) {
+                    clearInterval(intervaloCronometro);
+                    processarEncerramento(pontoAtual, false, null, true); // Fechamento automático
+                }
+            }, 1000);
+        }
+
+        function mostrarConfirmacao(mensagem, acao) {
+            document.getElementById('texto-confirmar').innerText = mensagem;
+            document.getElementById('modal-confirmar').classList.add('ativo');
+            acaoPendente = acao;
+        }
+
+        function responderConfirmacao(resposta) {
+            document.getElementById('modal-confirmar').classList.remove('ativo');
+            if (resposta && acaoPendente) acaoPendente();
+            acaoPendente = null;
+        }
+
+        function fecharModal(id) { document.getElementById(id).classList.remove('ativo'); }
+
+        async function entrarPlantao(id, nome) {
+            mostrarConfirmacao(`Deseja entrar no plantão: ${nome}?`, async () => {
+                try {
+                    const { error } = await sb.from('pontos').insert([{ passaporte: membroLogado.passaporte, nome: membroLogado.nome, entrada: new Date().toISOString(), status: 'aberto', plantao_id: id }]);
+                    if (error) throw error;
+                    customAlert("Você entrou no plantão!", "sucesso");
+                    carregarPlantoes();
+                } catch (err) { customAlert("Erro ao entrar.", "erro"); }
+            });
+        }
+
+        async function pausarTurno() {
+            mostrarConfirmacao("Deseja pausar o seu turno? O tempo não contará.", async () => {
+                try {
+                    await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString() }).eq('id', pontoAtual.id);
+                    customAlert("Turno pausado.", "sucesso");
+                    carregarPlantoes();
+                } catch (err) { customAlert("Erro.", "erro"); }
+            });
+        }
+
+        async function retomarTurno() {
+            mostrarConfirmacao("Deseja retomar o seu turno?", async () => {
+                try {
+                    const agora = new Date();
+                    const tempoPausadoMinutos = (agora - new Date(pontoAtual.pausa_inicio)) / 1000 / 60;
+                    const novaEntrada = new Date(new Date(pontoAtual.entrada).getTime() + (tempoPausadoMinutos * 60000));
+                    await sb.from('pontos').update({ status: 'aberto', pausa_fim: agora.toISOString(), entrada: novaEntrada.toISOString() }).eq('id', pontoAtual.id);
+                    customAlert("Turno retomado!", "sucesso");
+                    carregarPlantoes();
+                } catch (err) { customAlert("Erro.", "erro"); }
+            });
+        }
+
+        function solicitarEncerramento() {
+            const entrada = new Date(pontoAtual.entrada);
+            const agora = new Date();
+            const diferencaMinutos = (agora - entrada) / 1000 / 60;
+
+            if (diferencaMinutos < 30) {
+                abrirJustificativa();
+            } else {
+                mostrarConfirmacao("Você completou os 30 minutos e vai garantir o XP. Deseja encerrar agora?", async () => {
+                    processarEncerramento(pontoAtual, true);
+                });
+            }
+        }
+
         const opcoesJustificativa = [
-            { id: 'medica', icone: 'fa-hospital', titulo: 'Emergência Médica', desc: 'Doença, acidente, imprevisto de saúde.' },
-            { id: 'escola', icone: 'fa-graduation-cap', titulo: 'Escola / Trabalho', desc: 'Prova, trabalho de escola, plantão real.' },
-            { id: 'tecnico', icone: 'fa-bolt', titulo: 'Problema Técnico', desc: 'Queda de internet, falta de luz, jogo crashou.' },
-            { id: 'transporte', icone: 'fa-car', titulo: 'Transporte', desc: 'Carro quebrou, trânsito, perdeu o ônibus.' },
+            { id: 'medica', icone: 'fa-hospital', titulo: 'Emergência Médica', desc: 'Doença, acidente.' },
+            { id: 'escola', icone: 'fa-graduation-cap', titulo: 'Escola / Trabalho', desc: 'Prova, trabalho real.' },
+            { id: 'tecnico', icone: 'fa-bolt', titulo: 'Problema Técnico', desc: 'Internet caiu, falta de luz.' },
             { id: 'outro', icone: 'fa-question', titulo: 'Outro Motivo', desc: 'Descreva abaixo (máx 100 letras).' }
         ];
 
-        function abrirJustificativa(id, data) {
-            idFaltaSelecionada = id;
+        function abrirJustificativa() {
             justificativaSelecionada = null;
-            document.getElementById('data-falta-justificar').innerText = data;
             document.getElementById('input-outro').style.display = 'none';
             document.getElementById('input-outro').value = '';
-
             const container = document.getElementById('lista-opcoes-justificativa');
             let html = '';
-            opcoesJustificativa.forEach(op => {
-                html += `
-                    <div class="card-justificativa" onclick="selecionarJustificativa('${op.id}', this)">
-                        <i class="fas ${op.icone}"></i>
-                        <div class="texto">
-                            <h4>${op.titulo}</h4>
-                            <p>${op.desc}</p>
-                        </div>
-                    </div>
-                `;
-            });
+            opcoesJustificativa.forEach(op => { html += `<div class="card-justificativa" onclick="selecionarJustificativa('${op.id}', this)"><i class="fas ${op.icone}"></i><div class="texto"><h4>${op.titulo}</h4><p>${op.desc}</p></div></div>`; });
             container.innerHTML = html;
             document.getElementById('modal-justificativa').classList.add('ativo');
         }
@@ -617,54 +389,48 @@ async function filtrarHistorico(dias) {
             document.querySelectorAll('.card-justificativa').forEach(c => c.classList.remove('selecionado'));
             el.classList.add('selecionado');
             justificativaSelecionada = id;
-
-            if (id === 'outro') {
-                document.getElementById('input-outro').style.display = 'block';
-            } else {
-                document.getElementById('input-outro').style.display = 'none';
-            }
+            document.getElementById('input-outro').style.display = (id === 'outro') ? 'block' : 'none';
         }
 
         async function enviarJustificativa() {
-            if (!justificativaSelecionada) {
-                customAlert("Selecione um motivo.", "erro");
-                return;
-            }
-
+            if (!justificativaSelecionada) { customAlert("Selecione um motivo.", "erro"); return; }
             let motivoFinal = justificativaSelecionada;
             if (justificativaSelecionada === 'outro') {
                 const texto = document.getElementById('input-outro').value.trim();
                 if (!texto) { customAlert("Escreva o motivo.", "erro"); return; }
                 motivoFinal = texto;
             }
-
-            try {
-                const { error } = await sb.from('presencas').update({
-                    justificativa: motivoFinal,
-                    status_justificativa: 'pendente'
-                }).eq('id', idFaltaSelecionada);
-
-                if (error) throw error;
-                customAlert("Justificativa enviada! Aguarde análise.", "sucesso");
-                fecharModal('modal-justificativa');
-                abrirHistorico(); // Recarrega
-            } catch (err) {
-                customAlert("Erro ao enviar.", "erro");
-            }
+            fecharModal('modal-justificativa');
+            await processarEncerramento(pontoAtual, false, motivoFinal, false);
         }
 
-        // ALERTA
+        async function processarEncerramento(ponto, ganhouXP, motivoJustificativa = null, automatico = false) {
+            if (!ponto) return;
+            try {
+                const saida = new Date();
+                await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString(), justificativa: motivoJustificativa }).eq('id', ponto.id);
+
+                if (ganhouXP) {
+                    const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
+                    await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', membroLogado.passaporte);
+                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
+                    customAlert("Turno encerrado! +20 XP.", "sucesso");
+                } else {
+                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'falta', data: saida.toISOString().split('T')[0], marcado_por_nome: automatico ? 'Sistema (Tempo Esgotado)' : 'Sistema', justificativa: motivoJustificativa, status_justificativa: motivoJustificativa ? 'pendente' : null }]);
+                    if(motivoJustificativa) customAlert("Saída justificada! Aguarde análise.", "sucesso");
+                    else customAlert("Encerrado antes dos 30 min. Falta registrada.", "erro");
+                }
+                setTimeout(() => { carregarPlantoes(); }, 2000); 
+            } catch (err) { customAlert("Erro ao encerrar.", "erro"); }
+        }
+
         function customAlert(mensagem, tipo = 'sucesso') {
             const alerta = document.getElementById('alerta-site');
             const icone = document.getElementById('alerta-icone');
             const texto = document.getElementById('alerta-texto');
             if (!alerta) return;
             texto.innerText = mensagem;
-            if (tipo === 'erro') { 
-                alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; 
-            } else { 
-                alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; 
-            }
+            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
             alerta.classList.add('ativo');
             setTimeout(() => alerta.classList.remove('ativo'), 3000);
         }
