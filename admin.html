@@ -395,33 +395,37 @@
         }
 
         function filtrarMembros() {
-            const termo = document.getElementById('input-busca-membros').value.toLowerCase();
-            const container = document.getElementById('lista-membros-admin');
-            const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
+    const termo = document.getElementById('input-busca-membros').value.toLowerCase();
+    const container = document.getElementById('lista-membros-admin');
+    const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
 
-            if (filtrados.length === 0) {
-                container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhum membro encontrado.</p>';
-                return;
-            }
+    if (filtrados.length === 0) {
+        container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhum membro encontrado.</p>';
+        return;
+    }
 
-            let html = '';
-            filtrados.forEach(m => {
-                html += `
-                    <div class="card-lista">
-                        <div class="card-lista-info">
-                            <h4>${m.nome} <span style="font-size: 11px; color: var(--texto-mutado);">(${m.passaporte})</span></h4>
-                            <p>Cargo: <strong style="color: var(--verde);">${m.cargo}</strong> | XP: <strong style="color: var(--amarelo);">${m.xp_total || 0}</strong></p>
-                        </div>
-                        <div style="display: flex; gap: 5px;">
-                            <button class="btn-acao btn-verde" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add')"><i class="fas fa-plus"></i></button>
-                            <button class="btn-acao btn-vermelho" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub')"><i class="fas fa-minus"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
+    let html = '';
+    filtrados.forEach(m => {
+        html += `
+            <div class="card-lista">
+                <div class="card-lista-info">
+                    <h4>${m.nome} <span style="font-size: 11px; color: var(--texto-mutado);">(${m.passaporte})</span></h4>
+                    <p>Cargo: <strong style="color: var(--verde);">${m.cargo}</strong> | XP: <strong style="color: var(--amarelo);">${m.xp_total || 0}</strong> | Advertências: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></p>
+                </div>
+                <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
+                    <!-- Botões de XP -->
+                    <button class="btn-acao btn-verde" title="+ XP" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')"><i class="fas fa-star"></i> +</button>
+                    <button class="btn-acao btn-vermelho" title="- XP" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')"><i class="fas fa-star"></i> -</button>
+                    
+                    <!-- Botões de Advertência -->
+                    <button class="btn-acao" title="+ Advertência" style="background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3);" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_adv')"><i class="fas fa-exclamation-triangle"></i> +</button>
+                    <button class="btn-acao" title="- Advertência" style="background: transparent; color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3);" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_adv')"><i class="fas fa-exclamation-triangle"></i> -</button>
+                </div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
         }
-
         function abrirModalXP(passaporte, nome, tipo) {
             acaoXP = { passaporte: passaporte, tipo: tipo };
             document.getElementById('titulo-modal-xp').innerText = tipo === 'add' ? 'Adicionar XP' : 'Retirar XP';
