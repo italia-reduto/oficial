@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
-    <title>Itália OS | Painel Admin</title>
+    <title>Itália OS | Comando Tático</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
@@ -19,139 +19,186 @@
 
     <style>
         :root {
-            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.8);
-            --borda: rgba(34, 197, 94, 0.15); --texto: #f3f4f6; --texto-mutado: #9ca3af;
-            --amarelo: #eab308; --vermelho: #ef4444;
+            --verde: #22c55e; --verde-hover: #16a34a; --fundo: #050806; --painel: #0d1410; --card: #131b16;
+            --borda: #233029; --texto: #f3f4f6; --texto-mutado: #9ca3af;
+            --amarelo: #eab308; --vermelho: #ef4444; --azul: #3b82f6;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; overflow: hidden; }
+        body { background-color: var(--fundo); color: var(--texto); height: 100vh; overflow: hidden; display: flex; }
         
-        .bg-fundo { position: fixed; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.05) 0%, transparent 60%); z-index: -1; }
-        .layout { display: flex; width: 100%; height: 100vh; }
-        
-        /* SIDEBAR DESKTOP */
-        .sidebar { width: 240px; background: rgba(10, 15, 13, 0.95); border-right: 1px solid var(--borda); display: flex; flex-direction: column; z-index: 100; }
-        .sidebar-logo { padding: 20px; font-family: 'Oswald'; font-size: 20px; font-weight: 700; color: var(--verde); border-bottom: 1px solid var(--borda); display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
-        .menu { flex: 1; padding: 15px 10px; display: flex; flex-direction: column; gap: 5px; }
-        .nav-btn { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-radius: 8px; background: transparent; border: none; color: var(--texto-mutado); font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: left; width: 100%; }
-        .nav-btn:hover { background: rgba(255,255,255,0.03); color: #fff; }
-        .nav-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); font-weight: 600; }
-        .nav-btn i { width: 18px; text-align: center; }
-        .sidebar-user { padding: 15px 20px; border-top: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; }
-        .user-info h4 { font-size: 13px; color: #fff; }
-        .user-info p { font-size: 11px; color: var(--verde); text-transform: uppercase; }
-        .btn-sair { background: none; border: none; color: var(--vermelho); cursor: pointer; font-size: 16px; }
+        /* FUNDO SUTIL */
+        .bg-fundo { position: fixed; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(34, 197, 94, 0.07) 0%, transparent 50%); z-index: -1; }
 
-        /* MAIN CONTENT */
-        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px; height: 100%; }
-        .topo { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
-        .titulo { font-family: 'Oswald'; font-size: 26px; text-transform: uppercase; color: #fff; }
-        .subtitulo { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
+        /* SIDEBAR (DESKTOP) */
+        .sidebar { width: 260px; background: var(--painel); border-right: 1px solid var(--borda); display: flex; flex-direction: column; z-index: 100; }
+        .sidebar-logo { padding: 24px 20px; font-family: 'Oswald'; font-size: 20px; font-weight: 700; color: var(--verde); border-bottom: 1px solid var(--borda); display: flex; align-items: center; gap: 10px; letter-spacing: 1px; }
+        .menu { flex: 1; padding: 20px 15px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn { display: flex; align-items: center; gap: 15px; padding: 14px 20px; border-radius: 10px; background: transparent; border: none; color: var(--texto-mutado); font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: left; width: 100%; }
+        .nav-btn:hover { background: rgba(255,255,255,0.03); color: var(--texto); }
+        .nav-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .nav-btn i { width: 20px; text-align: center; font-size: 16px; }
+        .sidebar-user { padding: 20px; border-top: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+        .user-info h4 { font-size: 14px; color: #fff; }
+        .user-info p { font-size: 11px; color: var(--verde); text-transform: uppercase; font-weight: 600; }
+        .btn-sair { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+        .btn-sair:hover { background: var(--vermelho); color: #fff; }
+
+        /* ÁREA PRINCIPAL */
+        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px 40px; }
+        .topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .titulo { font-family: 'Oswald'; font-size: 28px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
+        .subtitulo { font-size: 13px; color: var(--texto-mutado); margin-top: 4px; }
+
+        /* BOTÕES GLOBAIS */
+        .btn { padding: 10px 18px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; justify-content: center;}
+        .btn-verde { background: var(--verde); color: #000; }
+        .btn-verde:hover { background: var(--verde-hover); }
+        .btn-outline { background: transparent; color: var(--texto); border-color: var(--borda); }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .btn-vermelho { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
+        .btn-vermelho:hover { background: var(--vermelho); color: #fff; }
+        .btn-amarelo { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3); }
+        .btn-amarelo:hover { background: var(--amarelo); color: #000; }
 
         /* VIEWS */
         .view { display: none; animation: fadeIn 0.3s; }
         .view.ativa { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* CARDS DE RESUMO */
-        .grid-kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
-        .kpi { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 15px 20px; display: flex; flex-direction: column; gap: 5px; }
-        .kpi-header { font-size: 10px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); display: flex; justify-content: space-between; letter-spacing: 1px;}
-        .kpi-valor { font-family: 'Oswald'; font-size: 28px; color: #fff; font-weight: 700; }
-        .kpi-valor.alerta { color: var(--vermelho); }
+        /* DASHBOARD / KPIs */
+        .grid-kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .kpi { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
+        .kpi::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--verde); }
+        .kpi.alerta::before { background: var(--vermelho); }
+        .kpi-header { font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .kpi-valor { font-family: 'Oswald'; font-size: 38px; color: #fff; font-weight: 700; line-height: 1; }
 
-        /* PAINÉIS E LISTAS */
-        .painel { background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; }
-        .painel-header { font-family: 'Oswald'; font-size: 16px; color: #fff; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+        /* PAINÉIS GERAIS */
+        .painel { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+        .painel-header { font-family: 'Oswald'; font-size: 18px; color: #fff; border-bottom: 1px solid var(--borda); padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;}
+
+        /* TABELA DE MEMBROS (DESKTOP) */
+        .tabela-membros { width: 100%; border-collapse: collapse; }
+        .tabela-membros th { text-align: left; padding: 12px 15px; font-size: 11px; text-transform: uppercase; color: var(--texto-mutado); border-bottom: 1px solid var(--borda); }
+        .tabela-membros td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 14px; }
+        .tabela-membros tr:hover td { background: rgba(255,255,255,0.02); }
+        .input-busca { background: var(--fundo); border: 1px solid var(--borda); color: #fff; padding: 10px 15px; border-radius: 8px; font-size: 13px; outline: none; width: 100%; max-width: 300px; }
+        .input-busca:focus { border-color: var(--verde); }
+
+        /* CARDS MOBILE (SUBSTITUI A TABELA) */
+        .card-mob { display: none; background: var(--card); border: 1px solid var(--borda); border-radius: 10px; padding: 15px; margin-bottom: 10px; }
+        .card-mob-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .card-mob-header h4 { font-size: 15px; color: #fff; }
+        .card-mob-header p { font-size: 11px; color: var(--texto-mutado); }
+        .card-mob-stats { display: flex; gap: 15px; font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px;}
+        .card-mob-stats strong { color: #fff; }
+
+        /* LISTAS DE PONTOS E JUSTIFICATIVAS */
+        .card-lista { background: rgba(0,0,0,0.2); border: 1px solid var(--borda); border-radius: 10px; padding: 15px 20px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .tag-status { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tag-ativo { background: rgba(34, 197, 94, 0.15); color: var(--verde); }
+        .tag-pausado { background: rgba(234, 179, 8, 0.15); color: var(--amarelo); }
+        .tag-falta { background: rgba(239, 68, 68, 0.15); color: var(--vermelho); }
+
+        /* MODAIS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { background: var(--card); border: 1px solid var(--borda); border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+        .modal-titulo { font-family: 'Oswald'; font-size: 22px; color: #fff; margin-bottom: 5px; text-align: center; }
+        .modal-sub { font-size: 13px; color: var(--texto-mutado); margin-bottom: 25px; text-align: center; }
+        .modal-input { width: 100%; padding: 14px; background: var(--fundo); border: 1px solid var(--borda); color: #fff; border-radius: 8px; font-size: 16px; outline: none; text-align: center; margin-bottom: 20px; }
+        .modal-input:focus { border-color: var(--verde); }
+        .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         
-        .card-lista { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.03); border-radius: 8px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        .card-lista-info h4 { font-size: 14px; color: #fff; margin-bottom: 2px; }
-        .card-lista-info p { font-size: 11px; color: var(--texto-mutado); }
-        
-        .btn-acao { padding: 8px 15px; border-radius: 6px; font-family: 'Oswald'; font-size: 12px; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase;}
-        .btn-vermelho { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
-        .btn-vermelho:hover { background: var(--vermelho); color: #fff; }
-        .btn-verde { background: rgba(34, 197, 94, 0.1); color: var(--verde); border-color: rgba(34, 197, 94, 0.3); }
-        .btn-verde:hover { background: var(--verde); color: #000; }
+        /* MOBILE NAV */
+        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; }
+        .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; background: none; border: none; color: var(--texto-mutado); font-size: 10px; font-weight: 600; cursor: pointer; width: 20%; transition: 0.2s;}
+        .mob-btn i { font-size: 18px; }
+        .mob-btn.ativo { color: var(--verde); }
 
-        /* MOBILE */
-        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(10,15,13,0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 12px 5px; z-index: 1000; }
-        .mob-item { display: flex; flex-direction: column; align-items: center; gap: 4px; background: none; border: none; color: var(--texto-mutado); font-size: 9px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.2s; width: 20%; }
-        .mob-item i { font-size: 18px; }
-        .mob-item.ativo { color: var(--verde); }
-
-        @media (max-width: 768px) {
+        /* RESPONSIVIDADE */
+        @media (max-width: 900px) {
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
             .main { padding: 20px 15px; padding-bottom: 90px; }
             .grid-kpi { grid-template-columns: 1fr; gap: 10px; }
-            .kpi { flex-direction: row; justify-content: space-between; align-items: center; padding: 15px; }
-            .kpi-header { flex-direction: column; align-items: flex-start; gap: 3px; }
-            .kpi-valor { font-size: 24px; }
-            .topo { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .kpi { display: flex; justify-content: space-between; align-items: center; padding: 15px; }
+            .kpi-header { margin-bottom: 0; flex-direction: column; align-items: flex-start; gap: 5px; }
+            .kpi-valor { font-size: 28px; }
+            .tabela-membros { display: none; }
+            .card-mob { display: block; }
+            .topo { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .input-busca { max-width: 100%; }
         }
     </style>
 </head>
 <body>
     <div class="bg-fundo"></div>
 
-    <div class="layout">
-        <!-- SIDEBAR DESKTOP -->
+    <div class="layout" style="display: flex; width: 100%; height: 100vh;">
+        <!-- SIDEBAR (DESKTOP) -->
         <aside class="sidebar">
             <div class="sidebar-logo"><i class="fas fa-shield-alt"></i> ITÁLIA OS</div>
             <div class="menu">
-                <button class="nav-btn ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-home"></i> Visão Geral</button>
-                <button class="nav-btn" onclick="mudarAba('plantoes', this)"><i class="fas fa-clock"></i> Plantões Ativos</button>
+                <button class="nav-btn ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-chart-pie"></i> Visão Geral</button>
+                <button class="nav-btn" onclick="mudarAba('plantoes', this)"><i class="fas fa-satellite-dish"></i> Radar de Plantões</button>
                 <button class="nav-btn" onclick="mudarAba('justificativas', this)"><i class="fas fa-file-signature"></i> Justificativas</button>
-                <button class="nav-btn" onclick="mudarAba('membros', this)"><i class="fas fa-users"></i> Membros</button>
-                <button class="nav-btn" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i> Tickets</button>
+                <button class="nav-btn" onclick="mudarAba('membros', this)"><i class="fas fa-users-cog"></i> Gerenciar Membros</button>
+                <button class="nav-btn" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i> Central de Suporte</button>
             </div>
             <div class="sidebar-user">
                 <div class="user-info">
                     <h4 id="adm-nome">Líder</h4>
                     <p id="adm-cargo">Coordenador</p>
                 </div>
-                <button class="btn-sair" onclick="sair()"><i class="fas fa-sign-out-alt"></i></button>
+                <button class="btn-sair" onclick="sair()"><i class="fas fa-power-off"></i></button>
             </div>
         </aside>
 
-        <!-- CONTEÚDO PRINCIPAL -->
+        <!-- MAIN CONTENT -->
         <main class="main">
             <div class="topo">
                 <div>
                     <h1 class="titulo" id="titulo-pagina">Visão Geral</h1>
-                    <p class="subtitulo">Controle operacional da organização.</p>
+                    <p class="subtitulo">Controle operacional da organização em tempo real.</p>
                 </div>
+                <div id="data-hora" style="font-family: 'Oswald'; color: var(--texto-mutado); font-size: 14px;">--/--/---- --:--</div>
             </div>
 
             <!-- ABA: INÍCIO -->
             <section id="view-inicio" class="view ativa">
                 <div class="grid-kpi">
                     <div class="kpi">
-                        <div class="kpi-header">Membros <i class="fas fa-users" style="color: var(--verde);"></i></div>
+                        <div class="kpi-header">Membros na Org <i class="fas fa-users" style="color: var(--verde);"></i></div>
                         <div class="kpi-valor" id="kpi-membros">0</div>
                     </div>
                     <div class="kpi">
-                        <div class="kpi-header">Na Rua <i class="fas fa-clock" style="color: var(--amarelo);"></i></div>
+                        <div class="kpi-header">Na Rua Agora <i class="fas fa-street-view" style="color: var(--amarelo);"></i></div>
                         <div class="kpi-valor" id="kpi-pontos">0</div>
                     </div>
-                    <div class="kpi">
-                        <div class="kpi-header">Pendências <i class="fas fa-file-signature" style="color: var(--vermelho);"></i></div>
-                        <div class="kpi-valor alerta" id="kpi-justificativas">0</div>
+                    <div class="kpi alerta">
+                        <div class="kpi-header">Avisos Pendentes <i class="fas fa-exclamation-circle" style="color: var(--vermelho);"></i></div>
+                        <div class="kpi-valor" id="kpi-justificativas" style="color: var(--vermelho);">0</div>
                     </div>
                 </div>
+                
                 <div class="painel">
-                    <div class="painel-header">Aviso da Liderança</div>
-                    <p style="font-size: 13px; color: var(--texto-mutado); line-height: 1.5;">Bem-vindo ao novo sistema de gestão. Aqui você tem controle total sobre os plantões e a equipe. Use as abas ao lado para navegar.</p>
+                    <div class="painel-header">Status do Sistema</div>
+                    <p style="font-size: 13px; color: var(--texto-mutado); line-height: 1.6;">
+                        Bem-vindo ao <strong>Itália OS</strong>. Este é o centro de comando da organização.<br>
+                        Utilize o menu lateral para gerenciar os plantões ativos, analisar justificativas de faltas, controlar o XP e as advertências dos membros, e responder aos tickets.
+                    </p>
                 </div>
             </section>
 
             <!-- ABA: PLANTÕES -->
             <section id="view-plantoes" class="view">
                 <div class="painel">
-                    <div class="painel-header">Quem está em Serviço</div>
+                    <div class="painel-header">
+                        <span>Radar de Membros em Serviço</span>
+                        <button class="btn btn-outline" onclick="carregarPontosAtivos()" style="padding: 5px 10px; font-size: 12px;"><i class="fas fa-sync-alt"></i> Atualizar</button>
+                    </div>
                     <div id="lista-pontos-admin">
-                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Carregando...</p>
+                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Buscando dados no radar...</p>
                     </div>
                 </div>
             </section>
@@ -159,9 +206,9 @@
             <!-- ABA: JUSTIFICATIVAS -->
             <section id="view-justificativas" class="view">
                 <div class="painel">
-                    <div class="painel-header">Justificativas Pendentes</div>
+                    <div class="painel-header">Fila de Análise de Justificativas</div>
                     <div id="lista-justificativas-admin">
-                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Carregando...</p>
+                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Buscando pendências...</p>
                     </div>
                 </div>
             </section>
@@ -170,10 +217,28 @@
             <section id="view-membros" class="view">
                 <div class="painel">
                     <div class="painel-header">
-                        <span>Gerenciamento de Membros</span>
-                        <input type="text" id="input-busca-membros" placeholder="Buscar nome..." oninput="filtrarMembros()" style="background: rgba(0,0,0,0.4); border: 1px solid var(--borda); color: #fff; padding: 8px 12px; border-radius: 6px; font-family: 'Inter'; font-size: 12px; outline: none; width: 100%; max-width: 200px;">
+                        <span>Gestão de Efetivo</span>
+                        <input type="text" id="input-busca-membros" class="input-busca" placeholder="Buscar por nome ou passaporte..." oninput="filtrarMembros()">
                     </div>
-                    <div id="lista-membros-admin">
+                    
+                    <!-- TABELA DESKTOP -->
+                    <table class="tabela-membros" id="tabela-membros-desktop">
+                        <thead>
+                            <tr>
+                                <th>Membro</th>
+                                <th>Cargo</th>
+                                <th>XP</th>
+                                <th>Advertências</th>
+                                <th style="text-align: right;">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="corpo-tabela-membros">
+                            <tr><td colspan="5" style="text-align: center; color: var(--texto-mutado);">Carregando...</td></tr>
+                        </tbody>
+                    </table>
+
+                    <!-- CARDS MOBILE -->
+                    <div id="lista-membros-mobile" style="display: none;">
                         <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Carregando...</p>
                     </div>
                 </div>
@@ -182,9 +247,9 @@
             <!-- ABA: TICKETS -->
             <section id="view-tickets" class="view">
                 <div class="painel">
-                    <div class="painel-header">Suporte</div>
+                    <div class="painel-header">Central de Suporte</div>
                     <div id="lista-tickets-admin">
-                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhum ticket aberto.</p>
+                        <p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Nenhum ticket aberto no momento.</p>
                     </div>
                 </div>
             </section>
@@ -193,273 +258,426 @@
 
     <!-- MENU MOBILE -->
     <nav class="mobile-nav">
-        <button class="mob-item ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-home"></i> Início</button>
-        <button class="mob-item" onclick="mudarAba('plantoes', this)"><i class="fas fa-clock"></i> Plantões</button>
-        <button class="mob-item" onclick="mudarAba('justificativas', this)"><i class="fas fa-file-signature"></i> Justificar</button>
-        <button class="mob-item" onclick="mudarAba('membros', this)"><i class="fas fa-users"></i> Membros</button>
-        <button class="mob-item" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i> Tickets</button>
+        <button class="mob-btn ativo" onclick="mudarAba('inicio', this)"><i class="fas fa-chart-pie"></i> Início</button>
+        <button class="mob-btn" onclick="mudarAba('plantoes', this)"><i class="fas fa-satellite-dish"></i> Radar</button>
+        <button class="mob-btn" onclick="mudarAba('justificativas', this)"><i class="fas fa-file-signature"></i> Justificar</button>
+        <button class="mob-btn" onclick="mudarAba('membros', this)"><i class="fas fa-users-cog"></i> Membros</button>
+        <button class="mob-btn" onclick="mudarAba('tickets', this)"><i class="fas fa-headset"></i> Suporte</button>
     </nav>
 
-    <!-- MODAL DE ALTERAR XP -->
-    <div class="modal-overlay" id="modal-xp" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
-        <div class="painel" style="width: 100%; max-width: 350px; text-align: center; border-color: var(--verde);">
-            <h3 id="titulo-modal-xp" style="font-family: 'Oswald'; color: #fff; margin-bottom: 10px;">Alterar XP</h3>
-            <p id="subtitulo-modal-xp" style="font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px;">Membro: Nome</p>
-            <input type="number" id="input-qtd-xp" placeholder="Ex: 50" style="width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); color: #fff; border-radius: 6px; font-family: 'Inter'; font-size: 14px; outline: none; margin-bottom: 15px; text-align: center;">
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-acao" style="flex: 1; background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.2);" onclick="fecharModalXP()">Cancelar</button>
-                <button class="btn-acao btn-verde" style="flex: 1;" id="btn-confirmar-xp" onclick="confirmarAlteracaoXP()">Confirmar</button>
+    <!-- MODAL UNIVERSAL (XP E ADVERTÊNCIA) -->
+    <div class="modal-overlay" id="modal-acao">
+        <div class="modal-content">
+            <h3 id="modal-titulo" class="modal-titulo">Ação</h3>
+            <p id="modal-subtitulo" class="modal-sub">Membro: --</p>
+            
+            <input type="number" id="modal-input-qtd" class="modal-input" placeholder="Digite a quantidade...">
+            
+            <div class="modal-botoes">
+                <button class="btn btn-outline" onclick="fecharModal()">Cancelar</button>
+                <button class="btn btn-verde" id="modal-btn-confirmar" onclick="confirmarAcao()">Confirmar</button>
             </div>
         </div>
     </div>
-        <script>
-        let adminLogado = null;
-        const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
-        let todosOsMembros = [];
-        let acaoXP = { passaporte: null, tipo: null };
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            const logado = sessionStorage.getItem('membro_logado');
-            if (!logado) return window.location.href = 'login.html';
+    <!-- ALERTA CUSTOMIZADO (TOAST) -->
+    <div id="alerta-custom" style="position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: var(--card); border: 1px solid var(--verde); border-radius: 12px; padding: 15px 25px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); min-width: 280px;">
+        <i id="alerta-icone" class="fas fa-check-circle" style="font-size: 24px; color: var(--verde);"></i>
+        <p id="alerta-texto" style="font-size: 14px; color: #fff; font-weight: 500;">Mensagem</p>
+                </div>
+                <script>
+    let adminLogado = null;
+    const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+    let todosOsMembros = [];
+    let acaoPendente = { passaporte: null, tipo: null, nome: null };
 
-            adminLogado = JSON.parse(logado);
-            if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
-                alert("Acesso negado. Área restrita.");
-                return window.location.href = 'dashboard.html';
+    // ==========================================
+    // 1. INICIALIZAÇÃO E RELÓGIO
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', async () => {
+        const logado = sessionStorage.getItem('membro_logado');
+        if (!logado) return window.location.href = 'login.html';
+
+        adminLogado = JSON.parse(logado);
+        if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
+            alert("Acesso negado. Área restrita.");
+            return window.location.href = 'dashboard.html';
+        }
+
+        document.getElementById('adm-nome').innerText = adminLogado.nome;
+        document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+
+        carregarResumo();
+        carregarPontosAtivos();
+        iniciarRelogio();
+    });
+
+    function iniciarRelogio() {
+        setInterval(() => {
+            const agora = new Date();
+            const data = agora.toLocaleDateString('pt-BR');
+            const hora = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            document.getElementById('data-hora').innerText = `${data} ${hora}`;
+        }, 1000);
+    }
+
+    // ==========================================
+    // 2. NAVEGAÇÃO ENTRE ABAS
+    // ==========================================
+    function mudarAba(aba, el) {
+        // Esconde todas as views e remove 'ativo' de todos os botões
+        document.querySelectorAll('.view').forEach(v => v.classList.remove('ativa'));
+        document.querySelectorAll('.nav-btn, .mob-btn').forEach(b => b.classList.remove('ativo'));
+
+        // Ativa a view e o botão clicado (Desktop e Mobile)
+        document.getElementById(`view-${aba}`).classList.add('ativa');
+        document.querySelectorAll(`[onclick*="'${aba}'"]`).forEach(b => b.classList.add('ativo'));
+
+        // Atualiza o título da página
+        const titulos = { 
+            inicio: 'Visão Geral', 
+            plantoes: 'Radar de Plantões', 
+            justificativas: 'Justificativas', 
+            membros: 'Gerenciar Membros', 
+            tickets: 'Central de Suporte' 
+        };
+        document.getElementById('titulo-pagina').innerText = titulos[aba];
+
+        // Puxa os dados específicos da aba
+        if (aba === 'plantoes') carregarPontosAtivos();
+        if (aba === 'justificativas') carregarJustificativas();
+        if (aba === 'membros') carregarMembros();
+    }
+
+    // ==========================================
+    // 3. RESUMO (KPIs)
+    // ==========================================
+    async function carregarResumo() {
+        try {
+            const { count: cMembros } = await sb.from('membros').select('*', { count: 'exact', head: true });
+            const { count: cPontos } = await sb.from('pontos').select('*', { count: 'exact', head: true }).in('status', ['aberto', 'pausado']);
+            const { count: cJust } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('status', 'falta').eq('status_justificativa', 'pendente');
+            
+            document.getElementById('kpi-membros').innerText = cMembros || 0;
+            document.getElementById('kpi-pontos').innerText = cPontos || 0;
+            document.getElementById('kpi-justificativas').innerText = cJust || 0;
+        } catch (e) { console.error("Erro no resumo:", e); }
+    }
+
+    // ==========================================
+    // 4. RADAR DE PLANTÕES
+    // ==========================================
+    async function carregarPontosAtivos() {
+        const container = document.getElementById('lista-pontos-admin');
+        try {
+            const { data: pontos } = await sb.from('pontos').select('*, plantoes(nome)').in('status', ['aberto', 'pausado']).order('entrada');
+            
+            if (!pontos || pontos.length === 0) {
+                container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Ninguém em serviço no momento.</p>';
+                return;
             }
 
-            document.getElementById('adm-nome').innerText = adminLogado.nome;
-            document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+            let html = '';
+            pontos.forEach(p => {
+                const mins = Math.floor((new Date() - new Date(p.entrada)) / 1000 / 60);
+                const tempo = `${Math.floor(mins/60)}h ${mins%60}m`;
+                const isPausado = p.status === 'pausado';
+                const tagClass = isPausado ? 'tag-pausado' : 'tag-ativo';
+                const tagTexto = isPausado ? 'Pausado' : 'Ativo';
+                const nomePlantao = p.plantoes ? p.plantoes.nome : 'Plantão Excluído';
 
-            carregarResumo();
+                html += `
+                    <div class="card-lista">
+                        <div>
+                            <h4 style="color: #fff; font-size: 15px; margin-bottom: 4px;">${p.nome} <span style="font-size: 11px; color: var(--texto-mutado);">(${p.passaporte})</span></h4>
+                            <p style="font-size: 12px; color: var(--texto-mutado);">${nomePlantao} • Tempo: ${tempo}</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <span class="tag-status ${tagClass}">${tagTexto}</span>
+                            <button class="btn btn-vermelho" onclick="forcarEncerramento('${p.id}', '${p.nome}')">Forçar Saída</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } catch (e) { 
+            container.innerHTML = `<p style="color: var(--vermelho); text-align: center;">Erro ao carregar radar.</p>`; 
+        }
+    }
+
+    async function forcarEncerramento(id, nome) {
+        if (!confirm(`Tem certeza que deseja forçar a saída de ${nome}?`)) return;
+        try {
+            await sb.from('pontos').update({ status: 'fechado', saida: new Date().toISOString() }).eq('id', id);
+            mostrarAlerta(`Saída de ${nome} forçada.`, 'sucesso');
             carregarPontosAtivos();
-        });
+            carregarResumo();
+        } catch (e) { mostrarAlerta("Erro ao forçar saída.", "erro"); }
+    }
 
-        function mudarAba(aba, el) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('ativa'));
-            document.getElementById(`view-${aba}`).classList.add('ativa');
+    // ==========================================
+    // 5. JUSTIFICATIVAS
+    // ==========================================
+    async function carregarJustificativas() {
+        const container = document.getElementById('lista-justificativas-admin');
+        try {
+            const { data: faltas, error } = await sb.from('presencas')
+                .select('*').eq('status', 'falta').eq('status_justificativa', 'pendente').order('data', { ascending: false });
 
-            document.querySelectorAll('.nav-btn, .mob-item').forEach(b => b.classList.remove('ativo'));
-            document.querySelectorAll(`[onclick*="'${aba}'"]`).forEach(b => b.classList.add('ativo'));
+            if (error) throw error;
+            if (!faltas || faltas.length === 0) {
+                container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Nenhuma justificativa pendente.</p>';
+                return;
+            }
 
-            const titulos = { inicio: 'Visão Geral', plantoes: 'Plantões Ativos', justificativas: 'Justificativas', membros: 'Membros', tickets: 'Suporte' };
-            document.getElementById('titulo-pagina').innerText = titulos[aba];
+            const { data: membros } = await sb.from('membros').select('passaporte, nome');
+            const mapaMembros = {};
+            if (membros) membros.forEach(m => { mapaMembros[String(m.passaporte)] = m.nome; });
 
-            if (aba === 'plantoes') carregarPontosAtivos();
-            if (aba === 'justificativas') carregarJustificativas();
-            if (aba === 'membros') carregarMembros();
-        }
-
-        async function carregarResumo() {
-            try {
-                const { count: cMembros } = await sb.from('membros').select('*', { count: 'exact', head: true });
-                const { count: cPontos } = await sb.from('pontos').select('*', { count: 'exact', head: true }).in('status', ['aberto', 'pausado']);
-                const { count: cJust } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('status', 'falta').eq('status_justificativa', 'pendente');
+            let html = '';
+            faltas.forEach(f => {
+                const nomeMembro = mapaMembros[String(f.passaporte)] || 'Desconhecido';
+                const dataFormatada = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
                 
-                document.getElementById('kpi-membros').innerText = cMembros || 0;
-                document.getElementById('kpi-pontos').innerText = cPontos || 0;
-                document.getElementById('kpi-justificativas').innerText = cJust || 0;
-            } catch (e) { console.error(e); }
-        }
+                let motivo = f.justificativa || 'Sem justificativa';
+                if(motivo === 'medica') motivo = 'Emergência Médica';
+                if(motivo === 'escola') motivo = 'Escola / Trabalho';
+                if(motivo === 'tecnico') motivo = 'Problema Técnico';
+                if(motivo === 'transporte') motivo = 'Transporte';
 
-        // ==========================================
-        // PLANTÕES
-        // ==========================================
-        async function carregarPontosAtivos() {
-            const container = document.getElementById('lista-pontos-admin');
-            try {
-                const { data: pontos } = await sb.from('pontos').select('*, plantoes(nome)').in('status', ['aberto', 'pausado']).order('entrada');
-                if (!pontos || pontos.length === 0) {
-                    container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Ninguém em serviço no momento.</p>';
-                    return;
-                }
-
-                let html = '';
-                pontos.forEach(p => {
-                    const mins = Math.floor((new Date() - new Date(p.entrada)) / 1000 / 60);
-                    const tempo = `${Math.floor(mins/60)}h ${mins%60}m`;
-                    const cor = p.status === 'pausado' ? 'var(--amarelo)' : 'var(--verde)';
-                    const nomePlantao = p.plantoes ? p.plantoes.nome : 'Plantão Excluído';
-
-                    html += `
-                        <div class="card-lista">
-                            <div class="card-lista-info">
-                                <h4>${p.nome} <span style="font-size:10px; color: ${cor};">● ${p.status.toUpperCase()}</span></h4>
-                                <p>${nomePlantao} • Tempo: ${tempo}</p>
+                html += `
+                    <div class="card-lista" style="align-items: stretch; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <h4 style="color: #fff; font-size: 16px; margin-bottom: 4px;">${nomeMembro} <span style="font-size: 11px; color: var(--texto-mutado);">(${f.passaporte})</span></h4>
+                                <p style="font-size: 12px; color: var(--texto-mutado);">Data da Falta: <strong style="color: var(--vermelho);">${dataFormatada}</strong></p>
                             </div>
-                            <button class="btn-acao btn-vermelho" onclick="forcarEncerramento('${p.id}', '${p.nome}')">Forçar Saída</button>
+                            <div style="background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 6px; border: 1px solid var(--borda);">
+                                <p style="font-size: 10px; color: var(--texto-mutado); text-transform: uppercase;">Motivo</p>
+                                <p style="font-size: 13px; color: #fff; font-weight: 600;">${motivo}</p>
+                            </div>
                         </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch (e) { container.innerHTML = `<p style="color:red; text-align:center;">Erro ao carregar.</p>`; }
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <button class="btn btn-verde" onclick="aprovarJustificativa('${f.id}', '${f.passaporte}')"><i class="fas fa-check"></i> Aprovar</button>
+                            <button class="btn btn-vermelho" onclick="recusarJustificativa('${f.id}')"><i class="fas fa-times"></i> Recusar</button>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        } catch (err) { 
+            container.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center;">Erro: ${err.message}</p>`; 
         }
+    }
 
-        async function forcarEncerramento(id, nome) {
-            if (!confirm(`Tem certeza que deseja forçar a saída de ${nome}?`)) return;
-            try {
-                await sb.from('pontos').update({ status: 'fechado', saida: new Date().toISOString() }).eq('id', id);
-                alert(`Ponto de ${nome} encerrado.`);
-                carregarPontosAtivos();
-                carregarResumo();
-            } catch (e) { alert("Erro ao encerrar."); }
-        }
-
-        // ==========================================
-        // JUSTIFICATIVAS
-        // ==========================================
-        async function carregarJustificativas() {
-            const container = document.getElementById('lista-justificativas-admin');
-            container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Buscando pendências...</p>';
+    async function aprovarJustificativa(idPresenca, passaporteMembro) {
+        if (!confirm("Aprovar justificativa? O membro ganhará +20 XP e a falta sumirá.")) return;
+        try {
+            await sb.from('presencas').update({ status: 'presente', status_justificativa: 'aprovada' }).eq('id', idPresenca);
             
-            try {
-                const { data: faltas, error } = await sb.from('presencas')
-                    .select('*').eq('status', 'falta').eq('status_justificativa', 'pendente').order('data', { ascending: false });
+            const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', passaporteMembro).single();
+            if (membro) {
+                await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', passaporteMembro);
+            }
+            
+            mostrarAlerta("Justificativa aprovada com sucesso.", "sucesso");
+            carregarJustificativas(); 
+            carregarResumo();
+        } catch (err) { mostrarAlerta("Erro ao aprovar.", "erro"); }
+    }
 
-                if (error) throw error;
-                if (!faltas || faltas.length === 0) {
-                    container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhuma justificativa pendente no momento.</p>';
-                    return;
-                }
-
-                const { data: membros } = await sb.from('membros').select('passaporte, nome');
-                const mapaMembros = {};
-                if (membros) membros.forEach(m => { mapaMembros[String(m.passaporte)] = m.nome; });
-
-                let html = '';
-                faltas.forEach(f => {
-                    const nomeMembro = mapaMembros[String(f.passaporte)] || 'Desconhecido';
-                    const dataFormatada = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
-                    let motivo = f.justificativa || 'Sem justificativa';
-                    if(motivo === 'medica') motivo = 'Emergência Médica';
-                    if(motivo === 'escola') motivo = 'Escola / Trabalho';
-                    if(motivo === 'tecnico') motivo = 'Problema Técnico';
-                    if(motivo === 'transporte') motivo = 'Transporte';
-
-                    html += `
-                        <div class="card-lista" style="align-items: flex-start; flex-direction: column; gap: 15px;">
-                            <div style="width: 100%; display: flex; justify-content: space-between; align-items: flex-start;">
-                                <div class="card-lista-info">
-                                    <h4 style="font-size: 16px;">${nomeMembro} <span style="font-size: 11px; color: var(--texto-mutado);">(${f.passaporte})</span></h4>
-                                    <p>Falta no dia: <strong style="color: var(--vermelho);">${dataFormatada}</strong></p>
-                                </div>
-                                <div style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 6px; text-align: right; max-width: 150px;">
-                                    <p style="font-size: 10px; color: var(--texto-mutado); text-transform: uppercase;">Motivo</p>
-                                    <p style="font-size: 12px; color: #fff;">${motivo}</p>
-                                </div>
-                            </div>
-                            <div style="display: flex; gap: 10px; width: 100%;">
-                                <button class="btn-acao btn-verde" style="flex: 1;" onclick="aprovarJustificativa('${f.id}', '${f.passaporte}')">Aprovar</button>
-                                <button class="btn-acao btn-vermelho" style="flex: 1;" onclick="recusarJustificativa('${f.id}')">Recusar</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch (err) { container.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center;">Erro: ${err.message}</p>`; }
-        }
-
-        async function aprovarJustificativa(idPresenca, passaporteMembro) {
-            if (!confirm("Aprovar esta justificativa? A falta será removida e o membro ganhará +20 XP.")) return;
-            try {
-                await sb.from('presencas').update({ status: 'presente', status_justificativa: 'aprovada' }).eq('id', idPresenca);
-                const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', passaporteMembro).single();
-                if (membro) await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', passaporteMembro);
-                alert("Justificativa aprovada com sucesso.");
-                carregarJustificativas(); carregarResumo();
-            } catch (err) { alert("Erro ao aprovar: " + err.message); }
-        }
-
-        async function recusarJustificativa(idPresenca) {
-            if (!confirm("Recusar esta justificativa? A falta continuará.")) return;
-            try {
-                await sb.from('presencas').update({ status_justificativa: 'recusada' }).eq('id', idPresenca);
-                alert("Justificativa recusada.");
-                carregarJustificativas(); carregarResumo();
-            } catch (err) { alert("Erro ao recusar: " + err.message); }
-        }
-
-        // ==========================================
-        // MEMBROS
+    async function recusarJustificativa(idPresenca) {
+        if (!confirm("Recusar justificativa? A falta continuará.")) return;
+        try {
+            await sb.from('presencas').update({ status_justificativa: 'recusada' }).eq('id', idPresenca);
+            mostrarAlerta("Justificativa recusada.", "erro");
+            carregarJustificativas(); 
+            carregarResumo();
+        } catch (err) { mostrarAlerta("Erro ao recusar.", "erro"); }
+    }
+                            // ==========================================
+        // 6. GESTÃO DE MEMBROS (TABELA DESKTOP E CARDS MOBILE)
         // ==========================================
         async function carregarMembros() {
-            const container = document.getElementById('lista-membros-admin');
-            container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Buscando membros...</p>';
+            const tbody = document.getElementById('corpo-tabela-membros');
+            const containerMobile = document.getElementById('lista-membros-mobile');
+            
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Buscando efetivo...</td></tr>';
+            containerMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Buscando efetivo...</p>';
             
             try {
-                const { data, error } = await sb.from('membros').select('nome, passaporte, cargo, xp_total').order('nome');
+                const { data, error } = await sb.from('membros').select('nome, passaporte, cargo, xp_total, advertencias').order('nome');
                 if (error) throw error;
                 todosOsMembros = data || [];
                 filtrarMembros();
-            } catch (err) { container.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center;">Erro: ${err.message}</p>`; }
+            } catch (err) { 
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--vermelho);">Erro: ${err.message}</td></tr>`; 
+                containerMobile.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center;">Erro: ${err.message}</p>`;
+            }
         }
 
         function filtrarMembros() {
-    const termo = document.getElementById('input-busca-membros').value.toLowerCase();
-    const container = document.getElementById('lista-membros-admin');
-    const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
+            const termo = document.getElementById('input-busca-membros').value.toLowerCase();
+            const tbody = document.getElementById('corpo-tabela-membros');
+            const containerMobile = document.getElementById('lista-membros-mobile');
+            
+            const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
 
-    if (filtrados.length === 0) {
-        container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhum membro encontrado.</p>';
-        return;
-    }
+            if (filtrados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Nenhum membro encontrado.</td></tr>';
+                containerMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Nenhum membro encontrado.</p>';
+                return;
+            }
 
-    let html = '';
-    filtrados.forEach(m => {
-        html += `
-            <div class="card-lista">
-                <div class="card-lista-info">
-                    <h4>${m.nome} <span style="font-size: 11px; color: var(--texto-mutado);">(${m.passaporte})</span></h4>
-                    <p>Cargo: <strong style="color: var(--verde);">${m.cargo}</strong> | XP: <strong style="color: var(--amarelo);">${m.xp_total || 0}</strong> | Advertências: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></p>
-                </div>
-                <div style="display: flex; gap: 5px; flex-wrap: wrap; justify-content: flex-end;">
-                    <!-- Botões de XP -->
-                    <button class="btn-acao btn-verde" title="+ XP" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')"><i class="fas fa-star"></i> +</button>
-                    <button class="btn-acao btn-vermelho" title="- XP" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')"><i class="fas fa-star"></i> -</button>
-                    
-                    <!-- Botões de Advertência -->
-                    <button class="btn-acao" title="+ Advertência" style="background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3);" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_adv')"><i class="fas fa-exclamation-triangle"></i> +</button>
-                    <button class="btn-acao" title="- Advertência" style="background: transparent; color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3);" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_adv')"><i class="fas fa-exclamation-triangle"></i> -</button>
-                </div>
-            </div>
-        `;
-    });
-    container.innerHTML = html;
+            let htmlDesktop = '';
+            let htmlMobile = '';
+
+            filtrados.forEach(m => {
+                const cargoColor = m.cargo === 'Líder da organização' || m.cargo === 'Coordenador' ? 'var(--amarelo)' : 'var(--verde)';
+                
+                // --- LINHA DA TABELA (DESKTOP) ---
+                htmlDesktop += `
+                    <tr>
+                        <td><strong>${m.nome}</strong><br><span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span></td>
+                        <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor};">${m.cargo}</span></td>
+                        <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0} XP</td>
+                        <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <button class="btn btn-outline" style="padding: 5px 8px; font-size: 11px;" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'add_xp')"><i class="fas fa-plus"></i> XP</button>
+                            <button class="btn btn-outline" style="padding: 5px 8px; font-size: 11px;" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'sub_xp')"><i class="fas fa-minus"></i> XP</button>
+                            <button class="btn btn-amarelo" style="padding: 5px 8px; font-size: 11px;" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'add_adv')"><i class="fas fa-plus"></i> Adv</button>
+                            <button class="btn btn-outline" style="padding: 5px 8px; font-size: 11px; border-color: rgba(234,179,8,0.3); color: var(--amarelo);" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'sub_adv')"><i class="fas fa-minus"></i> Adv</button>
+                        </td>
+                    </tr>
+                `;
+
+                // --- CARD (MOBILE) ---
+                htmlMobile += `
+                    <div class="card-mob">
+                        <div class="card-mob-header">
+                            <div>
+                                <h4>${m.nome}</h4>
+                                <p>Passaporte: ${m.passaporte}</p>
+                            </div>
+                            <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor};">${m.cargo}</span>
+                        </div>
+                        <div class="card-mob-stats">
+                            <div>XP Total: <strong>${m.xp_total || 0}</strong></div>
+                            <div>Advertências: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button class="btn btn-outline" style="padding: 8px; font-size: 12px;" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'add_xp')"><i class="fas fa-star"></i> + XP</button>
+                            <button class="btn btn-outline" style="padding: 8px; font-size: 12px;" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'sub_xp')"><i class="fas fa-star"></i> - XP</button>
+                            <button class="btn btn-amarelo" style="padding: 8px; font-size: 12px;" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'add_adv')"><i class="fas fa-exclamation-triangle"></i> + Adv</button>
+                            <button class="btn btn-outline" style="padding: 8px; font-size: 12px; border-color: rgba(234,179,8,0.3); color: var(--amarelo);" onclick="abrirModal('${m.passaporte}', '${m.nome}', 'sub_adv')"><i class="fas fa-exclamation-triangle"></i> - Adv</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            tbody.innerHTML = htmlDesktop;
+            containerMobile.innerHTML = htmlMobile;
         }
-        function abrirModalXP(passaporte, nome, tipo) {
-            acaoXP = { passaporte: passaporte, tipo: tipo };
-            document.getElementById('titulo-modal-xp').innerText = tipo === 'add' ? 'Adicionar XP' : 'Retirar XP';
-            document.getElementById('titulo-modal-xp').style.color = tipo === 'add' ? 'var(--verde)' : 'var(--vermelho)';
-            document.getElementById('subtitulo-modal-xp').innerText = `Membro: ${nome}`;
-            document.getElementById('btn-confirmar-xp').className = tipo === 'add' ? 'btn-acao btn-verde' : 'btn-acao btn-vermelho';
-            document.getElementById('input-qtd-xp').value = '';
-            document.getElementById('modal-xp').style.display = 'flex';
-            document.getElementById('input-qtd-xp').focus();
+
+        // ==========================================
+        // 7. MODAL DE AÇÕES (XP E ADVERTÊNCIAS)
+        // ==========================================
+        function abrirModal(passaporte, nome, tipo) {
+            acaoPendente = { passaporte, nome, tipo };
+            
+            const titulo = document.getElementById('modal-titulo');
+            const sub = document.getElementById('modal-subtitulo');
+            const input = document.getElementById('modal-input-qtd');
+            const btn = document.getElementById('modal-btn-confirmar');
+
+            sub.innerText = `Membro: ${nome}`;
+            input.value = '';
+            input.style.display = 'block';
+            btn.className = 'btn btn-verde'; // Reseta o botão pro padrão
+
+            if (tipo === 'add_xp') {
+                titulo.innerText = 'Adicionar XP'; titulo.style.color = 'var(--verde)';
+                input.placeholder = 'Quantidade de XP...'; input.focus();
+            } else if (tipo === 'sub_xp') {
+                titulo.innerText = 'Retirar XP'; titulo.style.color = 'var(--vermelho)';
+                input.placeholder = 'Quantidade de XP...'; input.focus();
+                btn.className = 'btn btn-vermelho';
+            } else if (tipo === 'add_adv') {
+                titulo.innerText = 'Aplicar Advertência'; titulo.style.color = 'var(--amarelo)';
+                input.value = '1'; input.style.display = 'none'; // Esconde input, é sempre 1
+                btn.className = 'btn btn-amarelo';
+            } else if (tipo === 'sub_adv') {
+                titulo.innerText = 'Remover Advertência'; titulo.style.color = 'var(--amarelo)';
+                input.value = '1'; input.style.display = 'none'; // Esconde input, é sempre 1
+                btn.className = 'btn btn-outline'; btn.style.color = 'var(--amarelo)'; btn.style.borderColor = 'var(--amarelo)';
+            }
+
+            document.getElementById('modal-acao').style.display = 'flex';
         }
 
-        function fecharModalXP() {
-            document.getElementById('modal-xp').style.display = 'none';
-            acaoXP = { passaporte: null, tipo: null };
+        function fecharModal() {
+            document.getElementById('modal-acao').style.display = 'none';
+            acaoPendente = { passaporte: null, tipo: null, nome: null };
+            document.getElementById('modal-btn-confirmar').style.color = ''; // Limpa cor customizada
         }
 
-        async function confirmarAlteracaoXP() {
-            const qtd = parseInt(document.getElementById('input-qtd-xp').value);
-            if (!qtd || qtd <= 0) { alert("Digite um número válido."); return; }
+        async function confirmarAcao() {
+            const qtd = parseInt(document.getElementById('modal-input-qtd').value) || 0;
+            const btn = document.getElementById('modal-btn-confirmar');
 
-            const btn = document.getElementById('btn-confirmar-xp');
-            btn.innerText = "Salvando..."; btn.disabled = true;
+            if (acaoPendente.tipo.includes('xp') && qtd <= 0) {
+                mostrarAlerta("Digite um número válido.", "erro"); return;
+            }
+
+            btn.innerText = "Processando..."; btn.disabled = true;
 
             try {
-                const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', acaoXP.passaporte).single();
+                const { data: membro } = await sb.from('membros').select('xp_total, advertencias').eq('passaporte', acaoPendente.passaporte).single();
+                
                 let novoXP = membro.xp_total || 0;
-                novoXP = acaoXP.tipo === 'add' ? novoXP + qtd : novoXP - qtd;
-                if (novoXP < 0) novoXP = 0;
+                let novaAdv = membro.advertencias || 0;
 
-                await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', acaoXP.passaporte);
-                fecharModalXP();
-                carregarMembros();
-            } catch (err) { alert("Erro ao alterar XP."); } 
-            finally { btn.innerText = "Confirmar"; btn.disabled = false; }
+                if (acaoPendente.tipo === 'add_xp') novoXP += qtd;
+                if (acaoPendente.tipo === 'sub_xp') novoXP = Math.max(0, novoXP - qtd);
+                if (acaoPendente.tipo === 'add_adv') novaAdv += 1;
+                if (acaoPendente.tipo === 'sub_adv') novaAdv = Math.max(0, novaAdv - 1);
+
+                await sb.from('membros').update({ xp_total: novoXP, advertencias: novaAdv }).eq('passaporte', acaoPendente.passaporte);
+                
+                fecharModal();
+                mostrarAlerta("Ação aplicada com sucesso.", "sucesso");
+                carregarMembros(); // Atualiza a tabela em tempo real
+                carregarResumo(); // Atualiza os KPIs
+            } catch (err) {
+                mostrarAlerta("Erro ao aplicar ação.", "erro");
+            } finally {
+                btn.innerText = "Confirmar"; btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 8. ALERTA TOAST E LOGOUT
+        // ==========================================
+        function mostrarAlerta(mensagem, tipo = 'sucesso') {
+            const alerta = document.getElementById('alerta-custom');
+            const icone = document.getElementById('alerta-icone');
+            const texto = document.getElementById('alerta-texto');
+            
+            texto.innerText = mensagem;
+            if (tipo === 'erro') {
+                alerta.style.borderColor = 'var(--vermelho)';
+                alerta.style.boxShadow = '0 10px 30px rgba(239, 68, 68, 0.2)';
+                icone.className = 'fas fa-times-circle';
+                icone.style.color = 'var(--vermelho)';
+            } else {
+                alerta.style.borderColor = 'var(--verde)';
+                alerta.style.boxShadow = '0 10px 30px rgba(34, 197, 94, 0.2)';
+                icone.className = 'fas fa-check-circle';
+                icone.style.color = 'var(--verde)';
+            }
+            
+            alerta.style.top = '20px';
+            setTimeout(() => { alerta.style.top = '-100px'; }, 3000);
         }
 
         function sair() {
