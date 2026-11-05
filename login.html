@@ -329,7 +329,12 @@
         btn.style.background = '#166534';
         btn.style.color = '#86efac';
         
-        window.location.href = 'dashboard.html';
+        // Verifica se é liderança para mandar pro Admin
+if (CARGOS_LIDERANCA.includes(data.cargo)) {
+    window.location.href = 'admin.html';
+} else {
+    window.location.href = 'dashboard.html';
+}
 
     } catch (err) {
         erroEl.innerText = 'Erro de conexão. Verifique sua internet.';
