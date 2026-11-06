@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <meta name="color-scheme" content="dark">
+    <title>Itália 2.0 | Atendimento</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.7); --borda: rgba(34, 197, 94, 0.2);
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -1; }
+
+        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 20px; z-index: 10; }
+        
+        .topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+        .btn-voltar { width: 45px; height: 45px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 20px; text-decoration: none; transition: 0.3s; }
+        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
+        .titulo { font-family: 'Oswald', sans-serif; font-size: 26px; text-transform: uppercase; color: #fff; }
+
+        .btn-novo { background: var(--verde); color: #000; border: none; padding: 12px 20px; border-radius: 8px; font-family: 'Oswald'; font-size: 15px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-novo:hover { background: #4ade80; transform: translateY(-2px); }
+
+        /* LISTA DE TICKETS */
+        .lista-tickets { display: flex; flex-direction: column; gap: 12px; }
+        .card-ticket { background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+        .card-ticket:hover { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
+        
+        .ticket-info h4 { font-family: 'Oswald'; font-size: 18px; color: #fff; margin-bottom: 5px; }
+        .ticket-info p { font-size: 12px; color: var(--texto-mutado); }
+        .ticket-status { padding: 5px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .st-aberto { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.3); }
+        .st-fechado { background: rgba(255, 255, 255, 0.05); color: var(--texto-mutado); border: 1px solid rgba(255, 255, 255, 0.1); }
+
+        /* MODAIS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 9999; align-items: center; justify-content: center; padding: 15px; }
+        .modal-overlay.ativo { display: flex; }
+        .modal-content { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; width: 100%; max-width: 600px; height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
+        
+        /* CHAT */
+        .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; background: var(--vidro); }
+        .chat-header h3 { font-family: 'Oswald'; font-size: 18px; color: #fff; }
+        .btn-fechar { background: transparent; border: none; color: var(--vermelho); font-size: 20px; cursor: pointer; }
+        .chat-mensagens { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .bolha { max-width: 80%; padding: 12px 16px; border-radius: 12px; font-size: 13px; line-height: 1.5; position: relative; }
+        .bolha.eu { align-self: flex-end; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); border-bottom-right-radius: 2px; }
+        .bolha.outro { align-self: flex-start; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-bottom-left-radius: 2px; }
+        .bolha .autor { font-size: 10px; font-weight: bold; color: var(--verde); margin-bottom: 4px; display: block; }
+        .bolha .hora { font-size: 9px; color: var(--texto-mutado); display: block; text-align: right; margin-top: 4px; }
+        .chat-input-area { padding: 15px; border-top: 1px solid var(--borda); background: var(--vidro); display: flex; gap: 10px; }
+        .chat-input { flex: 1; padding: 14px; background: rgba(0,0,0,0.5); border: 1px solid var(--borda); color: #fff; border-radius: 8px; outline: none; font-size: 14px; }
+        .btn-enviar { background: var(--verde); color: #000; border: none; width: 50px; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+        
+        /* FORMULÁRIO NOVO TICKET */
+        .form-ticket { padding: 25px; display: flex; flex-direction: column; gap: 15px; }
+        .form-ticket label { font-size: 12px; color: var(--texto-mutado); font-weight: 600; }
+        .form-ticket select, .form-ticket textarea { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); color: #fff; border-radius: 8px; outline: none; font-family: 'Inter'; }
+        .form-ticket textarea { height: 120px; resize: none; }
+        .btn-criar { background: var(--verde); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="fundo-degrade"></div>
+
+    <div class="container">
+        <div class="topo">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <a href="dashboard.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="titulo">Atendimento</h1>
+            </div>
+            <button class="btn-novo" onclick="abrirFormTicket()"><i class="fas fa-plus"></i> Novo</button>
+        </div>
+
+        <div class="lista-tickets" id="lista-tickets">
+            <p style="color: var(--texto-mutado); text-align: center;">Carregando seus tickets...</p>
+        </div>
+    </div>
+
+    <!-- MODAL DE CHAT -->
+    <div class="modal-overlay" id="modal-chat">
+        <div class="modal-content">
+            <div class="chat-header">
+                <h3 id="chat-titulo">Atendimento</h3>
+                <button class="btn-fechar" onclick="fecharChat()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chat-mensagens" id="chat-mensagens"></div>
+            <div class="chat-input-area">
+                <input type="text" class="chat-input" id="input-msg" placeholder="Digite sua mensagem..." onkeydown="if(event.key==='Enter') enviarMsg()">
+                <button class="btn-enviar" onclick="enviarMsg()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CRIAR TICKET -->
+    <div class="modal-overlay" id="modal-novo-ticket">
+        <div class="modal-content" style="height: auto;">
+            <div class="chat-header">
+                <h3>Abrir Novo Atendimento</h3>
+                <button class="btn-fechar" onclick="fecharFormTicket()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="form-ticket">
+                <label>Categoria do Atendimento</label>
+                <select id="ticket-categoria">
+                    <option value="Relatar um bug do site">Relatar um bug do site</option>
+                    <option value="Denunciar um membro">Denunciar um membro</option>
+                    <option value="Queixa da gerência">Fazer uma queixa de alguém da gerência</option>
+                    <option value="Outros">Outros</option>
+                </select>
+                
+                <label>Mensagem</label>
+                <textarea id="ticket-mensagem" placeholder="Descreva o seu problema com o máximo de detalhes..."></textarea>
+                
+                <button class="btn-criar" onclick="criarTicket()">Abrir Atendimento</button>
+            </div>
+        </div>
+      </div>
+          <script>
+        let membroLogado = null;
+        let idTicketAtivo = null;
+
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+            
+            membroLogado = JSON.parse(logado);
+            carregarTickets();
+        });
+
+        // Carregar a lista de tickets do jogador
+        async function carregarTickets() {
+            const container = document.getElementById('lista-tickets');
+            
+            try {
+                const { data: tickets, error } = await sb.from('tickets')
+                    .select('*')
+                    .eq('passaporte', membroLogado.passaporte)
+                    .order('criado_em', { ascending: false });
+
+                if (error) throw error;
+
+                if (!tickets || tickets.length === 0) {
+                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Você não possui atendimentos abertos.</p>';
+                    return;
+                }
+
+                let html = '';
+                tickets.forEach(t => {
+                    const isAberto = t.status === 'aberto';
+                    const statusClass = isAberto ? 'st-aberto' : 'st-fechado';
+                    const dataFormatada = new Date(t.criado_em).toLocaleDateString('pt-BR');
+                    
+                    html += `
+                        <div class="card-ticket" onclick="abrirChat('${t.id}', '${t.categoria}')">
+                            <div class="ticket-info">
+                                <h4>${t.categoria}</h4>
+                                <p>Aberto em: ${dataFormatada}</p>
+                            </div>
+                            <span class="ticket-status ${statusClass}">${t.status}</span>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+            } catch (err) {
+                container.innerHTML = `<p style="color: var(--vermelho); text-align: center;">Erro ao carregar: ${err.message}</p>`;
+            }
+        }
+
+        // Abrir a tela de criar ticket
+        function abrirFormTicket() {
+            document.getElementById('modal-novo-ticket').classList.add('ativo');
+        }
+
+        function fecharFormTicket() {
+            document.getElementById('modal-novo-ticket').classList.remove('ativo');
+        }
+
+        // Criar o ticket no banco
+        async function criarTicket() {
+            const categoria = document.getElementById('ticket-categoria').value;
+            const mensagem = document.getElementById('ticket-mensagem').value.trim();
+
+            if (!mensagem) {
+                alert("Por favor, escreva uma mensagem.");
+                return;
+            }
+
+            try {
+                // 1. Cria o cabeçalho do ticket
+                const { data: novoTicket, error: errTicket } = await sb.from('tickets').insert([{
+                    passaporte: membroLogado.passaporte,
+                    nome_autor: membroLogado.nome,
+                    mensagem: mensagem,
+                    status: 'aberto',
+                    categoria: categoria
+                }]).select().single();
+
+                if (errTicket) throw errTicket;
+
+                // 2. Cria a primeira mensagem na tabela de chat
+                await sb.from('mensagens_ticket').insert([{
+                    ticket_id: novoTicket.id,
+                    autor: membroLogado.nome,
+                    mensagem: mensagem
+                }]);
+
+                // 3. Limpa e fecha o form, depois recarrega a lista
+                document.getElementById('ticket-mensagem').value = '';
+                fecharFormTicket();
+                carregarTickets();
+                
+                // Já abre o chat do ticket recém-criado
+                abrirChat(novoTicket.id, novoTicket.categoria);
+
+            } catch (err) {
+                alert("Erro ao criar atendimento: " + err.message);
+            }
+        }
+
+        // Abrir a tela de chat
+        function abrirChat(id, categoria) {
+            idTicketAtivo = id;
+            document.getElementById('chat-titulo').innerText = categoria;
+            document.getElementById('modal-chat').classList.add('ativo');
+            carregarMensagens();
+        }
+
+        function fecharChat() {
+            document.getElementById('modal-chat').classList.remove('ativo');
+            idTicketAtivo = null;
+            carregarTickets(); // Atualiza a lista para mostrar se foi fechado
+        }
+
+        // Carregar mensagens do chat
+        async function carregarMensagens() {
+            const container = document.getElementById('chat-mensagens');
+            
+            try {
+                const { data: mensagens } = await sb.from('mensagens_ticket')
+                    .select('*')
+                    .eq('ticket_id', idTicketAtivo)
+                    .order('criado_em', { ascending: true });
+
+                if (!mensagens || mensagens.length === 0) {
+                    container.innerHTML = '';
+                    return;
+                }
+
+                let html = '';
+                mensagens.forEach(msg => {
+                    const isEu = msg.autor === membroLogado.nome;
+                    const classe = isEu ? 'eu' : 'outro';
+                    const hora = new Date(msg.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                    html += `
+                        <div class="bolha ${classe}">
+                            ${!isEu ? `<span class="autor">${msg.autor}</span>` : ''}
+                            ${msg.mensagem}
+                            <span class="hora">${hora}</span>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight; // Rolagem automática
+
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // Enviar mensagem
+        async function enviarMsg() {
+            const input = document.getElementById('input-msg');
+            const texto = input.value.trim();
+
+            if (!texto || !idTicketAtivo) return;
+            input.value = '';
+
+            try {
+                await sb.from('mensagens_ticket').insert([{
+                    ticket_id: idTicketAtivo,
+                    autor: membroLogado.nome,
+                    mensagem: texto
+                }]);
+
+                carregarMensagens();
+            } catch (err) {
+                alert("Erro ao enviar mensagem.");
+            }
+        }
+    </script>
+</body>
+</html>
