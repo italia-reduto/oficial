@@ -23,7 +23,7 @@
             --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 20px; padding-bottom: 100px; }
 
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -1; }
 
@@ -34,8 +34,9 @@
         .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
         .titulo { font-family: 'Oswald', sans-serif; font-size: 26px; text-transform: uppercase; color: #fff; }
 
-        .btn-novo { background: var(--verde); color: #000; border: none; padding: 12px 20px; border-radius: 8px; font-family: 'Oswald'; font-size: 15px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
-        .btn-novo:hover { background: #4ade80; transform: translateY(-2px); }
+        /* BOTÃO NOVO MAIS CLEAN */
+        .btn-novo { background: transparent; color: var(--verde); border: 1px solid var(--verde); padding: 10px 20px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-novo:hover { background: rgba(34, 197, 94, 0.1); }
 
         /* LISTA DE TICKETS */
         .lista-tickets { display: flex; flex-direction: column; gap: 12px; }
@@ -43,7 +44,7 @@
         .card-ticket:hover { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
         
         .ticket-info { display: flex; align-items: center; gap: 15px; }
-        .ticket-info i { font-size: 24px; color: var(--verde); }
+        .ticket-info i { font-size: 24px; color: var(--verde); width: 30px; text-align: center; }
         .ticket-info h4 { font-family: 'Oswald'; font-size: 18px; color: #fff; margin-bottom: 5px; }
         .ticket-info p { font-size: 12px; color: var(--texto-mutado); }
         
@@ -77,7 +78,7 @@
         .form-ticket textarea:focus { border-color: var(--verde); }
         .btn-criar { background: var(--verde); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
 
-        /* NOVO: CARDS DE CATEGORIA */
+        /* CARDS DE CATEGORIA */
         .grid-categorias { display: flex; flex-direction: column; gap: 10px; }
         .card-categoria { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
         .card-categoria:hover { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
@@ -86,6 +87,12 @@
         .card-categoria .info-cat { text-align: left; }
         .card-categoria .info-cat h4 { font-family: 'Oswald'; font-size: 15px; color: #fff; margin-bottom: 2px; }
         .card-categoria .info-cat p { font-size: 11px; color: var(--texto-mutado); }
+
+        /* MENU INFERIOR */
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
 </head>
 <body>
@@ -104,6 +111,14 @@
             <p style="color: var(--texto-mutado); text-align: center;">Carregando seus atendimentos...</p>
         </div>
     </div>
+
+    <!-- MENU INFERIOR -->
+    <nav class="menu-inferior">
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="perfil.html" class="item-menu"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+        <a href="atendimento.html" class="item-menu ativo"><i class="fas fa-headset"></i><span>Suporte</span></a>
+    </nav>
 
     <!-- MODAL DE CHAT -->
     <div class="modal-overlay" id="modal-chat">
@@ -172,7 +187,6 @@
         let idTicketAtivo = null;
         let categoriaSelecionada = null;
 
-        // Inicialização
         window.addEventListener('DOMContentLoaded', () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
@@ -181,20 +195,17 @@
             carregarTickets();
         });
 
-        // Lógica para selecionar o Card Verde
         function selecionarCategoria(nome, elemento) {
-            // Remove a seleção de todos
             document.querySelectorAll('.card-categoria').forEach(c => c.classList.remove('selecionado'));
-            // Adiciona a seleção no clicado
             elemento.classList.add('selecionado');
             categoriaSelecionada = nome;
         }
 
-        // Carregar a lista de atendimentos
         async function carregarTickets() {
             const container = document.getElementById('lista-tickets');
             
             try {
+                // Busca todos os tickets do usuário
                 const { data: tickets, error } = await sb.from('tickets')
                     .select('*')
                     .eq('passaporte', membroLogado.passaporte)
@@ -203,17 +214,27 @@
                 if (error) throw error;
 
                 if (!tickets || tickets.length === 0) {
-                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Você não possui atendimentos abertos.</p>';
+                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Você não possui atendimentos.</p>';
                     return;
                 }
 
+                // Separa os abertos dos fechados
+                let abertos = tickets.filter(t => t.status === 'aberto');
+                let fechados = tickets.filter(t => t.status !== 'aberto');
+
+                // Regra: Mostrar apenas os 5 tickets fechados mais recentes
+                fechados = fechados.slice(0, 5);
+
+                // Junta a lista final (Abertos primeiro, depois os recentes fechados)
+                const ticketsExibir = [...abertos, ...fechados];
+
                 let html = '';
-                tickets.forEach(t => {
+                ticketsExibir.forEach(t => {
                     const isAberto = t.status === 'aberto';
                     const statusClass = isAberto ? 'st-aberto' : 'st-fechado';
                     const dataFormatada = new Date(t.criado_em).toLocaleDateString('pt-BR');
                     
-                    // Define o ícone de acordo com a categoria salva
+                    // Define o ícone igual ao do card de criação
                     let icone = 'fa-ticket-alt';
                     if (t.categoria.includes('bug')) icone = 'fa-bug';
                     else if (t.categoria.includes('Denunciar')) icone = 'fa-user-slash';
@@ -240,7 +261,6 @@
             }
         }
 
-        // Controle do Modal de Criar
         function abrirFormTicket() {
             categoriaSelecionada = null;
             document.querySelectorAll('.card-categoria').forEach(c => c.classList.remove('selecionado'));
@@ -252,21 +272,13 @@
             document.getElementById('modal-novo-ticket').classList.remove('ativo');
         }
 
-        // Enviar o novo Ticket
         async function criarTicket() {
             const mensagem = document.getElementById('ticket-mensagem').value.trim();
 
-            if (!categoriaSelecionada) {
-                alert("Por favor, selecione uma categoria.");
-                return;
-            }
-            if (!mensagem) {
-                alert("Por favor, escreva uma mensagem.");
-                return;
-            }
+            if (!categoriaSelecionada) { alert("Selecione uma categoria."); return; }
+            if (!mensagem) { alert("Escreva uma mensagem."); return; }
 
             try {
-                // 1. Cria o ticket
                 const { data: novoTicket, error: errTicket } = await sb.from('tickets').insert([{
                     passaporte: membroLogado.passaporte,
                     nome_autor: membroLogado.nome,
@@ -277,7 +289,6 @@
 
                 if (errTicket) throw errTicket;
 
-                // 2. Insere a primeira mensagem no chat
                 await sb.from('mensagens_ticket').insert([{
                     ticket_id: novoTicket.id,
                     autor: membroLogado.nome,
@@ -286,8 +297,6 @@
 
                 fecharFormTicket();
                 carregarTickets();
-                
-                // Já abre o chat do ticket recém-criado
                 abrirChat(novoTicket.id, novoTicket.categoria);
 
             } catch (err) {
@@ -295,7 +304,6 @@
             }
         }
 
-        // Controle do Chat
         function abrirChat(id, categoria) {
             idTicketAtivo = id;
             document.getElementById('chat-titulo').innerText = categoria;
@@ -312,38 +320,33 @@
         async function carregarMensagens() {
             const container = document.getElementById('chat-mensagens');
             
-            try {
-                const { data: mensagens } = await sb.from('mensagens_ticket')
-                    .select('*')
-                    .eq('ticket_id', idTicketAtivo)
-                    .order('criado_em', { ascending: true });
+            const { data: mensagens } = await sb.from('mensagens_ticket')
+                .select('*')
+                .eq('ticket_id', idTicketAtivo)
+                .order('criado_em', { ascending: true });
 
-                if (!mensagens || mensagens.length === 0) {
-                    container.innerHTML = '';
-                    return;
-                }
-
-                let html = '';
-                mensagens.forEach(msg => {
-                    const isEu = msg.autor === membroLogado.nome;
-                    const classe = isEu ? 'eu' : 'outro';
-                    const hora = new Date(msg.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
-                    html += `
-                        <div class="bolha ${classe}">
-                            ${!isEu ? `<span class="autor">${msg.autor}</span>` : ''}
-                            ${msg.mensagem}
-                            <span class="hora">${hora}</span>
-                        </div>
-                    `;
-                });
-
-                container.innerHTML = html;
-                container.scrollTop = container.scrollHeight;
-
-            } catch (err) {
-                console.error(err);
+            if (!mensagens || mensagens.length === 0) {
+                container.innerHTML = '';
+                return;
             }
+
+            let html = '';
+            mensagens.forEach(msg => {
+                const isEu = msg.autor === membroLogado.nome;
+                const classe = isEu ? 'eu' : 'outro';
+                const hora = new Date(msg.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+                html += `
+                    <div class="bolha ${classe}">
+                        ${!isEu ? `<span class="autor">${msg.autor}</span>` : ''}
+                        ${msg.mensagem}
+                        <span class="hora">${hora}</span>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
         }
 
         async function enviarMsg() {
