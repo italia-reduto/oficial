@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <meta name="color-scheme" content="dark">
+    <title>Itália 2.0 | Meu Perfil</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6);
+            --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af;
+            --amarelo: #eab308; --vermelho: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+        html { background-color: #0a0f0d; overflow-x: hidden; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 20px; position: relative; overflow: hidden; padding-bottom: 100px; }
+
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
+        .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
+
+        .container { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 20px; position: relative; z-index: 10; margin-top: 10px; }
+
+        /* CABEÇALHO DO PERFIL */
+        .cartao-perfil { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; display: flex; align-items: center; gap: 20px; position: relative; }
+        .cartao-perfil::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--verde); border-radius: 16px 0 0 16px; }
+        .avatar { width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--verde); background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: bold; color: var(--verde); background-size: cover; background-position: center; flex-shrink: 0; }
+        .info-perfil { flex: 1; }
+        .nome { font-family: 'Oswald', sans-serif; font-size: 26px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .cargo { font-size: 13px; color: var(--verde); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px; }
+        .passaporte { font-size: 12px; color: var(--texto-mutado); }
+
+        /* BARRA DE XP */
+        .progressao-container { margin-top: 15px; display: flex; flex-direction: column; gap: 6px; }
+        .progressao-labels { display: flex; justify-content: space-between; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+        .cargo-atual { color: #a1a1aa; } .cargo-proximo { color: var(--verde); }
+        .progressao-barra-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; position: relative; }
+        .progressao-barra-fill { height: 100%; background: linear-gradient(90deg, #166534, var(--verde)); width: 0%; border-radius: 10px; transition: width 1s ease; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
+        .progressao-xp-texto { font-size: 10px; color: #9ca3af; text-align: right; }
+
+        /* ABAS (TABS) */
+        .abas { display: flex; gap: 10px; border-bottom: 1px solid var(--borda); padding-bottom: 10px; margin-top: 10px; }
+        .btn-aba { background: transparent; border: none; color: var(--texto-mutado); font-family: 'Oswald'; font-size: 15px; text-transform: uppercase; cursor: pointer; padding: 8px 15px; border-radius: 8px; transition: 0.3s; }
+        .btn-aba.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); font-weight: bold; }
+
+        /* CONTEÚDO DAS ABAS */
+        .painel { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; }
+        
+        .card-historico { display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 15px; margin-bottom: 10px; }
+        .card-historico .data { font-family: 'Oswald'; font-size: 16px; color: #fff; }
+        .card-historico .detalhes { font-size: 12px; color: var(--texto-mutado); margin-top: 4px; }
+        .tag-status { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .tag-presente { background: rgba(34, 197, 94, 0.15); color: var(--verde); }
+        .tag-falta { background: rgba(239, 68, 68, 0.15); color: var(--vermelho); }
+        .tag-pendente { background: rgba(234, 179, 8, 0.15); color: var(--amarelo); }
+        
+        .btn-justificar { background: transparent; border: 1px solid var(--amarelo); color: var(--amarelo); padding: 5px 10px; border-radius: 6px; font-family: 'Oswald'; font-size: 11px; cursor: pointer; margin-left: 10px; transition: 0.3s; }
+        .btn-justificar:hover { background: var(--amarelo); color: #000; }
+
+        /* MENU INFERIOR FLUTUANTE */
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+
+        /* MODAL DE JUSTIFICATIVA */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.ativo { display: flex; }
+        .modal-content { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; width: 100%; max-width: 400px; text-align: center; }
+        .modal-content textarea { width: 100%; height: 80px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); border-radius: 8px; color: #fff; padding: 10px; font-family: 'Inter'; outline: none; margin-bottom: 15px; resize: none; }
+        .modal-content textarea:focus { border-color: var(--verde); }
+        
+        @media (max-width: 600px) {
+            .cartao-perfil { padding: 15px; gap: 15px; border-radius: 12px; }
+            .avatar { width: 60px; height: 60px; font-size: 24px; }
+            .nome { font-size: 20px; }
+            .cargo { font-size: 11px; }
+            .passaporte { font-size: 10px; }
+            .card-historico { flex-direction: column; align-items: flex-start; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="fundo-degrade"></div>
+    <div class="grade-fundo"></div>
+
+    <div class="container">
+        <!-- CABEÇALHO PERFIL -->
+        <div class="cartao-perfil">
+            <div class="avatar" id="avatar-inicial">?</div>
+            <div class="info-perfil">
+                <h1 class="nome" id="nome-membro">Carregando...</h1>
+                <p class="cargo" id="cargo-membro">---</p>
+                <p class="passaporte">Passaporte: <span id="passaporte-membro" style="color: #fff;">---</span></p>
+                
+                <div class="progressao-container">
+                    <div class="progressao-labels">
+                        <span class="cargo-atual" id="label-cargo-atual">---</span>
+                        <span class="cargo-proximo" id="label-cargo-proximo">---</span>
+                    </div>
+                    <div class="progressao-barra-bg">
+                        <div class="progressao-barra-fill" id="barra-progressao"></div>
+                    </div>
+                    <div class="progressao-xp-texto" id="texto-progressao">0 XP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABAS -->
+        <div class="abas">
+            <button class="btn-aba ativo" onclick="mudarAba('historico', this)">Histórico</button>
+            <button class="btn-aba" onclick="mudarAba('faltas', this)">Faltas e Justificativas</button>
+        </div>
+
+        <!-- CONTEÚDO: HISTÓRICO -->
+        <div class="painel" id="aba-historico">
+            <div id="lista-historico">
+                <p style="color: var(--texto-mutado); text-align: center;">Buscando histórico...</p>
+            </div>
+        </div>
+
+        <!-- CONTEÚDO: FALTAS -->
+        <div class="painel" id="aba-faltas" style="display: none;">
+            <div id="lista-faltas">
+                <p style="color: var(--texto-mutado); text-align: center;">Buscando faltas...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENU INFERIOR -->
+    <nav class="menu-inferior">
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="perfil.html" class="item-menu ativo"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
+  </nav>
+      <!-- MODAL DE JUSTIFICAR FALTA -->
+    <div class="modal-overlay" id="modal-justificar">
+        <div class="modal-content">
+            <h3 style="font-family: 'Oswald'; color: var(--amarelo); font-size: 20px; margin-bottom: 10px;"><i class="fas fa-exclamation-triangle"></i> Justificar Falta</h3>
+            <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 15px;">Descreva o motivo para a liderança avaliar.</p>
+            
+            <textarea id="texto-justificativa" placeholder="Ex: Tive um imprevisto familiar, caiu a internet..."></textarea>
+            
+            <div style="display: flex; gap: 10px;">
+                <button onclick="fecharModalJustificar()" style="flex: 1; background: transparent; border: 1px solid #fff; color: #fff; padding: 12px; border-radius: 8px; font-family: 'Oswald'; cursor: pointer;">Cancelar</button>
+                <button onclick="enviarJustificativa()" style="flex: 1; background: var(--verde); border: none; color: #000; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer;">Enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let membroLogado = null;
+        let idFaltaSelecionada = null;
+
+        // ==========================================
+        // 1. INICIALIZAÇÃO
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            membroLogado = JSON.parse(logado);
+            
+            // Preenche os dados básicos da sessão
+            document.getElementById('nome-membro').innerText = membroLogado.nome;
+            document.getElementById('cargo-membro').innerText = membroLogado.cargo;
+            document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
+            document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
+
+            // Puxa os dados atualizados do banco
+            const { data, error } = await sb.from('membros')
+                .select('xp_total, foto_url')
+                .eq('passaporte', membroLogado.passaporte)
+                .single();
+
+            if (data && !error) {
+                if (data.foto_url) {
+                    const avatar = document.getElementById('avatar-inicial');
+                    avatar.style.backgroundImage = `url('${data.foto_url}')`;
+                    avatar.innerText = ''; 
+                }
+                calcularProgressao(data.xp_total || 0, data.cargo);
+            }
+
+            carregarHistorico();
+            carregarFaltas();
+        });
+
+        // ==========================================
+        // 2. PROGRESSÃO DE CARREIRA
+        // ==========================================
+        function calcularProgressao(xpTotal, nomeCargoAtual) {
+            const CARGOS_ESCALA = [
+                { nome: 'Novato', xp_min: 0, xp_max: 500 },
+                { nome: 'Executor', xp_min: 500, xp_max: 1500 },
+                { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
+                { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
+                { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
+            ];
+            
+            let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
+            if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
+                document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
+                return;
+            }
+            if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
+
+            let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
+            if (!proximoNivel) {
+                document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
+                return;
+            }
+
+            document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+            document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
+            
+            const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
+            const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
+            let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
+            if (porcentagem > 100) porcentagem = 100;
+
+            document.getElementById('barra-progressao').style.width = porcentagem + '%';
+            document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
+        }
+
+        // ==========================================
+        // 3. NAVEGAÇÃO DE ABAS
+        // ==========================================
+        function mudarAba(aba, el) {
+            document.querySelectorAll('.btn-aba').forEach(b => b.classList.remove('ativo'));
+            el.classList.add('ativo');
+
+            document.getElementById('aba-historico').style.display = 'none';
+            document.getElementById('aba-faltas').style.display = 'none';
+            
+            document.getElementById(`aba-${aba}`).style.display = 'block';
+        }
+
+        // ==========================================
+        // 4. CARREGAR HISTÓRICO
+        // ==========================================
+        async function carregarHistorico() {
+            const container = document.getElementById('lista-historico');
+            
+            const { data: registros } = await sb.from('presencas')
+                .select('*')
+                .eq('passaporte', membroLogado.passaporte)
+                .order('data', { ascending: false });
+
+            if (!registros || registros.length === 0) {
+                container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum registro encontrado.</p>';
+                return;
+            }
+
+            let html = '';
+            registros.forEach(r => {
+                const dataFormatada = new Date(r.data + 'T12:00:00').toLocaleDateString('pt-BR');
+                let statusClass = 'tag-presente', statusTexto = 'Presente';
+                
+                if (r.status === 'falta') { statusClass = 'tag-falta'; statusTexto = 'Falta'; }
+
+                html += `
+                    <div class="card-historico">
+                        <div>
+                            <div class="data">${dataFormatada}</div>
+                            <div class="detalhes">${r.marcado_por_nome || 'Sistema'}</div>
+                        </div>
+                        <span class="tag-status ${statusClass}">${statusTexto}</span>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // 5. CARREGAR FALTAS E JUSTIFICATIVAS
+        // ==========================================
+        async function carregarFaltas() {
+            const container = document.getElementById('lista-faltas');
+            
+            const { data: faltas } = await sb.from('presencas')
+                .select('*')
+                .eq('passaporte', membroLogado.passaporte)
+                .eq('status', 'falta')
+                .order('data', { ascending: false });
+
+            if (!faltas || faltas.length === 0) {
+                container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Você não tem faltas registradas. Parabéns!</p>';
+                return;
+            }
+
+            let html = '';
+            faltas.forEach(f => {
+                const dataFormatada = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
+                let statusClass = 'tag-falta', statusTexto = 'Não Justificada';
+                let botaoJustificar = `<button class="btn-justificar" onclick="abrirModalJustificar('${f.id}')">Justificar</button>`;
+
+                if (f.status_justificativa === 'pendente') {
+                    statusClass = 'tag-pendente'; statusTexto = 'Em Análise'; botaoJustificar = '';
+                } else if (f.status_justificativa === 'aprovada') {
+                    statusClass = 'tag-presente'; statusTexto = 'Aprovada'; botaoJustificar = '';
+                }
+
+                html += `
+                    <div class="card-historico">
+                        <div>
+                            <div class="data">${dataFormatada}</div>
+                            <div class="detalhes">Motivo: ${f.justificativa || 'Sem justificativa'}</div>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="tag-status ${statusClass}">${statusTexto}</span>
+                            ${botaoJustificar}
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // 6. AÇÃO DE JUSTIFICAR
+        // ==========================================
+        function abrirModalJustificar(id) {
+            idFaltaSelecionada = id;
+            document.getElementById('texto-justificativa').value = '';
+            document.getElementById('modal-justificar').classList.add('ativo');
+        }
+
+        function fecharModalJustificar() {
+            document.getElementById('modal-justificar').classList.remove('ativo');
+            idFaltaSelecionada = null;
+        }
+
+        async function enviarJustificativa() {
+            const texto = document.getElementById('texto-justificativa').value.trim();
+            if (!texto) { alert("Escreva o motivo."); return; }
+
+            try {
+                const { error } = await sb.from('presencas').update({
+                    justificativa: texto,
+                    status_justificativa: 'pendente'
+                }).eq('id', idFaltaSelecionada);
+
+                if (error) throw error;
+                
+                fecharModalJustificar();
+                carregarFaltas(); // Recarrega a lista para mostrar "Em Análise"
+                alert("Justificativa enviada com sucesso!");
+            } catch (err) {
+                alert("Erro ao enviar justificativa: " + err.message);
+            }
+        }
+    </script>
+</body>
+</html>
