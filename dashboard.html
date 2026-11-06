@@ -18,6 +18,25 @@
     </script>
 
     <style>
+        /* CHAT DE TICKETS */
+.modal-chat { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 15px; }
+.modal-chat.ativo { display: flex; }
+.chat-container { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; width: 100%; max-width: 600px; height: 90vh; display: flex; flex-direction: column; overflow: hidden; }
+.chat-header { padding: 15px 20px; border-bottom: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; background: var(--vidro); }
+.chat-header h3 { font-family: 'Oswald'; font-size: 18px; color: #fff; }
+.chat-header p { font-size: 11px; color: var(--texto-mutado); }
+.btn-fechar-chat { background: transparent; border: none; color: var(--vermelho); font-size: 20px; cursor: pointer; }
+.chat-mensagens { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+.bolha-msg { max-width: 80%; padding: 10px 15px; border-radius: 12px; font-size: 13px; line-height: 1.5; position: relative; }
+.bolha-msg.eu { align-self: flex-end; background: rgba(34, 197, 94, 0.15); border: 1px solid rgba(34, 197, 94, 0.3); color: #fff; border-bottom-right-radius: 2px; }
+.bolha-msg.lider { align-self: flex-start; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; border-bottom-left-radius: 2px; }
+.bolha-msg .autor { font-size: 10px; font-weight: bold; color: var(--verde); margin-bottom: 4px; display: block; }
+.bolha-msg .horario { font-size: 9px; color: var(--texto-mutado); display: block; text-align: right; margin-top: 4px; }
+.chat-input-area { padding: 15px; border-top: 1px solid var(--borda); background: var(--vidro); display: flex; gap: 10px; align-items: center; }
+.chat-input { flex: 1; padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--borda); color: #fff; border-radius: 20px; font-family: 'Inter'; font-size: 14px; outline: none; }
+.chat-input:focus { border-color: var(--verde); }
+.btn-enviar-chat { background: var(--verde); color: #000; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: 0.2s; }
+.btn-enviar-chat:hover { background: #4ade80; transform: scale(1.05); }
         :root {
             color-scheme: dark;
             --verde: #22c55e;
@@ -598,5 +617,126 @@
             });
         });
     </script>
+    <!-- MODAL DO CHAT DE TICKET -->
+<div class="modal-chat" id="modal-chat-ticket">
+    <div class="chat-container">
+        <div class="chat-header">
+            <div>
+                <h3 id="chat-titulo">Suporte</h3>
+                <p id="chat-info">Carregando...</p>
+            </div>
+            <button class="btn-fechar-chat" onclick="fecharChatTicket()"><i class="fas fa-times"></i></button>
+        </div>
+        
+        <div class="chat-mensagens" id="chat-mensagens-container">
+            <!-- As bolhas de mensagem aparecem aqui -->
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chat-input-texto" placeholder="Digite sua mensagem..." onkeydown="if(event.key === 'Enter') enviarMensagemChat()">
+            <button class="btn-enviar-chat" onclick="enviarMensagemChat()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+    </div>
+</div>
+    // ==========================================
+// SISTEMA DE CHAT DO TICKET
+// ==========================================
+let ticketIdAtivo = null;
+
+// Substitui a função antiga do botão "Ticket Recente"
+async function abrirModalTicket() {
+    try {
+        // Busca o ticket mais recente deste membro que ainda está aberto
+        const { data: ticket, error } = await sb.from('tickets')
+            .select('*')
+            .eq('passaporte', membroLogado.passaporte)
+            .neq('status', 'fechado')
+            .order('criado_em', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+
+        if (!ticket) {
+            customAlert("Você não tem tickets abertos.", "erro");
+            return;
+        }
+
+        ticketIdAtivo = ticket.id;
+        document.getElementById('chat-titulo').innerText = ticket.categoria || 'Suporte';
+        document.getElementById('chat-info').innerText = `Ticket #${ticket.id.substring(0, 6)}`;
+        
+        document.getElementById('modal-chat-ticket').classList.add('ativo');
+        carregarMensagensChat(ticketIdAtivo);
+
+    } catch (err) {
+        console.error(err);
+        customAlert("Erro ao abrir ticket.", "erro");
+    }
+}
+
+function fecharChatTicket() {
+    document.getElementById('modal-chat-ticket').classList.remove('ativo');
+    ticketIdAtivo = null;
+}
+
+async function carregarMensagensChat(ticketId) {
+    const container = document.getElementById('chat-mensagens-container');
+    
+    const { data: mensagens, error } = await sb.from('mensagens_ticket')
+        .select('*')
+        .eq('ticket_id', ticketId)
+        .order('criado_em', { ascending: true });
+
+    if (error) {
+        container.innerHTML = '<p style="color: var(--vermelho); text-align: center;">Erro ao carregar mensagens.</p>';
+        return;
+    }
+
+    if (!mensagens || mensagens.length === 0) {
+        container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhuma mensagem ainda. Envie a primeira!</p>';
+        return;
+    }
+
+    let html = '';
+    mensagens.forEach(msg => {
+        // Verifica se a mensagem é do próprio jogador logado
+        const isEu = msg.autor === membroLogado.nome; 
+        const classe = isEu ? 'eu' : 'lider';
+        const hora = new Date(msg.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+        html += `
+            <div class="bolha-msg ${classe}">
+                ${!isEu ? `<span class="autor">${msg.autor}</span>` : ''}
+                ${msg.mensagem}
+                <span class="horario">${hora}</span>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
+    container.scrollTop = container.scrollHeight; // Rola para baixo automaticamente
+}
+
+async function enviarMensagemChat() {
+    const input = document.getElementById('chat-input-texto');
+    const texto = input.value.trim();
+
+    if (!texto || !ticketIdAtivo) return;
+
+    input.value = ''; // Limpa o campo de texto
+
+    try {
+        await sb.from('mensagens_ticket').insert([{
+            ticket_id: ticketIdAtivo,
+            autor: membroLogado.nome,
+            mensagem: texto
+        }]);
+
+        carregarMensagensChat(ticketIdAtivo);
+    } catch (err) {
+        console.error(err);
+        customAlert("Erro ao enviar mensagem.", "erro");
+    }
+}
+</script>
 </body>
 </html>
