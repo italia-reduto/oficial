@@ -373,11 +373,13 @@
 
     <!-- MENU INFERIOR FLUTUANTE -->
     <nav class="menu-inferior">
-        <a href="#" class="item-menu ativo" onclick="mudarMenu(this, 'inicio'); return false;"><i class="fas fa-home"></i><span>Início</span></a>
-        <!-- O Ponto agora redireciona para a página separada -->
-        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
-        <a href="#" class="item-menu" onclick="customAlert('Aba Equipe em breve!'); return false;"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <a href="#" class="item-menu" onclick="customAlert('Aba Perfil em breve!'); return false;"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+    <a href="#" class="item-menu ativo" onclick="mudarMenu(this); return false;"><i class="fas fa-home"></i><span>Início</span></a>
+    <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-clock"></i><span>Ponto</span></a>
+    <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-users"></i><span>Equipe</span></a>
+    <a href="#" class="item-menu" onclick="mudarMenu(this); return false;"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+    
+    <!-- AQUI ESTÁ A MUDANÇA: O link vai direto para atendimento.html -->
+    <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
     </nav>
         <script>
         let membroLogado = null;
