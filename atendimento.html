@@ -42,8 +42,11 @@
         .card-ticket { background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
         .card-ticket:hover { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
         
+        .ticket-info { display: flex; align-items: center; gap: 15px; }
+        .ticket-info i { font-size: 24px; color: var(--verde); }
         .ticket-info h4 { font-family: 'Oswald'; font-size: 18px; color: #fff; margin-bottom: 5px; }
         .ticket-info p { font-size: 12px; color: var(--texto-mutado); }
+        
         .ticket-status { padding: 5px 12px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
         .st-aberto { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.3); }
         .st-fechado { background: rgba(255, 255, 255, 0.05); color: var(--texto-mutado); border: 1px solid rgba(255, 255, 255, 0.1); }
@@ -68,11 +71,21 @@
         .btn-enviar { background: var(--verde); color: #000; border: none; width: 50px; border-radius: 8px; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; }
         
         /* FORMULÁRIO NOVO TICKET */
-        .form-ticket { padding: 25px; display: flex; flex-direction: column; gap: 15px; }
-        .form-ticket label { font-size: 12px; color: var(--texto-mutado); font-weight: 600; }
-        .form-ticket select, .form-ticket textarea { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); color: #fff; border-radius: 8px; outline: none; font-family: 'Inter'; }
-        .form-ticket textarea { height: 120px; resize: none; }
-        .btn-criar { background: var(--verde); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; }
+        .form-ticket { padding: 25px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto; }
+        .form-ticket label { font-size: 12px; color: var(--texto-mutado); font-weight: 600; text-transform: uppercase; }
+        .form-ticket textarea { width: 100%; padding: 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); color: #fff; border-radius: 8px; outline: none; font-family: 'Inter'; height: 100px; resize: none; }
+        .form-ticket textarea:focus { border-color: var(--verde); }
+        .btn-criar { background: var(--verde); color: #000; border: none; padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+
+        /* NOVO: CARDS DE CATEGORIA */
+        .grid-categorias { display: flex; flex-direction: column; gap: 10px; }
+        .card-categoria { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
+        .card-categoria:hover { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
+        .card-categoria.selecionado { border-color: var(--verde); background: rgba(34, 197, 94, 0.1); box-shadow: 0 0 10px rgba(34,197,94,0.1); }
+        .card-categoria i { font-size: 22px; color: var(--verde); width: 25px; text-align: center; }
+        .card-categoria .info-cat { text-align: left; }
+        .card-categoria .info-cat h4 { font-family: 'Oswald'; font-size: 15px; color: #fff; margin-bottom: 2px; }
+        .card-categoria .info-cat p { font-size: 11px; color: var(--texto-mutado); }
     </style>
 </head>
 <body>
@@ -88,7 +101,7 @@
         </div>
 
         <div class="lista-tickets" id="lista-tickets">
-            <p style="color: var(--texto-mutado); text-align: center;">Carregando seus tickets...</p>
+            <p style="color: var(--texto-mutado); text-align: center;">Carregando seus atendimentos...</p>
         </div>
     </div>
 
@@ -109,30 +122,55 @@
 
     <!-- MODAL DE CRIAR TICKET -->
     <div class="modal-overlay" id="modal-novo-ticket">
-        <div class="modal-content" style="height: auto;">
+        <div class="modal-content" style="height: auto; max-height: 90vh;">
             <div class="chat-header">
                 <h3>Abrir Novo Atendimento</h3>
                 <button class="btn-fechar" onclick="fecharFormTicket()"><i class="fas fa-times"></i></button>
             </div>
             <div class="form-ticket">
                 <label>Categoria do Atendimento</label>
-                <select id="ticket-categoria">
-                    <option value="Relatar um bug do site">Relatar um bug do site</option>
-                    <option value="Denunciar um membro">Denunciar um membro</option>
-                    <option value="Queixa da gerência">Fazer uma queixa de alguém da gerência</option>
-                    <option value="Outros">Outros</option>
-                </select>
+                <div class="grid-categorias" id="lista-opcoes-categoria">
+                    <div class="card-categoria" onclick="selecionarCategoria('Relatar um bug do site', this)">
+                        <i class="fas fa-bug"></i>
+                        <div class="info-cat">
+                            <h4>Bug no Site</h4>
+                            <p>Erros, falhas ou travamentos no sistema.</p>
+                        </div>
+                    </div>
+                    <div class="card-categoria" onclick="selecionarCategoria('Denunciar um membro', this)">
+                        <i class="fas fa-user-slash"></i>
+                        <div class="info-cat">
+                            <h4>Denunciar Membro</h4>
+                            <p>Comportamento inadequado ou quebra de regras.</p>
+                        </div>
+                    </div>
+                    <div class="card-categoria" onclick="selecionarCategoria('Queixa da gerência', this)">
+                        <i class="fas fa-shield-alt"></i>
+                        <div class="info-cat">
+                            <h4>Queixa da Gerência</h4>
+                            <p>Denúncias sobre a conduta da liderança.</p>
+                        </div>
+                    </div>
+                    <div class="card-categoria" onclick="selecionarCategoria('Outros', this)">
+                        <i class="fas fa-question-circle"></i>
+                        <div class="info-cat">
+                            <h4>Outros</h4>
+                            <p>Assuntos gerais não listados acima.</p>
+                        </div>
+                    </div>
+                </div>
                 
-                <label>Mensagem</label>
+                <label style="margin-top: 10px;">Mensagem</label>
                 <textarea id="ticket-mensagem" placeholder="Descreva o seu problema com o máximo de detalhes..."></textarea>
                 
                 <button class="btn-criar" onclick="criarTicket()">Abrir Atendimento</button>
             </div>
         </div>
-      </div>
-          <script>
+    </div>
+        <script>
         let membroLogado = null;
         let idTicketAtivo = null;
+        let categoriaSelecionada = null;
 
         // Inicialização
         window.addEventListener('DOMContentLoaded', () => {
@@ -143,7 +181,16 @@
             carregarTickets();
         });
 
-        // Carregar a lista de tickets do jogador
+        // Lógica para selecionar o Card Verde
+        function selecionarCategoria(nome, elemento) {
+            // Remove a seleção de todos
+            document.querySelectorAll('.card-categoria').forEach(c => c.classList.remove('selecionado'));
+            // Adiciona a seleção no clicado
+            elemento.classList.add('selecionado');
+            categoriaSelecionada = nome;
+        }
+
+        // Carregar a lista de atendimentos
         async function carregarTickets() {
             const container = document.getElementById('lista-tickets');
             
@@ -166,11 +213,21 @@
                     const statusClass = isAberto ? 'st-aberto' : 'st-fechado';
                     const dataFormatada = new Date(t.criado_em).toLocaleDateString('pt-BR');
                     
+                    // Define o ícone de acordo com a categoria salva
+                    let icone = 'fa-ticket-alt';
+                    if (t.categoria.includes('bug')) icone = 'fa-bug';
+                    else if (t.categoria.includes('Denunciar')) icone = 'fa-user-slash';
+                    else if (t.categoria.includes('gerência')) icone = 'fa-shield-alt';
+                    else if (t.categoria.includes('Outros')) icone = 'fa-question-circle';
+
                     html += `
                         <div class="card-ticket" onclick="abrirChat('${t.id}', '${t.categoria}')">
                             <div class="ticket-info">
-                                <h4>${t.categoria}</h4>
-                                <p>Aberto em: ${dataFormatada}</p>
+                                <i class="fas ${icone}"></i>
+                                <div>
+                                    <h4>${t.categoria}</h4>
+                                    <p>Aberto em: ${dataFormatada}</p>
+                                </div>
                             </div>
                             <span class="ticket-status ${statusClass}">${t.status}</span>
                         </div>
@@ -183,8 +240,11 @@
             }
         }
 
-        // Abrir a tela de criar ticket
+        // Controle do Modal de Criar
         function abrirFormTicket() {
+            categoriaSelecionada = null;
+            document.querySelectorAll('.card-categoria').forEach(c => c.classList.remove('selecionado'));
+            document.getElementById('ticket-mensagem').value = '';
             document.getElementById('modal-novo-ticket').classList.add('ativo');
         }
 
@@ -192,37 +252,38 @@
             document.getElementById('modal-novo-ticket').classList.remove('ativo');
         }
 
-        // Criar o ticket no banco
+        // Enviar o novo Ticket
         async function criarTicket() {
-            const categoria = document.getElementById('ticket-categoria').value;
             const mensagem = document.getElementById('ticket-mensagem').value.trim();
 
+            if (!categoriaSelecionada) {
+                alert("Por favor, selecione uma categoria.");
+                return;
+            }
             if (!mensagem) {
                 alert("Por favor, escreva uma mensagem.");
                 return;
             }
 
             try {
-                // 1. Cria o cabeçalho do ticket
+                // 1. Cria o ticket
                 const { data: novoTicket, error: errTicket } = await sb.from('tickets').insert([{
                     passaporte: membroLogado.passaporte,
                     nome_autor: membroLogado.nome,
                     mensagem: mensagem,
                     status: 'aberto',
-                    categoria: categoria
+                    categoria: categoriaSelecionada
                 }]).select().single();
 
                 if (errTicket) throw errTicket;
 
-                // 2. Cria a primeira mensagem na tabela de chat
+                // 2. Insere a primeira mensagem no chat
                 await sb.from('mensagens_ticket').insert([{
                     ticket_id: novoTicket.id,
                     autor: membroLogado.nome,
                     mensagem: mensagem
                 }]);
 
-                // 3. Limpa e fecha o form, depois recarrega a lista
-                document.getElementById('ticket-mensagem').value = '';
                 fecharFormTicket();
                 carregarTickets();
                 
@@ -234,7 +295,7 @@
             }
         }
 
-        // Abrir a tela de chat
+        // Controle do Chat
         function abrirChat(id, categoria) {
             idTicketAtivo = id;
             document.getElementById('chat-titulo').innerText = categoria;
@@ -245,10 +306,9 @@
         function fecharChat() {
             document.getElementById('modal-chat').classList.remove('ativo');
             idTicketAtivo = null;
-            carregarTickets(); // Atualiza a lista para mostrar se foi fechado
+            carregarTickets(); 
         }
 
-        // Carregar mensagens do chat
         async function carregarMensagens() {
             const container = document.getElementById('chat-mensagens');
             
@@ -279,14 +339,13 @@
                 });
 
                 container.innerHTML = html;
-                container.scrollTop = container.scrollHeight; // Rolagem automática
+                container.scrollTop = container.scrollHeight;
 
             } catch (err) {
                 console.error(err);
             }
         }
 
-        // Enviar mensagem
         async function enviarMsg() {
             const input = document.getElementById('input-msg');
             const texto = input.value.trim();
