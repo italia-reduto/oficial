@@ -64,8 +64,8 @@
         
         /* CARDS MOBILE */
         .card-mob { display: none; background: var(--card); border: 1px solid var(--borda); border-radius: 10px; padding: 15px; margin-bottom: 10px; }
-        .card-mob-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .card-mob-header h4 { font-size: 15px; color: #fff; }
+        .card-mob-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 10px; }
+        .card-mob-header h4 { font-size: 15px; color: #fff; line-height: 1.2; }
         .card-mob-header p { font-size: 11px; color: var(--texto-mutado); }
         .card-mob-stats { display: flex; gap: 15px; font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px;}
         .card-mob-stats strong { color: #fff; }
@@ -73,10 +73,24 @@
         /* BOTÕES E TAGS */
         .btn { padding: 8px 12px; border-radius: 6px; font-family: 'Oswald'; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; justify-content: center;}
         .btn-outline { background: transparent; color: var(--texto); border-color: var(--borda); }
+        .btn-outline-vermelho { background: transparent; color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
+        .btn-outline-vermelho:hover { background: rgba(239, 68, 68, 0.1); }
         .btn-verde { background: var(--verde); color: #000; }
         .btn-vermelho { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
         .btn-amarelo { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3); }
-        .tag-status { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .tag-status { 
+            padding: 4px 10px; 
+            border-radius: 20px; 
+            font-size: 10px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+            white-space: nowrap; /* IMPEDE QUEBRA DE LINHA NO MOBILE */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
         .tag-ativo { background: rgba(34, 197, 94, 0.15); color: var(--verde); }
         .tag-pausado { background: rgba(234, 179, 8, 0.15); color: var(--amarelo); }
         .tag-offline { background: rgba(255,255,255,0.05); color: var(--texto-mutado); }
@@ -113,6 +127,8 @@
             .tabela-membros { display: none; }
             .card-mob { display: block; }
             .input-busca { max-width: 100%; }
+            .acoes-mobile { display: flex; gap: 8px; width: 100%; margin-bottom: 8px; flex-wrap: wrap; }
+            .acoes-mobile:last-child { margin-bottom: 0; }
         }
     </style>
 </head>
@@ -236,6 +252,23 @@
         </div>
     </div>
 
+    <!-- NOVO MODAL: REMOVER ADVERTÊNCIA -->
+    <div class="modal-overlay" id="modal-remover-adv">
+        <div class="modal-content">
+            <h3 class="modal-titulo" style="color: var(--verde);">Remover Advertência</h3>
+            <p id="rem-adv-subtitulo" class="modal-sub">Membro: --</p>
+            
+            <p style="font-size: 13px; color: var(--texto-mutado); text-align: center; margin-bottom: 20px;">
+                Tem certeza que deseja remover <strong>1 advertência</strong> deste membro? Esta ação é irreversível.
+            </p>
+
+            <div class="modal-botoes">
+                <button class="btn btn-outline" onclick="fecharModalRemoverAdv()">Cancelar</button>
+                <button class="btn btn-verde" onclick="confirmarRemoverAdv()">Remover Adv</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE PERFIL COMPLETO (RAIO-X) -->
     <div class="modal-overlay" id="modal-perfil">
         <div class="modal-content" style="max-width: 600px;">
@@ -276,7 +309,28 @@
         let acaoPendente = { passaporte: null, tipo: null, nome: null };
         let categoriaAdvSelecionada = null;
         let membroPerfilAtual = null;
+        let membroRemoverAdv = null; 
+        
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+
+        // ==========================================
+        // 0. FUNÇÃO DE CORES DOS CARGOS
+        // ==========================================
+        function getCargoColor(cargo) {
+            const cores = {
+                'Líder da organização': '#fbbf24', // Dourado
+                'Líder da Organização': '#fbbf24', 
+                '01 da organização': '#cbd5e1',   // Prata
+                '01 da Organização': '#cbd5e1',
+                'Gerente geral': '#a855f7',       // Roxo
+                'Gerente Geral': '#a855f7',
+                'Gerente': '#3b82f6',             // Azul
+                'Coordenador': '#06b6d4',         // Ciano
+                'Auxiliar - Gerência': '#f97316', // Laranja
+                'Auxiliar - Gerencia': '#f97316'  
+            };
+            return cores[cargo] || 'var(--verde)'; // Verde padrão
+        }
 
         // ==========================================
         // 1. INICIALIZAÇÃO
@@ -302,17 +356,12 @@
         // ==========================================
         async function carregarMembros() {
             const tbody = document.getElementById('corpo-tabela-membros');
-            const containerMobile = document.getElementById('lista-membros-mobile');
             tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Buscando efetivo...</td></tr>';
             
             try {
-                // Puxa todos os membros
                 const { data: membros } = await sb.from('membros').select('*').order('nome');
-                
-                // Puxa quem está em serviço agora
                 const { data: pontos } = await sb.from('pontos').select('*').in('status', ['aberto', 'pausado']);
 
-                // Junta os dados: se o cara tiver na lista de pontos, ele está online
                 todosOsMembros = membros.map(m => {
                     const pontoAtivo = pontos ? pontos.find(p => String(p.passaporte) === String(m.passaporte)) : null;
                     return { ...m, status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', ponto_id: pontoAtivo ? pontoAtivo.id : null };
@@ -333,10 +382,8 @@
             let htmlMobile = '';
 
             filtrados.forEach(m => {
-                // Define a cor do cargo
-                const cargoColor = CARGOS_LIDERANCA.includes(m.cargo) ? 'var(--amarelo)' : 'var(--verde)';
+                const cargoColor = getCargoColor(m.cargo);
                 
-                // Status do ponto e botões de ação
                 let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
                 let botoesPonto = '';
 
@@ -361,7 +408,7 @@
                             <strong style="cursor: pointer; text-decoration: underline;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</strong><br>
                             <span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span>
                         </td>
-                        <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor};">${m.cargo}</span></td>
+                        <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span></td>
                         <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0}</td>
                         <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
                         <td>${tagPonto} <div style="display:inline-flex; gap:5px; margin-left: 5px;">${botoesPonto}</div></td>
@@ -369,6 +416,7 @@
                             <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
                             <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
                             <button class="btn btn-amarelo" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
+                            <button class="btn btn-outline-vermelho" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
                         </td>
                     </tr>
                 `;
@@ -381,18 +429,22 @@
                                 <h4 style="text-decoration: underline; cursor: pointer;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</h4>
                                 <p>Passaporte: ${m.passaporte}</p>
                             </div>
-                            <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor};">${m.cargo}</span>
+                            <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span>
                         </div>
                         <div class="card-mob-stats">
                             <div>XP: <strong>${m.xp_total || 0}</strong></div>
                             <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
-                            <div>${tagPonto}</div>
+                            <div style="margin-left: auto;">${tagPonto}</div>
                         </div>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            ${botoesPonto}
+                        
+                        <div class="acoes-mobile">
+                            ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
                             <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
                             <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
+                        </div>
+                        <div class="acoes-mobile">
                             <button class="btn btn-amarelo" style="flex: 1;" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
+                            <button class="btn btn-outline-vermelho" style="flex: 1;" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
                         </div>
                     </div>
                 `;
@@ -411,14 +463,13 @@
                 if (acao === 'pausar') {
                     await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString() }).eq('id', pontoId);
                 } else if (acao === 'retomar') {
-                    // Lógica simples de retomada: apenas muda o status (para contagem correta do tempo, precisaria de mais cálculo, mas para o admin já resolve)
                     await sb.from('pontos').update({ status: 'aberto', pausa_fim: new Date().toISOString() }).eq('id', pontoId);
                 } else if (acao === 'fechar') {
                     if (!confirm("Deseja forçar o encerramento do ponto deste membro?")) return;
                     await sb.from('pontos').update({ status: 'fechado', saida: new Date().toISOString() }).eq('id', pontoId);
                 }
-                carregarMembros(); // Recarrega a tabela
-            } catch (e) { alert("Erro ao alterar ponto."); }
+                carregarMembros();
+            } catch (e) { console.error("Erro ao alterar ponto.", e); }
         }
 
         // ==========================================
@@ -443,7 +494,7 @@
 
         async function confirmarAcaoXP() {
             const qtd = parseInt(document.getElementById('modal-input-qtd').value);
-            if (!qtd || qtd <= 0) { alert("Digite uma quantidade válida."); return; }
+            if (!qtd || qtd <= 0) return; 
 
             const btn = document.getElementById('modal-btn-confirmar');
             btn.innerText = "Salvando..."; btn.disabled = true;
@@ -459,12 +510,12 @@
                 
                 fecharModal();
                 carregarMembros();
-            } catch (e) { alert("Erro ao salvar XP."); } 
+            } catch (e) { console.error(e); } 
             finally { btn.innerText = "Confirmar"; btn.disabled = false; }
         }
 
         // ==========================================
-        // 5. ADVERTÊNCIA (COM CATEGORIAS)
+        // 5. ADVERTÊNCIA (ADICIONAR)
         // ==========================================
         function abrirModalAdv(passaporte, nome) {
             acaoPendente = { passaporte, nome };
@@ -486,26 +537,54 @@
         }
 
         async function confirmarAdvertencia() {
-            if (!categoriaAdvSelecionada) { alert("Selecione uma categoria."); return; }
-            const motivo = document.getElementById('adv-motivo-detalhe').value.trim();
+            if (!categoriaAdvSelecionada) return; 
             
             const btn = document.querySelector('#modal-advertencia .btn-vermelho');
             btn.innerText = "Aplicando..."; btn.disabled = true;
 
             try {
-                // 1. Pega a contagem atual de advertências
                 const { data: m } = await sb.from('membros').select('advertencias').eq('passaporte', acaoPendente.passaporte).single();
                 const novaQtd = (m.advertencias || 0) + 1;
 
-                // 2. Atualiza o membro
                 await sb.from('membros').update({ advertencias: novaQtd }).eq('passaporte', acaoPendente.passaporte);
                 
-                // 3. (Opcional) Você pode salvar numa tabela 'historico_advertencias' se quiser guardar o motivo escrito.
-
                 fecharModalAdv();
                 carregarMembros();
-            } catch (e) { alert("Erro ao aplicar advertência."); } 
+            } catch (e) { console.error(e); } 
             finally { btn.innerText = "Aplicar Punição"; btn.disabled = false; }
+        }
+
+        // ==========================================
+        // 5.1 ADVERTÊNCIA (REMOVER)
+        // ==========================================
+        function abrirModalRemoverAdv(passaporte, nome) {
+            membroRemoverAdv = { passaporte, nome };
+            document.getElementById('rem-adv-subtitulo').innerText = `Membro: ${nome}`;
+            document.getElementById('modal-remover-adv').classList.add('ativo');
+        }
+
+        function fecharModalRemoverAdv() {
+            document.getElementById('modal-remover-adv').classList.remove('ativo');
+        }
+
+        async function confirmarRemoverAdv() {
+            if (!membroRemoverAdv) return;
+            
+            const btn = document.querySelector('#modal-remover-adv .btn-verde');
+            btn.innerText = "Removendo..."; btn.disabled = true;
+
+            try {
+                const { data: m } = await sb.from('membros').select('advertencias').eq('passaporte', membroRemoverAdv.passaporte).single();
+                let novaQtd = Math.max(0, (m.advertencias || 0) - 1);
+
+                await sb.from('membros').update({ advertencias: novaQtd }).eq('passaporte', membroRemoverAdv.passaporte);
+
+                fecharModalRemoverAdv();
+                carregarMembros();
+            } catch (e) { console.error(e); } 
+            finally { 
+                btn.innerText = "Remover Adv"; btn.disabled = false; 
+            }
         }
 
         // ==========================================
@@ -520,6 +599,7 @@
             document.getElementById('perfil-nome-modal').innerText = membro.nome;
             document.getElementById('perfil-passaporte-modal').innerText = membro.passaporte;
             document.getElementById('perfil-cargo-modal').innerText = membro.cargo;
+            document.getElementById('perfil-cargo-modal').style.color = getCargoColor(membro.cargo);
             document.getElementById('perfil-xp-modal').innerText = membro.xp_total || 0;
             
             const avatar = document.getElementById('perfil-avatar-modal');
@@ -532,7 +612,7 @@
             }
 
             document.getElementById('modal-perfil').classList.add('ativo');
-            mudarAbaPerfil('historico', document.querySelector('#modal-perfil .btn-outline')); // Reseta pra primeira aba
+            mudarAbaPerfil('historico', document.querySelector('#modal-perfil .btn-outline'));
             
             carregarHistoricoPerfil(membro.passaporte);
             carregarPunicoesPerfil(membro.passaporte);
@@ -546,7 +626,6 @@
             document.getElementById('aba-perfil-historico').style.display = aba === 'historico' ? 'block' : 'none';
             document.getElementById('aba-perfil-punicoes').style.display = aba === 'punicoes' ? 'block' : 'none';
             
-            // Atualiza a cor da borda do botão
             document.querySelectorAll('#modal-perfil .btn-outline').forEach(b => {
                 b.style.borderBottom = '2px solid transparent';
                 b.style.color = 'var(--texto)';
@@ -597,7 +676,7 @@
             faltas.forEach(f => {
                 const data = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
                 html += `
-                    <div style="padding: 10px; border-bottom: 1px solid var(--borda); font-size: 12px;">
+                                 <div style="padding: 10px; border-bottom: 1px solid var(--borda); font-size: 12px;">
                         <strong style="color: var(--vermelho);">FALTA</strong> - ${data}
                         <p style="color: var(--texto-mutado); margin-top: 4px;">Justificativa: ${f.justificativa || 'Nenhuma'}</p>
                     </div>
