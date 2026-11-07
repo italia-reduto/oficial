@@ -26,10 +26,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--fundo); color: var(--texto); height: 100vh; overflow: hidden; display: flex; }
 
-        /* FUNDO */
+        /* FUNDO E PARTÍCULAS */
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
         .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
-        
+        .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 0; }
+        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; } .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; } .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; } .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; } .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
+        @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
+
         .layout { display: flex; width: 100%; height: 100vh; z-index: 10; position: relative; }
         
         /* SIDEBAR PC */
@@ -45,10 +48,10 @@
         .user-info p { font-size: 11px; color: var(--verde); text-transform: uppercase; font-weight: 600; }
         .btn-sair { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
 
-        /* MAIN - SPLIT VIEW (LISTA + CHAT) */
+        /* MAIN - SPLIT VIEW */
         .main { flex: 1; display: flex; overflow: hidden; position: relative; }
         
-        /* COLUNA DA LISTA DE TICKETS */
+        /* COLUNA DA LISTA */
         .col-tickets { width: 350px; background: rgba(13, 20, 16, 0.6); border-right: 1px solid var(--borda); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
         .tickets-header { padding: 20px; border-bottom: 1px solid var(--borda); }
         .tickets-header h1 { font-family: 'Oswald'; font-size: 20px; color: #fff; text-transform: uppercase; margin-bottom: 15px; }
@@ -67,7 +70,7 @@
         .ticket-item.ativo .ticket-avatar { border-color: var(--verde); color: var(--verde); }
         
         .ticket-info { flex: 1; overflow: hidden; }
-        .ticket-info h4 { font-size: 14px; color: #fff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ticket-info h4 { font-size: 14px; color: #fff; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 5px; }
         .ticket-info p { font-size: 12px; color: var(--texto-mutado); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .ticket-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; }
         .ticket-meta span { font-size: 10px; color: var(--texto-mutado); }
@@ -78,7 +81,7 @@
         .tag-queixa { background: rgba(59, 130, 246, 0.15); color: var(--azul); }
         .tag-outros { background: rgba(156, 163, 175, 0.15); color: var(--texto-mutado); }
 
-        /* COLUNA DO CHAT (DIREITA) */
+        /* COLUNA DO CHAT */
         .col-chat { flex: 1; display: flex; flex-direction: column; background: var(--fundo); position: relative; }
         
         .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--borda); background: rgba(13, 20, 16, 0.95); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 10;}
@@ -88,6 +91,13 @@
         
         .btn-fechar-ticket { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border: 1px solid rgba(239, 68, 68, 0.3); padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s;}
         .btn-fechar-ticket:hover { background: var(--vermelho); color: #fff; }
+
+        /* BOTÃO ASSUMIR E CADEADO */
+        .btn-assumir { background: var(--azul); color: #fff; border: none; padding: 8px 12px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: 0.2s; }
+        .btn-assumir:hover { background: #2563eb; }
+        
+        .status-assumido { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: var(--amarelo); background: rgba(234, 179, 8, 0.1); padding: 8px 12px; border-radius: 6px; border: 1px solid rgba(234, 179, 8, 0.3); }
+        .chat-bloqueado { opacity: 0.6; pointer-events: none; }
 
         .chat-mensagens { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; background-image: radial-gradient(rgba(34, 197, 94, 0.05) 1px, transparent 1px); background-size: 20px 20px; }
         
@@ -108,7 +118,6 @@
         .btn-enviar { background: var(--verde); color: #000; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: 0.2s; }
         .btn-enviar:hover { background: var(--verde-hover); transform: scale(1.05); }
 
-        /* EMPTY STATE CHAT */
         .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--texto-mutado); }
         .chat-empty i { font-size: 50px; margin-bottom: 15px; opacity: 0.2; }
 
@@ -123,11 +132,9 @@
         @media (max-width: 900px) {
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
-            
             .col-tickets { width: 100%; border-right: none; }
             .col-chat { position: absolute; inset: 0; z-index: 100; transform: translateX(100%); transition: transform 0.3s ease; padding-bottom: 60px; }
             .col-chat.aberto { transform: translateX(0); }
-            
             .btn-voltar-mobile { display: block; }
             .chat-header { padding: 15px; }
             .chat-mensagens { padding: 15px; }
@@ -137,8 +144,14 @@
     </style>
 </head>
 <body>
+    <!-- FUNDO E PARTÍCULAS -->
     <div class="fundo-degrade"></div>
     <div class="grade-fundo"></div>
+    <div class="particula p1"></div>
+    <div class="particula p2"></div>
+    <div class="particula p3"></div>
+    <div class="particula p4"></div>
+    <div class="particula p5"></div>
 
     <div class="layout">
         <!-- SIDEBAR PC -->
@@ -180,6 +193,7 @@
 
             <!-- COLUNA DO CHAT (DIREITA) -->
             <div class="col-chat" id="col-chat">
+                <!-- CABEÇALHO DO CHAT -->
                 <div class="chat-header" id="chat-header" style="display: none;">
                     <div class="chat-header-info">
                         <button class="btn-voltar-mobile" onclick="voltarListaMobile()"><i class="fas fa-arrow-left"></i></button>
@@ -188,21 +202,37 @@
                             <p id="chat-categoria">Categoria</p>
                         </div>
                     </div>
-                    <button class="btn-fechar-ticket" id="btn-fechar-ticket" onclick="fecharTicket()">
-                        <i class="fas fa-check"></i> Encerrar Ticket
-                    </button>
+                    
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <!-- BOTÃO ASSUMIR -->
+                        <div id="area-assumir" style="display: none;">
+                            <button class="btn-assumir" onclick="assumirTicket()"><i class="fas fa-hand-paper"></i> Assumir</button>
+                        </div>
+                        <!-- CADEADO (Quando outro admin assume) -->
+                        <div id="area-cadeado" class="status-assumido" style="display: none;">
+                            <i class="fas fa-lock"></i> <span id="nome-assumiu">Admin</span>
+                        </div>
+                        
+                        <!-- BOTÃO ENCERRAR -->
+                        <button class="btn-fechar-ticket" id="btn-fechar-ticket" onclick="fecharTicket()">
+                            <i class="fas fa-check"></i> Encerrar
+                        </button>
+                    </div>
                 </div>
 
+                <!-- CHAT VAZIO (Nenhum ticket selecionado) -->
                 <div class="chat-empty" id="chat-empty">
                     <i class="fas fa-comments"></i>
                     <h3>Selecione um ticket</h3>
                     <p>Escolha uma conversa ao lado para começar o atendimento.</p>
                 </div>
 
+                <!-- ÁREA DE MENSAGENS -->
                 <div class="chat-mensagens" id="chat-mensagens" style="display: none;">
                     <!-- As mensagens serão injetadas aqui -->
                 </div>
 
+                <!-- ÁREA DE DIGITAÇÃO -->
                 <div class="chat-input-area" id="chat-input-area" style="display: none;">
                     <input type="text" id="input-mensagem" class="chat-input" placeholder="Digite sua resposta..." onkeypress="if(event.key === 'Enter') enviarMensagem()">
                     <button class="btn-enviar" onclick="enviarMensagem()"><i class="fas fa-paper-plane"></i></button>
@@ -219,7 +249,7 @@
         <a href="admin-tickets.html" class="mob-btn ativo"><i class="fas fa-headset"></i> Suporte</a>
         <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
     </nav>
-    <script>
+        <script>
         let adminLogado = null;
         let filtroAtual = 'aberto';
         let ticketSelecionado = null;
@@ -227,6 +257,7 @@
 
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
+        // Função para evitar injeção de código (segurança)
         function escapeHTML(str) {
             if (!str) return '';
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
@@ -263,7 +294,7 @@
             filtroAtual = status;
             document.getElementById('btn-filtro-aberto').classList.toggle('ativo', status === 'aberto');
             document.getElementById('btn-filtro-fechado').classList.toggle('ativo', status === 'fechado');
-            fecharChatMobile(); // Reseta o chat no celular ao trocar de aba
+            voltarListaMobile(); // Reseta o chat no celular ao trocar de aba
             carregarTickets();
         }
 
@@ -290,11 +321,14 @@
                     const iniciais = t.nome_membro.substring(0, 2).toUpperCase();
                     const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
                     
+                    // Se tiver alguém assumido, mostra um cadeado na lista
+                    const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
+
                     html += `
-                        <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(t.nome_membro)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}')">
+                        <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(t.nome_membro)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}', '${t.assumido_por || ''}')">
                             <div class="ticket-avatar">${iniciais}</div>
                             <div class="ticket-info">
-                                <h4>${escapeHTML(t.nome_membro)}</h4>
+                                <h4>${cadeado} ${escapeHTML(t.nome_membro)}</h4>
                                 <p>Passaporte: ${t.passaporte}</p>
                             </div>
                             <div class="ticket-meta">
@@ -313,44 +347,90 @@
         }
 
         // ==========================================
-        // 3. ABRIR CHAT E CARREGAR MENSAGENS
+        // 3. ABRIR CHAT E LÓGICA DE ASSUMIR
         // ==========================================
-        function abrirTicket(id, nome, categoria, passaporte, status) {
+        function abrirTicket(id, nome, categoria, passaporte, status, assumido_por) {
             ticketSelecionado = id;
             
-            // Atualiza a UI (Desktop e Mobile)
+            // Mostra as áreas do chat
             document.getElementById('chat-empty').style.display = 'none';
             document.getElementById('chat-header').style.display = 'flex';
             document.getElementById('chat-mensagens').style.display = 'flex';
             
-            // Se o ticket estiver fechado, esconde a caixa de digitar
             const inputArea = document.getElementById('chat-input-area');
             const btnFechar = document.getElementById('btn-fechar-ticket');
-            
+            const areaAssumir = document.getElementById('area-assumir');
+            const areaCadeado = document.getElementById('area-cadeado');
+            const nomeAssumiu = document.getElementById('nome-assumiu');
+
+            // Reseta UI de bloqueio
+            inputArea.classList.remove('chat-bloqueado');
+            document.getElementById('input-mensagem').disabled = false;
+
+            // Lógica de Status (Aberto/Fechado) e Assumir
             if (status === 'fechado') {
                 inputArea.style.display = 'none';
                 btnFechar.style.display = 'none';
+                areaAssumir.style.display = 'none';
+                areaCadeado.style.display = 'none';
             } else {
                 inputArea.style.display = 'flex';
                 btnFechar.style.display = 'flex';
+
+                if (assumido_por) {
+                    // Ticket já tem dono
+                    areaAssumir.style.display = 'none';
+                    areaCadeado.style.display = 'flex';
+                    nomeAssumiu.innerText = assumido_por;
+
+                    // Se quem assumiu NÃO for eu, bloqueio a digitação e o encerramento
+                    if (assumido_por !== adminLogado.nome) {
+                        inputArea.classList.add('chat-bloqueado');
+                        document.getElementById('input-mensagem').disabled = true;
+                        btnFechar.style.display = 'none'; 
+                    }
+                } else {
+                    // Ticket livre
+                    areaAssumir.style.display = 'block';
+                    areaCadeado.style.display = 'none';
+                }
             }
 
-            // Preenche o cabeçalho
+            // Atualiza o cabeçalho
             document.getElementById('chat-nome').innerText = `${nome} (${passaporte})`;
             document.getElementById('chat-categoria').innerText = `Categoria: ${categoria}`;
 
-            // Abre a tela de chat no celular (animação)
+            // Abre no mobile
             document.getElementById('col-chat').classList.add('aberto');
-
-            // Atualiza a lista visualmente (tira a bolinha de ativo dos outros)
+            
+            // Atualiza a lista lateral (para marcar como ativo)
             carregarTickets();
 
-            // Carrega as mensagens e começa a verificar novas a cada 3 segundos
+            // Puxa as mensagens e inicia o Auto-Refresh
             carregarMensagens();
             if(intervalAtualizacao) clearInterval(intervalAtualizacao);
             intervalAtualizacao = setInterval(carregarMensagens, 3000); 
         }
 
+        async function assumirTicket() {
+            if (!ticketSelecionado) return;
+            try {
+                // Atualiza o banco dizendo que EU assumi
+                await sb.from('tickets').update({ assumido_por: adminLogado.nome }).eq('id', ticketSelecionado);
+                
+                // Recarrega o ticket atual para a tela atualizar o cadeado
+                const nome = document.getElementById('chat-nome').innerText.split(' (')[0];
+                abrirTicket(ticketSelecionado, nome, '', '', 'aberto', adminLogado.nome);
+                carregarTickets();
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao assumir ticket.");
+            }
+        }
+
+        // ==========================================
+        // 4. CARREGAR E ENVIAR MENSAGENS
+        // ==========================================
         async function carregarMensagens() {
             if (!ticketSelecionado) return;
             const chatContainer = document.getElementById('chat-mensagens');
@@ -376,11 +456,10 @@
                     `;
                 });
 
-                // Só atualiza se houver mudança para não piscar a tela toda hora
+                // Só atualiza se houver mensagem nova (evita piscar a tela)
                 if (chatContainer.innerHTML !== html && html !== '') {
                     chatContainer.innerHTML = html;
-                    // Rola para o final da conversa
-                    chatContainer.scrollTop = chatContainer.scrollHeight;
+                    chatContainer.scrollTop = chatContainer.scrollHeight; // Rola pro final
                 }
 
             } catch (err) {
@@ -388,15 +467,12 @@
             }
         }
 
-        // ==========================================
-        // 4. ENVIAR MENSAGEM
-        // ==========================================
         async function enviarMensagem() {
             const input = document.getElementById('input-mensagem');
             const texto = input.value.trim();
             if (!texto || !ticketSelecionado) return;
 
-            // Limpa o input rápido para o usuário não clicar 2x
+            // Limpa o input rápido
             input.value = '';
             
             try {
@@ -407,12 +483,12 @@
                     mensagem: texto
                 }]);
                 
-                // Força a atualização imediata
+                // Força a atualização imediata na tela
                 carregarMensagens();
             } catch (err) {
                 console.error(err);
                 alert("Erro ao enviar mensagem.");
-            }admin
+            }
         }
 
         // ==========================================
@@ -425,9 +501,8 @@
             try {
                 await sb.from('tickets').update({ status: 'fechado' }).eq('id', ticketSelecionado);
                 
-                // Atualiza a tela
-                fecharChatMobile(); 
-                mudarFiltro('fechado'); // Joga o admin direto para a aba de fechados para ver o que fez
+                voltarListaMobile(); 
+                mudarFiltro('fechado'); // Joga o admin direto para a aba de fechados
             } catch (err) {
                 console.error(err);
                 alert("Erro ao fechar ticket.");
@@ -442,12 +517,6 @@
             ticketSelecionado = null;
             if(intervalAtualizacao) clearInterval(intervalAtualizacao);
             carregarTickets(); // Limpa o ativo da lista
-        }
-
-        function fecharChatMobile() {
-            document.getElementById('col-chat').classList.remove('aberto');
-            ticketSelecionado = null;
-            if(intervalAtualizacao) clearInterval(intervalAtualizacao);
         }
 
         // ==========================================
