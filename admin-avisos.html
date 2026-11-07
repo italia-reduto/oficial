@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <meta name="color-scheme" content="dark">
+    <title>Itália | Mural de Avisos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --verde-hover: #16a34a; --fundo: #050806; --painel: #0d1410; --card: #131b16;
+            --borda: #233029; --texto: #f3f4f6; --texto-mutado: #9ca3af;
+            --amarelo: #eab308; --vermelho: #ef4444; --azul: #3b82f6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--fundo); color: var(--texto); height: 100vh; overflow: hidden; display: flex; }
+
+        /* FUNDO */
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
+        .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
+        .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 0; }
+        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; } .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; } .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; } .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; } .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
+        @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
+
+        .layout { display: flex; width: 100%; height: 100vh; z-index: 10; position: relative; }
+        
+        /* SIDEBAR PC */
+        .sidebar { width: 260px; background: rgba(13, 20, 16, 0.95); border-right: 1px solid var(--borda); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
+        .sidebar-logo { padding: 24px 20px; font-family: 'Oswald'; font-size: 26px; font-weight: 700; color: var(--verde); border-bottom: 1px solid var(--borda); display: flex; align-items: center; gap: 10px; letter-spacing: 2px; }
+        .menu { flex: 1; padding: 20px 15px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn { display: flex; align-items: center; gap: 15px; padding: 14px 20px; border-radius: 10px; background: transparent; border: none; color: var(--texto-mutado); font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: left; width: 100%; text-decoration: none; }
+        .nav-btn:hover { background: rgba(255,255,255,0.03); color: var(--texto); }
+        .nav-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .nav-btn i { width: 20px; text-align: center; font-size: 16px; }
+        .sidebar-user { padding: 20px; border-top: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+        .user-info h4 { font-size: 14px; color: #fff; }
+        .user-info p { font-size: 11px; color: var(--verde); text-transform: uppercase; font-weight: 600; }
+        .btn-sair { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+
+        /* MAIN */
+        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px 40px; }
+        .topo { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .titulo { font-family: 'Oswald'; font-size: 28px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
+        .subtitulo { font-size: 13px; color: var(--texto-mutado); margin-top: 4px; }
+
+        /* BOTÕES E TAGS */
+        .btn { padding: 10px 16px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; justify-content: center;}
+        .btn-outline { background: transparent; color: var(--texto); border-color: var(--borda); }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .btn-verde { background: var(--verde); color: #000; }
+        .btn-verde:hover { background: var(--verde-hover); }
+        .btn-vermelho { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
+        .btn-vermelho:hover { background: rgba(239, 68, 68, 0.2); }
+        .btn-amarelo { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3); }
+        .btn-icon { padding: 8px; width: 34px; height: 34px; border-radius: 6px; }
+
+        /* GRID DE AVISOS */
+        .grid-avisos { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card-aviso { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: 0.3s; }
+        .card-aviso:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); border-color: rgba(34, 197, 94, 0.3); }
+        
+        /* Barra lateral colorida por tipo de aviso */
+        .card-aviso::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+        .card-aviso.tipo-info::before { background: var(--azul); }
+        .card-aviso.tipo-alerta::before { background: var(--amarelo); }
+        .card-aviso.tipo-urgente::before { background: var(--vermelho); }
+
+        .aviso-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; gap: 10px; }
+        .aviso-titulo { font-family: 'Oswald'; font-size: 18px; color: #fff; letter-spacing: 0.5px; line-height: 1.2; }
+        .aviso-data { font-size: 11px; color: var(--texto-mutado); display: flex; align-items: center; gap: 5px; margin-top: 5px;}
+        .aviso-conteudo { font-size: 13px; color: var(--texto-mutado); line-height: 1.5; flex: 1; margin-bottom: 20px; white-space: pre-wrap; }
+        
+        .aviso-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
+        .aviso-status { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); cursor: pointer; }
+        .toggle-status { width: 32px; height: 18px; background: #333; border-radius: 10px; position: relative; transition: 0.3s; }
+        .toggle-status::after { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: 0.3s; }
+        .toggle-status.ativo { background: var(--verde); }
+        .toggle-status.ativo::after { transform: translateX(14px); }
+        
+        .aviso-acoes { display: flex; gap: 8px; }
+
+        /* MODAIS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.ativo { display: flex; }
+        .modal-content { background: var(--card); border: 1px solid var(--borda); border-radius: 16px; padding: 30px; width: 100%; max-width: 500px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto;}
+        .modal-titulo { font-family: 'Oswald'; font-size: 22px; color: #fff; margin-bottom: 5px; text-align: center; }
+        .modal-sub { font-size: 13px; color: var(--texto-mutado); margin-bottom: 25px; text-align: center; }
+        .modal-label { font-size: 12px; color: var(--texto-mutado); font-weight: 600; margin-bottom: 5px; display: block; }
+        .modal-input { width: 100%; padding: 14px; background: var(--fundo); border: 1px solid var(--borda); color: #fff; border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 15px; font-family: 'Inter', sans-serif; resize: vertical; }
+        .modal-input:focus { border-color: var(--verde); }
+        .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;}
+
+        /* GRID TIPO AVISO (MODAL) */
+        .grid-tipos { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 15px; }
+        .card-tipo { background: rgba(255,255,255,0.02); border: 1px solid var(--borda); padding: 12px 10px; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .card-tipo span { font-size: 11px; font-weight: 600; color: #fff; text-transform: uppercase; }
+        .card-tipo i { font-size: 16px; }
+        
+        .card-tipo[data-tipo="info"] i { color: var(--azul); }
+        .card-tipo[data-tipo="alerta"] i { color: var(--amarelo); }
+        .card-tipo[data-tipo="urgente"] i { color: var(--vermelho); }
+
+        .card-tipo.selecionado[data-tipo="info"] { border-color: var(--azul); background: rgba(59, 130, 246, 0.1); }
+        .card-tipo.selecionado[data-tipo="alerta"] { border-color: var(--amarelo); background: rgba(234, 179, 8, 0.1); }
+        .card-tipo.selecionado[data-tipo="urgente"] { border-color: var(--vermelho); background: rgba(239, 68, 68, 0.1); }
+
+        /* MOBILE */
+        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
+        .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 5px; background: none; border: none; color: var(--texto-mutado); font-size: 10px; font-weight: 600; cursor: pointer; width: 20%; transition: 0.2s; text-decoration: none;}
+        .mob-btn i { font-size: 18px; }
+        .mob-btn.ativo { color: var(--verde); }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .mobile-nav { display: flex; }
+            .main { padding: 20px 15px; padding-bottom: 90px; }
+            .topo { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .grid-avisos { grid-template-columns: 1fr; gap: 15px; }
+        }
+    </style>
+</head>
+      <body>
+    <div class="fundo-degrade"></div>
+    <div class="grade-fundo"></div>
+    <div class="particula p1"></div>
+    <div class="particula p2"></div>
+    <div class="particula p3"></div>
+    <div class="particula p4"></div>
+    <div class="particula p5"></div>
+
+    <div class="layout">
+        <!-- SIDEBAR PC -->
+        <aside class="sidebar">
+            <div class="sidebar-logo"><i class="fas fa-shield-alt"></i> ITÁLIA</div>
+            <div class="menu">
+                <a href="admin.html" class="nav-btn"><i class="fas fa-satellite-dish"></i> Radar de Plantões</a>
+                <a href="admin-justificativas.html" class="nav-btn"><i class="fas fa-file-signature"></i> Justificativas</a>
+                <a href="admin-membros.html" class="nav-btn"><i class="fas fa-users-cog"></i> Gerenciar Membros</a>
+                <a href="admin-tickets.html" class="nav-btn"><i class="fas fa-headset"></i> Central de Suporte</a>
+                <a href="admin-avisos.html" class="nav-btn ativo"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-info">
+                    <h4 id="adm-nome">Líder</h4>
+                    <p id="adm-cargo">Coordenador</p>
+                </div>
+                <button class="btn-sair" onclick="sair()"><i class="fas fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main">
+            <div class="topo">
+                <div>
+                    <h1 class="titulo">Mural de Avisos</h1>
+                    <p class="subtitulo">Comunicações oficiais para todos os membros.</p>
+                </div>
+                <button class="btn btn-verde" onclick="abrirModalAviso()">
+                    <i class="fas fa-plus"></i> Novo Aviso
+                </button>
+            </div>
+
+            <!-- GRID DE AVISOS -->
+            <div class="grid-avisos" id="grid-avisos">
+                <div style="width: 100%; text-align: center; padding: 40px; color: var(--texto-mutado);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p>Buscando avisos...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MENU MOBILE -->
+    <nav class="mobile-nav">
+        <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
+        <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
+        <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
+        <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="admin-avisos.html" class="mob-btn ativo"><i class="fas fa-bullhorn"></i> Avisos</a>
+    </nav>
+
+    <!-- MODAL DE CRIAR / EDITAR AVISO -->
+    <div class="modal-overlay" id="modal-aviso">
+        <div class="modal-content">
+            <h3 class="modal-titulo" id="modal-aviso-titulo">Novo Aviso</h3>
+            <p class="modal-sub" id="modal-aviso-sub">Preencha os dados abaixo para publicar.</p>
+            
+            <input type="hidden" id="aviso-id-input">
+            
+            <label class="modal-label">Título do Aviso</label>
+            <input type="text" id="aviso-titulo-input" class="modal-input" placeholder="Ex: Reunião Geral, Novo Plantão...">
+            
+            <label class="modal-label">Gravidade</label>
+            <div class="grid-tipos">
+                <div class="card-tipo selecionado" data-tipo="info" onclick="selecionarTipoAviso('info', this)">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Info</span>
+                </div>
+                <div class="card-tipo" data-tipo="alerta" onclick="selecionarTipoAviso('alerta', this)">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>Alerta</span>
+                </div>
+                <div class="card-tipo" data-tipo="urgente" onclick="selecionarTipoAviso('urgente', this)">
+                    <i class="fas fa-radiation"></i>
+                    <span>Urgente</span>
+                </div>
+            </div>
+
+            <label class="modal-label">Conteúdo</label>
+            <textarea id="aviso-conteudo-input" class="modal-input" rows="5" placeholder="Escreva o aviso aqui..."></textarea>
+
+            <div class="modal-botoes">
+                <button class="btn btn-outline" onclick="fecharModalAviso()">Cancelar</button>
+                <button class="btn btn-verde" id="btn-salvar-aviso" onclick="salvarAviso()">Publicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DELETAR AVISO -->
+    <div class="modal-overlay" id="modal-deletar-aviso">
+        <div class="modal-content">
+            <h3 class="modal-titulo" style="color: var(--vermelho);">Excluir Aviso</h3>
+            <p id="del-aviso-sub" class="modal-sub">Tem certeza que deseja apagar este aviso?</p>
+            
+            <p style="font-size: 13px; color: var(--texto-mutado); text-align: center; margin-bottom: 20px;">
+                Esta ação não pode ser desfeita e o aviso sumirá do painel de todos os membros.
+            </p>
+
+            <div class="modal-botoes">
+                <button class="btn btn-outline" onclick="fecharModalDeletar()">Cancelar</button>
+                <button class="btn btn-vermelho" id="btn-confirmar-deletar" onclick="confirmarDeletarAviso()">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+          <script>
+        let adminLogado = null;
+        let avisoEditandoId = null;
+        let tipoAvisoSelecionado = 'info';
+        let avisoDeletandoId = null;
+        
+        const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+
+        // Função para evitar injeção de HTML (segurança)
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag])
+            );
+        }
+
+        // ==========================================
+        // 1. INICIALIZAÇÃO
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            adminLogado = JSON.parse(logado);
+            if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
+                alert("Acesso negado.");
+                return window.location.href = 'dashboard.html';
+            }
+
+            document.getElementById('adm-nome').innerText = adminLogado.nome;
+            document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+
+            carregarAvisos();
+        });
+
+        // ==========================================
+        // 2. CARREGAR E RENDERIZAR AVISOS
+        // ==========================================
+        async function carregarAvisos() {
+            const grid = document.getElementById('grid-avisos');
+            grid.innerHTML = '<div style="width: 100%; text-align: center; padding: 40px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i><p>Buscando avisos...</p></div>';
+
+            try {
+                const { data: avisos, error } = await sb.from('avisos').select('*').order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                if (!avisos || avisos.length === 0) {
+                    grid.innerHTML = '<div style="width: 100%; text-align: center; padding: 40px; color: var(--texto-mutado);"><i class="fas fa-bullhorn" style="font-size: 32px; margin-bottom: 10px; opacity: 0.5;"></i><p>Nenhum aviso publicado ainda.</p></div>';
+                    return;
+                }
+
+                let html = '';
+                avisos.forEach(aviso => {
+                    const dataFormatada = new Date(aviso.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+                    const tituloSafe = escapeHTML(aviso.titulo);
+                    const conteudoSafe = escapeHTML(aviso.conteudo);
+                    
+                    // Define ícone baseado no tipo
+                    let iconeTipo = '<i class="fas fa-info-circle" style="color: var(--azul);"></i>';
+                    if (aviso.tipo === 'alerta') iconeTipo = '<i class="fas fa-exclamation-triangle" style="color: var(--amarelo);"></i>';
+                    if (aviso.tipo === 'urgente') iconeTipo = '<i class="fas fa-radiation" style="color: var(--vermelho);"></i>';
+
+                    html += `
+                        <div class="card-aviso tipo-${aviso.tipo}">
+                            <div class="aviso-header">
+                                <div>
+                                    <div class="aviso-titulo">${tituloSafe}</div>
+                                    <div class="aviso-data">
+                                        ${iconeTipo} ${dataFormatada} • Por ${escapeHTML(aviso.autor_nome || 'Liderança')}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="aviso-conteudo">${conteudoSafe}</div>
+                            
+                            <div class="aviso-footer">
+                                <div class="aviso-status" onclick="toggleStatus('${aviso.id}', ${aviso.ativo})">
+                                    <div class="toggle-status ${aviso.ativo ? 'ativo' : ''}"></div>
+                                    <span style="color: ${aviso.ativo ? 'var(--verde)' : 'var(--texto-mutado)'};">
+                                        ${aviso.ativo ? 'Ativo' : 'Oculto'}
+                                    </span>
+                                </div>
+                                <div class="aviso-acoes">
+                                    <button class="btn btn-outline btn-icon" onclick="abrirModalAviso('${aviso.id}')" title="Editar"><i class="fas fa-pen"></i></button>
+                                    <button class="btn btn-vermelho btn-icon" onclick="abrirModalDeletar('${aviso.id}')" title="Excluir"><i class="fas fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                grid.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                grid.innerHTML = '<div style="width: 100%; text-align: center; padding: 40px; color: var(--vermelho);"><i class="fas fa-exclamation-circle" style="font-size: 24px; margin-bottom: 10px;"></i><p>Erro ao carregar avisos.</p></div>';
+            }
+        }
+
+        // ==========================================
+        // 3. MODAL CRIAR / EDITAR
+        // ==========================================
+        async function abrirModalAviso(id = null) {
+            avisoEditandoId = id;
+            
+            // Limpa os campos
+            document.getElementById('aviso-titulo-input').value = '';
+            document.getElementById('aviso-conteudo-input').value = '';
+            tipoAvisoSelecionado = 'info';
+            
+            // Reseta a UI dos tipos
+            document.querySelectorAll('.card-tipo').forEach(c => c.classList.remove('selecionado'));
+            document.querySelector('.card-tipo[data-tipo="info"]').classList.add('selecionado');
+
+            const tituloModal = document.getElementById('modal-aviso-titulo');
+            const btnSalvar = document.getElementById('btn-salvar-aviso');
+
+            if (id) {
+                tituloModal.innerText = 'Editar Aviso';
+                btnSalvar.innerText = 'Salvar Alterações';
+                
+                // Busca os dados do aviso para preencher
+                const { data: aviso } = await sb.from('avisos').select('*').eq('id', id).single();
+                if (aviso) {
+                    document.getElementById('aviso-titulo-input').value = aviso.titulo;
+                    document.getElementById('aviso-conteudo-input').value = aviso.conteudo;
+                    
+                    tipoAvisoSelecionado = aviso.tipo;
+                    document.querySelectorAll('.card-tipo').forEach(c => c.classList.remove('selecionado'));
+                    const elTipo = document.querySelector(`.card-tipo[data-tipo="${aviso.tipo}"]`);
+                    if (elTipo) elTipo.classList.add('selecionado');
+                }
+            } else {
+                tituloModal.innerText = 'Novo Aviso';
+                btnSalvar.innerText = 'Publicar';
+            }
+
+            document.getElementById('modal-aviso').classList.add('ativo');
+        }
+
+        function fecharModalAviso() {
+            document.getElementById('modal-aviso').classList.remove('ativo');
+        }
+
+        function selecionarTipoAviso(tipo, el) {
+            document.querySelectorAll('.card-tipo').forEach(c => c.classList.remove('selecionado'));
+            el.classList.add('selecionado');
+            tipoAvisoSelecionado = tipo;
+        }
+
+        async function salvarAviso() {
+            const titulo = document.getElementById('aviso-titulo-input').value.trim();
+            const conteudo = document.getElementById('aviso-conteudo-input').value.trim();
+            
+            if (!titulo || !conteudo) return; // Validação simples
+
+            const btn = document.getElementById('btn-salvar-aviso');
+            const textoOriginal = btn.innerText;
+            btn.innerText = "Salvando..."; 
+            btn.disabled = true;
+
+            try {
+                if (avisoEditandoId) {
+                    // UPDATE
+                    await sb.from('avisos').update({
+                        titulo: titulo,
+                        conteudo: conteudo,
+                        tipo: tipoAvisoSelecionado
+                    }).eq('id', avisoEditandoId);
+                } else {
+                    // INSERT
+                    await sb.from('avisos').insert([{
+                        titulo: titulo,
+                        conteudo: conteudo,
+                        tipo: tipoAvisoSelecionado,
+                        autor_nome: adminLogado.nome,
+                        ativo: true
+                    }]);
+                }
+
+                fecharModalAviso();
+                carregarAvisos();
+            } catch (err) { 
+                console.error(err); 
+            } finally { 
+                btn.innerText = textoOriginal; 
+                btn.disabled = false; 
+            }
+        }
+
+        // ==========================================
+        // 4. TOGGLE STATUS (ATIVO/OCULTO)
+        // ==========================================
+        async function toggleStatus(id, statusAtual) {
+            try {
+                // Inverte o status atual
+                await sb.from('avisos').update({ ativo: !statusAtual }).eq('id', id);
+                carregarAvisos(); // Recarrega a lista para atualizar a UI
+            } catch (err) {
+                console.error("Erro ao mudar status", err);
+            }
+        }
+
+        // ==========================================
+        // 5. DELETAR AVISO
+        // ==========================================
+        function abrirModalDeletar(id) {
+            avisoDeletandoId = id;
+            document.getElementById('modal-deletar-aviso').classList.add('ativo');
+        }
+
+        function fecharModalDeletar() {
+            document.getElementById('modal-deletar-aviso').classList.remove('ativo');
+            avisoDeletandoId = null;
+        }
+
+        async function confirmarDeletarAviso() {
+            if (!avisoDeletandoId) return;
+
+            const btn = document.getElementById('btn-confirmar-deletar');
+            const textoOriginal = btn.innerText;
+            btn.innerText = "Excluindo..."; 
+            btn.disabled = true;
+
+            try {
+                await sb.from('avisos').delete().eq('id', avisoDeletandoId);
+                fecharModalDeletar();
+                carregarAvisos();
+            } catch (err) {
+                console.error(err);
+            } finally {
+                btn.innerText = textoOriginal;
+                btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 6. LOGOUT
+        // ==========================================
+        function sair() {
+            sessionStorage.removeItem('membro_logado');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
