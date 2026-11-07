@@ -299,52 +299,60 @@
         }
 
         async function carregarTickets() {
-            const lista = document.getElementById('lista-tickets');
-            lista.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+    const lista = document.getElementById('lista-tickets');
+    lista.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
 
-            try {
-                const { data: tickets, error } = await sb.from('tickets')
-                    .select('*')
-                    .eq('status', filtroAtual)
-                    .order('created_at', { ascending: false });
+    try {
+        const { data: tickets, error } = await sb.from('tickets')
+            .select('*')
+            .eq('status', filtroAtual)
+            .order('created_at', { ascending: false });
 
-                if (error) throw error;
+        if (error) throw error;
 
-                if (!tickets || tickets.length === 0) {
-                    lista.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--texto-mutado);"><i class="fas fa-inbox" style="font-size: 30px; margin-bottom: 10px; opacity: 0.5;"></i><p>Nenhum ticket aqui.</p></div>';
-                    return;
-                }
-
-                let html = '';
-                tickets.forEach(t => {
-                    const isAtivo = ticketSelecionado === t.id ? 'ativo' : '';
-                    const iniciais = t.nome_membro.substring(0, 2).toUpperCase();
-                    const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
-                    
-                    // Se tiver alguém assumido, mostra um cadeado na lista
-                    const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
-
-                    html += `
-                        <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(t.nome_membro)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}', '${t.assumido_por || ''}')">
-                            <div class="ticket-avatar">${iniciais}</div>
-                            <div class="ticket-info">
-                                <h4>${cadeado} ${escapeHTML(t.nome_membro)}</h4>
-                                <p>Passaporte: ${t.passaporte}</p>
-                            </div>
-                            <div class="ticket-meta">
-                                <span class="tag-cat ${tagClass}">${t.categoria}</span>
-                                <span>${formatarHora(t.created_at)}</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                lista.innerHTML = html;
-
-            } catch (err) {
-                console.error(err);
-                lista.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--vermelho);">Erro ao carregar tickets.</div>';
-            }
+        if (!tickets || tickets.length === 0) {
+            lista.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--texto-mutado);"><i class="fas fa-inbox" style="font-size: 30px; margin-bottom: 10px; opacity: 0.5;"></i><p>Nenhum ticket aqui.</p></div>';
+            return;
         }
+
+        let html = '';
+        tickets.forEach(t => {
+            const isAtivo = ticketSelecionado === t.id ? 'ativo' : '';
+            const iniciais = t.nome_membro.substring(0, 2).toUpperCase();
+            const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
+            
+            const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
+
+            html += `
+                <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(t.nome_membro)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}', '${t.assumido_por || ''}')">
+                    <div class="ticket-avatar">${iniciais}</div>
+                    <div class="ticket-info">
+                        <h4>${cadeado} ${escapeHTML(t.nome_membro)}</h4>
+                        <p>Passaporte: ${t.passaporte}</p>
+                    </div>
+                    <div class="ticket-meta">
+                        <span class="tag-cat ${tagClass}">${t.categoria}</span>
+                        <span>${formatarHora(t.created_at)}</span>
+                    </div>
+                </div>
+            `;
+        });
+        lista.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        // AQUI ESTÁ A CORREÇÃO: Agora mostra o erro real na tela
+        lista.innerHTML = `
+            <div style="text-align: center; padding: 20px; color: var(--vermelho); background: rgba(239,68,68,0.1); border: 1px solid var(--vermelho); border-radius: 8px; margin: 10px;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                <p style="font-weight: bold; margin-bottom: 10px;">Erro ao carregar tickets!</p>
+                <p style="font-size: 12px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; word-break: break-all; text-align: left;">
+                    ${err.message || JSON.stringify(err)}
+                </p>
+            </div>
+        `;
+    }
+            }
 
         // ==========================================
         // 3. ABRIR CHAT E LÓGICA DE ASSUMIR
