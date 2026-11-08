@@ -189,8 +189,8 @@
         
         const tolerancia = 15; // 15 minutos de tolerância para atraso
         
-        // Se estiver dentro do período de tolerância (15 min antes ou 15 min depois do início)
-        if (minutosAgora >= (minutosInicio - tolerancia) && minutosAgora <= (minutosInicio + tolerancia)) return 'aberto'; 
+        // Se estiver dentro do período de tolerância (15 min depois do início)
+        if (minutosAgora >= minutosInicio && minutosAgora <= (minutosInicio + tolerancia)) return 'aberto'; ; 
         
         // Se já passou da tolerância mas ainda não terminou
         if (minutosAgora > (minutosInicio + tolerancia) && minutosAgora < minutosFim) return 'em_andamento'; 
