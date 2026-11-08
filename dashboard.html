@@ -57,8 +57,7 @@
         .progressao-xp-texto { font-size: 10px; color: #9ca3af; text-align: right; }
         .btn-config { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 16px; cursor: pointer; z-index: 10; transition: 0.3s; }
         .btn-config:hover { color: var(--verde); border-color: var(--verde); transform: rotate(90deg); }
-
-        .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+                .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card-metrica { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 15px; text-align: left; transition: 0.3s; }
         .metrica-topo { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .metrica-topo i { font-size: 14px; }
@@ -79,6 +78,20 @@
         .aviso-texto { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
         .aviso-vazio { font-size: 13px; color: var(--texto-mutado); text-align: center; padding: 10px 0; }
 
+        /* ESTILOS DO NOVO SISTEMA DE AVISOS */
+        .aviso-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+        .aviso-titulo { font-size: 14px; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .badge-novo { display: flex; align-items: center; gap: 5px; background: rgba(34, 197, 94, 0.15); color: var(--verde); padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; cursor: pointer; border: 1px solid rgba(34, 197, 94, 0.3); transition: 0.3s; white-space: nowrap; }
+        .badge-novo:hover { background: var(--verde); color: #000; }
+        .badge-novo i { animation: sininho 1s infinite; }
+        @keyframes sininho { 
+            0%, 100% { transform: rotate(0); } 
+            20% { transform: rotate(15deg); } 
+            40% { transform: rotate(-15deg); } 
+            60% { transform: rotate(10deg); } 
+            80% { transform: rotate(-10deg); } 
+        }
+
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; opacity: 0; transition: opacity 0.3s ease; }
         .modal-overlay.ativo { display: flex; opacity: 1; }
         .modal-conteudo { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; width: 100%; max-width: 500px; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: scale(0.9) translateY(20px); opacity: 0; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease; overflow: hidden; }
@@ -88,6 +101,8 @@
         .btn-fechar { background: transparent; border: none; color: var(--texto-mutado); font-size: 20px; cursor: pointer; }
         .btn-fechar:hover { color: #ef4444; }
         .modal-lista { padding: 20px; overflow-y: auto; max-height: 60vh; display: flex; flex-direction: column; gap: 10px; flex: 1; -webkit-overflow-scrolling: touch; }
+        
+        /* RESTO DOS MODAIS E MENU */
         .busca-membros { width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 15px; }
         .busca-membros:focus { border-color: var(--verde); }
         .categoria-membros { font-family: 'Oswald', sans-serif; font-size: 12px; color: var(--texto-mutado); text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
@@ -210,7 +225,7 @@
             </a>
         </div>
 
-        <!-- MURAL DE AVISOS -->
+        <!-- MURAL DE AVISOS (AQUI ENTRA O SININHO) -->
         <div class="painel-avisos anim-entrada delay-4">
             <div class="painel-topo">
                 <h3>
@@ -273,140 +288,185 @@
     </div>
 
     <!-- MENU INFERIOR -->
-<nav class="menu-inferior">
-    <a href="#" class="item-menu ativo" onclick="mudarMenu(this); return false;"><i class="fas fa-home"></i><span>Início</span></a>
-    <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
-    <a href="perfil.html" class="item-menu"><i class="fas fa-id-card"></i><span>Perfil</span></a>
-    <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
-</nav>
-            <script>
-        let membroLogado = null;
-        let todosMembros = [];
+    <nav class="menu-inferior">
+        <a href="#" class="item-menu ativo" onclick="mudarMenu(this); return false;"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="perfil.html" class="item-menu"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
+    </nav>
+    <script>
+    let membroLogado = null;
+    let todosMembros = [];
 
-        // ==========================================
-        // 1. INICIALIZAÇÃO
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', async () => {
-            const logado = sessionStorage.getItem('membro_logado');
-            if (!logado) return window.location.href = 'login.html';
+    // ==========================================
+    // 1. INICIALIZAÇÃO
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', async () => {
+        const logado = sessionStorage.getItem('membro_logado');
+        if (!logado) return window.location.href = 'login.html';
 
-            membroLogado = JSON.parse(logado);
+        membroLogado = JSON.parse(logado);
+        
+        document.getElementById('nome-membro').innerText = membroLogado.nome;
+        document.getElementById('cargo-membro').innerText = membroLogado.cargo;
+        document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
+        document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
+
+        const { data, error } = await sb.from('membros')
+            .select('xp_total, foto_url, advertencias')
+            .eq('passaporte', membroLogado.passaporte)
+            .single();
+
+        if (data && !error) {
+            document.getElementById('kpi-advertencias').innerText = data.advertencias || 0;
             
-            document.getElementById('nome-membro').innerText = membroLogado.nome;
-            document.getElementById('cargo-membro').innerText = membroLogado.cargo;
-            document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
-            document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
-
-            const { data, error } = await sb.from('membros')
-                .select('xp_total, foto_url, advertencias')
-                .eq('passaporte', membroLogado.passaporte)
-                .single();
-
-            if (data && !error) {
-                document.getElementById('kpi-advertencias').innerText = data.advertencias || 0;
-                
-                if (data.foto_url) {
-                    const avatar = document.getElementById('avatar-inicial');
-                    avatar.style.backgroundImage = `url('${data.foto_url}')`;
-                    avatar.innerText = ''; 
-                }
-                
-                calcularProgressao(data.xp_total || 0, data.cargo);
+            if (data.foto_url) {
+                const avatar = document.getElementById('avatar-inicial');
+                avatar.style.backgroundImage = `url('${data.foto_url}')`;
+                avatar.innerText = ''; 
             }
-
-            carregarAvisos();
-            carregarPresencasEFaltas(membroLogado.passaporte);
-            carregarMembrosRapido(); 
-        });
-
-        // ==========================================
-        // 2. PROGRESSÃO DE CARREIRA
-        // ==========================================
-        function calcularProgressao(xpTotal, nomeCargoAtual) {
-            const CARGOS_ESCALA = [
-                { nome: 'Novato', xp_min: 0, xp_max: 500 },
-                { nome: 'Executor', xp_min: 500, xp_max: 1500 },
-                { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
-                { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
-                { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
-            ];
             
-            let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
-            
-            if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
-                document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
-                document.getElementById('label-cargo-proximo').innerText = 'MAX';
-                document.getElementById('barra-progressao').style.width = '100%';
-                document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
-                return;
-            }
-            if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
+            calcularProgressao(data.xp_total || 0, membroLogado.cargo);
+        }
 
-            let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
-            
-            if (!proximoNivel) {
-                document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-                document.getElementById('label-cargo-proximo').innerText = 'MAX';
-                document.getElementById('barra-progressao').style.width = '100%';
-                document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
-                return;
-            }
+        carregarAvisos();
+        carregarPresencasEFaltas(membroLogado.passaporte);
+        carregarMembrosRapido(); 
+    });
 
+    // ==========================================
+    // 2. PROGRESSÃO DE CARREIRA
+    // ==========================================
+    function calcularProgressao(xpTotal, nomeCargoAtual) {
+        const CARGOS_ESCALA = [
+            { nome: 'Novato', xp_min: 0, xp_max: 500 },
+            { nome: 'Executor', xp_min: 500, xp_max: 1500 },
+            { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
+            { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
+            { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
+        ];
+        
+        let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
+        
+        if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
+            document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
+            document.getElementById('label-cargo-proximo').innerText = 'MAX';
+            document.getElementById('barra-progressao').style.width = '100%';
+            document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
+            return;
+        }
+        if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
+
+        let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
+        
+        if (!proximoNivel) {
             document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-            document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
-            
-            const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
-            const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
-            let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
-            
-            if (porcentagem > 100) porcentagem = 100;
-            document.getElementById('barra-progressao').style.width = porcentagem + '%';
-            document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
+            document.getElementById('label-cargo-proximo').innerText = 'MAX';
+            document.getElementById('barra-progressao').style.width = '100%';
+            document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
+            return;
         }
 
-        // ==========================================
-        // 3. MÉTRICAS E AVISOS
-        // ==========================================
-        async function carregarPresencasEFaltas(passaporte) {
-            try {
-                const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
-                const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
-                
-                if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
-                if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
-            } catch (error) { console.error(error); }
+        document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+        document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
+        
+        const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
+        const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
+        let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
+        
+        if (porcentagem > 100) porcentagem = 100;
+        document.getElementById('barra-progressao').style.width = porcentagem + '%';
+        document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
+    }
+
+    // ==========================================
+    // 3. MÉTRICAS E AVISOS
+    // ==========================================
+    async function carregarPresencasEFaltas(passaporte) {
+        try {
+            const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
+            const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
+            
+            if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
+            if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
+        } catch (error) { console.error(error); }
+    }
+
+    async function carregarAvisos() {
+        const container = document.getElementById('lista-avisos');
+        
+        // CORREÇÃO: Puxando as colunas certas, ordenando por 'created_at' e filtrando só os ATIVOS
+        const { data, error } = await sb.from('avisos')
+            .select('*')
+            .eq('ativo', true) 
+            .order('created_at', { ascending: false })
+            .limit(3);
+
+        if (error || !data || data.length === 0) {
+            container.innerHTML = '<p class="aviso-vazio">Nenhum aviso recente.</p>';
+            return;
         }
 
-        async function carregarAvisos() {
-            const container = document.getElementById('lista-avisos');
-            const { data, error } = await sb.from('avisos').select('*').order('criado_em', { ascending: false }).limit(3);
-                
-            if (error || !data || data.length === 0) return;
+        // Puxa a lista de avisos que o jogador já leu no celular
+        let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
 
-            let html = '';
-            data.forEach(aviso => {
-                const textoAviso = aviso.texto || 'Sem detalhes.';
-                const autorAviso = aviso.autor || 'Liderança';
-                let dataFormatada = 'Recentemente';
-                
-                if (aviso.criado_em) {
-                    dataFormatada = new Date(aviso.criado_em).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' });
-                }
+        let html = '';
+        data.forEach(aviso => {
+            const isLido = avisosLidos.includes(aviso.id);
+            const dataFormatada = aviso.created_at ? new Date(aviso.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : 'Recentemente';
+            
+            // Define a cor e o ícone pela gravidade do aviso
+            let corBorda = 'var(--verde)';
+            let iconeTipo = '<i class="fas fa-info-circle" style="color: var(--azul);"></i>';
+            
+            if (aviso.tipo === 'alerta') { 
+                corBorda = 'var(--amarelo)'; 
+                iconeTipo = '<i class="fas fa-exclamation-triangle" style="color: var(--amarelo);"></i>'; 
+            } else if (aviso.tipo === 'urgente') { 
+                corBorda = 'var(--vermelho)'; 
+                iconeTipo = '<i class="fas fa-radiation" style="color: var(--vermelho);"></i>'; 
+            }
 
-                html += `
-                    <div class="aviso-item">
-                        <div class="aviso-texto">${textoAviso}</div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px; margin-top: 8px;">
-                            <span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${autorAviso}</span>
-                            <span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span>
-                        </div>
+            // Se já foi lido, a borda fica cinza e sem o botão
+            if (isLido) corBorda = 'rgba(255,255,255,0.1)';
+
+            html += `
+                <div class="aviso-item" style="border-left-color: ${corBorda};">
+                    <div class="aviso-topo">
+                        <div class="aviso-titulo">${iconeTipo} ${aviso.titulo}</div>
+                        ${!isLido ? `<div class="badge-novo" onclick="marcarComoLido('${aviso.id}', this)"><i class="fas fa-bell"></i> Marcar lido</div>` : ''}
                     </div>
-                `;
-            });
-            container.innerHTML = html;
+                    <p style="font-size: 12px; color: var(--texto-mutado); line-height: 1.4; margin-bottom: 10px; white-space: pre-wrap;">${aviso.conteudo}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
+                        <span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${aviso.autor_nome || 'Liderança'}</span>
+                        <span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span>
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+    }
+
+    // ==========================================
+    // 3.1 MARCAR COMO LIDO (NOVO)
+    // ==========================================
+    function marcarComoLido(id, elemento) {
+        // Pega os lidos, adiciona o novo e salva no celular
+        let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
+        if (!avisosLidos.includes(id)) {
+            avisosLidos.push(id);
+            localStorage.setItem('avisos_lidos', JSON.stringify(avisosLidos));
         }
 
-        // ==========================================
+        // Efeito visual de desaparecer o botão
+        elemento.style.opacity = '0';
+        setTimeout(() => {
+            elemento.remove(); // Apaga o botão de "Marcar lido"
+            const card = elemento.closest('.aviso-item');
+            card.style.borderLeftColor = 'rgba(255,255,255,0.1)'; // Borda fica cinza (já lido)
+        }, 300);
+    }
+                // ==========================================
         // 4. MEMBROS (MODAL)
         // ==========================================
         async function carregarMembrosRapido() {
@@ -484,7 +544,7 @@
         }
 
         // ==========================================
-        // 5. CONFIGURAÇÕES E ALERTAS
+        // 5. CONFIGURAÇÕES, ALERTAS E LOGOUT
         // ==========================================
         function abrirModalConfig() { document.getElementById('modal-config').classList.add('ativo'); }
         function fecharModalConfig() { document.getElementById('modal-config').classList.remove('ativo'); }
@@ -537,6 +597,7 @@
             window.location.href = 'login.html';
         }
 
+        // Fecha os modais ao clicar fora deles
         document.querySelectorAll('.modal-overlay').forEach(modal => {
             modal.addEventListener('click', function(e) {
                 if (e.target === this) this.classList.remove('ativo');
