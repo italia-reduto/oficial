@@ -50,8 +50,7 @@
         .btn-em-andamento { background: rgba(234, 179, 8, 0.1); color: #eab308; border: 1px solid #eab308; }
         .card-plantao.com-imagem { background-size: cover; background-position: center; background-repeat: no-repeat; }
         .card-plantao.com-imagem::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.7) 100%); z-index: 1; }
-
-        #tela-cronometro { display: none; flex-direction: column; background: var(--vidro); padding: 25px; border-radius: 16px; border: 1px solid var(--borda); text-align: left; }
+                #tela-cronometro { display: none; flex-direction: column; background: var(--vidro); padding: 25px; border-radius: 16px; border: 1px solid var(--borda); text-align: left; }
         .cronometro-display { font-family: 'Oswald'; font-size: 56px; color: #fff; line-height: 1; text-align: center; }
         .xp-container { width: 100%; margin-top: 20px; }
         .xp-texto { font-size: 11px; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 5px; }
@@ -87,10 +86,10 @@
         .alerta-custom.erro i { color: #ef4444; }
         
         /* MENU INFERIOR */
-.menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-.item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
-.item-menu i { font-size: 18px; }
-.item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
 </head>
 <body>
@@ -116,9 +115,10 @@
             </div>
             <div style="text-align: center; margin-bottom: 25px;">
                 <div id="cronometro-display" class="cronometro-display">00:00:00</div>
-                <p style="font-size: 11px; color: var(--texto-mutado); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Tempo em Serviço</p>
+                <!-- Adicionado um ID aqui para podermos mudar o texto via JS -->
+                <p id="label-tempo" style="font-size: 11px; color: var(--texto-mutado); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Tempo em Serviço</p>
             </div>
-            <div class="xp-container">
+            <div class="xp-container" id="xp-container-pausa">
                 <div class="xp-texto"><span id="xp-status-texto">Faltam 30 min para +20 XP</span><span id="xp-porcentagem">0%</span></div>
                 <div class="xp-barra-bg"><div class="xp-barra-fill" id="xp-barra-preenchida"></div></div>
             </div>
@@ -129,188 +129,275 @@
             </div>
         </div>
     </div>
-
     <!-- MODAL DE CONFIRMAÇÃO GERAL -->
-    <div class="modal-overlay" id="modal-confirmar">
-        <div class="modal-content">
-            <p id="texto-confirmar" style="font-size: 15px; color: #fff; margin-bottom: 25px; line-height: 1.5;">Tem certeza?</p>
-            <div class="botoes-confirmar">
-                <button class="btn-nao" onclick="responderConfirmacao(false)">Cancelar</button>
-                <button class="btn-sim" onclick="responderConfirmacao(true)">Confirmar</button>
-            </div>
+<div class="modal-overlay" id="modal-confirmar">
+    <div class="modal-content">
+        <p id="texto-confirmar" style="font-size: 15px; color: #fff; margin-bottom: 25px; line-height: 1.5;">Tem certeza?</p>
+        <div class="botoes-confirmar">
+            <button class="btn-nao" onclick="responderConfirmacao(false)">Cancelar</button>
+            <button class="btn-sim" onclick="responderConfirmacao(true)">Confirmar</button>
         </div>
     </div>
+</div>
 
-    <!-- MODAL DE JUSTIFICATIVA -->
-    <div class="modal-overlay" id="modal-justificativa">
-        <div class="modal-content">
-            <div class="aviso-pulsante">
-                <i class="fas fa-exclamation-circle"></i>
-                <div><strong>ATENÇÃO:</strong> Você está saindo antes dos 30 minutos. Isso resultará em uma falta. Justifique abaixo para que a liderança avalie.</div>
-            </div>
-            <div class="grid-justificativas" id="lista-opcoes-justificativa"></div>
-            <input type="text" class="input-outro" id="input-outro" placeholder="Descreva o motivo (máx 100 letras)" maxlength="100">
-            <button class="btn-sim" style="width: 100%; margin-bottom: 10px;" onclick="enviarJustificativa()">Enviar e Encerrar</button>
-            <button onclick="fecharModal('modal-justificativa')" style="width: 100%; background: transparent; border: none; color: var(--texto-mutado); cursor: pointer; font-size: 12px;">Cancelar e Voltar</button>
+<!-- MODAL DE JUSTIFICATIVA (SAÍDA ANTECIPADA) -->
+<div class="modal-overlay" id="modal-justificativa">
+    <div class="modal-content">
+        <div class="aviso-pulsante">
+            <i class="fas fa-exclamation-circle"></i>
+            <div><strong>ATENÇÃO:</strong> Você está saindo antes dos 30 minutos. Isso resultará em uma falta. Justifique abaixo para que a liderança avalie.</div>
         </div>
+        <div class="grid-justificativas" id="lista-opcoes-justificativa"></div>
+        <input type="text" class="input-outro" id="input-outro" placeholder="Descreva o motivo (máx 100 letras)" maxlength="100">
+        <button class="btn-sim" style="width: 100%; margin-bottom: 10px;" onclick="enviarJustificativa()">Enviar e Encerrar</button>
+        <button onclick="fecharModal('modal-justificativa')" style="width: 100%; background: transparent; border: none; color: var(--texto-mutado); cursor: pointer; font-size: 12px;">Cancelar e Voltar</button>
     </div>
+</div>
 
-    <div class="alerta-custom" id="alerta-site"><i class="fas fa-check-circle" id="alerta-icone"></i><p id="alerta-texto">Mensagem</p></div>
-        <script>
-        let membroLogado = null;
-        let intervaloCronometro = null;
-        let pontoAtual = null;
-        let acaoPendente = null;
-        let justificativaSelecionada = null;
+<!-- ALERTA CUSTOMIZADO (TOAST) -->
+<div class="alerta-custom" id="alerta-site"><i class="fas fa-check-circle" id="alerta-icone"></i><p id="alerta-texto">Mensagem</p></div>
 
-        function getMinutosBrasilia() {
-            const agora = new Date();
-            const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-            const [h, m] = formatter.format(agora).split(':').map(Number);
-            return (h * 60) + m;
+<script>
+    let membroLogado = null;
+    let intervaloCronometro = null;
+    let pontoAtual = null;
+    let acaoPendente = null;
+    let justificativaSelecionada = null;
+
+    // ==========================================
+    // 1. FUNÇÕES DE HORÁRIO
+    // ==========================================
+    function getMinutosBrasilia() {
+        const agora = new Date();
+        const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
+        const [h, m] = formatter.format(agora).split(':').map(Number);
+        return (h * 60) + m;
+    }
+
+    function verificarStatusHorario(horarioInicio, horarioFim) {
+        let minutosAgora = getMinutosBrasilia();
+        const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
+        const [hFim, mFim] = horarioFim.split(':').map(Number);
+        let minutosInicio = (hInicio * 60) + mInicio;
+        let minutosFim = (hFim * 60) + mFim;
+        
+        // Ajuste para plantões que viram a madrugada
+        if (minutosFim <= minutosInicio) {
+            minutosFim += 24 * 60;
+            if (minutosAgora < minutosInicio) minutosAgora += 24 * 60;
         }
+        
+        const tolerancia = 15; // 15 minutos de tolerância para atraso
+        
+        // Se estiver dentro do período de tolerância (15 min antes ou 15 min depois do início)
+        if (minutosAgora >= (minutosInicio - tolerancia) && minutosAgora <= (minutosInicio + tolerancia)) return 'aberto'; 
+        
+        // Se já passou da tolerância mas ainda não terminou
+        if (minutosAgora > (minutosInicio + tolerancia) && minutosAgora < minutosFim) return 'em_andamento'; 
+        
+        // Se o horário de fim já passou
+        if (minutosAgora >= minutosFim) return 'encerrado'; 
+        
+        // Se ainda falta muito para começar
+        return 'aguardando'; 
+    }
 
-        function verificarStatusHorario(horarioInicio, horarioFim) {
-            let minutosAgora = getMinutosBrasilia();
-            const [hInicio, mInicio] = horarioInicio.split(':').map(Number);
-            const [hFim, mFim] = horarioFim.split(':').map(Number);
-            let minutosInicio = (hInicio * 60) + mInicio;
-            let minutosFim = (hFim * 60) + mFim;
-            if (minutosFim <= minutosInicio) {
-                minutosFim += 24 * 60;
-                if (minutosAgora < minutosInicio) minutosAgora += 24 * 60;
+    // ==========================================
+    // 2. INICIALIZAÇÃO
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', async () => {
+        const logado = sessionStorage.getItem('membro_logado');
+        if (!logado) return window.location.href = 'login.html';
+        membroLogado = JSON.parse(logado);
+        carregarPlantoes();
+    });
+    // ==========================================
+// 3. CARREGAR PLANTÕES E GERENCIAR TELA
+// ==========================================
+async function carregarPlantoes() {
+    const container = document.getElementById('lista-plantoes');
+    const telaCronometro = document.getElementById('tela-cronometro');
+    const subtitulo = document.getElementById('subtitulo-plantoes');
+    
+    try {
+        // Verifica se o membro já tem um ponto aberto ou pausado
+        const { data: pontoAberto } = await sb.from('pontos').select('*, plantoes(nome, horario_inicio, horario_fim)').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+
+        if (pontoAberto) {
+            pontoAtual = pontoAberto;
+            container.style.display = 'none'; 
+            subtitulo.style.display = 'none'; 
+            telaCronometro.style.display = 'flex';
+            
+            document.getElementById('nome-plantao-ativo').innerText = pontoAberto.plantoes ? pontoAberto.plantoes.nome : 'Plantão';
+            document.getElementById('horario-plantao-ativo').innerText = `${pontoAberto.plantoes.horario_inicio} - ${pontoAberto.plantoes.horario_fim}`;
+            
+            if (pontoAberto.status === 'pausado') {
+                // ---- LÓGICA DE PAUSA ----
+                document.getElementById('status-pausa-texto').style.display = 'block';
+                document.getElementById('cronometro-display').style.color = 'var(--amarelo)';
+                document.getElementById('btn-pausar').style.display = 'none';
+                document.getElementById('btn-retomar').style.display = 'block';
+                
+                // Muda o texto embaixo do cronômetro para avisar que é a pausa
+                const labelTempo = document.getElementById('label-tempo');
+                labelTempo.innerText = "Tempo em Pausa (Não conta para XP)";
+                labelTempo.style.color = "var(--amarelo)";
+                labelTempo.style.fontWeight = "bold";
+                
+                // Esconde a barra de XP durante a pausa
+                document.getElementById('xp-container-pausa').style.opacity = '0.3';
+
+                // Inicia o cronômetro contando o tempo de pausa
+                iniciarCronometroPausa(pontoAberto.pausa_inicio);
+            } else {
+                // ---- LÓGICA DE TRABALHO NORMAL ----
+                document.getElementById('status-pausa-texto').style.display = 'none';
+                document.getElementById('cronometro-display').style.color = '#fff';
+                document.getElementById('btn-pausar').style.display = 'block';
+                document.getElementById('btn-retomar').style.display = 'none';
+                
+                // Restaura o texto embaixo do cronômetro
+                const labelTempo = document.getElementById('label-tempo');
+                labelTempo.innerText = "Tempo em Serviço";
+                labelTempo.style.color = "var(--texto-mutado)";
+                labelTempo.style.fontWeight = "normal";
+                
+                document.getElementById('xp-container-pausa').style.opacity = '1';
+
+                // Inicia o cronômetro de trabalho normal
+                iniciarCronometro(pontoAberto.entrada, pontoAberto.plantoes.horario_fim);
             }
-            const tolerancia = 15; 
-            if (minutosAgora >= (minutosInicio - tolerancia) && minutosAgora <= (minutosInicio + tolerancia)) return 'aberto'; 
-            if (minutosAgora > (minutosInicio + tolerancia) && minutosAgora < minutosFim) return 'em_andamento'; 
-            if (minutosAgora >= minutosFim) return 'encerrado'; 
-            return 'aguardando'; 
+            return; 
         }
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            const logado = sessionStorage.getItem('membro_logado');
-            if (!logado) return window.location.href = 'login.html';
-            membroLogado = JSON.parse(logado);
-            carregarPlantoes();
+        // Se não tiver ponto aberto, mostra a lista de plantões disponíveis
+        container.style.display = 'flex'; 
+        subtitulo.style.display = 'block'; 
+        telaCronometro.style.display = 'none';
+        
+        const { data: plantoes, error } = await sb.from('plantoes').select('*');
+        if (error) throw new Error("Erro: " + error.message);
+        if (!plantoes || plantoes.length === 0) { 
+            container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>'; 
+            return; 
+        }
+
+        const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').in('status', ['aberto', 'pausado']);
+        const ordemHorarios = { '02:00': 0, '04:00': 1, '06:00': 2, '08:00': 3, '10:00': 4, '12:00': 5, '14:00': 6, '16:00': 7, '18:00': 8, '20:00': 9, '22:00': 10, '00:00': 11 };
+        let ativos = [], futuros = [];
+
+        plantoes.forEach(p => {
+            const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
+            p._status = status;
+            if (status === 'aberto' || status === 'em_andamento') ativos.push(p);
+            else if (status === 'aguardando') futuros.push(p);
         });
 
-        async function carregarPlantoes() {
-            const container = document.getElementById('lista-plantoes');
-            const telaCronometro = document.getElementById('tela-cronometro');
-            const subtitulo = document.getElementById('subtitulo-plantoes');
+        const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
+        ativos.sort(ordenar); futuros.sort(ordenar);
+        const plantoesOrdenados = [...ativos, ...futuros];
+
+        let html = '';
+        plantoesOrdenados.forEach((p) => {
+            // AQUI FOI REMOVIDA A LINHA DE TESTE QUE FORÇAVA A ROTA 1 A FICAR ABERTA
+            let status = p._status;
+
+            const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
+            const restantes = p.vagas_totais - ocupadas;
             
-            try {
-                const { data: pontoAberto } = await sb.from('pontos').select('*, plantoes(nome, horario_inicio, horario_fim)').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+            let classeCard = '', btnHtml = '', iconeHtml = '', classeImagem = '', estiloFundo = '';
+            if (p.tipo === 'rota') { iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793658013726.jpg');`; } 
+            else if (p.tipo === 'venda') { iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = p.nome.toLowerCase().includes('lockpick') ? `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659093972.jpg');` : `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659504717.jpg');`; } 
+            else if (p.tipo === 'apoio') { iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659618901.jpg');`; }
 
-                if (pontoAberto) {
-                    pontoAtual = pontoAberto;
-                    container.style.display = 'none'; subtitulo.style.display = 'none'; telaCronometro.style.display = 'flex';
-                    document.getElementById('nome-plantao-ativo').innerText = pontoAberto.plantoes ? pontoAberto.plantoes.nome : 'Plantão';
-                    document.getElementById('horario-plantao-ativo').innerText = `${pontoAberto.plantoes.horario_inicio} - ${pontoAberto.plantoes.horario_fim}`;
-                    
-                    if (pontoAberto.status === 'pausado') {
-                        document.getElementById('status-pausa-texto').style.display = 'block';
-                        document.getElementById('cronometro-display').style.color = 'var(--amarelo)';
-                        document.getElementById('btn-pausar').style.display = 'none';
-                        document.getElementById('btn-retomar').style.display = 'block';
-                        document.getElementById('cronometro-display').innerText = "PAUSADO";
-                    } else {
-                        document.getElementById('status-pausa-texto').style.display = 'none';
-                        document.getElementById('cronometro-display').style.color = '#fff';
-                        document.getElementById('btn-pausar').style.display = 'block';
-                        document.getElementById('btn-retomar').style.display = 'none';
-                        iniciarCronometro(pontoAberto.entrada, pontoAberto.plantoes.horario_fim);
-                    }
-                    return; 
-                }
+            if (restantes <= 0) { 
+                classeCard = 'lotado'; 
+                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`; 
+            } 
+            else if (status === 'aberto') { 
+                classeCard = 'aberto'; 
+                btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`; 
+            } 
+            else if (status === 'em_andamento') { 
+                btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`; 
+            } 
+            else { 
+                btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`; 
+            }
 
-                container.style.display = 'flex'; subtitulo.style.display = 'block'; telaCronometro.style.display = 'none';
-                
-                const { data: plantoes, error } = await sb.from('plantoes').select('*');
-                if (error) throw new Error("Erro: " + error.message);
-                if (!plantoes || plantoes.length === 0) { container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>'; return; }
+            const porcentagem = (ocupadas / p.vagas_totais) * 100;
+            html += `
+                <div class="card-plantao ${classeCard} ${classeImagem}" style="${estiloFundo}">
+                    <div class="card-header"><span class="card-nome">${iconeHtml} ${p.nome}</span><span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span></div>
+                    <div class="vagas-barra"><div class="vagas-preenchida" style="width: ${porcentagem}%"></div></div>
+                    <div class="vagas-texto"><span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span><span>${restantes} restantes</span></div>
+                    ${btnHtml}
+                </div>`;
+        });
+        container.innerHTML = html;
+    } catch (err) { 
+        container.innerHTML = `<div style="color: red; padding: 15px; text-align: center;">${err.message}</div>`; 
+    }
+}
 
-                const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').in('status', ['aberto', 'pausado']);
-                const ordemHorarios = { '02:00': 0, '04:00': 1, '06:00': 2, '08:00': 3, '10:00': 4, '12:00': 5, '14:00': 6, '16:00': 7, '18:00': 8, '20:00': 9, '22:00': 10, '00:00': 11 };
-                let ativos = [], futuros = [];
+// ==========================================
+// 4. CRONÔMETROS (TRABALHO E PAUSA)
+// ==========================================
+function iniciarCronometro(horarioEntrada, horarioFim) {
+    if (intervaloCronometro) clearInterval(intervaloCronometro);
+    const display = document.getElementById('cronometro-display');
+    const dataEntrada = new Date(horarioEntrada);
+    const barraXP = document.getElementById('xp-barra-preenchida');
+    const textoXP = document.getElementById('xp-status-texto');
+    const porcXP = document.getElementById('xp-porcentagem');
 
-                plantoes.forEach(p => {
-                    const status = verificarStatusHorario(p.horario_inicio, p.horario_fim);
-                    p._status = status;
-                    if (status === 'aberto' || status === 'em_andamento') ativos.push(p);
-                    else if (status === 'aguardando') futuros.push(p);
-                });
+    intervaloCronometro = setInterval(() => {
+        const agora = new Date();
+        const diferenca = agora - dataEntrada;
+        if (diferenca < 0) return;
 
-                const ordenar = (a, b) => (ordemHorarios[a.horario_inicio] || 99) - (ordemHorarios[b.horario_inicio] || 99);
-                ativos.sort(ordenar); futuros.sort(ordenar);
-                const plantoesOrdenados = [...ativos, ...futuros];
+        const horas = Math.floor(diferenca / (1000 * 60 * 60));
+        const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
+        const segundos = Math.floor((diferenca / 1000) % 60);
+        display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
 
-                let html = '';
-                plantoesOrdenados.forEach((p, index) => {
-                    let status = p._status;
-                    if (index === 0 && status !== 'aberto') status = 'aberto'; // O primeiro sempre fica aberto pra teste
+        const minutosTotais = diferenca / 1000 / 60;
+        let porcentagem = (minutosTotais / 30) * 100;
+        if (porcentagem > 100) porcentagem = 100;
+        barraXP.style.width = porcentagem + '%';
+        porcXP.innerText = Math.floor(porcentagem) + '%';
+        
+        if (porcentagem >= 100) { textoXP.innerText = "XP Garantido! +20 XP"; textoXP.style.color = "var(--verde)"; } 
+        else { textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)"; }
 
-                    const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-                    const restantes = p.vagas_totais - ocupadas;
-                    
-                    let classeCard = '', btnHtml = '', iconeHtml = '', classeImagem = '', estiloFundo = '';
-                    if (p.tipo === 'rota') { iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793658013726.jpg');`; } 
-                    else if (p.tipo === 'venda') { iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = p.nome.toLowerCase().includes('lockpick') ? `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659093972.jpg');` : `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659504717.jpg');`; } 
-                    else if (p.tipo === 'apoio') { iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659618901.jpg');`; }
-
-                    if (restantes <= 0) { classeCard = 'lotado'; btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`; } 
-                    else if (status === 'aberto') { classeCard = 'aberto'; btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`; } 
-                    else if (status === 'em_andamento') { btnHtml = `<button class="btn-acao-plantao btn-em-andamento" disabled><i class="fas fa-clock"></i> EM ANDAMENTO</button>`; } 
-                    else { btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-clock"></i> AGUARDE HORÁRIO</button>`; }
-
-                    const porcentagem = (ocupadas / p.vagas_totais) * 100;
-                    html += `
-                        <div class="card-plantao ${classeCard} ${classeImagem}" style="${estiloFundo}">
-                            <div class="card-header"><span class="card-nome">${iconeHtml} ${p.nome}</span><span class="card-horario">${p.horario_inicio} - ${p.horario_fim}</span></div>
-                            <div class="vagas-barra"><div class="vagas-preenchida" style="width: ${porcentagem}%"></div></div>
-                            <div class="vagas-texto"><span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span><span>${restantes} restantes</span></div>
-                            ${btnHtml}
-                        </div>`;
-                });
-                container.innerHTML = html;
-            } catch (err) { container.innerHTML = `<div style="color: red; padding: 15px; text-align: center;">${err.message}</div>`; }
+        const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
+        if (formatter.format(agora) >= horarioFim) {
+            clearInterval(intervaloCronometro);
+            processarEncerramento(pontoAtual, false, null, true); // Fechamento automático
         }
+    }, 1000);
+}
 
-        function iniciarCronometro(horarioEntrada, horarioFim) {
-            if (intervaloCronometro) clearInterval(intervaloCronometro);
-            const display = document.getElementById('cronometro-display');
-            const dataEntrada = new Date(horarioEntrada);
-            const barraXP = document.getElementById('xp-barra-preenchida');
-            const textoXP = document.getElementById('xp-status-texto');
-            const porcXP = document.getElementById('xp-porcentagem');
+function iniciarCronometroPausa(horarioPausa) {
+    if (intervaloCronometro) clearInterval(intervaloCronometro);
+    const display = document.getElementById('cronometro-display');
+    const dataPausa = new Date(horarioPausa);
 
-            intervaloCronometro = setInterval(() => {
-                const agora = new Date();
-                const diferenca = agora - dataEntrada;
-                if (diferenca < 0) return;
+    intervaloCronometro = setInterval(() => {
+        const agora = new Date();
+        const diferenca = agora - dataPausa;
+        if (diferenca < 0) return;
 
-                const horas = Math.floor(diferenca / (1000 * 60 * 60));
-                const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-                const segundos = Math.floor((diferenca / 1000) % 60);
-                display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-
-                const minutosTotais = diferenca / 1000 / 60;
-                let porcentagem = (minutosTotais / 30) * 100;
-                if (porcentagem > 100) porcentagem = 100;
-                barraXP.style.width = porcentagem + '%';
-                porcXP.innerText = Math.floor(porcentagem) + '%';
-                
-                if (porcentagem >= 100) { textoXP.innerText = "XP Garantido! +20 XP"; textoXP.style.color = "var(--verde)"; } 
-                else { textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)"; }
-
-                const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-                if (formatter.format(agora) >= horarioFim) {
-                    clearInterval(intervaloCronometro);
-                    processarEncerramento(pontoAtual, false, null, true); // Fechamento automático
-                }
-            }, 1000);
-        }
-
+        const horas = Math.floor(diferenca / (1000 * 60 * 60));
+        const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
+        const segundos = Math.floor((diferenca / 1000) % 60);
+        display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+    }, 1000);
+    }
+            // ==========================================
+        // 5. AÇÕES DO SISTEMA
+        // ==========================================
         function mostrarConfirmacao(mensagem, acao) {
             document.getElementById('texto-confirmar').innerText = mensagem;
             document.getElementById('modal-confirmar').classList.add('ativo');
@@ -337,12 +424,12 @@
         }
 
         async function pausarTurno() {
-            mostrarConfirmacao("Deseja pausar o seu turno? O tempo não contará.", async () => {
+            mostrarConfirmacao("Deseja pausar o seu turno? O tempo não contará para o XP.", async () => {
                 try {
                     await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString() }).eq('id', pontoAtual.id);
                     customAlert("Turno pausado.", "sucesso");
                     carregarPlantoes();
-                } catch (err) { customAlert("Erro.", "erro"); }
+                } catch (err) { customAlert("Erro ao pausar.", "erro"); }
             });
         }
 
@@ -351,11 +438,13 @@
                 try {
                     const agora = new Date();
                     const tempoPausadoMinutos = (agora - new Date(pontoAtual.pausa_inicio)) / 1000 / 60;
+                    // Adiciona o tempo pausado na data de entrada para o XP não ser prejudicado
                     const novaEntrada = new Date(new Date(pontoAtual.entrada).getTime() + (tempoPausadoMinutos * 60000));
+                    
                     await sb.from('pontos').update({ status: 'aberto', pausa_fim: agora.toISOString(), entrada: novaEntrada.toISOString() }).eq('id', pontoAtual.id);
                     customAlert("Turno retomado!", "sucesso");
                     carregarPlantoes();
-                } catch (err) { customAlert("Erro.", "erro"); }
+                } catch (err) { customAlert("Erro ao retomar.", "erro"); }
             });
         }
 
@@ -373,6 +462,9 @@
             }
         }
 
+        // ==========================================
+        // 6. LÓGICA DE JUSTIFICATIVA
+        // ==========================================
         const opcoesJustificativa = [
             { id: 'medica', icone: 'fa-hospital', titulo: 'Emergência Médica', desc: 'Doença, acidente.' },
             { id: 'escola', icone: 'fa-graduation-cap', titulo: 'Escola / Trabalho', desc: 'Prova, trabalho real.' },
@@ -386,7 +478,9 @@
             document.getElementById('input-outro').value = '';
             const container = document.getElementById('lista-opcoes-justificativa');
             let html = '';
-            opcoesJustificativa.forEach(op => { html += `<div class="card-justificativa" onclick="selecionarJustificativa('${op.id}', this)"><i class="fas ${op.icone}"></i><div class="texto"><h4>${op.titulo}</h4><p>${op.desc}</p></div></div>`; });
+            opcoesJustificativa.forEach(op => { 
+                html += `<div class="card-justificativa" onclick="selecionarJustificativa('${op.id}', this)"><i class="fas ${op.icone}"></i><div class="texto"><h4>${op.titulo}</h4><p>${op.desc}</p></div></div>`; 
+            });
             container.innerHTML = html;
             document.getElementById('modal-justificativa').classList.add('ativo');
         }
@@ -410,6 +504,9 @@
             await processarEncerramento(pontoAtual, false, motivoFinal, false);
         }
 
+        // ==========================================
+        // 7. ENCERRAMENTO E XP
+        // ==========================================
         async function processarEncerramento(ponto, ganhouXP, motivoJustificativa = null, automatico = false) {
             if (!ponto) return;
             try {
@@ -430,23 +527,28 @@
             } catch (err) { customAlert("Erro ao encerrar.", "erro"); }
         }
 
+        // ==========================================
+        // 8. ALERTA CUSTOMIZADO
+        // ==========================================
         function customAlert(mensagem, tipo = 'sucesso') {
             const alerta = document.getElementById('alerta-site');
             const icone = document.getElementById('alerta-icone');
             const texto = document.getElementById('alerta-texto');
             if (!alerta) return;
             texto.innerText = mensagem;
-            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
+            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
+            else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
             alerta.classList.add('ativo');
             setTimeout(() => alerta.classList.remove('ativo'), 3000);
         }
     </script>
+
     <!-- MENU INFERIOR -->
-<nav class="menu-inferior">
-    <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
-    <a href="bateponto.html" class="item-menu ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
-    <a href="perfil.html" class="item-menu"><i class="fas fa-id-card"></i><span>Perfil</span></a>
-    <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
-</nav>
+    <nav class="menu-inferior">
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="perfil.html" class="item-menu"><i class="fas fa-id-card"></i><span>Perfil</span></a>
+        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
+    </nav>
 </body>
 </html>
