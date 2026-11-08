@@ -143,11 +143,19 @@
         <!-- CONTEÚDO PRINCIPAL -->
         <main class="main">
             <div class="topo">
-                <div>
-                    <h1 class="titulo">Radar de Plantões</h1>
-                    <p class="subtitulo">Acompanhe a operação da organização em tempo real.</p>
-                </div>
-                <div id="data-hora" style="font-family: 'Oswald'; color: var(--texto-mutado); font-size: 14px;">--/--/---- --:--</div>
+    <div>
+        <h1 class="titulo">Radar de Plantões</h1>
+        <p class="subtitulo">Acompanhe a operação da organização em tempo real.</p>
+    </div>
+    
+    <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+        <!-- BOTÃO VOLTAR PARA O DASHBOARD -->
+        <a href="dashboard.html" class="btn btn-outline" style="padding: 6px 12px; font-size: 11px; text-decoration: none;">
+            <i class="fas fa-user"></i> Modo Jogador
+        </a>
+        
+        <div id="data-hora" style="font-family: 'Oswald'; color: var(--texto-mutado); font-size: 14px;">--/--/---- --:--</div>
+    </div>
             </div>
 
             <!-- KPIs -->
