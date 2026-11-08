@@ -1,19 +1,19 @@
 {
   "name": "Organização Itália",
   "short_name": "Itália",
-  "start_url": "/oficial/painel.html",
+  "start_url": "./login.html",
   "display": "standalone",
   "background_color": "#0a0f0d",
   "theme_color": "#0a0f0d",
   "icons": [
     {
-      "src": "https://raw.githubusercontent.com/italia-reduto/oficial/main/icone.jpg",
+      "src": "./icone.jpg",
       "sizes": "192x192",
       "type": "image/jpeg",
       "purpose": "any"
     },
     {
-      "src": "https://raw.githubusercontent.com/italia-reduto/oficial/main/icone.jpg",
+      "src": "./icone.jpg",
       "sizes": "512x512",
       "type": "image/jpeg",
       "purpose": "any"
