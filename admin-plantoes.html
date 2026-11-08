@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <meta name="color-scheme" content="dark">
+    <title>Itália | Gestão de Plantões</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --verde-hover: #16a34a; --fundo: #050806; --painel: #0d1410; --card: #131b16;
+            --borda: #233029; --texto: #f3f4f6; --texto-mutado: #9ca3af;
+            --amarelo: #eab308; --vermelho: #ef4444; --azul: #3b82f6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--fundo); color: var(--texto); height: 100vh; overflow: hidden; display: flex; }
+
+        /* FUNDO */
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
+        .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
+        .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 0; }
+        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; } .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; } .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; } .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; } .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
+        @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
+
+        .layout { display: flex; width: 100%; height: 100vh; z-index: 10; position: relative; }
+        
+        /* SIDEBAR PC */
+        .sidebar { width: 260px; background: rgba(13, 20, 16, 0.95); border-right: 1px solid var(--borda); display: flex; flex-direction: column; backdrop-filter: blur(10px); }
+        .sidebar-logo { padding: 24px 20px; font-family: 'Oswald'; font-size: 26px; font-weight: 700; color: var(--verde); border-bottom: 1px solid var(--borda); display: flex; align-items: center; gap: 10px; letter-spacing: 2px; }
+        .menu { flex: 1; padding: 20px 15px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn { display: flex; align-items: center; gap: 15px; padding: 14px 20px; border-radius: 10px; background: transparent; border: none; color: var(--texto-mutado); font-size: 14px; font-weight: 500; cursor: pointer; transition: 0.2s; text-align: left; width: 100%; text-decoration: none; }
+        .nav-btn:hover { background: rgba(255,255,255,0.03); color: var(--texto); }
+        .nav-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .nav-btn i { width: 20px; text-align: center; font-size: 16px; }
+        .sidebar-user { padding: 20px; border-top: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.2); }
+        .user-info h4 { font-size: 14px; color: #fff; }
+        .user-info p { font-size: 11px; color: var(--verde); text-transform: uppercase; font-weight: 600; }
+        .btn-sair { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; }
+
+        /* MAIN */
+        .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px 40px; }
+        .topo { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
+        .titulo { font-family: 'Oswald'; font-size: 28px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
+        .subtitulo { font-size: 13px; color: var(--texto-mutado); margin-top: 4px; }
+
+        /* GRID DE PLANTÕES */
+        .grid-plantoes { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+        .card-plantao { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; transition: 0.3s; position: relative; overflow: hidden; }
+        .card-plantao:hover { border-color: rgba(34, 197, 94, 0.3); transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        .plantao-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .plantao-titulo { font-family: 'Oswald'; font-size: 20px; color: #fff; letter-spacing: 0.5px; display: flex; align-items: center; gap: 10px; }
+        .plantao-titulo i { color: var(--verde); font-size: 18px; }
+        
+        .plantao-stats { background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .stat-vagas { display: flex; flex-direction: column; gap: 5px; }
+        .stat-vagas span { font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; }
+        .stat-vagas strong { font-size: 18px; color: #fff; font-family: 'Oswald'; }
+        
+        .barra-progresso { flex: 1; margin-left: 20px; height: 6px; background: rgba(255,255,255,0.1); border-radius: 3px; overflow: hidden; }
+        .barra-preenchida { height: 100%; background: var(--verde); width: 0%; border-radius: 3px; transition: width 0.5s ease; }
+
+        .plantao-footer { display: flex; gap: 10px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; margin-top: auto; }
+        .plantao-footer .btn { flex: 1; }
+
+        /* BOTÕES */
+        .btn { padding: 10px 16px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; justify-content: center;}
+        .btn-outline { background: transparent; color: var(--texto); border-color: var(--borda); }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); }
+        .btn-verde { background: var(--verde); color: #000; }
+        .btn-verde:hover { background: var(--verde-hover); }
+        .btn-vermelho { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
+        .btn-vermelho:hover { background: var(--vermelho); color: #fff; }
+
+        /* MODAIS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.ativo { display: flex; }
+        .modal-content { background: var(--card); border: 1px solid var(--borda); border-radius: 16px; padding: 30px; width: 100%; max-width: 450px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); max-height: 90vh; overflow-y: auto;}
+        .modal-titulo { font-family: 'Oswald'; font-size: 22px; color: #fff; margin-bottom: 5px; text-align: center; }
+        .modal-sub { font-size: 13px; color: var(--texto-mutado); margin-bottom: 25px; text-align: center; }
+        .modal-label { font-size: 12px; color: var(--texto-mutado); font-weight: 600; margin-bottom: 5px; display: block; text-transform: uppercase; }
+        .modal-input { width: 100%; padding: 14px; background: var(--fundo); border: 1px solid var(--borda); color: #fff; border-radius: 8px; font-size: 14px; outline: none; margin-bottom: 15px; }
+        .modal-input:focus { border-color: var(--verde); }
+        .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;}
+
+        /* MOBILE */
+        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
+        .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--texto-mutado); font-size: 9px; font-weight: 600; cursor: pointer; width: 20%; transition: 0.2s; text-decoration: none;}
+        .mob-btn i { font-size: 18px; }
+        .mob-btn.ativo { color: var(--verde); }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .mobile-nav { display: flex; }
+            .main { padding: 20px 15px; padding-bottom: 90px; }
+            .topo { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .grid-plantoes { grid-template-columns: 1fr; gap: 15px; }
+            .btn-novo-plantao { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <!-- FUNDO E EFEITOS -->
+    <div class="fundo-degrade"></div>
+    <div class="grade-fundo"></div>
+    <div class="particula p1"></div>
+    <div class="particula p2"></div>
+    <div class="particula p3"></div>
+    <div class="particula p4"></div>
+    <div class="particula p5"></div>
+
+    <div class="layout">
+        <!-- SIDEBAR PC -->
+        <aside class="sidebar">
+            <div class="sidebar-logo"><i class="fas fa-shield-alt"></i> ITÁLIA</div>
+            <div class="menu">
+                <a href="admin.html" class="nav-btn ativo"><i class="fas fa-satellite-dish"></i> Radar de Plantões</a>
+                <a href="admin-justificativas.html" class="nav-btn"><i class="fas fa-file-signature"></i> Justificativas</a>
+                <a href="admin-membros.html" class="nav-btn"><i class="fas fa-users-cog"></i> Gerenciar Membros</a>
+                <a href="admin-tickets.html" class="nav-btn"><i class="fas fa-headset"></i> Central de Suporte</a>
+                <a href="admin-avisos.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
+            </div>
+            <div class="sidebar-user">
+                <div class="user-info">
+                    <h4 id="adm-nome">Líder</h4>
+                    <p id="adm-cargo">Coordenador</p>
+                </div>
+                <button class="btn-sair" onclick="sair()"><i class="fas fa-power-off"></i></button>
+            </div>
+        </aside>
+
+        <!-- CONTEÚDO PRINCIPAL -->
+        <main class="main">
+            <div class="topo">
+                <div>
+                    <h1 class="titulo">Gestão de Plantões</h1>
+                    <p class="subtitulo">Crie, edite e gerencie as rotas da organização.</p>
+                </div>
+                <button class="btn btn-verde btn-novo-plantao" onclick="abrirModalPlantao()">
+                    <i class="fas fa-plus"></i> Novo Plantão
+                </button>
+            </div>
+
+            <!-- GRID ONDE OS CARDS SERÃO INJETADOS -->
+            <div class="grid-plantoes" id="grid-plantoes">
+                <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--texto-mutado);">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p>Buscando plantões no banco...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MENU MOBILE -->
+    <nav class="mobile-nav">
+        <a href="admin.html" class="mob-btn ativo"><i class="fas fa-satellite-dish"></i> Radar</a>
+        <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
+        <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
+        <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
+    </nav>
+
+    <!-- MODAL: CRIAR NOVO PLANTÃO -->
+    <div class="modal-overlay" id="modal-plantao">
+        <div class="modal-content">
+            <h3 class="modal-titulo">Novo Plantão</h3>
+            <p class="modal-sub">Crie uma nova rota ou equipe de serviço.</p>
+            
+            <label class="modal-label">Nome do Plantão</label>
+            <input type="text" id="plantao-nome-input" class="modal-input" placeholder="Ex: Rota 1, Equipe de Apoio, Oficina...">
+            
+            <label class="modal-label">Total de Vagas</label>
+            <input type="number" id="plantao-vagas-input" class="modal-input" placeholder="Ex: 10">
+            
+            <div class="modal-botoes">
+                <button class="btn btn-outline" onclick="fecharModalPlantao()">Cancelar</button>
+                <button class="btn btn-verde" id="btn-salvar-plantao" onclick="salvarPlantao()">Criar Plantão</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: DELETAR PLANTÃO -->
+    <div class="modal-overlay" id="modal-deletar-plantao">
+        <div class="modal-content">
+            <h3 class="modal-titulo" style="color: var(--vermelho);">Excluir Plantão</h3>
+            <p class="modal-sub" id="del-plantao-sub">Tem certeza que deseja apagar este plantão?</p>
+            
+            <p style="font-size: 13px; color: var(--texto-mutado); text-align: center; margin-bottom: 20px;">
+                Esta ação é irreversível. Se houver membros nesta rota, eles ficarão sem plantão.
+            </p>
+
+            <div class="modal-botoes">
+                <button class="btn btn-outline" onclick="fecharModalDeletar()">Cancelar</button>
+                <button class="btn btn-vermelho" id="btn-confirmar-deletar-plantao" onclick="confirmarDeletar()">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+    <script>
+    let adminLogado = null;
+    let todosOsPlantoes = [];
+    let plantaoDeletandoId = null;
+
+    const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+
+    // Função de segurança para não quebrar o HTML se o nome tiver caracteres estranhos
+    function escapeHTML(str) {
+        if (!str) return '';
+        return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+    }
+
+    // ==========================================
+    // 1. INICIALIZAÇÃO
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', async () => {
+        const logado = sessionStorage.getItem('membro_logado');
+        if (!logado) return window.location.href = 'login.html';
+
+        adminLogado = JSON.parse(logado);
+        if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
+            alert("Acesso negado.");
+            return window.location.href = 'dashboard.html';
+        }
+
+        document.getElementById('adm-nome').innerText = adminLogado.nome;
+        document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+
+        carregarPlantoes();
+    });
+
+    // ==========================================
+    // 2. CARREGAR E RENDERIZAR PLANTÕES
+    // ==========================================
+    async function carregarPlantoes() {
+        const grid = document.getElementById('grid-plantoes');
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i><p>Buscando plantões...</p></div>';
+
+        try {
+            // 1. Busca os plantões
+            const { data: plantoes, error: errPlantoes } = await sb.from('plantoes').select('*').order('nome');
+            if (errPlantoes) throw errPlantoes;
+
+            // 2. Busca quem está na rua agora (para saber quantas vagas estão ocupadas)
+            let pontosAtivos = [];
+            try {
+                const { data: resPontos } = await sb.from('pontos').select('plantao_id').in('status', ['aberto', 'pausado']);
+                if (resPontos) pontosAtivos = resPontos;
+            } catch (e) {
+                console.log("Aviso: Não foi possível carregar os pontos agora.");
+            }
+
+            todosOsPlantoes = plantoes;
+
+            if (!plantoes || plantoes.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--texto-mutado);"><i class="fas fa-map-marked-alt" style="font-size: 32px; margin-bottom: 10px; opacity: 0.5;"></i><p>Nenhum plantão cadastrado ainda.</p></div>';
+                return;
+            }
+
+            // 3. Monta os cartões
+            let html = '';
+            plantoes.forEach(p => {
+                // Conta quantas pessoas estão nesse plantão específico
+                const ocupadas = pontosAtivos.filter(pt => pt.plantao_id === p.id).length;
+                const total = p.vagas_totais;
+                
+                // Calcula a porcentagem para a barrinha
+                const porcentagem = Math.min(100, (ocupadas / total) * 100);
+                
+                // Muda a cor da barrinha se estiver lotado
+                const corBarra = ocupadas >= total ? 'var(--vermelho)' : 'var(--verde)';
+
+                html += `
+                    <div class="card-plantao">
+                        <div class="plantao-header">
+                            <div class="plantao-titulo">
+                                <i class="fas fa-map-marker-alt"></i> ${escapeHTML(p.nome)}
+                            </div>
+                        </div>
+                        
+                        <div class="plantao-stats">
+                            <div class="stat-vagas">
+                                <span>Ocupação</span>
+                                <strong>${ocupadas} / ${total}</strong>
+                            </div>
+                            <div class="barra-progresso">
+                                <div class="barra-preenchida" style="width: ${porcentagem}%; background: ${corBarra};"></div>
+                            </div>
+                        </div>
+
+                        <div class="plantao-footer">
+                            <button class="btn btn-vermelho" onclick="abrirModalDeletar('${p.id}', '${escapeHTML(p.nome)}')">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = html;
+
+        } catch (err) {
+            console.error(err);
+            grid.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--vermelho);"><i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i><p>Erro ao carregar plantões. Verifique a tabela.</p></div>`;
+        }
+    }
+              // ==========================================
+        // 3. CRIAR NOVO PLANTÃO
+        // ==========================================
+        function abrirModalPlantao() {
+            document.getElementById('plantao-nome-input').value = '';
+            document.getElementById('plantao-vagas-input').value = '';
+            document.getElementById('modal-plantao').classList.add('ativo');
+        }
+
+        function fecharModalPlantao() {
+            document.getElementById('modal-plantao').classList.remove('ativo');
+        }
+
+        async function salvarPlantao() {
+            const nome = document.getElementById('plantao-nome-input').value.trim();
+            const vagas = parseInt(document.getElementById('plantao-vagas-input').value);
+
+            // Validação simples
+            if (!nome || isNaN(vagas) || vagas <= 0) {
+                // Se estiver vazio, pinta a borda de vermelho por 2 segundos
+                if (!nome) {
+                    const inputNome = document.getElementById('plantao-nome-input');
+                    inputNome.style.borderColor = 'var(--vermelho)';
+                    setTimeout(() => inputNome.style.borderColor = 'var(--borda)', 2000);
+                }
+                if (isNaN(vagas) || vagas <= 0) {
+                    const inputVagas = document.getElementById('plantao-vagas-input');
+                    inputVagas.style.borderColor = 'var(--vermelho)';
+                    setTimeout(() => inputVagas.style.borderColor = 'var(--borda)', 2000);
+                }
+                return;
+            }
+
+            const btn = document.getElementById('btn-salvar-plantao');
+            btn.innerText = "Criando...";
+            btn.disabled = true;
+
+            try {
+                // Insere no Supabase
+                const { error } = await sb.from('plantoes').insert([{
+                    nome: nome,
+                    vagas_totais: vagas
+                }]);
+
+                if (error) throw error;
+
+                fecharModalPlantao();
+                carregarPlantoes(); // Recarrega a lista para mostrar o novo card
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao criar plantão. Verifique a tabela no Supabase.");
+            } finally {
+                btn.innerText = "Criar Plantão";
+                btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 4. EXCLUIR PLANTÃO
+        // ==========================================
+        function abrirModalDeletar(id, nome) {
+            plantaoDeletandoId = id;
+            document.getElementById('del-plantao-sub').innerText = `Tem certeza que deseja apagar o plantão "${nome}"?`;
+            document.getElementById('modal-deletar-plantao').classList.add('ativo');
+        }
+
+        function fecharModalDeletar() {
+            document.getElementById('modal-deletar-plantao').classList.remove('ativo');
+            plantaoDeletandoId = null;
+        }
+
+        async function confirmarDeletar() {
+            if (!plantaoDeletandoId) return;
+
+            const btn = document.getElementById('btn-confirmar-deletar-plantao');
+            btn.innerText = "Excluindo...";
+            btn.disabled = true;
+
+            try {
+                // Deleta do Supabase
+                const { error } = await sb.from('plantoes').delete().eq('id', plantaoDeletandoId);
+                if (error) throw error;
+
+                fecharModalDeletar();
+                carregarPlantoes(); // Recarrega a lista
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao excluir plantão. Verifique se há membros vinculados a ele.");
+            } finally {
+                btn.innerText = "Sim, Excluir";
+                btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 5. LOGOUT
+        // ==========================================
+        function sair() {
+            sessionStorage.removeItem('membro_logado');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
