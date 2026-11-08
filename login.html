@@ -208,6 +208,14 @@
         @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
         @keyframes aparecer { to { opacity: 1; transform: translateY(0); } }
     </style>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0f0d">
+
+<!-- Configurações para iPhone -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Itália">
+<link rel="apple-touch-icon" href="https://raw.githubusercontent.com/italia-reduto/oficial/main/1794109018538.jpg">
 </head>
 <body>
 
@@ -343,6 +351,13 @@ if (CARGOS_LIDERANCA.includes(data.cargo)) {
         btn.querySelector('span').innerText = 'Entrar no Sistema';
     }
         }
+    </script>
+    <script>
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js')
+        .then(() => console.log("App Itália ativado!"))
+        .catch(err => console.log("Erro no Service Worker:", err));
+    }
     </script>
 </body>
 </html>
