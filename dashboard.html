@@ -223,6 +223,13 @@
                 <span>Suporte</span>
                 <p>Abrir central de ajuda</p>
             </a>
+            
+            <!-- BOTÃO DO PAINEL ADMIN (Oculto por padrão, aparece via JS) -->
+            <a href="admin.html" class="card-acao" id="btn-admin-dashboard" style="display: none; border-color: var(--verde);">
+                <i class="fas fa-shield-alt"></i>
+                <span style="color: var(--verde);">Painel Admin</span>
+                <p>Acessar o Radar de Plantões e Gestão</p>
+            </a>
         </div>
 
         <!-- MURAL DE AVISOS -->
@@ -270,17 +277,6 @@
                     </div>
                     <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="processarFoto(this)">
                 </div>
-                <!-- NOVA SEÇÃO: ACESSO ADMIN -->
-<div class="config-secao" id="secao-admin" style="display: none;">
-    <h3 class="config-titulo" style="color: var(--verde);">Administração</h3>
-    <div class="config-item" onclick="window.location.href='admin.html'">
-        <div class="config-info-titulo">
-            <i class="fas fa-shield-alt" style="color: var(--verde);"></i> 
-            <span style="color: var(--verde); font-weight: bold;">Acessar Painel Admin</span>
-        </div>
-        <button class="btn-config-acao" style="background: var(--verde); color: #000; border: none;">Entrar</button>
-    </div>
-</div>
                 <div class="config-secao">
                     <h3 class="config-titulo">Segurança</h3>
                     <div class="config-item" onclick="customAlert('Saindo...', 'erro'); setTimeout(sair, 1000);">
@@ -304,8 +300,8 @@
         <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="perfil.html" class="item-menu"><i class="fas fa-id-card"></i><span>Perfil</span></a>
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
-    </nav>
-    <script>
+                        </nav>
+                        <script>
     let membroLogado = null;
     let todosMembros = [];
 
@@ -318,18 +314,19 @@
 
         membroLogado = JSON.parse(logado);
         
-// --- LÓGICA DO ACESSO ADMIN NA ENGRENAGEM ---
-const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
-
-const cargoDoCara = (membroLogado.cargo || '').toLowerCase();
-const isAdmin = CARGOS_LIDERANCA.some(cargo => cargo.toLowerCase() === cargoDoCara);
-
-if (isAdmin) {
-    const secaoAdmin = document.getElementById('secao-admin');
-    if (secaoAdmin) {
-        secaoAdmin.style.display = 'block'; // Mostra a seção dentro da engrenagem
-    }
-}
+        // --- LÓGICA DO BOTÃO ADMIN (BLINDADA) ---
+        const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+        
+        // Transforma tudo em minúsculo para não ter erro de digitação
+        const cargoDoCara = (membroLogado.cargo || '').toLowerCase();
+        const isAdmin = CARGOS_LIDERANCA.some(cargo => cargo.toLowerCase() === cargoDoCara);
+        
+        if (isAdmin) {
+            const btnAdmin = document.getElementById('btn-admin-dashboard');
+            if (btnAdmin) {
+                btnAdmin.style.display = 'flex'; // Mostra o botão
+            }
+        }
         // ----------------------------------------
 
         document.getElementById('nome-membro').innerText = membroLogado.nome;
@@ -486,7 +483,7 @@ if (isAdmin) {
             card.style.borderLeftColor = 'rgba(255,255,255,0.1)'; 
         }, 300);
     }
-                // ==========================================
+                                    // ==========================================
         // 4. MEMBROS (MODAL)
         // ==========================================
         async function carregarMembrosRapido() {
