@@ -57,14 +57,14 @@
         .progressao-xp-texto { font-size: 10px; color: #9ca3af; text-align: right; }
         .btn-config { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 16px; cursor: pointer; z-index: 10; transition: 0.3s; }
         .btn-config:hover { color: var(--verde); border-color: var(--verde); transform: rotate(90deg); }
-                .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+
+        .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card-metrica { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 15px; text-align: left; transition: 0.3s; }
         .metrica-topo { font-size: 11px; font-weight: 600; text-transform: uppercase; color: var(--texto-mutado); display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .metrica-topo i { font-size: 14px; }
         .metrica-valor { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; margin-bottom: 2px; }
         .metrica-sub { font-size: 10px; color: rgba(255,255,255,0.3); }
-
-        .grid-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+                .grid-acoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .card-acao { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 8px; cursor: pointer; transition: 0.3s; position: relative; overflow: hidden; text-decoration: none; }
         .card-acao:hover { border-color: rgba(34, 197, 94, 0.5); background: rgba(34, 197, 94, 0.05); }
         .card-acao i { font-size: 24px; color: var(--verde); }
@@ -78,7 +78,7 @@
         .aviso-texto { font-size: 13px; color: #fff; line-height: 1.5; font-weight: 600; }
         .aviso-vazio { font-size: 13px; color: var(--texto-mutado); text-align: center; padding: 10px 0; }
 
-        /* ESTILOS DO NOVO SISTEMA DE AVISOS */
+        /* ESTILOS DO SISTEMA DE AVISOS */
         .aviso-topo { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
         .aviso-titulo { font-size: 14px; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         .badge-novo { display: flex; align-items: center; gap: 5px; background: rgba(34, 197, 94, 0.15); color: var(--verde); padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; cursor: pointer; border: 1px solid rgba(34, 197, 94, 0.3); transition: 0.3s; white-space: nowrap; }
@@ -102,7 +102,7 @@
         .btn-fechar:hover { color: #ef4444; }
         .modal-lista { padding: 20px; overflow-y: auto; max-height: 60vh; display: flex; flex-direction: column; gap: 10px; flex: 1; -webkit-overflow-scrolling: touch; }
         
-        /* RESTO DOS MODAIS E MENU */
+        /* MODAL MEMBROS E CONFIG */
         .busca-membros { width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 15px; }
         .busca-membros:focus { border-color: var(--verde); }
         .categoria-membros { font-family: 'Oswald', sans-serif; font-size: 12px; color: var(--texto-mutado); text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
@@ -212,27 +212,27 @@
         </div>
 
         <!-- AÇÕES RÁPIDAS -->
-<div class="grid-acoes anim-entrada delay-3">
-    <div class="card-acao" onclick="abrirModalMembros()">
-        <i class="fas fa-users"></i>
-        <span>Membros</span>
-        <p>Ver todos os membros da organização</p>
-    </div>
-    <a href="atendimento.html" class="card-acao">
-        <i class="fas fa-headset"></i>
-        <span>Suporte</span>
-        <p>Abrir central de ajuda</p>
-    </a>
-    
-    <!-- BOTÃO DO PAINEL ADMIN (Oculto por padrão) -->
-    <a href="admin.html" class="card-acao" id="btn-admin-dashboard" style="display: none; border-color: var(--verde);">
-        <i class="fas fa-shield-alt"></i>
-        <span style="color: var(--verde);">Painel Admin</span>
-        <p>Acessar o Radar de Plantões e Gestão</p>
-    </a>
-</div>
+        <div class="grid-acoes anim-entrada delay-3">
+            <div class="card-acao" onclick="abrirModalMembros()">
+                <i class="fas fa-users"></i>
+                <span>Membros</span>
+                <p>Ver todos os membros da organização</p>
+            </div>
+            <a href="atendimento.html" class="card-acao">
+                <i class="fas fa-headset"></i>
+                <span>Suporte</span>
+                <p>Abrir central de ajuda</p>
+            </a>
+            
+            <!-- BOTÃO DO PAINEL ADMIN (Oculto por padrão, aparece via JS) -->
+            <a href="admin.html" class="card-acao" id="btn-admin-dashboard" style="display: none; border-color: var(--verde);">
+                <i class="fas fa-shield-alt"></i>
+                <span style="color: var(--verde);">Painel Admin</span>
+                <p>Acessar o Radar de Plantões e Gestão</p>
+            </a>
+        </div>
 
-        <!-- MURAL DE AVISOS (AQUI ENTRA O SININHO) -->
+        <!-- MURAL DE AVISOS -->
         <div class="painel-avisos anim-entrada delay-4">
             <div class="painel-topo">
                 <h3>
@@ -306,27 +306,35 @@
     let todosMembros = [];
 
     // ==========================================
-    // 1. INICIALIZAÇÃO
+    // 1. INICIALIZAÇÃO E LÓGICA DO ADMIN
     // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
         const logado = sessionStorage.getItem('membro_logado');
         if (!logado) return window.location.href = 'login.html';
 
         membroLogado = JSON.parse(logado);
+        
+        // --- LÓGICA DO BOTÃO ADMIN (BLINDADA) ---
+        const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+        
+        // Transforma tudo em minúsculo para não ter erro de digitação
+        const cargoDoCara = (membroLogado.cargo || '').toLowerCase();
+        const isAdmin = CARGOS_LIDERANCA.some(cargo => cargo.toLowerCase() === cargoDoCara);
+        
+        if (isAdmin) {
+            const btnAdmin = document.getElementById('btn-admin-dashboard');
+            if (btnAdmin) {
+                btnAdmin.style.display = 'flex'; // Mostra o botão
+            }
+        }
+        // ----------------------------------------
 
-        // LÓGICA DO BOTÃO ADMIN
-const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
-if (CARGOS_LIDERANCA.includes(membroLogado.cargo)) {
-    const btnAdmin = document.getElementById('btn-admin-dashboard');
-    if (btnAdmin) {
-        btnAdmin.style.display = 'flex'; // Mostra o botão
-    }
-}
         document.getElementById('nome-membro').innerText = membroLogado.nome;
         document.getElementById('cargo-membro').innerText = membroLogado.cargo;
         document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
         document.getElementById('avatar-inicial').innerText = membroLogado.nome.charAt(0).toUpperCase();
 
+        // Puxa dados atualizados do banco (XP, foto, advertências)
         const { data, error } = await sb.from('membros')
             .select('xp_total, foto_url, advertencias')
             .eq('passaporte', membroLogado.passaporte)
@@ -410,7 +418,6 @@ if (CARGOS_LIDERANCA.includes(membroLogado.cargo)) {
     async function carregarAvisos() {
         const container = document.getElementById('lista-avisos');
         
-        // CORREÇÃO: Puxando as colunas certas, ordenando por 'created_at' e filtrando só os ATIVOS
         const { data, error } = await sb.from('avisos')
             .select('*')
             .eq('ativo', true) 
@@ -422,7 +429,6 @@ if (CARGOS_LIDERANCA.includes(membroLogado.cargo)) {
             return;
         }
 
-        // Puxa a lista de avisos que o jogador já leu no celular
         let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
 
         let html = '';
@@ -430,9 +436,8 @@ if (CARGOS_LIDERANCA.includes(membroLogado.cargo)) {
             const isLido = avisosLidos.includes(aviso.id);
             const dataFormatada = aviso.created_at ? new Date(aviso.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : 'Recentemente';
             
-            // Define a cor e o ícone pela gravidade do aviso
             let corBorda = 'var(--verde)';
-            let iconeTipo = '<i class="fas fa-info-circle" style="color: var(--azul);"></i>';
+            let iconeTipo = '<i class="fas fa-info-circle" style="color: var(--verde);"></i>';
             
             if (aviso.tipo === 'alerta') { 
                 corBorda = 'var(--amarelo)'; 
@@ -442,7 +447,6 @@ if (CARGOS_LIDERANCA.includes(membroLogado.cargo)) {
                 iconeTipo = '<i class="fas fa-radiation" style="color: var(--vermelho);"></i>'; 
             }
 
-            // Se já foi lido, a borda fica cinza e sem o botão
             if (isLido) corBorda = 'rgba(255,255,255,0.1)';
 
             html += `
@@ -463,22 +467,20 @@ if (CARGOS_LIDERANCA.includes(membroLogado.cargo)) {
     }
 
     // ==========================================
-    // 3.1 MARCAR COMO LIDO (NOVO)
+    // 3.1 MARCAR COMO LIDO
     // ==========================================
     function marcarComoLido(id, elemento) {
-        // Pega os lidos, adiciona o novo e salva no celular
         let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
         if (!avisosLidos.includes(id)) {
             avisosLidos.push(id);
             localStorage.setItem('avisos_lidos', JSON.stringify(avisosLidos));
         }
 
-        // Efeito visual de desaparecer o botão
         elemento.style.opacity = '0';
         setTimeout(() => {
-            elemento.remove(); // Apaga o botão de "Marcar lido"
+            elemento.remove(); 
             const card = elemento.closest('.aviso-item');
-            card.style.borderLeftColor = 'rgba(255,255,255,0.1)'; // Borda fica cinza (já lido)
+            card.style.borderLeftColor = 'rgba(255,255,255,0.1)'; 
         }, 300);
     }
                 // ==========================================
