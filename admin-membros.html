@@ -308,26 +308,24 @@
         // 2. CARREGAR E RENDERIZAR MEMBROS (OTIMIZADO)
 async function carregarMembros() {
     const tbody = document.getElementById('corpo-tabela-membros');
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado);">Buscando efetivo...</td></tr>';
     
-    // Se não tem cache, mostra o "carregando". Se tem, nem pisca a tela.
-    if (!localStorage.getItem('cache_membros')) {
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado);">Buscando efetivo...</td></tr>';
-    }
+    // LIMPEZA FORÇADA: Vamos apagar o cache velho que pode estar bugando a tela
+    localStorage.removeItem('cache_membros'); 
     
     try {
-        // Busca em paralelo: membros e pontos AO MESMO TEMPO
         const [resMembros, resPontos] = await Promise.all([
             sb.from('membros').select('*').order('nome'),
             sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
         ]);
 
-        if (resMembros.error) throw resMembros.error;
-        if (resPontos.error) throw resPontos.error;
+        // O ERRO VAI APARECER AQUI SE O SUPABASE RECLAMAR
+        if (resMembros.error) throw new Error("Tabela Membros: " + resMembros.error.message);
+        if (resPontos.error) throw new Error("Tabela Pontos: " + resPontos.error.message);
 
         const membros = resMembros.data;
         const pontos = resPontos.data;
 
-        // Otimização de busca de pontos (Mapa em vez de .find)
         const pontosMap = {};
         if (pontos) {
             pontos.forEach(p => { pontosMap[String(p.passaporte)] = p; });
@@ -342,19 +340,25 @@ async function carregarMembros() {
             };
         });
 
-        // Salva no celular para a próxima vez que abrir ser instantâneo
         localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros));
-
-        filtrarMembros(); // Atualiza a tela
+        filtrarMembros();
 
     } catch (err) { 
         console.error(err);
-        if (!document.querySelector('.card-mob')) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro de conexão. Tente recarregar.</td></tr>`; 
-        }
+        // MOSTRA O ERRO REAL NA TELA
+        tbody.innerHTML = `
+            <tr><td colspan="6" style="text-align: center; padding: 20px;">
+                <div style="color: var(--vermelho); background: rgba(239,68,68,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--vermelho);">
+                    <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
+                    <p style="font-weight: bold; margin-bottom: 10px;">Erro ao carregar membros!</p>
+                    <p style="font-size: 12px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; word-break: break-all; text-align: left;">
+                        ${err.message}
+                    </p>
+                </div>
+            </td></tr>
+        `; 
     }
 }
-
 function filtrarMembros() {
     const termo = document.getElementById('input-busca-membros').value.toLowerCase();
     const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
