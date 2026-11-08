@@ -357,34 +357,26 @@
         // ==========================================
         async function carregarMembros() {
     const tbody = document.getElementById('corpo-tabela-membros');
-    const containerMobile = document.getElementById('lista-membros-mobile');
     tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado);">Buscando efetivo...</td></tr>';
-    containerMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Buscando efetivo...</p>';
     
     try {
-        // OTIMIZAÇÃO: Puxa apenas as colunas necessárias, ignorando fotos ou textos longos
-        const { data: membros, error: errMembros } = await sb.from('membros')
-            .select('nome, passaporte, cargo, xp_total, advertencias, foto_url') 
-            .order('nome');
-        
-        if (errMembros) throw errMembros;
+        // A MÁGICA ACONTECE AQUI: Promise.all dispara as duas buscas simultaneamente
+        const [resMembros, resPontos] = await Promise.all([
+            sb.from('membros').select('nome, passaporte, cargo, xp_total, advertencias, foto_url').order('nome'),
+            sb.from('pontos').select('id, passaporte, status').in('status', ['aberto', 'pausado'])
+        ]);
 
-        // OTIMIZAÇÃO: Puxa apenas o necessário dos pontos
-        const { data: pontos, error: errPontos } = await sb.from('pontos')
-            .select('id, passaporte, status')
-            .in('status', ['aberto', 'pausado']);
-        
-        if (errPontos) throw errPontos;
+        if (resMembros.error) throw resMembros.error;
+        if (resPontos.error) throw resPontos.error;
 
-        // OTIMIZAÇÃO MÁXIMA: Cria um "dicionário" para achar os pontos instantaneamente, sem usar .find()
+        const membros = resMembros.data;
+        const pontos = resPontos.data;
+
         const pontosMap = {};
         if (pontos) {
-            pontos.forEach(p => {
-                pontosMap[String(p.passaporte)] = p;
-            });
+            pontos.forEach(p => { pontosMap[String(p.passaporte)] = p; });
         }
 
-        // Junta os dados em milissegundos
         todosOsMembros = membros.map(m => {
             const pontoAtivo = pontosMap[String(m.passaporte)];
             return { 
@@ -398,11 +390,9 @@
 
     } catch (err) { 
         console.error(err);
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro ao carregar. Verifique a conexão.</td></tr>`; 
-        containerMobile.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center;">Erro ao carregar.</p>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro ao carregar.</td></tr>`; 
     }
         }
-
         function filtrarMembros() {
             const termo = document.getElementById('input-busca-membros').value.toLowerCase();
             const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
