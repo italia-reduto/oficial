@@ -224,9 +224,7 @@ if (!urlParams.has('mestre')) {
     </script>
     <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-    .then(() => console.log("SW OK"))
-    .catch(err => console.log("Erro SW", err));
+    navigator.serviceWorker.register('./sw.js');
   }
     </script>
 </body>
