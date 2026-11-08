@@ -212,18 +212,25 @@
         </div>
 
         <!-- AÇÕES RÁPIDAS -->
-        <div class="grid-acoes anim-entrada delay-3">
-            <div class="card-acao" onclick="abrirModalMembros()">
-                <i class="fas fa-users"></i>
-                <span>Membros</span>
-                <p>Ver todos os membros da organização</p>
-            </div>
-            <a href="atendimento.html" class="card-acao">
-                <i class="fas fa-headset"></i>
-                <span>Suporte</span>
-                <p>Abrir central de ajuda</p>
-            </a>
-        </div>
+<div class="grid-acoes anim-entrada delay-3">
+    <div class="card-acao" onclick="abrirModalMembros()">
+        <i class="fas fa-users"></i>
+        <span>Membros</span>
+        <p>Ver todos os membros da organização</p>
+    </div>
+    <a href="atendimento.html" class="card-acao">
+        <i class="fas fa-headset"></i>
+        <span>Suporte</span>
+        <p>Abrir central de ajuda</p>
+    </a>
+    
+    <!-- BOTÃO DO PAINEL ADMIN (Oculto por padrão) -->
+    <a href="admin.html" class="card-acao" id="btn-admin-dashboard" style="display: none; border-color: var(--verde);">
+        <i class="fas fa-shield-alt"></i>
+        <span style="color: var(--verde);">Painel Admin</span>
+        <p>Acessar o Radar de Plantões e Gestão</p>
+    </a>
+</div>
 
         <!-- MURAL DE AVISOS (AQUI ENTRA O SININHO) -->
         <div class="painel-avisos anim-entrada delay-4">
@@ -306,7 +313,15 @@
         if (!logado) return window.location.href = 'login.html';
 
         membroLogado = JSON.parse(logado);
-        
+
+        // LÓGICA DO BOTÃO ADMIN
+const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+if (CARGOS_LIDERANCA.includes(membroLogado.cargo)) {
+    const btnAdmin = document.getElementById('btn-admin-dashboard');
+    if (btnAdmin) {
+        btnAdmin.style.display = 'flex'; // Mostra o botão
+    }
+}
         document.getElementById('nome-membro').innerText = membroLogado.nome;
         document.getElementById('cargo-membro').innerText = membroLogado.cargo;
         document.getElementById('passaporte-membro').innerText = membroLogado.passaporte;
