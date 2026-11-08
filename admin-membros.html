@@ -308,52 +308,48 @@
         // 2. CARREGAR E RENDERIZAR MEMBROS (OTIMIZADO)
 async function carregarMembros() {
     const tbody = document.getElementById('corpo-tabela-membros');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado);">Buscando efetivo...</td></tr>';
-    
-    // LIMPEZA FORÇADA: Vamos apagar o cache velho que pode estar bugando a tela
-    localStorage.removeItem('cache_membros'); 
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo);">Testando conexão com o banco...</td></tr>';
     
     try {
-        const [resMembros, resPontos] = await Promise.all([
-            sb.from('membros').select('*').order('nome'),
-            sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
-        ]);
+        // Cria um "cronômetro" que aborta se o Supabase demorar mais de 5 segundos
+        const timeout = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("O Supabase demorou mais de 5 segundos para responder. A conexão caiu ou a tabela está travada.")), 5000)
+        );
 
-        // O ERRO VAI APARECER AQUI SE O SUPABASE RECLAMAR
-        if (resMembros.error) throw new Error("Tabela Membros: " + resMembros.error.message);
-        if (resPontos.error) throw new Error("Tabela Pontos: " + resPontos.error.message);
+        // Corre a busca contra o cronômetro
+        const request = sb.from('membros').select('id, nome, passaporte, cargo, xp_total, advertencias').limit(10); // Puxa só 10 pra testar
 
-        const membros = resMembros.data;
-        const pontos = resPontos.data;
+        const resultado = await Promise.race([request, timeout]);
 
-        const pontosMap = {};
-        if (pontos) {
-            pontos.forEach(p => { pontosMap[String(p.passaporte)] = p; });
+        // Se chegar aqui, a conexão funcionou!
+        if (resultado.error) throw resultado.error;
+
+        if (!resultado.data || resultado.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto);">Conexão OK, mas a tabela "membros" está VAZIA.</td></tr>';
+            return;
         }
 
-        todosOsMembros = membros.map(m => {
-            const pontoAtivo = pontosMap[String(m.passaporte)];
-            return { 
-                ...m, 
-                status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
-                ponto_id: pontoAtivo ? pontoAtivo.id : null 
-            };
-        });
+        // Se tem dados, monta a tela na força bruta (sem cache, sem mapa, sem frescura)
+        tbody.innerHTML = resultado.data.map(m => `
+            <tr>
+                <td>${m.nome || 'Sem nome'}</td>
+                <td>${m.cargo || 'Sem cargo'}</td>
+                <td>${m.xp_total || 0}</td>
+                <td>${m.advertencias || 0}</td>
+                <td colspan="2">Ações desativadas no teste</td>
+            </tr>
+        `).join('');
 
-        localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros));
-        filtrarMembros();
+        document.getElementById('lista-membros-mobile').innerHTML = '<p style="color: green; text-align:center;">Conexão PC OK. O erro está no código do mobile.</p>';
 
-    } catch (err) { 
+    } catch (err) {
         console.error(err);
-        // MOSTRA O ERRO REAL NA TELA
+        // FORÇA O ERRO NA CARA
         tbody.innerHTML = `
             <tr><td colspan="6" style="text-align: center; padding: 20px;">
-                <div style="color: var(--vermelho); background: rgba(239,68,68,0.1); padding: 15px; border-radius: 8px; border: 1px solid var(--vermelho);">
-                    <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
-                    <p style="font-weight: bold; margin-bottom: 10px;">Erro ao carregar membros!</p>
-                    <p style="font-size: 12px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; word-break: break-all; text-align: left;">
-                        ${err.message}
-                    </p>
+                <div style="color: var(--vermelho); background: rgba(239,68,68,0.1); padding: 15px; border-radius: 8px; border: 2px solid var(--vermelho);">
+                    <p style="font-weight: bold; font-size: 16px; margin-bottom: 10px;">FALHA CRÍTICA</p>
+                    <p style="font-size: 13px;">${err.message}</p>
                 </div>
             </td></tr>
         `; 
