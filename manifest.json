@@ -1,20 +1,20 @@
 {
-  "name": "Organização Itália",
-  "short_name": "Itália",
+  "name": "Central Itália",
+  "short_name": "Central Itália",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0a0f0d",
   "theme_color": "#0a0f0d",
   "icons": [
     {
-      "src": "./icone.png",
+      "src": "./icone.jpg",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/jpeg"
     },
     {
-      "src": "./icone.png",
+      "src": "./icone.jpg",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/jpeg"
     }
   ]
 }
