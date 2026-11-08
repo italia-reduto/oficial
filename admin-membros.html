@@ -79,18 +79,7 @@
         .btn-vermelho { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
         .btn-amarelo { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: rgba(234, 179, 8, 0.3); }
         
-        .tag-status { 
-            padding: 4px 10px; 
-            border-radius: 20px; 
-            font-size: 10px; 
-            font-weight: 700; 
-            text-transform: uppercase; 
-            letter-spacing: 0.5px; 
-            white-space: nowrap; 
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-        }
+        .tag-status { padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; }
         .tag-ativo { background: rgba(34, 197, 94, 0.15); color: var(--verde); }
         .tag-pausado { background: rgba(234, 179, 8, 0.15); color: var(--amarelo); }
         .tag-offline { background: rgba(255,255,255,0.05); color: var(--texto-mutado); }
@@ -184,13 +173,13 @@
                     </tr>
                 </thead>
                 <tbody id="corpo-tabela-membros">
-                    <tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Buscando efetivo...</td></tr>
+                    <tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Carregando...</td></tr>
                 </tbody>
             </table>
 
             <!-- CARDS MOBILE -->
             <div id="lista-membros-mobile">
-                <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Buscando efetivo...</p>
+                <p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Carregando...</p>
             </div>
         </main>
     </div>
@@ -204,7 +193,7 @@
         <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
     </nav>
 
-    <!-- MODAL DE AÇÃO (XP) -->
+    <!-- MODAIS -->
     <div class="modal-overlay" id="modal-acao">
         <div class="modal-content">
             <h3 id="modal-titulo" class="modal-titulo">Ação</h3>
@@ -217,35 +206,19 @@
         </div>
     </div>
 
-    <!-- MODAL DE ADVERTÊNCIA -->
     <div class="modal-overlay" id="modal-advertencia">
         <div class="modal-content">
             <h3 class="modal-titulo" style="color: var(--vermelho);">Aplicar Advertência</h3>
             <p id="adv-subtitulo" class="modal-sub">Membro: --</p>
-            
             <div class="grid-categorias" id="grid-cats-adv">
-                <div class="card-cat" onclick="selecionarCatAdv('Quebra de RP', this)">
-                    <i class="fas fa-theater-masks"></i><span>Quebra de RP</span>
-                </div>
-                <div class="card-cat" onclick="selecionarCatAdv('RDM / VDM', this)">
-                    <i class="fas fa-crosshairs"></i><span>RDM / VDM</span>
-                </div>
-                <div class="card-cat" onclick="selecionarCatAdv('Desrespeito', this)">
-                    <i class="fas fa-user-slash"></i><span>Desrespeito</span>
-                </div>
-                <div class="card-cat" onclick="selecionarCatAdv('Inatividade', this)">
-                    <i class="fas fa-bed"></i><span>Inatividade</span>
-                </div>
-                <div class="card-cat" onclick="selecionarCatAdv('Prejuízo à Org', this)">
-                    <i class="fas fa-hand-holding-usd"></i><span>Prejuízo à Org</span>
-                </div>
-                <div class="card-cat" onclick="selecionarCatAdv('Outros', this)">
-                    <i class="fas fa-ellipsis-h"></i><span>Outros</span>
-                </div>
+                <div class="card-cat" onclick="selecionarCatAdv('Quebra de RP', this)"><i class="fas fa-theater-masks"></i><span>Quebra de RP</span></div>
+                <div class="card-cat" onclick="selecionarCatAdv('RDM / VDM', this)"><i class="fas fa-crosshairs"></i><span>RDM / VDM</span></div>
+                <div class="card-cat" onclick="selecionarCatAdv('Desrespeito', this)"><i class="fas fa-user-slash"></i><span>Desrespeito</span></div>
+                <div class="card-cat" onclick="selecionarCatAdv('Inatividade', this)"><i class="fas fa-bed"></i><span>Inatividade</span></div>
+                <div class="card-cat" onclick="selecionarCatAdv('Prejuízo à Org', this)"><i class="fas fa-hand-holding-usd"></i><span>Prejuízo à Org</span></div>
+                <div class="card-cat" onclick="selecionarCatAdv('Outros', this)"><i class="fas fa-ellipsis-h"></i><span>Outros</span></div>
             </div>
-
             <input type="text" id="adv-motivo-detalhe" class="modal-input" placeholder="Descreva o motivo detalhado..." style="font-size: 13px;">
-
             <div class="modal-botoes">
                 <button class="btn btn-outline" onclick="fecharModalAdv()">Cancelar</button>
                 <button class="btn btn-vermelho" onclick="confirmarAdvertencia()">Aplicar Punição</button>
@@ -253,16 +226,11 @@
         </div>
     </div>
 
-    <!-- MODAL: REMOVER ADVERTÊNCIA -->
     <div class="modal-overlay" id="modal-remover-adv">
         <div class="modal-content">
             <h3 class="modal-titulo" style="color: var(--verde);">Remover Advertência</h3>
             <p id="rem-adv-subtitulo" class="modal-sub">Membro: --</p>
-            
-            <p style="font-size: 13px; color: var(--texto-mutado); text-align: center; margin-bottom: 20px;">
-                Tem certeza que deseja remover <strong>1 advertência</strong> deste membro? Esta ação é irreversível.
-            </p>
-
+            <p style="font-size: 13px; color: var(--texto-mutado); text-align: center; margin-bottom: 20px;">Tem certeza que deseja remover <strong>1 advertência</strong> deste membro?</p>
             <div class="modal-botoes">
                 <button class="btn btn-outline" onclick="fecharModalRemoverAdv()">Cancelar</button>
                 <button class="btn btn-verde" onclick="confirmarRemoverAdv()">Remover Adv</button>
@@ -270,14 +238,12 @@
         </div>
     </div>
 
-    <!-- MODAL DE PERFIL COMPLETO (RAIO-X) -->
     <div class="modal-overlay" id="modal-perfil">
         <div class="modal-content" style="max-width: 600px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 15px; margin-bottom: 15px;">
                 <h3 id="perfil-nome-modal" class="modal-titulo" style="font-size: 24px; margin: 0;">Nome</h3>
                 <button class="btn btn-outline" onclick="fecharModalPerfil()">Fechar</button>
             </div>
-            
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div id="perfil-avatar-modal" style="width: 70px; height: 70px; border-radius: 50%; background: #000; border: 2px solid var(--verde); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; color: var(--verde); background-size: cover; background-position: center;">?</div>
                 <div>
@@ -286,74 +252,70 @@
                     <p style="font-size: 13px; color: var(--texto-mutado);">XP Total: <strong id="perfil-xp-modal" style="color: #fff;">0</strong></p>
                 </div>
             </div>
-
             <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--borda);">
                 <button class="btn btn-outline" style="border: none; border-bottom: 2px solid var(--verde); color: var(--verde); border-radius: 0;" onclick="mudarAbaPerfil('historico', this)">Histórico de Ponto</button>
                 <button class="btn btn-outline" style="border: none; border-bottom: 2px solid transparent; border-radius: 0;" onclick="mudarAbaPerfil('punições', this)">Punições/Faltas</button>
             </div>
-
-            <div id="aba-perfil-historico" style="display: block; max-height: 200px; overflow-y: auto;">
-                <p style="font-size: 13px; color: var(--texto-mutado);">Carregando histórico...</p>
-            </div>
-
-            <div id="aba-perfil-punicoes" style="display: none; max-height: 200px; overflow-y: auto;">
-                <p style="font-size: 13px; color: var(--texto-mutado);">Carregando punições...</p>
-            </div>
+            <div id="aba-perfil-historico" style="display: block; max-height: 200px; overflow-y: auto;"><p style="font-size: 13px; color: var(--texto-mutado);">Carregando...</p></div>
+            <div id="aba-perfil-punicoes" style="display: none; max-height: 200px; overflow-y: auto;"><p style="font-size: 13px; color: var(--texto-mutado);">Carregando...</p></div>
         </div>
     </div>
+    <script>
     let adminLogado = null;
-let todosOsMembros = [];
-let acaoPendente = { passaporte: null, tipo: null, nome: null };
-let categoriaAdvSelecionada = null;
-let membroPerfilAtual = null;
-let membroRemoverAdv = null; 
+    let todosOsMembros = [];
+    let acaoPendente = { passaporte: null, tipo: null, nome: null };
+    let categoriaAdvSelecionada = null;
+    let membroPerfilAtual = null;
+    let membroRemoverAdv = null; 
+    
+    const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
-const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
-
-function getCargoColor(cargo) {
-    const cores = {
-        'Líder da organização': '#fbbf24', 'Líder da Organização': '#fbbf24', 
-        '01 da organização': '#cbd5e1', '01 da Organização': '#cbd5e1',
-        'Gerente geral': '#a855f7', 'Gerente Geral': '#a855f7',
-        'Gerente': '#3b82f6', 'Coordenador': '#06b6d4', 
-        'Auxiliar - Gerência': '#f97316', 'Auxiliar - Gerencia': '#f97316'  
-    };
-    return cores[cargo] || 'var(--verde)';
-}
-
-// 1. INICIALIZAÇÃO E CACHE
-window.addEventListener('DOMContentLoaded', async () => {
-    const logado = sessionStorage.getItem('membro_logado');
-    if (!logado) return window.location.href = 'login.html';
-
-    adminLogado = JSON.parse(logado);
-    if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
-        alert("Acesso negado.");
-        return window.location.href = 'dashboard.html';
+    // 0. FUNÇÃO DE CORES DOS CARGOS
+    function getCargoColor(cargo) {
+        const cores = {
+            'Líder da organização': '#fbbf24', 'Líder da Organização': '#fbbf24', 
+            '01 da organização': '#cbd5e1', '01 da Organização': '#cbd5e1',
+            'Gerente geral': '#a855f7', 'Gerente Geral': '#a855f7',
+            'Gerente': '#3b82f6', 'Coordenador': '#06b6d4', 
+            'Auxiliar - Gerência': '#f97316', 'Auxiliar - Gerencia': '#f97316'  
+        };
+        return cores[cargo] || 'var(--verde)';
     }
 
-    document.getElementById('adm-nome').innerText = adminLogado.nome;
-    document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+    // 1. INICIALIZAÇÃO E CACHE LOCAL
+    window.addEventListener('DOMContentLoaded', async () => {
+        const logado = sessionStorage.getItem('membro_logado');
+        if (!logado) return window.location.href = 'login.html';
 
-    // MÁGICA DO INSTANTÂNEO: Puxa do celular primeiro
-    const cacheLocal = localStorage.getItem('cache_membros');
-    if (cacheLocal) {
-        todosOsMembros = JSON.parse(cacheLocal);
-        filtrarMembros(); 
-    }
+        adminLogado = JSON.parse(logado);
+        if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
+            alert("Acesso negado.");
+            return window.location.href = 'dashboard.html';
+        }
 
-    carregarMembros(); // Atualiza no fundo
-});
+        document.getElementById('adm-nome').innerText = adminLogado.nome;
+        document.getElementById('adm-cargo').innerText = adminLogado.cargo;
 
-// 2. CARREGAR E RENDERIZAR
+        // MÁGICA DA VELOCIDADE: Puxa do cache do celular primeiro
+        const cacheLocal = localStorage.getItem('cache_membros');
+        if (cacheLocal) {
+            todosOsMembros = JSON.parse(cacheLocal);
+            filtrarMembros(); // Renderiza na tela instantaneamente
+        }
+
+        carregarMembros(); // Busca os dados novos no fundo
+    });
+        // 2. CARREGAR E RENDERIZAR MEMBROS (OTIMIZADO)
 async function carregarMembros() {
     const tbody = document.getElementById('corpo-tabela-membros');
     
+    // Se não tem cache, mostra o "carregando". Se tem, nem pisca a tela.
     if (!localStorage.getItem('cache_membros')) {
         tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado);">Buscando efetivo...</td></tr>';
     }
     
     try {
+        // Busca em paralelo: membros e pontos AO MESMO TEMPO
         const [resMembros, resPontos] = await Promise.all([
             sb.from('membros').select('*').order('nome'),
             sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
@@ -362,12 +324,16 @@ async function carregarMembros() {
         if (resMembros.error) throw resMembros.error;
         if (resPontos.error) throw resPontos.error;
 
+        const membros = resMembros.data;
+        const pontos = resPontos.data;
+
+        // Otimização de busca de pontos (Mapa em vez de .find)
         const pontosMap = {};
-        if (resPontos.data) {
-            resPontos.data.forEach(p => { pontosMap[String(p.passaporte)] = p; });
+        if (pontos) {
+            pontos.forEach(p => { pontosMap[String(p.passaporte)] = p; });
         }
 
-        todosOsMembros = resMembros.data.map(m => {
+        todosOsMembros = membros.map(m => {
             const pontoAtivo = pontosMap[String(m.passaporte)];
             return { 
                 ...m, 
@@ -376,13 +342,15 @@ async function carregarMembros() {
             };
         });
 
+        // Salva no celular para a próxima vez que abrir ser instantâneo
         localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros));
-        filtrarMembros();
+
+        filtrarMembros(); // Atualiza a tela
 
     } catch (err) { 
         console.error(err);
         if (!document.querySelector('.card-mob')) {
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro de conexão.</td></tr>`; 
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro de conexão. Tente recarregar.</td></tr>`; 
         }
     }
 }
@@ -396,6 +364,7 @@ function filtrarMembros() {
 
     filtrados.forEach(m => {
         const cargoColor = getCargoColor(m.cargo);
+        
         let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
         let botoesPonto = '';
 
@@ -413,6 +382,7 @@ function filtrarMembros() {
             `;
         }
 
+        // --- HTML DESKTOP ---
         htmlDesktop += `
             <tr>
                 <td>
@@ -432,6 +402,7 @@ function filtrarMembros() {
             </tr>
         `;
 
+        // --- HTML MOBILE ---
         htmlMobile += `
             <div class="card-mob">
                 <div class="card-mob-header">
@@ -446,6 +417,7 @@ function filtrarMembros() {
                     <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
                     <div style="margin-left: auto;">${tagPonto}</div>
                 </div>
+                
                 <div class="acoes-mobile">
                     ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
                     <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
@@ -461,8 +433,8 @@ function filtrarMembros() {
 
     document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
     document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
-}
-            // ==========================================
+                }
+                // ==========================================
         // 3. CONTROLE DE PONTO
         // ==========================================
         async function controlarPonto(acao, pontoId) {
@@ -476,7 +448,7 @@ function filtrarMembros() {
                     if (!confirm("Deseja forçar o encerramento do ponto deste membro?")) return;
                     await sb.from('pontos').update({ status: 'fechado', saida: new Date().toISOString() }).eq('id', pontoId);
                 }
-                localStorage.removeItem('cache_membros'); // Limpa o cache para atualizar a tela
+                localStorage.removeItem('cache_membros'); // Limpa o cache para mostrar o status novo
                 carregarMembros();
             } catch (e) { console.error("Erro ao alterar ponto.", e); }
         }
@@ -518,7 +490,7 @@ function filtrarMembros() {
                 await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', acaoPendente.passaporte);
                 
                 fecharModal();
-                localStorage.removeItem('cache_membros'); 
+                localStorage.removeItem('cache_membros'); // Limpa o cache
                 carregarMembros();
             } catch (e) { console.error(e); } 
             finally { btn.innerText = "Confirmar"; btn.disabled = false; }
@@ -559,7 +531,7 @@ function filtrarMembros() {
                 await sb.from('membros').update({ advertencias: novaQtd }).eq('passaporte', acaoPendente.passaporte);
                 
                 fecharModalAdv();
-                localStorage.removeItem('cache_membros'); 
+                localStorage.removeItem('cache_membros'); // Limpa o cache
                 carregarMembros();
             } catch (e) { console.error(e); } 
             finally { btn.innerText = "Aplicar Punição"; btn.disabled = false; }
@@ -591,7 +563,7 @@ function filtrarMembros() {
                 await sb.from('membros').update({ advertencias: novaQtd }).eq('passaporte', membroRemoverAdv.passaporte);
 
                 fecharModalRemoverAdv();
-                localStorage.removeItem('cache_membros'); 
+                localStorage.removeItem('cache_membros'); // Limpa o cache
                 carregarMembros();
             } catch (e) { console.error(e); } 
             finally { 
