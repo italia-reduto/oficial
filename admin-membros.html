@@ -308,62 +308,61 @@
         // 2. CARREGAR E RENDERIZAR MEMBROS (OTIMIZADO)
 async function carregarMembros() {
     const tbody = document.getElementById('corpo-tabela-membros');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo);">Testando conexão com o banco...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo);">Buscando efetivo...</td></tr>';
     
     try {
-        // Cria um "cronômetro" que aborta se o Supabase demorar mais de 5 segundos
-        const timeout = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error("O Supabase demorou mais de 5 segundos para responder. A conexão caiu ou a tabela está travada.")), 5000)
-        );
+        // 1. Busca SÓ os membros primeiro (Rápido e garantido)
+        const { data: membros, error: errMembros } = await sb.from('membros')
+            .select('nome, passaporte, cargo, xp_total, advertencias')
+            .order('nome');
 
-        // Corre a busca contra o cronômetro
-        const request = sb.from('membros').select('id, nome, passaporte, cargo, xp_total, advertencias').limit(10); // Puxa só 10 pra testar
+        if (errMembros) throw errMembros;
 
-        const resultado = await Promise.race([request, timeout]);
-
-        // Se chegar aqui, a conexão funcionou!
-        if (resultado.error) throw resultado.error;
-
-        if (!resultado.data || resultado.data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto);">Conexão OK, mas a tabela "membros" está VAZIA.</td></tr>';
-            return;
+        // 2. Tenta buscar os pontos. Se der erro, ele ignora e mostra todo mundo offline.
+        let pontos = [];
+        try {
+            const { data: resPontos } = await sb.from('pontos')
+                .select('id, passaporte, status')
+                .in('status', ['aberto', 'pausado']);
+            if (resPontos) pontos = resPontos;
+        } catch (e) { 
+            console.log("Aviso: Não foi possível carregar os pontos agora."); 
         }
 
-        // Se tem dados, monta a tela na força bruta (sem cache, sem mapa, sem frescura)
-        tbody.innerHTML = resultado.data.map(m => `
-            <tr>
-                <td>${m.nome || 'Sem nome'}</td>
-                <td>${m.cargo || 'Sem cargo'}</td>
-                <td>${m.xp_total || 0}</td>
-                <td>${m.advertencias || 0}</td>
-                <td colspan="2">Ações desativadas no teste</td>
-            </tr>
-        `).join('');
+        // 3. Junta os dados com segurança (evita que o código quebre se vier vazio)
+        todosOsMembros = membros.map(m => {
+            const pontoAtivo = pontos.find(p => String(p.passaporte) === String(m.passaporte));
+            return { 
+                ...m, 
+                nome: m.nome || 'Sem Nome', // Proteção
+                cargo: m.cargo || 'Membro', // Proteção
+                status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
+                ponto_id: pontoAtivo ? pontoAtivo.id : null 
+            };
+        });
 
-        document.getElementById('lista-membros-mobile').innerHTML = '<p style="color: green; text-align:center;">Conexão PC OK. O erro está no código do mobile.</p>';
+        filtrarMembros(); // Manda desenhar a tela
 
-    } catch (err) {
+    } catch (err) { 
         console.error(err);
-        // FORÇA O ERRO NA CARA
-        tbody.innerHTML = `
-            <tr><td colspan="6" style="text-align: center; padding: 20px;">
-                <div style="color: var(--vermelho); background: rgba(239,68,68,0.1); padding: 15px; border-radius: 8px; border: 2px solid var(--vermelho);">
-                    <p style="font-weight: bold; font-size: 16px; margin-bottom: 10px;">FALHA CRÍTICA</p>
-                    <p style="font-size: 13px;">${err.message}</p>
-                </div>
-            </td></tr>
-        `; 
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro no banco: ${err.message}</td></tr>`; 
     }
 }
 function filtrarMembros() {
-    const termo = document.getElementById('input-busca-membros').value.toLowerCase();
-    const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
+    const termoEl = document.getElementById('input-busca-membros');
+    const termo = termoEl ? termoEl.value.toLowerCase() : '';
+
+    const filtrados = todosOsMembros.filter(m => {
+        const nome = m.nome || '';
+        const passaporte = String(m.passaporte || '');
+        return nome.toLowerCase().includes(termo) || passaporte.includes(termo);
+    });
 
     let htmlDesktop = '';
     let htmlMobile = '';
 
     filtrados.forEach(m => {
-        const cargoColor = getCargoColor(m.cargo);
+        const cargoColor = getCargoColor(m.cargo || 'Membro');
         
         let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
         let botoesPonto = '';
@@ -433,7 +432,7 @@ function filtrarMembros() {
 
     document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
     document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
-                }
+}
                 // ==========================================
         // 3. CONTROLE DE PONTO
         // ==========================================
