@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
-    <title>Itália 2.0 | Mural</title>
+    <title>Itália 2.0 | Comunicados</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
@@ -18,83 +18,109 @@
 
     <style>
         :root {
-            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2);
-            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --amarelo: #eab308; --azul: #3b82f6;
+            --verde: #22c55e; --fundo: #050806; --painel: #0d1410; --borda: #1a2b22;
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --azul: #3b82f6;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
-        
-        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
-        
-        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; margin-top: 10px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 90px; }
 
-        /* HEADER */
-        .topo { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; margin-bottom: 5px; }
-        .btn-voltar { width: 40px; height: 40px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); text-decoration: none; transition: 0.3s; }
-        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
-        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 24px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -1; }
+        
+        .container { width: 100%; max-width: 650px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
 
-        /* FILTROS (PÍLULAS) */
-        .filtros { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
-        .filtros::-webkit-scrollbar { display: none; }
-        .filtro-btn { background: var(--vidro); border: 1px solid var(--borda); color: var(--texto-mutado); padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; white-space: nowrap; }
-        .filtro-btn.ativo { background: var(--verde); color: #000; border-color: var(--verde); }
+        /* HEADER DO USUÁRIO */
+        .header-user { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .user-info { display: flex; align-items: center; gap: 15px; }
+        .user-avatar { width: 45px; height: 45px; border-radius: 10px; background: rgba(34, 197, 94, 0.1); border: 1px solid var(--borda); display: flex; align-items: center; justify-content: center; color: var(--verde); font-size: 20px; }
+        .user-texto h4 { font-size: 15px; color: #fff; margin-bottom: 2px; }
+        .user-texto p { font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; }
+        .btn-sair { background: transparent; border: 1px solid var(--borda); color: var(--texto-mutado); width: 40px; height: 40px; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .btn-sair:hover { color: var(--vermelho, #ef4444); border-color: #ef4444; }
+
+        /* CABEÇALHO DE COMUNICADOS */
+        .secao-comunicados { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; }
+        .secao-titulo h1 { font-family: 'Oswald'; font-size: 22px; color: #fff; margin-bottom: 5px; }
+        .secao-titulo p { font-size: 13px; color: var(--texto-mutado); margin-bottom: 20px; }
+        
+        /* ABAS */
+        .abas { display: flex; gap: 5px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 8px; }
+        .aba-btn { flex: 1; padding: 10px; background: transparent; border: none; border-radius: 6px; color: var(--texto-mutado); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; }
+        .aba-btn.ativo { background: #16241c; color: #fff; border: 1px solid var(--borda); }
 
         /* CARDS DE AVISO */
-        .card-aviso { background: var(--vidro); backdrop-filter: blur(20px); border-radius: 12px; border: 1px solid var(--borda); padding: 20px; position: relative; overflow: hidden; transition: 0.3s; }
-        .card-aviso::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+        .card-aviso { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; position: relative; }
         
-        /* Cores por Tipo */
-        .aviso-info::before { background: var(--verde); }
-        .aviso-alerta::before { background: var(--amarelo); }
-        .aviso-urgente::before { background: var(--vermelho); }
-        .aviso-urgente { animation: pulso-urgente 2s infinite; }
-        @keyframes pulso-urgente { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
-
-        /* AVISO LIDO (Fica mais apagado) */
-        .card-aviso.lido { opacity: 0.5; border-color: rgba(255,255,255,0.05); animation: none; }
-        .card-aviso.lido::before { background: #52525b; }
-
-        .card-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 10px; }
-        .card-titulo { font-size: 16px; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
-        .card-titulo i { font-size: 18px; }
+        .card-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .tags-container { display: flex; gap: 8px; }
+        .tag { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase; }
         
-        .badge-lido { display: flex; align-items: center; gap: 5px; background: rgba(34, 197, 94, 0.15); color: var(--verde); padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; cursor: pointer; border: 1px solid rgba(34, 197, 94, 0.3); transition: 0.3s; white-space: nowrap; }
-        .badge-lido:hover { background: var(--verde); color: #000; }
-        .badge-lido i { animation: sininho 1s infinite; font-size: 12px; }
-        @keyframes sininho { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(15deg); } 40% { transform: rotate(-15deg); } 60% { transform: rotate(10deg); } 80% { transform: rotate(-10deg); } }
-
-        .card-conteudo { font-size: 13px; color: var(--texto-mutado); line-height: 1.5; margin-bottom: 15px; white-space: pre-wrap; }
+        .tag-importante { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+        .tag-urgente { background: rgba(239, 68, 68, 0.15); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); }
+        .tag-alerta { background: rgba(234, 179, 8, 0.15); color: #facc15; border: 1px solid rgba(234, 179, 8, 0.3); }
         
-        .card-rodape { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; }
-        .autor { font-size: 11px; color: var(--verde); font-weight: 600; display: flex; align-items: center; gap: 5px; }
-        .data { font-size: 10px; color: rgba(255,255,255,0.3); font-weight: 600; text-transform: uppercase; }
+        .tag-efetivo { background: transparent; color: var(--texto-mutado); border: 1px solid var(--borda); display: flex; align-items: center; gap: 5px; }
+
+        .aviso-titulo { font-size: 16px; font-weight: 600; color: var(--azul); margin-bottom: 10px; }
+        
+        .aviso-conteudo { font-size: 13px; color: #d1d5db; line-height: 1.6; white-space: pre-wrap; margin-bottom: 20px; }
+        .aviso-conteudo b { color: #fff; }
+
+        .card-rodape { border-top: 1px solid var(--borda); padding-top: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .autor-data { font-size: 11px; color: var(--texto-mutado); }
+        .btn-marcar-lido { background: transparent; border: 1px solid var(--verde); color: var(--verde); padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-marcar-lido:hover { background: var(--verde); color: #000; }
+        .status-lido { font-size: 11px; color: var(--texto-mutado); display: flex; align-items: center; gap: 5px; }
+
+        /* EMPTY STATE */
+        .empty-state { text-align: center; padding: 40px 20px; background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; color: var(--texto-mutado); }
+        .empty-state i { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
+
+        /* MENU INFERIOR */
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(5, 8, 6, 0.95); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 15px; z-index: 9999; }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; padding: 5px 10px; border-radius: 10px; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
 </head>
 <body>
     <div class="fundo-degrade"></div>
 
     <div class="container">
-        <!-- TOPO -->
-        <div class="topo">
-            <a href="mais.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
-            <h1 class="titulo-pagina">Mural da Itália</h1>
+        
+        <!-- HEADER DO USUÁRIO -->
+        <div class="header-user">
+            <div class="user-info">
+                <div class="user-avatar"><i class="fas fa-shield-alt"></i></div>
+                <div class="user-texto">
+                    <h4 id="nome-user">Carregando...</h4>
+                    <p id="cargo-user">---</p>
+                </div>
+            </div>
+            <button class="btn-sair" onclick="sair()"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
-        <!-- FILTROS -->
-        <div class="filtros">
-            <button class="filtro-btn ativo" onclick="mudarFiltro('todos', this)">Todos</button>
-            <button class="filtro-btn" onclick="mudarFiltro('urgente', this)">Urgentes</button>
-            <button class="filtro-btn" onclick="mudarFiltro('alerta', this)">Alertas</button>
-            <button class="filtro-btn" onclick="mudarFiltro('info', this)">Informativos</button>
+        <!-- SEÇÃO DE COMUNICADOS -->
+        <div class="secao-comunicados">
+            <div class="secao-titulo">
+                <h1>Comunicados</h1>
+                <p>Avisos da organização e mensagens enviadas pela liderança.</p>
+            </div>
+            
+            <!-- ABAS DE NAVEGAÇÃO -->
+            <div class="abas">
+                <button class="aba-btn ativo" id="aba-todos" onclick="mudarAba('todos', this)">Todos</button>
+                <button class="aba-btn" id="aba-nao-lidos" onclick="mudarAba('nao_lidos', this)">Não Lidos</button>
+                <button class="aba-btn" id="aba-urgentes" onclick="mudarAba('urgente', this)">Urgentes</button>
+            </div>
         </div>
 
         <!-- LISTA DE AVISOS -->
-        <div id="lista-mural" style="display: flex; flex-direction: column; gap: 12px;">
+        <div id="lista-avisos" style="display: flex; flex-direction: column; gap: 15px;">
             <p style="text-align: center; color: var(--texto-mutado); font-size: 13px; margin-top: 20px;">
-                <i class="fas fa-spinner fa-spin"></i> Buscando comunicados...
+                <i class="fas fa-spinner fa-spin"></i> Buscando comunicados no banco...
             </p>
         </div>
+
     </div>
 
     <!-- MENU INFERIOR -->
@@ -103,21 +129,21 @@
         <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
         <a href="mais.html" class="item-menu ativo"><i class="fas fa-bars"></i><span>Mais</span></a>
-          </nav>
-              <script>
+    </nav>
+        <script>
         let todosAvisos = [];
-        let filtroAtual = 'todos';
+        let abaAtual = 'todos';
 
-        // Função de segurança para não quebrar o HTML
+        // Função para evitar injeção de HTML e não quebrar o layout
         function escapeHTML(str) {
             if (!str) return '';
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
         }
 
-        // Formatar Data
         function formatarData(dataStr) {
             if (!dataStr) return 'Recentemente';
-            return new Date(dataStr).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+            const d = new Date(dataStr);
+            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()} às ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
         }
 
         // ==========================================
@@ -127,17 +153,20 @@
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
 
-            carregarMural();
+            const membro = JSON.parse(logado);
+            document.getElementById('nome-user').innerText = membro.nome;
+            document.getElementById('cargo-user').innerText = membro.cargo;
+
+            carregarAvisos();
         });
 
         // ==========================================
         // 2. BUSCAR DADOS NO BANCO
         // ==========================================
-        async function carregarMural() {
-            const container = document.getElementById('lista-mural');
+        async function carregarAvisos() {
+            const container = document.getElementById('lista-avisos');
             
             try {
-                // Puxa apenas os avisos ATIVOS, do mais novo pro mais velho
                 const { data, error } = await sb.from('avisos')
                     .select('*')
                     .eq('ativo', true)
@@ -146,44 +175,54 @@
                 if (error) throw error;
                 todosAvisos = data || [];
                 
-                renderizarMural();
+                renderizarAvisos();
 
             } catch (err) {
                 console.error(err);
-                container.innerHTML = '<p style="text-align: center; color: var(--vermelho);"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar os avisos.</p>';
+                container.innerHTML = '<div class="empty-state" style="border-color: #ef4444; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><br>Erro ao carregar os comunicados.</div>';
             }
         }
 
         // ==========================================
-        // 3. FILTROS
+        // 3. LÓGICA DAS ABAS (TODOS, NÃO LIDOS, URGENTES)
         // ==========================================
-        function mudarFiltro(filtro, btnElement) {
-            filtroAtual = filtro;
+        function mudarAba(aba, btnElement) {
+            abaAtual = aba;
             
             // Atualiza a cor dos botões
-            document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('ativo'));
+            document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativo'));
             btnElement.classList.add('ativo');
 
-            renderizarMural();
+            renderizarAvisos();
         }
 
         // ==========================================
         // 4. RENDERIZAR OS CARDS
         // ==========================================
-        function renderizarMural() {
-            const container = document.getElementById('lista-mural');
+        function renderizarAvisos() {
+            const container = document.getElementById('lista-avisos');
             
-            // Pega os avisos que o jogador já leu
+            // Pega os avisos que o jogador já leu no celular
             let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
 
-            // Aplica o filtro
+            // Aplica o filtro da aba selecionada
             let avisosFiltrados = todosAvisos;
-            if (filtroAtual !== 'todos') {
-                avisosFiltrados = todosAvisos.filter(a => a.tipo === filtroAtual);
+
+            if (abaAtual === 'nao_lidos') {
+                avisosFiltrados = todosAvisos.filter(a => !avisosLidos.includes(a.id));
+            } else if (abaAtual === 'urgente') {
+                avisosFiltrados = todosAvisos.filter(a => a.tipo === 'urgente');
             }
 
+            // Se não tiver nada na tela
             if (avisosFiltrados.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px; margin-top: 20px;">Nenhum aviso encontrado nesta categoria.</p>';
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>Quartel General em silêncio.</h3>
+                        <p>Nenhum comunicado novo no momento.</p>
+                    </div>
+                `;
                 return;
             }
 
@@ -191,33 +230,40 @@
             avisosFiltrados.forEach(aviso => {
                 const isLido = avisosLidos.includes(aviso.id);
                 
-                // Define visual baseado no tipo
-                let classeCard = 'aviso-info';
-                let icone = '<i class="fas fa-info-circle" style="color: var(--verde);"></i>';
-                
-                if (aviso.tipo === 'alerta') {
-                    classeCard = 'aviso-alerta';
-                    icone = '<i class="fas fa-exclamation-triangle" style="color: var(--amarelo);"></i>';
-                } else if (aviso.tipo === 'urgente') {
-                    classeCard = 'aviso-urgente';
-                    icone = '<i class="fas fa-radiation" style="color: var(--vermelho);"></i>';
+                // Definindo as Tags coloridas (Igual BPM)
+                let tagTipo = '<span class="tag tag-importante">IMPORTANTE</span>';
+                if (aviso.tipo === 'urgente') {
+                    tagTipo = '<span class="tag tag-urgente">URGENTE</span>';
+                } else if (aviso.tipo === 'alerta') {
+                    tagTipo = '<span class="tag tag-alerta">ALERTA</span>';
                 }
 
-                // Se já leu, adiciona a classe "lido"
-                if (isLido) classeCard += ' lido';
-
                 html += `
-                    <div class="card-aviso ${classeCard}">
+                    <div class="card-aviso">
+                        <!-- TOPO DO CARD COM AS TAGS -->
                         <div class="card-topo">
-                            <div class="card-titulo">${icone} ${escapeHTML(aviso.titulo)}</div>
-                            ${!isLido ? `<div class="badge-lido" onclick="marcarLido('${aviso.id}', this)"><i class="fas fa-bell"></i> Marcar lido</div>` : ''}
+                            <div class="tags-container">
+                                ${tagTipo}
+                                <span class="tag tag-efetivo"><i class="fas fa-users"></i> Todo o efetivo</span>
+                            </div>
                         </div>
-                        
-                        <div class="card-conteudo">${escapeHTML(aviso.conteudo)}</div>
-                        
+
+                        <!-- TÍTULO E CONTEÚDO -->
+                        <h2 class="aviso-titulo">${escapeHTML(aviso.titulo)}</h2>
+                        <div class="aviso-conteudo">${escapeHTML(aviso.conteudo)}</div>
+
+                        <!-- RODAPÉ COM AUTOR E BOTÃO DE LIDO -->
                         <div class="card-rodape">
-                            <div class="autor"><i class="fas fa-user-shield"></i> ${escapeHTML(aviso.autor_nome || 'Liderança')}</div>
-                            <div class="data">${formatarData(aviso.created_at)}</div>
+                            <div class="autor-data">
+                                <i class="fas fa-user-shield"></i> ${escapeHTML(aviso.autor_nome || 'Liderança')} <br>
+                                ${formatarData(aviso.created_at)}
+                            </div>
+                            
+                            ${!isLido ? 
+                                `<button class="btn-marcar-lido" onclick="marcarLido('${aviso.id}', this)"><i class="fas fa-check"></i> Marcar lido</button>` 
+                                : 
+                                `<div class="status-lido"><i class="fas fa-check-double" style="color: var(--verde);"></i> Lido</div>`
+                            }
                         </div>
                     </div>
                 `;
@@ -230,6 +276,7 @@
         // 5. MARCAR COMO LIDO
         // ==========================================
         function marcarLido(id, elemento) {
+            // Salva no celular que o jogador já leu
             let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
             
             if (!avisosLidos.includes(id)) {
@@ -237,13 +284,21 @@
                 localStorage.setItem('avisos_lidos', JSON.stringify(avisosLidos));
             }
 
-            // Efeito visual: Apaga o botão e escurece o card
-            elemento.style.opacity = '0';
-            setTimeout(() => {
-                elemento.remove(); // Remove o botão
-                const card = elemento.closest('.card-aviso');
-                card.classList.add('lido'); // Deixa o card cinza/opaco
-            }, 300);
+            // Muda o botão na hora para "Lido"
+            elemento.outerHTML = `<div class="status-lido"><i class="fas fa-check-double" style="color: var(--verde);"></i> Lido</div>`;
+            
+            // Se a aba atual for "Não Lidos", ele recarrega a tela para o aviso sumir
+            if (abaAtual === 'nao_lidos') {
+                setTimeout(() => { renderizarAvisos(); }, 500);
+            }
+        }
+
+        // ==========================================
+        // 6. LOGOUT
+        // ==========================================
+        function sair() {
+            sessionStorage.removeItem('membro_logado');
+            window.location.href = 'login.html';
         }
     </script>
 </body>
