@@ -59,9 +59,9 @@
         /* TAGS COM VISUAL CORPORATIVO */
         .tag { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
         
-        .tag-importante { background: #1e3a8a; color: #bfdbfe; } /* Azul escuro */
-        .tag-urgente { background: #7f1d1d; color: #fecaca; }    /* Vermelho escuro */
-        .tag-alerta { background: #78350f; color: #fde68a; }     /* Marrom/Mostarda escuro */
+        .tag-importante { background: #064e3b; color: #a7f3d0; } /* Verde Escuro */
+.tag-urgente { background: #7f1d1d; color: #fecaca; }    /* Vermelho Escuro */
+.tag-alerta { background: #422006; color: #fef08a; }     /* Dourado Escuro */
         
         .tag-efetivo { background: transparent; color: var(--texto-mutado); border: 1px solid var(--borda); display: flex; align-items: center; gap: 5px; font-weight: 500; }
 
@@ -215,12 +215,13 @@
             avisosFiltrados.forEach(aviso => {
                 const isLido = avisosLidos.includes(aviso.id);
                 
-                let tagTipo = '<span class="tag tag-importante">IMPORTANTE</span>';
-                if (aviso.tipo === 'urgente') {
-                    tagTipo = '<span class="tag tag-urgente">URGENTE</span>';
-                } else if (aviso.tipo === 'alerta') {
-                    tagTipo = '<span class="tag tag-alerta">ALERTA</span>';
-                }
+                // Lógica de Cores: Verde para avisos gerais, Vermelho para urgente, Dourado para alerta.
+let tagTipo = '<span class="tag tag-importante">AVISO</span>';
+if (aviso.tipo === 'urgente') {
+    tagTipo = '<span class="tag tag-urgente">URGENTE</span>';
+} else if (aviso.tipo === 'alerta') {
+    tagTipo = '<span class="tag tag-alerta">ALERTA</span>';
+}
 
                 html += `
                     <div class="card-aviso">
