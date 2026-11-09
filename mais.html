@@ -19,33 +19,19 @@
     <style>
         :root {
             --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2);
-            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444;
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
         
-        /* FUNDO */
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
-        
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; margin-top: 10px; }
 
-        /* TÍTULO DA PÁGINA */
-        .titulo-pagina { 
-            font-family: 'Oswald', sans-serif; 
-            font-size: 28px; 
-            color: #fff; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            margin-bottom: 10px; 
-            border-bottom: 1px solid var(--borda); 
-            padding-bottom: 15px; 
-            width: 100%; 
-            text-align: center; 
-        }
+        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 28px; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; width: 100%; text-align: center; }
         
         .lista-opcoes { display: flex; flex-direction: column; gap: 10px; }
         .opcao-card { background: var(--vidro); backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; cursor: pointer; transition: 0.3s; }
-        .opcao-card:hover { background: rgba(34, 197, 94, 0.05); border-color: var(--verde); }
+        .opcao-card:hover { background: rgba(34, 197, 94, 0.05); border-color: var(--verde); transform: translateX(5px); }
         
         .opcao-info { display: flex; align-items: center; gap: 15px; }
         .opcao-icone { width: 40px; height: 40px; border-radius: 10px; background: rgba(34, 197, 94, 0.1); display: flex; align-items: center; justify-content: center; color: var(--verde); font-size: 18px; }
@@ -54,28 +40,25 @@
         
         .seta { color: var(--texto-mutado); font-size: 14px; }
 
-        /* OPÇÃO DE ADMIN */
-        .opcao-admin .opcao-icone { background: rgba(234, 179, 8, 0.1); color: #eab308; }
-        .opcao-admin:hover { border-color: #eab308; }
+        /* BADGE DE NOTIFICAÇÃO */
+        .badge { background: #eab308; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
+
+        /* ESTILOS ESPECÍFICOS */
+        .opcao-azul .opcao-icone { background: rgba(59, 130, 246, 0.1); color: var(--azul); }
+        .opcao-azul:hover { border-color: var(--azul); }
+        
+        .opcao-amarela .opcao-icone { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+        .opcao-amarela:hover { border-color: #eab308; }
 
         /* OPÇÃO SAIR */
-        .opcao-sair { border-color: rgba(239, 68, 68, 0.3); }
+        .opcao-sair { border-color: rgba(239, 68, 68, 0.3); margin-top: 15px; }
         .opcao-sair .opcao-icone { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); }
         .opcao-sair .opcao-texto h3 { color: var(--vermelho); }
         .opcao-sair:hover { background: rgba(239, 68, 68, 0.05); border-color: var(--vermelho); }
 
         /* MENU INFERIOR */
-        .menu-inferior { 
-            position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; 
-            background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
-            border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; 
-            align-items: center; padding: 10px 15px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
-        }
-        .item-menu { 
-            display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; 
-            color: var(--texto-mutado); font-size: 10px; font-weight: 500; padding: 5px 10px; 
-            border-radius: 10px; border: 1px solid transparent; transition: 0.3s;
-        }
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 15px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; padding: 5px 10px; border-radius: 10px; border: 1px solid transparent; transition: 0.3s; }
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
@@ -92,14 +75,14 @@
                 <div class="opcao-info">
                     <div class="opcao-icone"><i class="fas fa-bullhorn"></i></div>
                     <div class="opcao-texto">
-                        <h3>Mural de Avisos</h3>
+                        <h3>Avisos</h3>
                         <p>Ver comunicados da liderança</p>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right seta"></i>
+                <span class="badge">17</span>
             </a>
 
-            <!-- FICHA (PERFIL COMPLETO) -->
+            <!-- MINHA FICHA -->
             <a href="perfil.html" class="opcao-card">
                 <div class="opcao-info">
                     <div class="opcao-icone"><i class="fas fa-id-card"></i></div>
@@ -111,13 +94,85 @@
                 <i class="fas fa-chevron-right seta"></i>
             </a>
 
-            <!-- PAINEL ADMIN (Só aparece se for Liderança) -->
-            <a href="admin.html" class="opcao-card opcao-admin" id="btn-admin" style="display: none;">
+            <!-- CONVOCAÇÕES -->
+            <div class="opcao-card opcao-azul" onclick="emBreve('Convocações')">
                 <div class="opcao-info">
-                    <div class="opcao-icone"><i class="fas fa-shield-alt"></i></div>
+                    <div class="opcao-icone"><i class="fas fa-calendar-check"></i></div>
                     <div class="opcao-texto">
-                        <h3>Painel Admin</h3>
-                        <p>Acessar o Radar de Plantões</p>
+                        <h3>Convocações</h3>
+                        <p>Chamados oficiais da liderança</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </div>
+
+            <!-- AUSÊNCIAS / JUSTIFICATIVAS -->
+            <a href="justificativas.html" class="opcao-card">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-calendar-times"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Ausências</h3>
+                        <p>Enviar justificativa de falta</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </a>
+
+            <!-- TREINOS -->
+            <div class="opcao-card" onclick="emBreve('Treinos')">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Treinos</h3>
+                        <p>Agenda de treinamentos da org</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </div>
+
+            <!-- PROMOÇÕES -->
+            <div class="opcao-card" onclick="emBreve('Promoções')">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-chart-line"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Promoções</h3>
+                        <p>Histórico de subidas de cargo</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </div>
+
+            <!-- NOTIFICAÇÕES -->
+            <div class="opcao-card opcao-amarela" onclick="emBreve('Notificações')">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-bell"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Notificações</h3>
+                        <p>Alertas do sistema e advertências</p>
+                    </div>
+                </div>
+                <span class="badge">3</span>
+            </div>
+
+            <!-- MINHA SEGURANÇA -->
+            <div class="opcao-card" onclick="emBreve('Minha Segurança')">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-key"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Minha Segurança</h3>
+                        <p>Alterar senha de acesso</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </div>
+
+            <!-- SUPORTE -->
+            <a href="atendimento.html" class="opcao-card">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-headset"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Central de Suporte</h3>
+                        <p>Abrir ticket e falar com a gerência</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
@@ -146,25 +201,14 @@
     </nav>
 
     <script>
-        window.addEventListener('DOMContentLoaded', async () => {
-            const logado = sessionStorage.getItem('membro_logado');
-            if (!logado) return window.location.href = 'login.html';
-
-            const membro = JSON.parse(logado);
-
-            // LÓGICA DO BOTÃO ADMIN (Blindada contra letras maiúsculas)
-            const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
-            const cargoDoCara = String(membro.cargo || '').trim().toLowerCase();
-            const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
-
-            if (isAdmin) {
-                document.getElementById('btn-admin').style.display = 'flex';
-            }
-        });
-
         function sair() {
             sessionStorage.removeItem('membro_logado');
             window.location.href = 'login.html';
+        }
+
+        // Função para as opções que ainda não têm tela
+        function emBreve(nomeFuncao) {
+            alert("⚙️ A funcionalidade de " + nomeFuncao + " está em desenvolvimento e estará disponível em breve!");
         }
     </script>
 </body>
