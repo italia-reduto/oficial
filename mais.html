@@ -40,10 +40,6 @@
         
         .seta { color: var(--texto-mutado); font-size: 14px; }
 
-        /* BADGES */
-        .badge-amarelo { background: var(--amarelo); color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
-        .badge-vermelho { background: var(--vermelho); color: #fff; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
-
         /* ESTILOS ESPECÍFICOS */
         .opcao-destaque .opcao-icone { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); }
         .opcao-destaque:hover { border-color: var(--amarelo); }
@@ -70,17 +66,17 @@
         <h1 class="titulo-pagina">Central de Comando</h1>
 
         <div class="lista-opcoes">
-            <!-- MURAL DA ITÁLIA -->
-<a href="mural.html" class="opcao-card">  <!-- TROQUE AQUI -->
-    <div class="opcao-info">
-        <div class="opcao-icone"><i class="fas fa-bullhorn"></i></div>
-        <div class="opcao-texto">
-            <h3>Mural da Itália</h3>
-            <p>Avisos e ordens da liderança</p>
-        </div>
-    </div>
-    <span class="badge-amarelo">17</span>
-</a>
+            <!-- MURAL DA ITÁLIA (SEM NÚMERO) -->
+            <a href="mural.html" class="opcao-card">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-bullhorn"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Mural da Itália</h3>
+                        <p>Avisos e ordens da liderança</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </a>
 
             <!-- MEU HISTÓRICO -->
             <a href="perfil.html" class="opcao-card">
@@ -142,7 +138,7 @@
                 <i class="fas fa-chevron-right seta"></i>
             </div>
 
-            <!-- NOTIFICAÇÕES -->
+            <!-- NOTIFICAÇÕES (SEM NÚMERO) -->
             <div class="opcao-card" onclick="emBreve('Notificações')">
                 <div class="opcao-info">
                     <div class="opcao-icone"><i class="fas fa-bell"></i></div>
@@ -151,7 +147,7 @@
                         <p>Alertas de punições e XP</p>
                     </div>
                 </div>
-                <span class="badge-vermelho">3</span>
+                <i class="fas fa-chevron-right seta"></i>
             </div>
 
             <!-- SEGURANÇA -->
