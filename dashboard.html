@@ -55,8 +55,14 @@
         .progressao-barra-bg { width: 100%; height: 8px; background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); overflow: hidden; position: relative; }
         .progressao-barra-fill { height: 100%; background: linear-gradient(90deg, #166534, var(--verde)); width: 0%; border-radius: 10px; transition: width 1s ease; box-shadow: 0 0 10px rgba(34, 197, 94, 0.4); }
         .progressao-xp-texto { font-size: 10px; color: #9ca3af; text-align: right; }
+        
+        /* BOTÃO CONFIGURAÇÃO */
         .btn-config { position: absolute; top: 15px; right: 15px; width: 35px; height: 35px; background: rgba(0,0,0,0.3); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 16px; cursor: pointer; z-index: 10; transition: 0.3s; }
         .btn-config:hover { color: var(--verde); border-color: var(--verde); transform: rotate(90deg); }
+
+        /* NOVO BOTÃO MODO ADM */
+        .btn-modo-adm { position: absolute; top: 18px; right: 60px; background: rgba(34, 197, 94, 0.1); border: 1px solid var(--verde); color: var(--verde); padding: 5px 10px; border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; text-decoration: none; display: none; align-items: center; gap: 5px; z-index: 10; transition: 0.3s; box-shadow: 0 0 10px rgba(34, 197, 94, 0.1); }
+        .btn-modo-adm:hover { background: var(--verde); color: #000; }
 
         .grid-metricas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
         .card-metrica { background: var(--vidro); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 15px; text-align: left; transition: 0.3s; }
@@ -102,7 +108,6 @@
         .btn-fechar:hover { color: #ef4444; }
         .modal-lista { padding: 20px; overflow-y: auto; max-height: 60vh; display: flex; flex-direction: column; gap: 10px; flex: 1; -webkit-overflow-scrolling: touch; }
         
-        /* MODAL MEMBROS E CONFIG */
         .busca-membros { width: 100%; padding: 12px 15px; background: rgba(0,0,0,0.5); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-family: 'Inter', sans-serif; outline: none; margin-bottom: 15px; }
         .busca-membros:focus { border-color: var(--verde); }
         .categoria-membros { font-family: 'Oswald', sans-serif; font-size: 12px; color: var(--texto-mutado); text-transform: uppercase; letter-spacing: 2px; margin: 20px 0 10px 0; display: flex; align-items: center; gap: 8px; }
@@ -155,6 +160,9 @@
             .aviso-item { padding: 12px; }
             .alerta-custom { min-width: 90%; }
             .modal-lista { padding-bottom: 90px; }
+            
+            /* Ajuste do botão ADM no celular */
+            .btn-modo-adm { top: 15px; right: 55px; padding: 4px 8px; font-size: 10px; }
         }
     </style>
 </head>
@@ -170,9 +178,17 @@
     <main class="container-principal">
         <!-- CARTÃO DE PERFIL -->
         <div class="cartao-perfil anim-entrada delay-1">
+            
+            <!-- BOTÃO MODO ADM (Oculto por padrão) -->
+            <a href="admin.html" class="btn-modo-adm" id="btn-modo-adm">
+                <i class="fas fa-shield-alt"></i> Modo ADM
+            </a>
+
+            <!-- BOTÃO CONFIGURAÇÃO -->
             <div class="btn-config" onclick="abrirModalConfig()">
                 <i class="fas fa-cog"></i>
             </div>
+
             <div class="avatar" id="avatar-inicial">?</div>
             <div class="info-perfil">
                 <h1 class="nome" id="nome-membro">Carregando...</h1>
@@ -210,103 +226,96 @@
                 <div class="metrica-sub">Punições</div>
             </div>
         </div>
-
-        <!-- AÇÕES RÁPIDAS -->
-        <div class="grid-acoes anim-entrada delay-3">
-            <div class="card-acao" onclick="abrirModalMembros()">
-                <i class="fas fa-users"></i>
-                <span>Membros</span>
-                <p>Ver todos os membros da organização</p>
-            </div>
-            <a href="atendimento.html" class="card-acao">
-                <i class="fas fa-headset"></i>
-                <span>Suporte</span>
-                <p>Abrir central de ajuda</p>
-            </a>
-            
-            <!-- BOTÃO DO PAINEL ADMIN (Oculto por padrão, aparece via JS) -->
-            <a href="admin.html" class="card-acao" id="btn-admin-dashboard" style="display: none; border-color: var(--verde);">
-                <i class="fas fa-shield-alt"></i>
-                <span style="color: var(--verde);">Painel Admin</span>
-                <p>Acessar o Radar de Plantões e Gestão</p>
-            </a>
+            <!-- AÇÕES RÁPIDAS -->
+    <div class="grid-acoes anim-entrada delay-3">
+        <div class="card-acao" onclick="abrirModalMembros()">
+            <i class="fas fa-users"></i>
+            <span>Membros</span>
+            <p>Ver todos os membros da organização</p>
         </div>
-
-        <!-- MURAL DE AVISOS -->
-        <div class="painel-avisos anim-entrada delay-4">
-            <div class="painel-topo">
-                <h3>
-                    <i class="fas fa-bullhorn" style="color: var(--verde); margin-right: 8px;"></i> Comunicados
-                </h3>
-            </div>
-            <div id="lista-avisos" class="lista-avisos">
-                <p class="aviso-vazio">Nenhum aviso recente.</p>
-            </div>
-        </div>
-    </main>
-
-    <!-- MODAL DE MEMBROS -->
-    <div class="modal-overlay" id="modal-membros">
-        <div class="modal-conteudo">
-            <div class="modal-header">
-                <h2><i class="fas fa-users"></i> Membros da Itália</h2>
-                <button class="btn-fechar" onclick="fecharModalMembros()"><i class="fas fa-times"></i></button>
-            </div>
-            <div style="padding: 15px 20px 0 20px;">
-                <input type="text" class="busca-membros" id="input-busca-membros" placeholder="Buscar por nome ou passaporte..." oninput="filtrarMembros()">
-            </div>
-            <div class="modal-lista" id="lista-membros-modal">
-                <p class="aviso-vazio">Carregando...</p>
-            </div>
-        </div>
+        <a href="atendimento.html" class="card-acao">
+            <i class="fas fa-headset"></i>
+            <span>Suporte</span>
+            <p>Abrir central de ajuda</p>
+        </a>
     </div>
 
-    <!-- MODAL DE CONFIGURAÇÕES -->
-    <div class="modal-overlay" id="modal-config">
-        <div class="modal-conteudo" style="max-width: 450px;">
-            <div class="modal-header">
-                <h2><i class="fas fa-cog"></i> Configurações</h2>
-                <button class="btn-fechar" onclick="fecharModalConfig()"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="modal-lista" style="padding: 15px 20px; padding-bottom: 90px;">
-                <div class="config-secao">
-                    <h3 class="config-titulo">Perfil</h3>
-                    <div class="config-item" onclick="document.getElementById('input-foto').click()">
-                        <div class="config-info-titulo"><i class="fas fa-image"></i> <span>Foto de Perfil</span></div>
-                        <button class="btn-config-acao">Mudar</button>
-                    </div>
-                    <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="processarFoto(this)">
+    <!-- MURAL DE AVISOS -->
+    <div class="painel-avisos anim-entrada delay-4">
+        <div class="painel-topo">
+            <h3>
+                <i class="fas fa-bullhorn" style="color: var(--verde); margin-right: 8px;"></i> Comunicados
+            </h3>
+        </div>
+        <div id="lista-avisos" class="lista-avisos">
+            <p class="aviso-vazio">Nenhum aviso recente.</p>
+        </div>
+    </div>
+</main>
+
+<!-- MODAL DE MEMBROS -->
+<div class="modal-overlay" id="modal-membros">
+    <div class="modal-conteudo">
+        <div class="modal-header">
+            <h2><i class="fas fa-users"></i> Membros da Itália</h2>
+            <button class="btn-fechar" onclick="fecharModalMembros()"><i class="fas fa-times"></i></button>
+        </div>
+        <div style="padding: 15px 20px 0 20px;">
+            <input type="text" class="busca-membros" id="input-busca-membros" placeholder="Buscar por nome ou passaporte..." oninput="filtrarMembros()">
+        </div>
+        <div class="modal-lista" id="lista-membros-modal">
+            <p class="aviso-vazio">Carregando...</p>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE CONFIGURAÇÕES -->
+<div class="modal-overlay" id="modal-config">
+    <div class="modal-conteudo" style="max-width: 450px;">
+        <div class="modal-header">
+            <h2><i class="fas fa-cog"></i> Configurações</h2>
+            <button class="btn-fechar" onclick="fecharModalConfig()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="modal-lista" style="padding: 15px 20px; padding-bottom: 90px;">
+            <div class="config-secao">
+                <h3 class="config-titulo">Perfil</h3>
+                <div class="config-item" onclick="document.getElementById('input-foto').click()">
+                    <div class="config-info-titulo"><i class="fas fa-image"></i> <span>Foto de Perfil</span></div>
+                    <button class="btn-config-acao">Mudar</button>
                 </div>
-                <div class="config-secao">
-                    <h3 class="config-titulo">Segurança</h3>
-                    <div class="config-item" onclick="customAlert('Saindo...', 'erro'); setTimeout(sair, 1000);">
-                        <div class="config-info-titulo"><i class="fas fa-sign-out-alt" style="color: #ef4444;"></i> <span style="color: #ef4444;">Sair da Conta</span></div>
-                        <button class="btn-config-acao perigo">Sair</button>
-                    </div>
+                <input type="file" id="input-foto" accept="image/*" style="display: none;" onchange="processarFoto(this)">
+            </div>
+            <div class="config-secao">
+                <h3 class="config-titulo">Segurança</h3>
+                <div class="config-item" onclick="customAlert('Saindo...', 'erro'); setTimeout(sair, 1000);">
+                    <div class="config-info-titulo"><i class="fas fa-sign-out-alt" style="color: #ef4444;"></i> <span style="color: #ef4444;">Sair da Conta</span></div>
+                    <button class="btn-config-acao perigo">Sair</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- SISTEMA DE ALERTA -->
-    <div class="alerta-custom" id="alerta-site">
-        <i class="fas fa-check-circle" id="alerta-icone"></i>
-        <p id="alerta-texto">Mensagem</p>
-    </div>
+<!-- SISTEMA DE ALERTA -->
+<div class="alerta-custom" id="alerta-site">
+    <i class="fas fa-check-circle" id="alerta-icone"></i>
+    <p id="alerta-texto">Mensagem</p>
+</div>
 
-    <!-- MENU INFERIOR -->
+<!-- MENU INFERIOR -->
 <nav class="menu-inferior">
-    <a href="dashboard.html" class="item-menu ativo"><i class="fas fa-home"></i><span>Início</span></a>
+    <a href="#" class="item-menu ativo" onclick="mudarMenu(this); return false;"><i class="fas fa-home"></i><span>Início</span></a>
     <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
     <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
     <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
 </nav>
-                        <script>
+
+<script>
     let membroLogado = null;
     let todosMembros = [];
 
     // ==========================================
-    // 1. INICIALIZAÇÃO E LÓGICA DO ADMIN
+    // 1. INICIALIZAÇÃO E LÓGICA DO BOTÃO ADM
     // ==========================================
     window.addEventListener('DOMContentLoaded', async () => {
         const logado = sessionStorage.getItem('membro_logado');
@@ -314,17 +323,17 @@
 
         membroLogado = JSON.parse(logado);
         
-        // --- LÓGICA DO BOTÃO ADMIN (BLINDADA) ---
+        // --- LÓGICA DO BOTÃO MODO ADM (BLINDADA) ---
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
         
         // Transforma tudo em minúsculo para não ter erro de digitação
-        const cargoDoCara = (membroLogado.cargo || '').toLowerCase();
-        const isAdmin = CARGOS_LIDERANCA.some(cargo => cargo.toLowerCase() === cargoDoCara);
+        const cargoDoCara = String(membroLogado.cargo || '').trim().toLowerCase();
+        const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
         
         if (isAdmin) {
-            const btnAdmin = document.getElementById('btn-admin-dashboard');
-            if (btnAdmin) {
-                btnAdmin.style.display = 'flex'; // Mostra o botão
+            const btnAdm = document.getElementById('btn-modo-adm');
+            if (btnAdm) {
+                btnAdm.style.display = 'flex'; // Mostra o botão ao lado da engrenagem
             }
         }
         // ----------------------------------------
@@ -356,134 +365,127 @@
         carregarPresencasEFaltas(membroLogado.passaporte);
         carregarMembrosRapido(); 
     });
-
-    // ==========================================
-    // 2. PROGRESSÃO DE CARREIRA
-    // ==========================================
-    function calcularProgressao(xpTotal, nomeCargoAtual) {
-        const CARGOS_ESCALA = [
-            { nome: 'Novato', xp_min: 0, xp_max: 500 },
-            { nome: 'Executor', xp_min: 500, xp_max: 1500 },
-            { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
-            { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
-            { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
-        ];
-        
-        let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
-        
-        if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
-            document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
-            document.getElementById('label-cargo-proximo').innerText = 'MAX';
-            document.getElementById('barra-progressao').style.width = '100%';
-            document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
-            return;
-        }
-        if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
-
-        let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
-        
-        if (!proximoNivel) {
-            document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-            document.getElementById('label-cargo-proximo').innerText = 'MAX';
-            document.getElementById('barra-progressao').style.width = '100%';
-            document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
-            return;
-        }
-
-        document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-        document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
-        
-        const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
-        const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
-        let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
-        
-        if (porcentagem > 100) porcentagem = 100;
-        document.getElementById('barra-progressao').style.width = porcentagem + '%';
-        document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
-    }
-
-    // ==========================================
-    // 3. MÉTRICAS E AVISOS
-    // ==========================================
-    async function carregarPresencasEFaltas(passaporte) {
-        try {
-            const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
-            const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
+            // ==========================================
+        // 2. PROGRESSÃO DE CARREIRA
+        // ==========================================
+        function calcularProgressao(xpTotal, nomeCargoAtual) {
+            const CARGOS_ESCALA = [
+                { nome: 'Novato', xp_min: 0, xp_max: 500 },
+                { nome: 'Executor', xp_min: 500, xp_max: 1500 },
+                { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
+                { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
+                { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
+            ];
             
-            if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
-            if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
-        } catch (error) { console.error(error); }
-    }
-
-    async function carregarAvisos() {
-        const container = document.getElementById('lista-avisos');
-        
-        const { data, error } = await sb.from('avisos')
-            .select('*')
-            .eq('ativo', true) 
-            .order('created_at', { ascending: false })
-            .limit(3);
-
-        if (error || !data || data.length === 0) {
-            container.innerHTML = '<p class="aviso-vazio">Nenhum aviso recente.</p>';
-            return;
-        }
-
-        let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
-
-        let html = '';
-        data.forEach(aviso => {
-            const isLido = avisosLidos.includes(aviso.id);
-            const dataFormatada = aviso.created_at ? new Date(aviso.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : 'Recentemente';
+            let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
             
-            let corBorda = 'var(--verde)';
-            let iconeTipo = '<i class="fas fa-info-circle" style="color: var(--verde);"></i>';
+            if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
+                document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
+                return;
+            }
+            if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
+
+            let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
             
-            if (aviso.tipo === 'alerta') { 
-                corBorda = 'var(--amarelo)'; 
-                iconeTipo = '<i class="fas fa-exclamation-triangle" style="color: var(--amarelo);"></i>'; 
-            } else if (aviso.tipo === 'urgente') { 
-                corBorda = 'var(--vermelho)'; 
-                iconeTipo = '<i class="fas fa-radiation" style="color: var(--vermelho);"></i>'; 
+            if (!proximoNivel) {
+                document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+                document.getElementById('label-cargo-proximo').innerText = 'MAX';
+                document.getElementById('barra-progressao').style.width = '100%';
+                document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
+                return;
             }
 
-            if (isLido) corBorda = 'rgba(255,255,255,0.1)';
-
-            html += `
-                <div class="aviso-item" style="border-left-color: ${corBorda};">
-                    <div class="aviso-topo">
-                        <div class="aviso-titulo">${iconeTipo} ${aviso.titulo}</div>
-                        ${!isLido ? `<div class="badge-novo" onclick="marcarComoLido('${aviso.id}', this)"><i class="fas fa-bell"></i> Marcar lido</div>` : ''}
-                    </div>
-                    <p style="font-size: 12px; color: var(--texto-mutado); line-height: 1.4; margin-bottom: 10px; white-space: pre-wrap;">${aviso.conteudo}</p>
-                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 8px;">
-                        <span style="font-size: 11px; color: var(--verde); font-weight: 600;"><i class="fas fa-user-shield"></i> ${aviso.autor_nome || 'Liderança'}</span>
-                        <span style="font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; text-transform: uppercase;">${dataFormatada}</span>
-                    </div>
-                </div>
-            `;
-        });
-        container.innerHTML = html;
-    }
-
-    // ==========================================
-    // 3.1 MARCAR COMO LIDO
-    // ==========================================
-    function marcarComoLido(id, elemento) {
-        let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
-        if (!avisosLidos.includes(id)) {
-            avisosLidos.push(id);
-            localStorage.setItem('avisos_lidos', JSON.stringify(avisosLidos));
+            document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+            document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
+            
+            const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
+            const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
+            let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
+            
+            if (porcentagem > 100) porcentagem = 100;
+            document.getElementById('barra-progressao').style.width = porcentagem + '%';
+            document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
         }
 
-        elemento.style.opacity = '0';
-        setTimeout(() => {
-            elemento.remove(); 
-            const card = elemento.closest('.aviso-item');
-            card.style.borderLeftColor = 'rgba(255,255,255,0.1)'; 
-        }, 300);
-    }
-                                    // ==========================================
+        // ==========================================
+        // 3. MÉTRICAS E AVISOS
+        // ==========================================
+        async function carregarPresencasEFaltas(passaporte) {
+            try {
+                const { count: totalPresencas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'presente');
+                const { count: totalFaltas } = await sb.from('presencas').select('*', { count: 'exact', head: true }).eq('passaporte', passaporte).eq('status', 'falta');
+                
+                if (totalPresencas !== null) document.getElementById('kpi-presencas').innerText = totalPresencas;
+                if (totalFaltas !== null) document.getElementById('kpi-faltas').innerText = totalFaltas;
+            } catch (error) { console.error(error); }
+        }
+
+        async function carregarAvisos() {
+            const container = document.getElementById('lista-avisos');
+            
+            const { data, error } = await sb.from('avisos')
+                .select('*')
+                .eq('ativo', true) 
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<p class="aviso-vazio">Nenhum aviso recente.</p>';
+                return;
+            }
+
+            let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
+
+            let html = '';
+            data.forEach(aviso => {
+                const isLido = avisosLidos.includes(aviso.id);
+                const dataFormatada = aviso.created_at ? new Date(aviso.created_at).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }) : 'Recentemente';
+                
+                let corBorda = 'var(--verde)';
+                let iconeTipo = '<i class="fas fa-info-circle" style="color: var(--verde);"></i>';
+                
+                if (aviso.tipo === 'alerta') { 
+                    corBorda = '#eab308'; 
+                    iconeTipo = '<i class="fas fa-exclamation-triangle" style="color: #eab308;"></i>'; 
+                } else if (aviso.tipo === 'urgente') { 
+                    corBorda = '#ef4444'; 
+                    iconeTipo = '<i class="fas fa-radiation" style="color: #ef4444;"></i>'; 
+                }
+
+                if (isLido) corBorda = 'rgba(255,255,255,0.1)';
+
+                html += `
+                    <div class="aviso-item" style="border-left-color: ${corBorda};">
+                        <div class="aviso-topo">
+                            <div class="aviso-titulo">${iconeTipo} ${aviso.titulo}</div>
+                            ${!isLido ? `<div class="badge-novo" onclick="marcarComoLido('${aviso.id}', this)"><i class="fas fa-bell"></i> Lido</div>` : ''}
+                        </div>
+                        <p style="font-size: 12px; color: var(--texto-mutado); line-height: 1.4; margin-bottom: 10px; white-space: pre-wrap;">${aviso.conteudo}</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function marcarComoLido(id, elemento) {
+            let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
+            if (!avisosLidos.includes(id)) {
+                avisosLidos.push(id);
+                localStorage.setItem('avisos_lidos', JSON.stringify(avisosLidos));
+            }
+
+            elemento.style.opacity = '0';
+            setTimeout(() => {
+                elemento.remove(); 
+                const card = elemento.closest('.aviso-item');
+                card.style.borderLeftColor = 'rgba(255,255,255,0.1)'; 
+            }, 300);
+        }
+
+        // ==========================================
         // 4. MEMBROS (MODAL)
         // ==========================================
         async function carregarMembrosRapido() {
@@ -493,7 +495,6 @@
                 
                 todosMembros = membros.map(m => ({ ...m, online: false }));
                 
-                // Verifica quem bateu ponto hoje para marcar como online
                 const hoje = new Date().toISOString().split('T')[0];
                 const { data: presencas } = await sb.from('presencas').select('passaporte').eq('data', hoje).eq('status', 'presente');
                     
