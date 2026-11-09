@@ -276,11 +276,14 @@
             if (!logado) return window.location.href = 'login.html';
 
             adminLogado = JSON.parse(logado);
-            if (!CARGOS_LIDERANCA.includes(adminLogado.cargo)) {
-                alert("Acesso negado.");
-                return window.location.href = 'dashboard.html';
-            }
+            // VERIFICAÇÃO BLINDADA (IGNORA MAIÚSCULAS E MINÚSCULAS)
+const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
+const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
 
+if (!isAdmin) {
+    alert("Acesso negado. Área restrita.");
+    return window.location.href = 'dashboard.html';
+}
             document.getElementById('adm-nome').innerText = adminLogado.nome;
             document.getElementById('adm-cargo').innerText = adminLogado.cargo;
 
