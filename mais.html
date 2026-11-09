@@ -22,23 +22,29 @@
             --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 90px; display: flex; flex-direction: column; align-items: center; }
-
-        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -2; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
         
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; }
+        /* FUNDO */
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
+        
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; margin-top: 10px; }
 
-        /* PERFIL TOPO */
-        .perfil-topo { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px; }
-        .avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--verde); background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Oswald'; font-size: 24px; font-weight: bold; color: var(--verde); background-size: cover; background-position: center; flex-shrink: 0; }
-        .info h2 { font-family: 'Oswald'; font-size: 22px; text-transform: uppercase; color: #fff; margin-bottom: 2px; }
-        .info p { font-size: 12px; color: var(--texto-mutado); }
-
-        /* LISTA DE OPÇÕES */
-        .titulo-secao { font-family: 'Oswald'; font-size: 14px; color: var(--texto-mutado); letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; margin-bottom: 5px; }
+        /* TÍTULO DA PÁGINA */
+        .titulo-pagina { 
+            font-family: 'Oswald', sans-serif; 
+            font-size: 28px; 
+            color: #fff; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 10px; 
+            border-bottom: 1px solid var(--borda); 
+            padding-bottom: 15px; 
+            width: 100%; 
+            text-align: center; 
+        }
         
         .lista-opcoes { display: flex; flex-direction: column; gap: 10px; }
-        .opcao-card { background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px; padding: 18px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; cursor: pointer; transition: 0.3s; }
+        .opcao-card { background: var(--vidro); backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; cursor: pointer; transition: 0.3s; }
         .opcao-card:hover { background: rgba(34, 197, 94, 0.05); border-color: var(--verde); }
         
         .opcao-info { display: flex; align-items: center; gap: 15px; }
@@ -48,7 +54,7 @@
         
         .seta { color: var(--texto-mutado); font-size: 14px; }
 
-        /* OPÇÃO DE ADMIN (Destaque) */
+        /* OPÇÃO DE ADMIN */
         .opcao-admin .opcao-icone { background: rgba(234, 179, 8, 0.1); color: #eab308; }
         .opcao-admin:hover { border-color: #eab308; }
 
@@ -58,29 +64,27 @@
         .opcao-sair .opcao-texto h3 { color: var(--vermelho); }
         .opcao-sair:hover { background: rgba(239, 68, 68, 0.05); border-color: var(--vermelho); }
 
-        /<!-- MENU INFERIOR -->
-<nav class="menu-inferior">
-    <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
-    <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
-    <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
-    <a href="mais.html" class="item-menu ativo"><i class="fas fa-bars"></i><span>Mais</span></a>
-</nav>
+        /* MENU INFERIOR */
+        .menu-inferior { 
+            position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; 
+            background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); 
+            border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; 
+            align-items: center; padding: 10px 15px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
+        }
+        .item-menu { 
+            display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; 
+            color: var(--texto-mutado); font-size: 10px; font-weight: 500; padding: 5px 10px; 
+            border-radius: 10px; border: 1px solid transparent; transition: 0.3s;
+        }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
 </head>
 <body>
     <div class="fundo-degrade"></div>
 
     <div class="container">
-        <!-- PERFIL NO TOPO -->
-        <div class="perfil-topo">
-            <div class="avatar" id="avatar-membro">?</div>
-            <div class="info">
-                <h2 id="nome-membro">Carregando...</h2>
-                <p id="cargo-membro">---</p>
-            </div>
-        </div>
-
-        <div class="titulo-secao">Mais Opções</div>
+        <h1 class="titulo-pagina">Mais Opções</h1>
 
         <div class="lista-opcoes">
             <!-- AVISOS -->
@@ -147,20 +151,8 @@
             if (!logado) return window.location.href = 'login.html';
 
             const membro = JSON.parse(logado);
-            
-            // Preenche perfil
-            document.getElementById('nome-membro').innerText = membro.nome;
-            document.getElementById('cargo-membro').innerText = membro.cargo;
-            
-            const avatar = document.getElementById('avatar-membro');
-            if (membro.foto_url) {
-                avatar.style.backgroundImage = `url('${membro.foto_url}')`;
-                avatar.innerText = '';
-            } else {
-                avatar.innerText = membro.nome.charAt(0).toUpperCase();
-            }
 
-            // LÓGICA DO BOTÃO ADMIN
+            // LÓGICA DO BOTÃO ADMIN (Blindada contra letras maiúsculas)
             const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
             const cargoDoCara = String(membro.cargo || '').trim().toLowerCase();
             const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
