@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <title>Itália 2.0 | Mural</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2);
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --amarelo: #eab308; --azul: #3b82f6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
+        
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
+        
+        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; margin-top: 10px; }
+
+        /* HEADER */
+        .topo { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; margin-bottom: 5px; }
+        .btn-voltar { width: 40px; height: 40px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); text-decoration: none; transition: 0.3s; }
+        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
+        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 24px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* FILTROS (PÍLULAS) */
+        .filtros { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .filtros::-webkit-scrollbar { display: none; }
+        .filtro-btn { background: var(--vidro); border: 1px solid var(--borda); color: var(--texto-mutado); padding: 8px 15px; border-radius: 20px; font-size: 12px; font-weight: 600; cursor: pointer; transition: 0.3s; white-space: nowrap; }
+        .filtro-btn.ativo { background: var(--verde); color: #000; border-color: var(--verde); }
+
+        /* CARDS DE AVISO */
+        .card-aviso { background: var(--vidro); backdrop-filter: blur(20px); border-radius: 12px; border: 1px solid var(--borda); padding: 20px; position: relative; overflow: hidden; transition: 0.3s; }
+        .card-aviso::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
+        
+        /* Cores por Tipo */
+        .aviso-info::before { background: var(--verde); }
+        .aviso-alerta::before { background: var(--amarelo); }
+        .aviso-urgente::before { background: var(--vermelho); }
+        .aviso-urgente { animation: pulso-urgente 2s infinite; }
+        @keyframes pulso-urgente { 0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.2); } 70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); } 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); } }
+
+        /* AVISO LIDO (Fica mais apagado) */
+        .card-aviso.lido { opacity: 0.5; border-color: rgba(255,255,255,0.05); animation: none; }
+        .card-aviso.lido::before { background: #52525b; }
+
+        .card-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; gap: 10px; }
+        .card-titulo { font-size: 16px; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .card-titulo i { font-size: 18px; }
+        
+        .badge-lido { display: flex; align-items: center; gap: 5px; background: rgba(34, 197, 94, 0.15); color: var(--verde); padding: 4px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; cursor: pointer; border: 1px solid rgba(34, 197, 94, 0.3); transition: 0.3s; white-space: nowrap; }
+        .badge-lido:hover { background: var(--verde); color: #000; }
+        .badge-lido i { animation: sininho 1s infinite; font-size: 12px; }
+        @keyframes sininho { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(15deg); } 40% { transform: rotate(-15deg); } 60% { transform: rotate(10deg); } 80% { transform: rotate(-10deg); } }
+
+        .card-conteudo { font-size: 13px; color: var(--texto-mutado); line-height: 1.5; margin-bottom: 15px; white-space: pre-wrap; }
+        
+        .card-rodape { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; }
+        .autor { font-size: 11px; color: var(--verde); font-weight: 600; display: flex; align-items: center; gap: 5px; }
+        .data { font-size: 10px; color: rgba(255,255,255,0.3); font-weight: 600; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="fundo-degrade"></div>
+
+    <div class="container">
+        <!-- TOPO -->
+        <div class="topo">
+            <a href="mais.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="titulo-pagina">Mural da Itália</h1>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filtros">
+            <button class="filtro-btn ativo" onclick="mudarFiltro('todos', this)">Todos</button>
+            <button class="filtro-btn" onclick="mudarFiltro('urgente', this)">Urgentes</button>
+            <button class="filtro-btn" onclick="mudarFiltro('alerta', this)">Alertas</button>
+            <button class="filtro-btn" onclick="mudarFiltro('info', this)">Informativos</button>
+        </div>
+
+        <!-- LISTA DE AVISOS -->
+        <div id="lista-mural" style="display: flex; flex-direction: column; gap: 12px;">
+            <p style="text-align: center; color: var(--texto-mutado); font-size: 13px; margin-top: 20px;">
+                <i class="fas fa-spinner fa-spin"></i> Buscando comunicados...
+            </p>
+        </div>
+    </div>
+
+    <!-- MENU INFERIOR -->
+    <nav class="menu-inferior">
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
+        <a href="mais.html" class="item-menu ativo"><i class="fas fa-bars"></i><span>Mais</span></a>
+          </nav>
+              <script>
+        let todosAvisos = [];
+        let filtroAtual = 'todos';
+
+        // Função de segurança para não quebrar o HTML
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+        }
+
+        // Formatar Data
+        function formatarData(dataStr) {
+            if (!dataStr) return 'Recentemente';
+            return new Date(dataStr).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ==========================================
+        // 1. INICIALIZAÇÃO
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            carregarMural();
+        });
+
+        // ==========================================
+        // 2. BUSCAR DADOS NO BANCO
+        // ==========================================
+        async function carregarMural() {
+            const container = document.getElementById('lista-mural');
+            
+            try {
+                // Puxa apenas os avisos ATIVOS, do mais novo pro mais velho
+                const { data, error } = await sb.from('avisos')
+                    .select('*')
+                    .eq('ativo', true)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+                todosAvisos = data || [];
+                
+                renderizarMural();
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<p style="text-align: center; color: var(--vermelho);"><i class="fas fa-exclamation-triangle"></i> Erro ao carregar os avisos.</p>';
+            }
+        }
+
+        // ==========================================
+        // 3. FILTROS
+        // ==========================================
+        function mudarFiltro(filtro, btnElement) {
+            filtroAtual = filtro;
+            
+            // Atualiza a cor dos botões
+            document.querySelectorAll('.filtro-btn').forEach(btn => btn.classList.remove('ativo'));
+            btnElement.classList.add('ativo');
+
+            renderizarMural();
+        }
+
+        // ==========================================
+        // 4. RENDERIZAR OS CARDS
+        // ==========================================
+        function renderizarMural() {
+            const container = document.getElementById('lista-mural');
+            
+            // Pega os avisos que o jogador já leu
+            let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
+
+            // Aplica o filtro
+            let avisosFiltrados = todosAvisos;
+            if (filtroAtual !== 'todos') {
+                avisosFiltrados = todosAvisos.filter(a => a.tipo === filtroAtual);
+            }
+
+            if (avisosFiltrados.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px; margin-top: 20px;">Nenhum aviso encontrado nesta categoria.</p>';
+                return;
+            }
+
+            let html = '';
+            avisosFiltrados.forEach(aviso => {
+                const isLido = avisosLidos.includes(aviso.id);
+                
+                // Define visual baseado no tipo
+                let classeCard = 'aviso-info';
+                let icone = '<i class="fas fa-info-circle" style="color: var(--verde);"></i>';
+                
+                if (aviso.tipo === 'alerta') {
+                    classeCard = 'aviso-alerta';
+                    icone = '<i class="fas fa-exclamation-triangle" style="color: var(--amarelo);"></i>';
+                } else if (aviso.tipo === 'urgente') {
+                    classeCard = 'aviso-urgente';
+                    icone = '<i class="fas fa-radiation" style="color: var(--vermelho);"></i>';
+                }
+
+                // Se já leu, adiciona a classe "lido"
+                if (isLido) classeCard += ' lido';
+
+                html += `
+                    <div class="card-aviso ${classeCard}">
+                        <div class="card-topo">
+                            <div class="card-titulo">${icone} ${escapeHTML(aviso.titulo)}</div>
+                            ${!isLido ? `<div class="badge-lido" onclick="marcarLido('${aviso.id}', this)"><i class="fas fa-bell"></i> Marcar lido</div>` : ''}
+                        </div>
+                        
+                        <div class="card-conteudo">${escapeHTML(aviso.conteudo)}</div>
+                        
+                        <div class="card-rodape">
+                            <div class="autor"><i class="fas fa-user-shield"></i> ${escapeHTML(aviso.autor_nome || 'Liderança')}</div>
+                            <div class="data">${formatarData(aviso.created_at)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // 5. MARCAR COMO LIDO
+        // ==========================================
+        function marcarLido(id, elemento) {
+            let avisosLidos = JSON.parse(localStorage.getItem('avisos_lidos') || '[]');
+            
+            if (!avisosLidos.includes(id)) {
+                avisosLidos.push(id);
+                localStorage.setItem('avisos_lidos', JSON.stringify(avisosLidos));
+            }
+
+            // Efeito visual: Apaga o botão e escurece o card
+            elemento.style.opacity = '0';
+            setTimeout(() => {
+                elemento.remove(); // Remove o botão
+                const card = elemento.closest('.card-aviso');
+                card.classList.add('lido'); // Deixa o card cinza/opaco
+            }, 300);
+        }
+    </script>
+</body>
+</html>
