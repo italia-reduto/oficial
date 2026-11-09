@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <title>Itália 2.0 | Mais Opções</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2);
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 90px; display: flex; flex-direction: column; align-items: center; }
+
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -2; }
+        
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; }
+
+        /* PERFIL TOPO */
+        .perfil-topo { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; padding: 20px; display: flex; align-items: center; gap: 15px; }
+        .avatar { width: 60px; height: 60px; border-radius: 50%; border: 2px solid var(--verde); background: #000; display: flex; align-items: center; justify-content: center; font-family: 'Oswald'; font-size: 24px; font-weight: bold; color: var(--verde); background-size: cover; background-position: center; flex-shrink: 0; }
+        .info h2 { font-family: 'Oswald'; font-size: 22px; text-transform: uppercase; color: #fff; margin-bottom: 2px; }
+        .info p { font-size: 12px; color: var(--texto-mutado); }
+
+        /* LISTA DE OPÇÕES */
+        .titulo-secao { font-family: 'Oswald'; font-size: 14px; color: var(--texto-mutado); letter-spacing: 1px; text-transform: uppercase; margin-top: 10px; margin-bottom: 5px; }
+        
+        .lista-opcoes { display: flex; flex-direction: column; gap: 10px; }
+        .opcao-card { background: var(--vidro); border: 1px solid var(--borda); border-radius: 12px; padding: 18px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; cursor: pointer; transition: 0.3s; }
+        .opcao-card:hover { background: rgba(34, 197, 94, 0.05); border-color: var(--verde); }
+        
+        .opcao-info { display: flex; align-items: center; gap: 15px; }
+        .opcao-icone { width: 40px; height: 40px; border-radius: 10px; background: rgba(34, 197, 94, 0.1); display: flex; align-items: center; justify-content: center; color: var(--verde); font-size: 18px; }
+        .opcao-texto h3 { font-family: 'Oswald'; font-size: 16px; color: #fff; margin-bottom: 2px; font-weight: 500; }
+        .opcao-texto p { font-size: 11px; color: var(--texto-mutado); }
+        
+        .seta { color: var(--texto-mutado); font-size: 14px; }
+
+        /* OPÇÃO DE ADMIN (Destaque) */
+        .opcao-admin .opcao-icone { background: rgba(234, 179, 8, 0.1); color: #eab308; }
+        .opcao-admin:hover { border-color: #eab308; }
+
+        /* OPÇÃO SAIR */
+        .opcao-sair { border-color: rgba(239, 68, 68, 0.3); }
+        .opcao-sair .opcao-icone { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); }
+        .opcao-sair .opcao-texto h3 { color: var(--vermelho); }
+        .opcao-sair:hover { background: rgba(239, 68, 68, 0.05); border-color: var(--vermelho); }
+
+        /* MENU INFERIOR */
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; padding: 5px 10px; border-radius: 10px; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="fundo-degrade"></div>
+
+    <div class="container">
+        <!-- PERFIL NO TOPO -->
+        <div class="perfil-topo">
+            <div class="avatar" id="avatar-membro">?</div>
+            <div class="info">
+                <h2 id="nome-membro">Carregando...</h2>
+                <p id="cargo-membro">---</p>
+            </div>
+        </div>
+
+        <div class="titulo-secao">Mais Opções</div>
+
+        <div class="lista-opcoes">
+            <!-- AVISOS -->
+            <a href="dashboard.html" class="opcao-card">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-bullhorn"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Mural de Avisos</h3>
+                        <p>Ver comunicados da liderança</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </a>
+
+            <!-- FICHA (PERFIL COMPLETO) -->
+            <a href="perfil.html" class="opcao-card">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-id-card"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Minha Ficha</h3>
+                        <p>Histórico de pontos e faltas</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </a>
+
+            <!-- PAINEL ADMIN (Só aparece se for Liderança) -->
+            <a href="admin.html" class="opcao-card opcao-admin" id="btn-admin" style="display: none;">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-shield-alt"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Painel Admin</h3>
+                        <p>Acessar o Radar de Plantões</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </a>
+
+            <!-- SAIR DA CONTA -->
+            <div class="opcao-card opcao-sair" onclick="sair()">
+                <div class="opcao-info">
+                    <div class="opcao-icone"><i class="fas fa-sign-out-alt"></i></div>
+                    <div class="opcao-texto">
+                        <h3>Sair da Conta</h3>
+                        <p>Encerrar a sessão atual</p>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right seta"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENU INFERIOR -->
+    <nav class="menu-inferior">
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
+        <a href="mais.html" class="item-menu ativo"><i class="fas fa-bars"></i><span>Mais</span></a>
+    </nav>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            const membro = JSON.parse(logado);
+            
+            // Preenche perfil
+            document.getElementById('nome-membro').innerText = membro.nome;
+            document.getElementById('cargo-membro').innerText = membro.cargo;
+            
+            const avatar = document.getElementById('avatar-membro');
+            if (membro.foto_url) {
+                avatar.style.backgroundImage = `url('${membro.foto_url}')`;
+                avatar.innerText = '';
+            } else {
+                avatar.innerText = membro.nome.charAt(0).toUpperCase();
+            }
+
+            // LÓGICA DO BOTÃO ADMIN
+            const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+            const cargoDoCara = String(membro.cargo || '').trim().toLowerCase();
+            const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
+
+            if (isAdmin) {
+                document.getElementById('btn-admin').style.display = 'flex';
+            }
+        });
+
+        function sair() {
+            sessionStorage.removeItem('membro_logado');
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
