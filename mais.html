@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
-    <title>Itália 2.0 | Mais Opções</title>
+    <title>Itália 2.0 | Central de Comando</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     
@@ -19,7 +19,7 @@
     <style>
         :root {
             --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2);
-            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6;
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6; --amarelo: #eab308;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
@@ -27,7 +27,7 @@
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; margin-top: 10px; }
 
-        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 28px; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; width: 100%; text-align: center; }
+        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 28px; color: #fff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; width: 100%; text-align: center; text-shadow: 0 0 10px rgba(34, 197, 94, 0.3); }
         
         .lista-opcoes { display: flex; flex-direction: column; gap: 10px; }
         .opcao-card { background: var(--vidro); backdrop-filter: blur(20px); border: 1px solid var(--borda); border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; text-decoration: none; cursor: pointer; transition: 0.3s; }
@@ -40,17 +40,17 @@
         
         .seta { color: var(--texto-mutado); font-size: 14px; }
 
-        /* BADGE DE NOTIFICAÇÃO */
-        .badge { background: #eab308; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
+        /* BADGES */
+        .badge-amarelo { background: var(--amarelo); color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
+        .badge-vermelho { background: var(--vermelho); color: #fff; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 10px; }
 
         /* ESTILOS ESPECÍFICOS */
-        .opcao-azul .opcao-icone { background: rgba(59, 130, 246, 0.1); color: var(--azul); }
-        .opcao-azul:hover { border-color: var(--azul); }
+        .opcao-destaque .opcao-icone { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); }
+        .opcao-destaque:hover { border-color: var(--amarelo); }
         
-        .opcao-amarela .opcao-icone { background: rgba(234, 179, 8, 0.1); color: #eab308; }
-        .opcao-amarela:hover { border-color: #eab308; }
+        .opcao-suporte .opcao-icone { background: rgba(59, 130, 246, 0.1); color: var(--azul); }
+        .opcao-suporte:hover { border-color: var(--azul); }
 
-        /* OPÇÃO SAIR */
         .opcao-sair { border-color: rgba(239, 68, 68, 0.3); margin-top: 15px; }
         .opcao-sair .opcao-icone { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); }
         .opcao-sair .opcao-texto h3 { color: var(--vermelho); }
@@ -67,64 +67,64 @@
     <div class="fundo-degrade"></div>
 
     <div class="container">
-        <h1 class="titulo-pagina">Mais Opções</h1>
+        <h1 class="titulo-pagina">Central de Comando</h1>
 
         <div class="lista-opcoes">
-            <!-- AVISOS -->
+            <!-- MURAL DA ITÁLIA -->
             <a href="dashboard.html" class="opcao-card">
                 <div class="opcao-info">
                     <div class="opcao-icone"><i class="fas fa-bullhorn"></i></div>
                     <div class="opcao-texto">
-                        <h3>Avisos</h3>
-                        <p>Ver comunicados da liderança</p>
+                        <h3>Mural da Itália</h3>
+                        <p>Avisos e ordens da liderança</p>
                     </div>
                 </div>
-                <span class="badge">17</span>
+                <span class="badge-amarelo">17</span>
             </a>
 
-            <!-- MINHA FICHA -->
+            <!-- MEU HISTÓRICO -->
             <a href="perfil.html" class="opcao-card">
                 <div class="opcao-info">
-                    <div class="opcao-icone"><i class="fas fa-id-card"></i></div>
+                    <div class="opcao-icone"><i class="fas fa-folder-open"></i></div>
                     <div class="opcao-texto">
-                        <h3>Minha Ficha</h3>
-                        <p>Histórico de pontos e faltas</p>
+                        <h3>Meu Histórico</h3>
+                        <p>Ficha de pontos, faltas e XP</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
             </a>
 
-            <!-- CONVOCAÇÕES -->
-            <div class="opcao-card opcao-azul" onclick="emBreve('Convocações')">
+            <!-- ORDENS DE SERVIÇO -->
+            <div class="opcao-card opcao-destaque" onclick="emBreve('Ordens de Serviço')">
                 <div class="opcao-info">
-                    <div class="opcao-icone"><i class="fas fa-calendar-check"></i></div>
+                    <div class="opcao-icone"><i class="fas fa-crosshairs"></i></div>
                     <div class="opcao-texto">
-                        <h3>Convocações</h3>
-                        <p>Chamados oficiais da liderança</p>
+                        <h3>Ordens de Serviço</h3>
+                        <p>Missões e metas passadas pela gerência</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
             </div>
 
-            <!-- AUSÊNCIAS / JUSTIFICATIVAS -->
+            <!-- JUSTIFICAR FALTA -->
             <a href="justificativas.html" class="opcao-card">
                 <div class="opcao-info">
-                    <div class="opcao-icone"><i class="fas fa-calendar-times"></i></div>
+                    <div class="opcao-icone"><i class="fas fa-file-signature"></i></div>
                     <div class="opcao-texto">
-                        <h3>Ausências</h3>
-                        <p>Enviar justificativa de falta</p>
+                        <h3>Justificar Falta</h3>
+                        <p>Enviar defesa para a liderança</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
             </a>
 
-            <!-- TREINOS -->
-            <div class="opcao-card" onclick="emBreve('Treinos')">
+            <!-- TREINAMENTOS -->
+            <div class="opcao-card" onclick="emBreve('Treinamentos')">
                 <div class="opcao-info">
-                    <div class="opcao-icone"><i class="fas fa-graduation-cap"></i></div>
+                    <div class="opcao-icone"><i class="fas fa-gun"></i></div>
                     <div class="opcao-texto">
-                        <h3>Treinos</h3>
-                        <p>Agenda de treinamentos da org</p>
+                        <h3>Treinamentos</h3>
+                        <p>Agenda de treinos de tiro e rotas</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
@@ -133,46 +133,46 @@
             <!-- PROMOÇÕES -->
             <div class="opcao-card" onclick="emBreve('Promoções')">
                 <div class="opcao-info">
-                    <div class="opcao-icone"><i class="fas fa-chart-line"></i></div>
+                    <div class="opcao-icone"><i class="fas fa-arrow-up"></i></div>
                     <div class="opcao-texto">
                         <h3>Promoções</h3>
-                        <p>Histórico de subidas de cargo</p>
+                        <p>Histórico de subida de cargo</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
             </div>
 
             <!-- NOTIFICAÇÕES -->
-            <div class="opcao-card opcao-amarela" onclick="emBreve('Notificações')">
+            <div class="opcao-card" onclick="emBreve('Notificações')">
                 <div class="opcao-info">
                     <div class="opcao-icone"><i class="fas fa-bell"></i></div>
                     <div class="opcao-texto">
                         <h3>Notificações</h3>
-                        <p>Alertas do sistema e advertências</p>
+                        <p>Alertas de punições e XP</p>
                     </div>
                 </div>
-                <span class="badge">3</span>
+                <span class="badge-vermelho">3</span>
             </div>
 
-            <!-- MINHA SEGURANÇA -->
-            <div class="opcao-card" onclick="emBreve('Minha Segurança')">
+            <!-- SEGURANÇA -->
+            <div class="opcao-card" onclick="emBreve('Segurança da Conta')">
                 <div class="opcao-info">
-                    <div class="opcao-icone"><i class="fas fa-key"></i></div>
+                    <div class="opcao-icone"><i class="fas fa-shield-alt"></i></div>
                     <div class="opcao-texto">
-                        <h3>Minha Segurança</h3>
+                        <h3>Segurança da Conta</h3>
                         <p>Alterar senha de acesso</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
             </div>
 
-            <!-- SUPORTE -->
-            <a href="atendimento.html" class="opcao-card">
+            <!-- CENTRAL DE SUPORTE -->
+            <a href="atendimento.html" class="opcao-card opcao-suporte">
                 <div class="opcao-info">
                     <div class="opcao-icone"><i class="fas fa-headset"></i></div>
                     <div class="opcao-texto">
                         <h3>Central de Suporte</h3>
-                        <p>Abrir ticket e falar com a gerência</p>
+                        <p>Abrir ticket para a gerência</p>
                     </div>
                 </div>
                 <i class="fas fa-chevron-right seta"></i>
@@ -206,9 +206,8 @@
             window.location.href = 'login.html';
         }
 
-        // Função para as opções que ainda não têm tela
         function emBreve(nomeFuncao) {
-            alert("⚙️ A funcionalidade de " + nomeFuncao + " está em desenvolvimento e estará disponível em breve!");
+            alert("⚙️ O setor de " + nomeFuncao + " está sendo construído pela liderança. Em breve estará disponível!");
         }
     </script>
 </body>
