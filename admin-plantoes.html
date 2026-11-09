@@ -345,6 +345,9 @@ if (!isAdmin) {
         async function salvarPlantao() {
             const nome = document.getElementById('plantao-nome-input').value.trim();
             const vagas = parseInt(document.getElementById('plantao-vagas-input').value);
+            const inicio = document.getElementById('plantao-inicio-input').value.trim();
+const fim = document.getElementById('plantao-fim-input').value.trim();
+const tipo = document.getElementById('plantao-tipo-input').value;
 
             // Validação simples
             if (!nome || isNaN(vagas) || vagas <= 0) {
@@ -369,9 +372,12 @@ if (!isAdmin) {
             try {
                 // Insere no Supabase
                 const { error } = await sb.from('plantoes').insert([{
-                    nome: nome,
-                    vagas_totais: vagas
-                }]);
+    nome: nome,
+    vagas_totais: vagas,
+    horario_inicio: inicio,
+    horario_fim: fim,
+    tipo: tipo
+}]);
 
                 if (error) throw error;
 
