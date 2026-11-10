@@ -323,7 +323,7 @@ if (!isAdmin) {
         let html = '';
         tickets.forEach(t => {
             const isAtivo = ticketSelecionado === t.id ? 'ativo' : '';
-            const iniciais = t.nome_membro.substring(0, 2).toUpperCase();
+            const iniciais = (t.nome_membro || '??').substring(0, 2).toUpperCase();
             const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
             
             const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
