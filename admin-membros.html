@@ -643,7 +643,7 @@ function filtrarMembros() {
                 html += `
                     <div style="padding: 10px; border-bottom: 1px solid var(--borda); display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
                         <div><strong>${data}</strong> <br> <span style="color: var(--texto-mutado);">${horaIn} às ${horaOut}</span></div>
-                        <span class="tag-status ${p.status === 'fechado' ? 'tag-offline' : 'tag-ativo'}">${p.status}</span>
+                        ${p.saida ? `<span class="tag-status tag-offline">Fechado</span>` : `<span class="tag-status tag-ativo">Em Aberto</span>`}
                     </div>
                 `;
             });
