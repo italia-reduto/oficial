@@ -466,8 +466,9 @@
                 }
                 setTimeout(() => { carregarPlantoes(); }, 2000); 
             } catch (err) { 
-                console.error(err);
-                customAlert("Erro ao encerrar.", "erro"); 
+    console.error(err);
+    alert("ERRO AO SALVAR NO BANCO: " + err.message); // <--- ISSO VAI MOSTRAR O ERRO NA TELA
+    customAlert("Erro ao encerrar.", "erro"); 
             }
         }
 
