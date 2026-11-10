@@ -83,14 +83,14 @@
         .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500; }
         .alerta-custom.erro { border-color: #ef4444; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2); }
         .alerta-custom.erro i { color: #ef4444; }
-        
+
         .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
         .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
-</head>
-<body>
+    </head>
+    <body>
     <div class="fundo-degrade"></div><div class="grade-fundo"></div>
     <div class="particula p1"></div><div class="particula p2"></div><div class="particula p3"></div><div class="particula p4"></div><div class="particula p5"></div>
 
@@ -101,8 +101,11 @@
         </div>
         
         <p id="subtitulo-plantoes" style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 10px;">Selecione um plantão disponível abaixo:</p>
+        
+        <!-- Lista onde os plantões são injetados -->
         <div id="lista-plantoes"><p style="color: var(--texto-mutado); text-align: center; padding: 20px;">Carregando...</p></div>
 
+        <!-- Tela do Cronômetro (Oculta por padrão) -->
         <div id="tela-cronometro">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 20px;">
                 <div>
@@ -111,14 +114,17 @@
                 </div>
                 <div id="status-pausa-texto" style="font-family: 'Oswald'; font-size: 12px; color: var(--amarelo); text-transform: uppercase; display: none; background: rgba(234, 179, 8, 0.1); padding: 4px 8px; border-radius: 4px;">Pausado</div>
             </div>
+            
             <div style="text-align: center; margin-bottom: 25px;">
                 <div id="cronometro-display" class="cronometro-display">00:00:00</div>
                 <p id="label-tempo" style="font-size: 11px; color: var(--texto-mutado); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Tempo em Serviço</p>
             </div>
+            
             <div class="xp-container" id="xp-container-pausa">
                 <div class="xp-texto"><span id="xp-status-texto">Faltam 30 min para +20 XP</span><span id="xp-porcentagem">0%</span></div>
                 <div class="xp-barra-bg"><div class="xp-barra-fill" id="xp-barra-preenchida"></div></div>
             </div>
+            
             <div class="botoes-cronometro">
                 <button onclick="pausarTurno()" id="btn-pausar" class="btn-cronometro btn-pausa"><i class="fas fa-pause"></i> Pausar</button>
                 <button onclick="retomarTurno()" id="btn-retomar" class="btn-cronometro btn-retomar"><i class="fas fa-play"></i> Retomar</button>
@@ -127,7 +133,7 @@
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMAÇÃO GERAL -->
+    <!-- MODAL DE CONFIRMAÇÃO -->
     <div class="modal-overlay" id="modal-confirmar">
         <div class="modal-content">
             <p id="texto-confirmar" style="font-size: 15px; color: #fff; margin-bottom: 25px; line-height: 1.5;">Tem certeza?</p>
@@ -138,12 +144,12 @@
         </div>
     </div>
 
-    <!-- MODAL DE JUSTIFICATIVA -->
+    <!-- MODAL DE JUSTIFICATIVA (Se sair antes de 30 min) -->
     <div class="modal-overlay" id="modal-justificativa">
         <div class="modal-content">
             <div class="aviso-pulsante">
                 <i class="fas fa-exclamation-circle"></i>
-                <div><strong>ATENÇÃO:</strong> Você está saindo antes dos 30 minutos. Isso resultará em uma falta. Justifique abaixo para que a liderança avalie.</div>
+                <div><strong>ATENÇÃO:</strong> Você está saindo antes dos 30 minutos. Isso resultará em uma falta. Justifique abaixo para a liderança avaliar.</div>
             </div>
             <div class="grid-justificativas" id="lista-opcoes-justificativa"></div>
             <input type="text" class="input-outro" id="input-outro" placeholder="Descreva o motivo (máx 100 letras)" maxlength="100">
@@ -152,6 +158,7 @@
         </div>
     </div>
 
+    <!-- SISTEMA DE ALERTA -->
     <div class="alerta-custom" id="alerta-site"><i class="fas fa-check-circle" id="alerta-icone"></i><p id="alerta-texto">Mensagem</p></div>
     
     <!-- MENU INFERIOR -->
@@ -168,9 +175,6 @@
         let acaoPendente = null;
         let justificativaSelecionada = null;
 
-        // ==========================================
-        // 1. FUNÇÕES DE HORÁRIO
-        // ==========================================
         function getMinutosBrasilia() {
             const agora = new Date();
             const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -183,9 +187,6 @@
             return 'aberto'; 
         }
 
-        // ==========================================
-        // 2. INICIALIZAÇÃO
-        // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
@@ -193,16 +194,12 @@
             carregarPlantoes();
         });
 
-        // ==========================================
-        // 3. CARREGAR PLANTÕES E RENDERIZAR
-        // ==========================================
         async function carregarPlantoes() {
             const container = document.getElementById('lista-plantoes');
             const telaCronometro = document.getElementById('tela-cronometro');
             const subtitulo = document.getElementById('subtitulo-plantoes');
             
             try {
-                // Verifica se o membro já tem um ponto aberto ou pausado
                 const { data: pontoAberto } = await sb.from('pontos').select('*, plantoes(nome, horario_inicio, horario_fim)').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
                 if (pontoAberto) {
@@ -212,10 +209,9 @@
                     telaCronometro.style.display = 'flex';
                     
                     document.getElementById('nome-plantao-ativo').innerText = pontoAberto.plantoes ? pontoAberto.plantoes.nome : 'Plantão';
-                    document.getElementById('horario-plantao-ativo').innerText = "Em serviço"; // Como não tem mais horário fixo, mostramos isso
+                    document.getElementById('horario-plantao-ativo').innerText = "Em serviço"; 
                     
                     if (pontoAberto.status === 'pausado') {
-                        // ---- LÓGICA DE PAUSA ----
                         document.getElementById('status-pausa-texto').style.display = 'block';
                         document.getElementById('cronometro-display').style.color = 'var(--amarelo)';
                         document.getElementById('btn-pausar').style.display = 'none';
@@ -229,7 +225,6 @@
                         document.getElementById('xp-container-pausa').style.opacity = '0.3';
                         iniciarCronometroPausa(pontoAberto.pausa_inicio);
                     } else {
-                        // ---- LÓGICA DE TRABALHO NORMAL ----
                         document.getElementById('status-pausa-texto').style.display = 'none';
                         document.getElementById('cronometro-display').style.color = '#fff';
                         document.getElementById('btn-pausar').style.display = 'block';
@@ -241,12 +236,11 @@
                         labelTempo.style.fontWeight = "normal";
                         
                         document.getElementById('xp-container-pausa').style.opacity = '1';
-                        iniciarCronometro(pontoAberto.entrada, pontoAberto.plantoes ? pontoAberto.plantoes.horario_fim : null);
+                        iniciarCronometro(pontoAberto.entrada);
                     }
                     return; 
                 }
 
-                // Se não tiver ponto aberto, mostra a lista de plantões disponíveis
                 container.style.display = 'flex'; 
                 subtitulo.style.display = 'block'; 
                 telaCronometro.style.display = 'none';
@@ -293,10 +287,7 @@
             }
         }
 
-        // ==========================================
-        // 4. CRONÔMETROS
-        // ==========================================
-        function iniciarCronometro(horarioEntrada, horarioFim) {
+        function iniciarCronometro(horarioEntrada) {
             if (intervaloCronometro) clearInterval(intervaloCronometro);
             const display = document.getElementById('cronometro-display');
             const dataEntrada = new Date(horarioEntrada);
@@ -322,8 +313,6 @@
                 
                 if (porcentagem >= 100) { textoXP.innerText = "XP Garantido! +20 XP"; textoXP.style.color = "var(--verde)"; } 
                 else { textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)"; }
-
-                
             }, 1000);
         }
 
@@ -344,9 +333,6 @@
             }, 1000);
         }
 
-        // ==========================================
-        // 5. AÇÕES DO SISTEMA
-        // ==========================================
         function mostrarConfirmacao(mensagem, acao) {
             document.getElementById('texto-confirmar').innerText = mensagem;
             document.getElementById('modal-confirmar').classList.add('ativo');
@@ -410,9 +396,6 @@
             }
         }
 
-        // ==========================================
-        // 6. LÓGICA DE JUSTIFICATIVA
-        // ==========================================
         const opcoesJustificativa = [
             { id: 'medica', icone: 'fa-hospital', titulo: 'Emergência Médica', desc: 'Doença, acidente.' },
             { id: 'escola', icone: 'fa-graduation-cap', titulo: 'Escola / Trabalho', desc: 'Prova, trabalho real.' },
@@ -452,32 +435,42 @@
             await processarEncerramento(pontoAtual, false, motivoFinal, false);
         }
 
-        // ==========================================
-        // 7. ENCERRAMENTO E XP
-        // ==========================================
         async function processarEncerramento(ponto, ganhouXP, motivoJustificativa = null, automatico = false) {
             if (!ponto) return;
             try {
                 const saida = new Date();
+                // Fecha o ponto
                 await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString(), justificativa: motivoJustificativa }).eq('id', ponto.id);
 
                 if (ganhouXP) {
+                    // Deu XP
                     const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
                     await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', membroLogado.passaporte);
-                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por_nome: 'Sistema' }]);
+                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por: 'sistema', marcado_por_nome: 'Sistema', marcado_em: saida.toISOString() }]);
                     customAlert("Turno encerrado! +20 XP.", "sucesso");
                 } else {
-                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'falta', data: saida.toISOString().split('T')[0], marcado_por_nome: automatico ? 'Sistema (Tempo Esgotado)' : 'Sistema', justificativa: motivoJustificativa, status_justificativa: motivoJustificativa ? 'pendente' : null }]);
+                    // Deu Falta - Corrigido para o ADM conseguir ler
+                    await sb.from('presencas').insert([{ 
+                        passaporte: membroLogado.passaporte, 
+                        status: 'falta', 
+                        data: saida.toISOString().split('T')[0], 
+                        marcado_por: 'sistema',
+                        marcado_por_nome: automatico ? 'Sistema (Tempo Esgotado)' : 'Sistema', 
+                        marcado_em: saida.toISOString(), 
+                        justificativa: motivoJustificativa, 
+                        status_justificativa: motivoJustificativa ? 'pendente' : null 
+                    }]);
+                    
                     if(motivoJustificativa) customAlert("Saída justificada! Aguarde análise.", "sucesso");
                     else customAlert("Encerrado antes dos 30 min. Falta registrada.", "erro");
                 }
                 setTimeout(() => { carregarPlantoes(); }, 2000); 
-            } catch (err) { customAlert("Erro ao encerrar.", "erro"); }
+            } catch (err) { 
+                console.error(err);
+                customAlert("Erro ao encerrar.", "erro"); 
+            }
         }
 
-        // ==========================================
-        // 8. ALERTA CUSTOMIZADO
-        // ==========================================
         function customAlert(mensagem, tipo = 'sucesso') {
             const alerta = document.getElementById('alerta-site');
             const icone = document.getElementById('alerta-icone');
