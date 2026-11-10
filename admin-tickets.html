@@ -80,7 +80,8 @@
         .tag-denuncia { background: rgba(234, 179, 8, 0.15); color: var(--amarelo); }
         .tag-queixa { background: rgba(59, 130, 246, 0.15); color: var(--azul); }
         .tag-outros { background: rgba(156, 163, 175, 0.15); color: var(--texto-mutado); }
-                /* COLUNA DO CHAT */
+
+        /* COLUNA DO CHAT */
         .col-chat { flex: 1; display: flex; flex-direction: column; background: var(--fundo); position: relative; }
         
         .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--borda); background: rgba(13, 20, 16, 0.95); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 10;}
@@ -104,17 +105,22 @@
         .msg-wrapper.membro { align-self: flex-start; }
         .msg-wrapper.admin { align-self: flex-end; }
         
-        .msg-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.4; position: relative; word-wrap: break-word; }
+        .msg-bubble { padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.4; position: relative; word-wrap: break-word; display: flex; flex-direction: column; gap: 5px; }
         .msg-wrapper.membro .msg-bubble { background: var(--card); border: 1px solid var(--borda); border-top-left-radius: 2px; color: var(--texto); }
         .msg-wrapper.admin .msg-bubble { background: var(--verde); color: #000; border-top-right-radius: 2px; font-weight: 500; }
         
         .msg-hora { font-size: 10px; color: var(--texto-mutado); margin-top: 4px; align-self: flex-end; }
         .msg-wrapper.membro .msg-hora { align-self: flex-start; }
 
-        .chat-input-area { padding: 15px 20px; background: var(--painel); border-top: 1px solid var(--borda); display: flex; gap: 10px; }
+        /* ESTILO DA IMAGEM NO CHAT */
+        .chat-img { max-width: 100%; border-radius: 8px; margin-bottom: 5px; cursor: pointer; display: block; }
+
+        .chat-input-area { padding: 15px 20px; background: var(--painel); border-top: 1px solid var(--borda); display: flex; gap: 8px; align-items: center; }
         .chat-input { flex: 1; background: var(--fundo); border: 1px solid var(--borda); color: #fff; padding: 12px 15px; border-radius: 20px; font-size: 14px; outline: none; transition: 0.2s; }
         .chat-input:focus { border-color: var(--verde); }
-        .btn-enviar { background: var(--verde); color: #000; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: 0.2s; }
+        .btn-midia { background: transparent; color: var(--texto-mutado); border: none; font-size: 20px; cursor: pointer; padding: 0 10px; transition: 0.3s; }
+        .btn-midia:hover { color: var(--verde); }
+        .btn-enviar { background: var(--verde); color: #000; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; transition: 0.2s; flex-shrink: 0;}
         .btn-enviar:hover { background: var(--verde-hover); transform: scale(1.05); }
 
         .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--texto-mutado); }
@@ -132,14 +138,14 @@
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
             .col-tickets { width: 100%; border-right: none; }
-            /* Correção da caixa de texto escondida */
+            /* Correção da caixa de texto escondida no mobile */
             .col-chat { position: absolute; inset: 0; z-index: 100; transform: translateX(100%); transition: transform 0.3s ease; padding-bottom: 60px; }
             .col-chat.aberto { transform: translateX(0); }
             .btn-voltar-mobile { display: block; }
             .chat-header { padding: 15px; flex-wrap: wrap; gap: 10px;}
             .chat-mensagens { padding: 15px; }
             .msg-wrapper { max-width: 90%; }
-            .chat-input-area { padding: 10px 15px; padding-bottom: 80px; } /* Aumentei o padding para não esconder atrás do menu */
+            .chat-input-area { padding: 10px 15px; padding-bottom: 80px; } 
         }
     </style>
 </head>
@@ -163,6 +169,7 @@
                 <a href="admin-membros.html" class="nav-btn"><i class="fas fa-users-cog"></i> Gerenciar Membros</a>
                 <a href="admin-tickets.html" class="nav-btn ativo"><i class="fas fa-headset"></i> Central de Suporte</a>
                 <a href="admin-avisos.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
+                <a href="admin-treinamentos.html" class="nav-btn"><i class="fas fa-graduation-cap"></i> Treinamentos</a>
             </div>
             <div class="sidebar-user">
                 <div class="user-info">
@@ -233,8 +240,12 @@
                     <!-- As mensagens serão injetadas aqui -->
                 </div>
 
-                <!-- ÁREA DE DIGITAÇÃO -->
+                <!-- ÁREA DE DIGITAÇÃO COM BOTÃO DE CÂMERA -->
                 <div class="chat-input-area" id="chat-input-area" style="display: none;">
+                    <!-- BOTÃO DE FOTO (ADMIN) -->
+                    <button class="btn-midia" onclick="document.getElementById('input-foto-adm').click()"><i class="fas fa-camera"></i></button>
+                    <input type="file" id="input-foto-adm" accept="image/*" style="display: none;" onchange="enviarFoto(this)">
+                    
                     <input type="text" id="input-mensagem" class="chat-input" placeholder="Digite sua resposta..." onkeypress="if(event.key === 'Enter') enviarMensagem()">
                     <button class="btn-enviar" onclick="enviarMensagem()"><i class="fas fa-paper-plane"></i></button>
                 </div>
@@ -249,8 +260,8 @@
         <a href="admin-tickets.html" class="mob-btn ativo"><i class="fas fa-headset"></i> Suporte</a>
         <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
         <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
-    </nav>
-        <script>
+            </nav>
+                <script>
         let adminLogado = null;
         let filtroAtual = 'aberto';
         let ticketSelecionado = null;
@@ -258,7 +269,7 @@
 
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
-        // Função para evitar injeção de código (segurança)
+        // Função para evitar injeção de código
         function escapeHTML(str) {
             if (!str) return '';
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
@@ -309,7 +320,7 @@
             lista.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
 
             try {
-                // Puxa os tickets
+                // Busca os tickets do status selecionado
                 const { data: tickets, error } = await sb.from('tickets')
                     .select('*')
                     .eq('status', filtroAtual)
@@ -322,7 +333,7 @@
                     return;
                 }
 
-                // Puxa os membros para cruzar os dados (nome e foto corretos)
+                // Busca os dados dos membros para pegar nome real e foto
                 const { data: membros } = await sb.from('membros').select('passaporte, nome, foto_url');
                 const mapMembros = {};
                 if(membros) membros.forEach(m => mapMembros[String(m.passaporte)] = m);
@@ -331,20 +342,20 @@
                 tickets.forEach(t => {
                     const isAtivo = ticketSelecionado === t.id ? 'ativo' : '';
                     
-                    // Pega os dados reais do membro na tabela
+                    // Pega os dados reais do membro
                     const membroInfo = mapMembros[String(t.passaporte)];
-                    const nomeReal = membroInfo ? membroInfo.nome : (t.nome_membro || 'Membro');
+                    const nomeReal = membroInfo ? membroInfo.nome : (t.nome_membro || 'Membro Desconhecido');
                     const fotoUrl = membroInfo ? membroInfo.foto_url : null;
 
-                    // Gera iniciais ou a foto
+                    // Configura o Avatar
                     const iniciais = nomeReal.substring(0, 2).toUpperCase();
                     const avatarStyle = fotoUrl ? `background-image: url('${fotoUrl}'); background-size: cover; background-position: center;` : '';
                     const avatarContent = fotoUrl ? '' : iniciais;
 
                     const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
                     
-                    // Cadeado na lista se estiver assumido
-                    const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
+                    // Cadeado na lista
+                    const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;"></i>` : '';
 
                     html += `
                         <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(nomeReal)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}', '${t.assumido_por || ''}')">
@@ -384,11 +395,9 @@
             const areaCadeado = document.getElementById('area-cadeado');
             const nomeAssumiu = document.getElementById('nome-assumiu');
 
-            // Reseta UI de bloqueio
             inputArea.classList.remove('chat-bloqueado');
             document.getElementById('input-mensagem').disabled = false;
 
-            // Lógica de Status e Assumir
             if (status === 'fechado') {
                 inputArea.style.display = 'none';
                 btnFechar.style.display = 'none';
@@ -399,21 +408,16 @@
                 btnFechar.style.display = 'flex';
 
                 if (assumido_por) {
-                    // Ticket já tem dono
                     areaAssumir.style.display = 'none';
                     areaCadeado.style.display = 'flex';
-                    
-                    // AQUI ESTÁ O TEXTO DO CADEADO QUE VOCÊ PEDIU
                     nomeAssumiu.innerText = `Assumido por: ${assumido_por}`;
 
-                    // Se quem assumiu NÃO for eu, bloqueio a digitação
                     if (assumido_por !== adminLogado.nome) {
                         inputArea.classList.add('chat-bloqueado');
                         document.getElementById('input-mensagem').disabled = true;
-                        btnFechar.style.display = 'none'; // Não pode fechar ticket dos outros
+                        btnFechar.style.display = 'none'; 
                     }
                 } else {
-                    // Ticket livre
                     areaAssumir.style.display = 'block';
                     areaCadeado.style.display = 'none';
                 }
@@ -435,7 +439,6 @@
             try {
                 await sb.from('tickets').update({ assumido_por: adminLogado.nome }).eq('id', ticketSelecionado);
                 
-                // Recarrega a tela para aplicar o bloqueio de forma correta
                 const nome = document.getElementById('chat-nome').innerText.split(' (')[0];
                 abrirTicket(ticketSelecionado, nome, '', '', 'aberto', adminLogado.nome);
                 carregarTickets();
@@ -446,7 +449,7 @@
         }
 
         // ==========================================
-        // 4. CARREGAR E ENVIAR MENSAGENS
+        // 4. CARREGAR E ENVIAR MENSAGENS (TEXTO E FOTO)
         // ==========================================
         async function carregarMensagens() {
             if (!ticketSelecionado) return;
@@ -465,18 +468,30 @@
                     const isAdmin = m.remetente === 'admin';
                     const tipo = isAdmin ? 'admin' : 'membro';
                     
+                    // Lógica para renderizar Imagem e/ou Texto
+                    let conteudoImagem = '';
+                    if (m.anexo) {
+                        conteudoImagem = `<img src="${m.anexo}" class="chat-img" onclick="window.open('${m.anexo}', '_blank')">`;
+                    }
+                    let conteudoTexto = '';
+                    if (m.mensagem) {
+                        conteudoTexto = `<span>${escapeHTML(m.mensagem)}</span>`;
+                    }
+                    
                     html += `
                         <div class="msg-wrapper ${tipo}">
-                            <div class="msg-bubble">${escapeHTML(m.mensagem)}</div>
+                            <div class="msg-bubble">
+                                ${conteudoImagem}
+                                ${conteudoTexto}
+                            </div>
                             <div class="msg-hora">${formatarHora(m.created_at)}</div>
                         </div>
                     `;
                 });
 
-                // Só atualiza se houver mensagem nova (evita piscar a tela)
                 if (chatContainer.innerHTML !== html && html !== '') {
                     chatContainer.innerHTML = html;
-                    chatContainer.scrollTop = chatContainer.scrollHeight; // Rola pro final
+                    chatContainer.scrollTop = chatContainer.scrollHeight; 
                 }
 
             } catch (err) {
@@ -503,6 +518,41 @@
             } catch (err) {
                 console.error(err);
                 alert("Erro ao enviar mensagem.");
+            }
+        }
+
+        // NOVA FUNÇÃO: ENVIAR FOTO (ADMIN)
+        function enviarFoto(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                
+                // Limite de 2MB
+                if (file.size > 2 * 1024 * 1024) {
+                    alert("A imagem é muito grande. Escolha uma foto menor que 2MB.");
+                    input.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    const base64Image = e.target.result;
+                    
+                    try {
+                        await sb.from('tickets_mensagens').insert([{
+                            ticket_id: ticketSelecionado,
+                            remetente: 'admin',
+                            nome_remetente: adminLogado.nome,
+                            mensagem: '', 
+                            anexo: base64Image
+                        }]);
+
+                        carregarMensagens();
+                        input.value = '';
+                    } catch (err) {
+                        alert("Erro ao enviar imagem.");
+                    }
+                };
+                reader.readAsDataURL(file);
             }
         }
 
