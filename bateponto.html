@@ -89,8 +89,8 @@
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
-    </head>
-    <body>
+</head>
+<body>
     <div class="fundo-degrade"></div><div class="grade-fundo"></div>
     <div class="particula p1"></div><div class="particula p2"></div><div class="particula p3"></div><div class="particula p4"></div><div class="particula p5"></div>
 
@@ -182,8 +182,8 @@
             return (h * 60) + m;
         }
 
+        // MODO LIVRE: Ignora horários e sempre libera o botão
         function verificarStatusHorario(horarioInicio, horarioFim) {
-            // MODO LIVRE: Ignora horários e sempre libera o botão
             return 'aberto'; 
         }
 
@@ -449,26 +449,32 @@
                     await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por: 'sistema', marcado_por_nome: 'Sistema', marcado_em: saida.toISOString() }]);
                     customAlert("Turno encerrado! +20 XP.", "sucesso");
                 } else {
-                    // Deu Falta - Corrigido para o ADM conseguir ler
-                    await sb.from('presencas').insert([{ 
+                    // Deu Falta
+                    const { error: errFalta } = await sb.from('presencas').insert([{ 
                         passaporte: membroLogado.passaporte, 
                         status: 'falta', 
                         data: saida.toISOString().split('T')[0], 
-                        marcado_por: 'sistema',
                         marcado_por_nome: automatico ? 'Sistema (Tempo Esgotado)' : 'Sistema', 
                         marcado_em: saida.toISOString(), 
                         justificativa: motivoJustificativa, 
-                        status_justificativa: motivoJustificativa ? 'pendente' : null 
+                        status_justificativa: motivoJustificativa ? 'pendente' : null,
+                        motivo_recusa: null // <--- ADICIONADO AQUI PARA NÃO DAR ERRO
                     }]);
+
+                    if (errFalta) {
+                        console.error("Erro no banco:", errFalta);
+                        alert("ERRO AO SALVAR NO BANCO: " + errFalta.message);
+                        return;
+                    }
                     
                     if(motivoJustificativa) customAlert("Saída justificada! Aguarde análise.", "sucesso");
                     else customAlert("Encerrado antes dos 30 min. Falta registrada.", "erro");
                 }
                 setTimeout(() => { carregarPlantoes(); }, 2000); 
             } catch (err) { 
-    console.error(err);
-    alert("ERRO AO SALVAR NO BANCO: " + err.message); // <--- ISSO VAI MOSTRAR O ERRO NA TELA
-    customAlert("Erro ao encerrar.", "erro"); 
+                console.error(err);
+                alert("Erro ao encerrar: " + err.message);
+                customAlert("Erro ao encerrar.", "erro"); 
             }
         }
 
