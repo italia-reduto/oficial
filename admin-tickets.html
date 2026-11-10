@@ -66,7 +66,7 @@
         .ticket-item:hover { background: rgba(255,255,255,0.05); }
         .ticket-item.ativo { background: rgba(34, 197, 94, 0.1); border-color: rgba(34, 197, 94, 0.3); }
         
-        .ticket-avatar { width: 45px; height: 45px; border-radius: 50%; background: #000; border: 2px solid var(--borda); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: var(--texto-mutado); flex-shrink: 0; }
+        .ticket-avatar { width: 45px; height: 45px; border-radius: 50%; background: #000; border: 2px solid var(--borda); display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; color: var(--texto-mutado); flex-shrink: 0; background-size: cover; background-position: center; }
         .ticket-item.ativo .ticket-avatar { border-color: var(--verde); color: var(--verde); }
         
         .ticket-info { flex: 1; overflow: hidden; }
@@ -80,8 +80,7 @@
         .tag-denuncia { background: rgba(234, 179, 8, 0.15); color: var(--amarelo); }
         .tag-queixa { background: rgba(59, 130, 246, 0.15); color: var(--azul); }
         .tag-outros { background: rgba(156, 163, 175, 0.15); color: var(--texto-mutado); }
-
-        /* COLUNA DO CHAT */
+                /* COLUNA DO CHAT */
         .col-chat { flex: 1; display: flex; flex-direction: column; background: var(--fundo); position: relative; }
         
         .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--borda); background: rgba(13, 20, 16, 0.95); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 10;}
@@ -133,13 +132,14 @@
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
             .col-tickets { width: 100%; border-right: none; }
+            /* Correção da caixa de texto escondida */
             .col-chat { position: absolute; inset: 0; z-index: 100; transform: translateX(100%); transition: transform 0.3s ease; padding-bottom: 60px; }
             .col-chat.aberto { transform: translateX(0); }
             .btn-voltar-mobile { display: block; }
-            .chat-header { padding: 15px; }
+            .chat-header { padding: 15px; flex-wrap: wrap; gap: 10px;}
             .chat-mensagens { padding: 15px; }
             .msg-wrapper { max-width: 90%; }
-            .chat-input-area { padding: 10px 15px; padding-bottom: 20px; }
+            .chat-input-area { padding: 10px 15px; padding-bottom: 80px; } /* Aumentei o padding para não esconder atrás do menu */
         }
     </style>
 </head>
@@ -208,9 +208,10 @@
                         <div id="area-assumir" style="display: none;">
                             <button class="btn-assumir" onclick="assumirTicket()"><i class="fas fa-hand-paper"></i> Assumir</button>
                         </div>
+                        
                         <!-- CADEADO (Quando outro admin assume) -->
                         <div id="area-cadeado" class="status-assumido" style="display: none;">
-                            <i class="fas fa-lock"></i> <span id="nome-assumiu">Admin</span>
+                            <i class="fas fa-lock"></i> <span id="nome-assumiu">Assumido</span>
                         </div>
                         
                         <!-- BOTÃO ENCERRAR -->
@@ -244,12 +245,10 @@
     <!-- MENU MOBILE -->
     <nav class="mobile-nav">
         <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
-        <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
         <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
         <a href="admin-tickets.html" class="mob-btn ativo"><i class="fas fa-headset"></i> Suporte</a>
         <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
-           <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
-
+        <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
     </nav>
         <script>
         let adminLogado = null;
@@ -278,14 +277,16 @@
             if (!logado) return window.location.href = 'login.html';
 
             adminLogado = JSON.parse(logado);
-            // VERIFICAÇÃO BLINDADA (IGNORA MAIÚSCULAS E MINÚSCULAS)
-const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
-const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
+            
+            // Verificação blindada de admin
+            const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
+            const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
 
-if (!isAdmin) {
-    alert("Acesso negado. Área restrita.");
-    return window.location.href = 'dashboard.html';
-}
+            if (!isAdmin) {
+                alert("Acesso negado.");
+                return window.location.href = 'dashboard.html';
+            }
+
             document.getElementById('adm-nome').innerText = adminLogado.nome;
             document.getElementById('adm-cargo').innerText = adminLogado.cargo;
 
@@ -299,65 +300,73 @@ if (!isAdmin) {
             filtroAtual = status;
             document.getElementById('btn-filtro-aberto').classList.toggle('ativo', status === 'aberto');
             document.getElementById('btn-filtro-fechado').classList.toggle('ativo', status === 'fechado');
-            voltarListaMobile(); // Reseta o chat no celular ao trocar de aba
+            voltarListaMobile(); // Reseta o chat no celular
             carregarTickets();
         }
 
         async function carregarTickets() {
-    const lista = document.getElementById('lista-tickets');
-    lista.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
+            const lista = document.getElementById('lista-tickets');
+            lista.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Carregando...</div>';
 
-    try {
-        const { data: tickets, error } = await sb.from('tickets')
-            .select('*')
-            .eq('status', filtroAtual)
-            .order('created_at', { ascending: false });
+            try {
+                // Puxa os tickets
+                const { data: tickets, error } = await sb.from('tickets')
+                    .select('*')
+                    .eq('status', filtroAtual)
+                    .order('created_at', { ascending: false });
 
-        if (error) throw error;
+                if (error) throw error;
 
-        if (!tickets || tickets.length === 0) {
-            lista.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--texto-mutado);"><i class="fas fa-inbox" style="font-size: 30px; margin-bottom: 10px; opacity: 0.5;"></i><p>Nenhum ticket aqui.</p></div>';
-            return;
-        }
+                if (!tickets || tickets.length === 0) {
+                    lista.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--texto-mutado);"><i class="fas fa-inbox" style="font-size: 30px; margin-bottom: 10px; opacity: 0.5;"></i><p>Nenhum ticket aqui.</p></div>';
+                    return;
+                }
 
-        let html = '';
-        tickets.forEach(t => {
-            const isAtivo = ticketSelecionado === t.id ? 'ativo' : '';
-            const iniciais = (t.nome_membro || '??').substring(0, 2).toUpperCase();
-            const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
-            
-            const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
+                // Puxa os membros para cruzar os dados (nome e foto corretos)
+                const { data: membros } = await sb.from('membros').select('passaporte, nome, foto_url');
+                const mapMembros = {};
+                if(membros) membros.forEach(m => mapMembros[String(m.passaporte)] = m);
 
-            html += `
-                <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(t.nome_membro)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}', '${t.assumido_por || ''}')">
-                    <div class="ticket-avatar">${iniciais}</div>
-                    <div class="ticket-info">
-                        <h4>${cadeado} ${escapeHTML(t.nome_membro)}</h4>
-                        <p>Passaporte: ${t.passaporte}</p>
-                    </div>
-                    <div class="ticket-meta">
-                        <span class="tag-cat ${tagClass}">${t.categoria}</span>
-                        <span>${formatarHora(t.created_at)}</span>
-                    </div>
-                </div>
-            `;
-        });
-        lista.innerHTML = html;
+                let html = '';
+                tickets.forEach(t => {
+                    const isAtivo = ticketSelecionado === t.id ? 'ativo' : '';
+                    
+                    // Pega os dados reais do membro na tabela
+                    const membroInfo = mapMembros[String(t.passaporte)];
+                    const nomeReal = membroInfo ? membroInfo.nome : (t.nome_membro || 'Membro');
+                    const fotoUrl = membroInfo ? membroInfo.foto_url : null;
 
-    } catch (err) {
-        console.error(err);
-        // AQUI ESTÁ A CORREÇÃO: Agora mostra o erro real na tela
-        lista.innerHTML = `
-            <div style="text-align: center; padding: 20px; color: var(--vermelho); background: rgba(239,68,68,0.1); border: 1px solid var(--vermelho); border-radius: 8px; margin: 10px;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 10px;"></i>
-                <p style="font-weight: bold; margin-bottom: 10px;">Erro ao carregar tickets!</p>
-                <p style="font-size: 12px; background: rgba(0,0,0,0.5); padding: 10px; border-radius: 5px; word-break: break-all; text-align: left;">
-                    ${err.message || JSON.stringify(err)}
-                </p>
-            </div>
-        `;
-    }
+                    // Gera iniciais ou a foto
+                    const iniciais = nomeReal.substring(0, 2).toUpperCase();
+                    const avatarStyle = fotoUrl ? `background-image: url('${fotoUrl}'); background-size: cover; background-position: center;` : '';
+                    const avatarContent = fotoUrl ? '' : iniciais;
+
+                    const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
+                    
+                    // Cadeado na lista se estiver assumido
+                    const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
+
+                    html += `
+                        <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(nomeReal)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}', '${t.assumido_por || ''}')">
+                            <div class="ticket-avatar" style="${avatarStyle}">${avatarContent}</div>
+                            <div class="ticket-info">
+                                <h4>${cadeado} ${escapeHTML(nomeReal)}</h4>
+                                <p>Passaporte: ${t.passaporte}</p>
+                            </div>
+                            <div class="ticket-meta">
+                                <span class="tag-cat ${tagClass}">${t.categoria}</span>
+                                <span>${formatarHora(t.created_at)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                lista.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                lista.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--vermelho);">Erro: ${err.message}</div>`;
             }
+        }
 
         // ==========================================
         // 3. ABRIR CHAT E LÓGICA DE ASSUMIR
@@ -365,7 +374,6 @@ if (!isAdmin) {
         function abrirTicket(id, nome, categoria, passaporte, status, assumido_por) {
             ticketSelecionado = id;
             
-            // Mostra as áreas do chat
             document.getElementById('chat-empty').style.display = 'none';
             document.getElementById('chat-header').style.display = 'flex';
             document.getElementById('chat-mensagens').style.display = 'flex';
@@ -380,7 +388,7 @@ if (!isAdmin) {
             inputArea.classList.remove('chat-bloqueado');
             document.getElementById('input-mensagem').disabled = false;
 
-            // Lógica de Status (Aberto/Fechado) e Assumir
+            // Lógica de Status e Assumir
             if (status === 'fechado') {
                 inputArea.style.display = 'none';
                 btnFechar.style.display = 'none';
@@ -394,13 +402,15 @@ if (!isAdmin) {
                     // Ticket já tem dono
                     areaAssumir.style.display = 'none';
                     areaCadeado.style.display = 'flex';
-                    nomeAssumiu.innerText = assumido_por;
+                    
+                    // AQUI ESTÁ O TEXTO DO CADEADO QUE VOCÊ PEDIU
+                    nomeAssumiu.innerText = `Assumido por: ${assumido_por}`;
 
-                    // Se quem assumiu NÃO for eu, bloqueio a digitação e o encerramento
+                    // Se quem assumiu NÃO for eu, bloqueio a digitação
                     if (assumido_por !== adminLogado.nome) {
                         inputArea.classList.add('chat-bloqueado');
                         document.getElementById('input-mensagem').disabled = true;
-                        btnFechar.style.display = 'none'; 
+                        btnFechar.style.display = 'none'; // Não pode fechar ticket dos outros
                     }
                 } else {
                     // Ticket livre
@@ -409,17 +419,12 @@ if (!isAdmin) {
                 }
             }
 
-            // Atualiza o cabeçalho
             document.getElementById('chat-nome').innerText = `${nome} (${passaporte})`;
             document.getElementById('chat-categoria').innerText = `Categoria: ${categoria}`;
 
-            // Abre no mobile
             document.getElementById('col-chat').classList.add('aberto');
-            
-            // Atualiza a lista lateral (para marcar como ativo)
             carregarTickets();
 
-            // Puxa as mensagens e inicia o Auto-Refresh
             carregarMensagens();
             if(intervalAtualizacao) clearInterval(intervalAtualizacao);
             intervalAtualizacao = setInterval(carregarMensagens, 3000); 
@@ -428,10 +433,9 @@ if (!isAdmin) {
         async function assumirTicket() {
             if (!ticketSelecionado) return;
             try {
-                // Atualiza o banco dizendo que EU assumi
                 await sb.from('tickets').update({ assumido_por: adminLogado.nome }).eq('id', ticketSelecionado);
                 
-                // Recarrega o ticket atual para a tela atualizar o cadeado
+                // Recarrega a tela para aplicar o bloqueio de forma correta
                 const nome = document.getElementById('chat-nome').innerText.split(' (')[0];
                 abrirTicket(ticketSelecionado, nome, '', '', 'aberto', adminLogado.nome);
                 carregarTickets();
@@ -485,7 +489,6 @@ if (!isAdmin) {
             const texto = input.value.trim();
             if (!texto || !ticketSelecionado) return;
 
-            // Limpa o input rápido
             input.value = '';
             
             try {
@@ -496,7 +499,6 @@ if (!isAdmin) {
                     mensagem: texto
                 }]);
                 
-                // Força a atualização imediata na tela
                 carregarMensagens();
             } catch (err) {
                 console.error(err);
@@ -515,7 +517,7 @@ if (!isAdmin) {
                 await sb.from('tickets').update({ status: 'fechado' }).eq('id', ticketSelecionado);
                 
                 voltarListaMobile(); 
-                mudarFiltro('fechado'); // Joga o admin direto para a aba de fechados
+                mudarFiltro('fechado');
             } catch (err) {
                 console.error(err);
                 alert("Erro ao fechar ticket.");
@@ -529,7 +531,7 @@ if (!isAdmin) {
             document.getElementById('col-chat').classList.remove('aberto');
             ticketSelecionado = null;
             if(intervalAtualizacao) clearInterval(intervalAtualizacao);
-            carregarTickets(); // Limpa o ativo da lista
+            carregarTickets();
         }
 
         // ==========================================
