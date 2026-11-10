@@ -323,19 +323,7 @@
                 if (porcentagem >= 100) { textoXP.innerText = "XP Garantido! +20 XP"; textoXP.style.color = "var(--verde)"; } 
                 else { textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)"; }
 
-                // Verifica se o horário de fim do plantão chegou (se existir)
-                if (horarioFim) {
-                    const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-                    if (formatter.format(agora) >= horarioFim) {
-                        clearInterval(intervaloCronometro);
-                        
-                        if (minutosTotais >= 30) {
-                            processarEncerramento(pontoAtual, true, null, true); 
-                        } else {
-                            processarEncerramento(pontoAtual, false, null, true); 
-                        }
-                    }
-                }
+                
             }, 1000);
         }
 
