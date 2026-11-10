@@ -61,7 +61,22 @@
         .titulo { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: 1px; color: #fff; text-transform: uppercase; }
         
         .subtitulo { font-size: 13px; color: var(--texto-mutado); margin-bottom: 30px; line-height: 1.5; }
-        </head>
+
+        /* INPUTS E BOTÃO */
+        .input-wrapper { position: relative; width: 100%; }
+        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--texto-mutado); }
+        .input-wrapper input { width: 100%; padding: 15px 15px 15px 45px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-size: 14px; outline: none; transition: 0.3s; }
+        .input-wrapper input:focus { border-color: var(--verde); }
+        
+        .btn-entrar { width: 100%; padding: 16px; background: var(--verde); color: #000; border: none; border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; }
+        .btn-entrar:hover { background: #16a34a; }
+        .btn-entrar:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .link-whitelist { text-align: center; font-size: 13px; color: var(--texto-mutado); margin-top: 25px; border-top: 1px solid var(--borda); padding-top: 25px;}
+        .link-whitelist a { color: var(--verde); text-decoration: none; font-weight: 600; }
+        .link-whitelist a:hover { text-decoration: underline; }
+    </style>
+</head>
 <body>
     <!-- FUNDO -->
     <div class="fundo-degrade"></div>
@@ -82,33 +97,32 @@
         <!-- FORMULÁRIO -->
         <div class="input-group" style="margin-bottom: 15px;">
             <label style="display: block; font-size: 11px; font-weight: 600; color: var(--verde); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Passaporte</label>
-            <div class="input-wrapper" style="position: relative;">
-                <i class="fas fa-id-card" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--texto-mutado);"></i>
-                <input type="text" id="input-passaporte" placeholder="Ex: 17274" autocomplete="off" style="width: 100%; padding: 15px 15px 15px 45px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-size: 14px; outline: none; transition: 0.3s;">
+            <div class="input-wrapper">
+                <i class="fas fa-id-card"></i>
+                <input type="text" id="input-passaporte" placeholder="Ex: 17274" autocomplete="off">
             </div>
         </div>
 
         <div class="input-group" style="margin-bottom: 25px;">
             <label style="display: block; font-size: 11px; font-weight: 600; color: var(--verde); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">Senha</label>
-            <div class="input-wrapper" style="position: relative;">
-                <i class="fas fa-lock" style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: var(--texto-mutado);"></i>
-                <input type="password" id="input-senha" placeholder="Sua senha de acesso" style="width: 100%; padding: 15px 15px 15px 45px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); border-radius: 8px; color: #fff; font-size: 14px; outline: none; transition: 0.3s;">
+            <div class="input-wrapper">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="input-senha" placeholder="Sua senha de acesso">
             </div>
         </div>
 
         <!-- BOTÃO ENTRAR -->
-        <button id="btn-entrar" onclick="fazerLogin()" style="width: 100%; padding: 16px; background: var(--verde); color: #000; border: none; border-radius: 8px; font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <button id="btn-entrar" class="btn-entrar" onclick="fazerLogin()">
             Entrar no Sistema <i class="fas fa-chevron-right" style="font-size: 12px;"></i>
         </button>
 
-        <!-- LINHA E WHITELIST -->
-        <hr style="border: none; border-top: 1px solid var(--borda); margin: 25px 0;">
-        
-        <p style="text-align: center; font-size: 13px; color: var(--texto-mutado);">
-            Ainda não tem acesso? <a href="registro.html" style="color: var(--verde); text-decoration: none; font-weight: 600;">Faça sua Whitelist</a>
-        </p>
+        <!-- LINK WHITELIST -->
+        <div class="link-whitelist">
+            Ainda não tem acesso? <a href="registro.html">Faça sua Whitelist</a>
+        </div>
     </div>
-            <script>
+
+    <script>
         // Permite apertar "Enter" para pular de campo ou fazer login
         document.getElementById('input-passaporte').addEventListener('keypress', function(e) { if (e.key === 'Enter') document.getElementById('input-senha').focus(); });
         document.getElementById('input-senha').addEventListener('keypress', function(e) { if (e.key === 'Enter') fazerLogin(); });
@@ -137,7 +151,7 @@
 
                 if (error || !membro) throw new Error("Passaporte não encontrado.");
 
-                // Verifica a senha (se a coluna for 'senha' no seu banco)
+                // Verifica a senha
                 if (membro.senha && membro.senha !== senha) {
                     throw new Error("Senha incorreta.");
                 }
@@ -162,7 +176,6 @@
                 }
 
             } catch (err) {
-                // Mostra o erro (pode ser trocado por aquele alerta customizado depois)
                 alert(err.message || "Erro ao fazer login. Verifique os dados.");
                 btn.innerHTML = textoOriginal;
                 btn.disabled = false;
