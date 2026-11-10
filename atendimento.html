@@ -113,12 +113,12 @@
     </div>
 
     <!-- MENU INFERIOR -->
-<nav class="menu-inferior">
-    <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
-    <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
-    <a href="atendimento.html" class="item-menu ativo"><i class="fas fa-headset"></i><span>Suporte</span></a>
-    <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
-</nav>
+    <nav class="menu-inferior">
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="atendimento.html" class="item-menu ativo"><i class="fas fa-headset"></i><span>Suporte</span></a>
+        <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
+    </nav>
 
     <!-- MODAL DE CHAT -->
     <div class="modal-overlay" id="modal-chat">
@@ -128,7 +128,7 @@
                 <button class="btn-fechar" onclick="fecharChat()"><i class="fas fa-times"></i></button>
             </div>
             <div class="chat-mensagens" id="chat-mensagens"></div>
-            <div class="chat-input-area">
+            <div class="chat-input-area" id="chat-input-area">
                 <input type="text" class="chat-input" id="input-msg" placeholder="Digite sua mensagem..." onkeydown="if(event.key==='Enter') enviarMsg()">
                 <button class="btn-enviar" onclick="enviarMsg()"><i class="fas fa-paper-plane"></i></button>
             </div>
@@ -145,21 +145,21 @@
             <div class="form-ticket">
                 <label>Categoria do Atendimento</label>
                 <div class="grid-categorias" id="lista-opcoes-categoria">
-                    <div class="card-categoria" onclick="selecionarCategoria('Relatar um bug do site', this)">
+                    <div class="card-categoria" onclick="selecionarCategoria('Bug', this)">
                         <i class="fas fa-bug"></i>
                         <div class="info-cat">
                             <h4>Bug no Site</h4>
                             <p>Erros, falhas ou travamentos no sistema.</p>
                         </div>
                     </div>
-                    <div class="card-categoria" onclick="selecionarCategoria('Denunciar um membro', this)">
+                    <div class="card-categoria" onclick="selecionarCategoria('Denúncia', this)">
                         <i class="fas fa-user-slash"></i>
                         <div class="info-cat">
                             <h4>Denunciar Membro</h4>
                             <p>Comportamento inadequado ou quebra de regras.</p>
                         </div>
                     </div>
-                    <div class="card-categoria" onclick="selecionarCategoria('Queixa da gerência', this)">
+                    <div class="card-categoria" onclick="selecionarCategoria('Queixa', this)">
                         <i class="fas fa-shield-alt"></i>
                         <div class="info-cat">
                             <h4>Queixa da Gerência</h4>
@@ -182,10 +182,12 @@
             </div>
         </div>
     </div>
-        <script>
+
+    <script>
         let membroLogado = null;
         let idTicketAtivo = null;
         let categoriaSelecionada = null;
+        let intervalChat = null;
 
         window.addEventListener('DOMContentLoaded', () => {
             const logado = sessionStorage.getItem('membro_logado');
@@ -205,41 +207,30 @@
             const container = document.getElementById('lista-tickets');
             
             try {
-                // Busca todos os tickets do usuário
+                // AQUI ESTÁ A CORREÇÃO: Puxa apenas tickets com status 'aberto'.
+                // Assim que o ADM encerrar, ele some daqui.
                 const { data: tickets, error } = await sb.from('tickets')
                     .select('*')
                     .eq('passaporte', membroLogado.passaporte)
-                    .order('criado_em', { ascending: false });
+                    .eq('status', 'aberto') 
+                    .order('created_at', { ascending: false });
 
                 if (error) throw error;
 
                 if (!tickets || tickets.length === 0) {
-                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Você não possui atendimentos.</p>';
+                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Você não possui atendimentos abertos.</p>';
                     return;
                 }
 
-                // Separa os abertos dos fechados
-                let abertos = tickets.filter(t => t.status === 'aberto');
-                let fechados = tickets.filter(t => t.status !== 'aberto');
-
-                // Regra: Mostrar apenas os 5 tickets fechados mais recentes
-                fechados = fechados.slice(0, 5);
-
-                // Junta a lista final (Abertos primeiro, depois os recentes fechados)
-                const ticketsExibir = [...abertos, ...fechados];
-
                 let html = '';
-                ticketsExibir.forEach(t => {
-                    const isAberto = t.status === 'aberto';
-                    const statusClass = isAberto ? 'st-aberto' : 'st-fechado';
-                    const dataFormatada = new Date(t.criado_em).toLocaleDateString('pt-BR');
+                tickets.forEach(t => {
+                    const dataFormatada = new Date(t.created_at).toLocaleDateString('pt-BR');
                     
-                    // Define o ícone igual ao do card de criação
                     let icone = 'fa-ticket-alt';
-                    if (t.categoria.includes('bug')) icone = 'fa-bug';
-                    else if (t.categoria.includes('Denunciar')) icone = 'fa-user-slash';
-                    else if (t.categoria.includes('gerência')) icone = 'fa-shield-alt';
-                    else if (t.categoria.includes('Outros')) icone = 'fa-question-circle';
+                    if (t.categoria === 'Bug') icone = 'fa-bug';
+                    else if (t.categoria === 'Denúncia') icone = 'fa-user-slash';
+                    else if (t.categoria === 'Queixa') icone = 'fa-shield-alt';
+                    else if (t.categoria === 'Outros') icone = 'fa-question-circle';
 
                     html += `
                         <div class="card-ticket" onclick="abrirChat('${t.id}', '${t.categoria}')">
@@ -250,7 +241,7 @@
                                     <p>Aberto em: ${dataFormatada}</p>
                                 </div>
                             </div>
-                            <span class="ticket-status ${statusClass}">${t.status}</span>
+                            <span class="ticket-status st-aberto">Aberto</span>
                         </div>
                     `;
                 });
@@ -279,19 +270,21 @@
             if (!mensagem) { alert("Escreva uma mensagem."); return; }
 
             try {
+                // CORREÇÃO: Nomes de colunas iguais aos do Admin
                 const { data: novoTicket, error: errTicket } = await sb.from('tickets').insert([{
                     passaporte: membroLogado.passaporte,
-                    nome_autor: membroLogado.nome,
-                    mensagem: mensagem,
+                    nome_membro: membroLogado.nome,
                     status: 'aberto',
                     categoria: categoriaSelecionada
                 }]).select().single();
 
                 if (errTicket) throw errTicket;
 
-                await sb.from('mensagens_ticket').insert([{
+                // CORREÇÃO: Salvar a primeira mensagem na tabela correta (tickets_mensagens)
+                await sb.from('tickets_mensagens').insert([{
                     ticket_id: novoTicket.id,
-                    autor: membroLogado.nome,
+                    remetente: 'membro',
+                    nome_remetente: membroLogado.nome,
                     mensagem: mensagem
                 }]);
 
@@ -309,21 +302,26 @@
             document.getElementById('chat-titulo').innerText = categoria;
             document.getElementById('modal-chat').classList.add('ativo');
             carregarMensagens();
+            
+            if(intervalChat) clearInterval(intervalChat);
+            intervalChat = setInterval(carregarMensagens, 3000); // Atualiza a cada 3 seg
         }
 
         function fecharChat() {
             document.getElementById('modal-chat').classList.remove('ativo');
             idTicketAtivo = null;
+            if(intervalChat) clearInterval(intervalChat);
             carregarTickets(); 
         }
 
         async function carregarMensagens() {
             const container = document.getElementById('chat-mensagens');
             
-            const { data: mensagens } = await sb.from('mensagens_ticket')
+            // CORREÇÃO: Lendo da tabela correta e ordenando por created_at
+            const { data: mensagens } = await sb.from('tickets_mensagens')
                 .select('*')
                 .eq('ticket_id', idTicketAtivo)
-                .order('criado_em', { ascending: true });
+                .order('created_at', { ascending: true });
 
             if (!mensagens || mensagens.length === 0) {
                 container.innerHTML = '';
@@ -332,21 +330,24 @@
 
             let html = '';
             mensagens.forEach(msg => {
-                const isEu = msg.autor === membroLogado.nome;
+                const isEu = msg.remetente === 'membro';
                 const classe = isEu ? 'eu' : 'outro';
-                const hora = new Date(msg.criado_em).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                const hora = new Date(msg.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
                 html += `
                     <div class="bolha ${classe}">
-                        ${!isEu ? `<span class="autor">${msg.autor}</span>` : ''}
+                        ${!isEu ? `<span class="autor">Suporte / Gerência</span>` : ''}
                         ${msg.mensagem}
                         <span class="hora">${hora}</span>
                     </div>
                 `;
             });
 
-            container.innerHTML = html;
-            container.scrollTop = container.scrollHeight;
+            // Só atualiza se houver mudança para não ficar piscando a tela
+            if (container.innerHTML !== html) {
+                container.innerHTML = html;
+                container.scrollTop = container.scrollHeight;
+            }
         }
 
         async function enviarMsg() {
@@ -357,9 +358,11 @@
             input.value = '';
 
             try {
-                await sb.from('mensagens_ticket').insert([{
+                // CORREÇÃO: Enviando para a tabela correta (tickets_mensagens)
+                await sb.from('tickets_mensagens').insert([{
                     ticket_id: idTicketAtivo,
-                    autor: membroLogado.nome,
+                    remetente: 'membro',
+                    nome_remetente: membroLogado.nome,
                     mensagem: texto
                 }]);
 
@@ -370,4 +373,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
