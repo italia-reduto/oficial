@@ -372,11 +372,16 @@ function iniciarCronometro(horarioEntrada, horarioFim) {
         else { textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)"; }
 
         const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-        if (formatter.format(agora) >= horarioFim) {
-            clearInterval(intervaloCronometro);
-            processarEncerramento(pontoAtual, false, null, true); // Fechamento automático
+    if (formatter.format(agora) >= horarioFim) {
+        clearInterval(intervaloCronometro);
+        
+        if (minutosTotais >= 30) {
+            processarEncerramento(pontoAtual, true, null, true); 
+        } else {
+            processarEncerramento(pontoAtual, false, null, true); 
         }
-    }, 1000);
+    }
+}, 1000);
 }
 
 function iniciarCronometroPausa(horarioPausa) {
