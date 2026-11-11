@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <title>Itália 2.0 | Admin - Convocações</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --fundo: #0a0f0d; --painel: #0d1410; --borda: #1a2b22;
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6; --amarelo: #eab308;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
+        
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -2; }
+        .container { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; }
+
+        /* TOPO */
+        .topo { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 15px; flex-wrap: wrap; gap: 15px;}
+        .topo-esq { display: flex; align-items: center; gap: 15px; }
+        .btn-voltar { width: 40px; height: 40px; background: var(--painel); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); text-decoration: none; transition: 0.3s; }
+        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
+        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 24px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+
+        .btn-novo { background: var(--verde); color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; text-transform: uppercase; }
+        .btn-novo:hover { background: #16a34a; }
+
+        /* LISTA DE CONVOCAÇÕES */
+        .lista-convocacoes { display: grid; grid-template-columns: 1fr; gap: 15px; }
+        .card-admin { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+        .card-admin-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .card-admin-info h3 { font-size: 18px; color: #fff; margin-bottom: 5px; }
+        .card-admin-info p { font-size: 13px; color: var(--texto-mutado); display: flex; align-items: center; gap: 5px; margin-bottom: 3px;}
+        
+        .tag-status { padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .tag-aberta { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.3); }
+        .tag-finalizada { background: rgba(255, 255, 255, 0.1); color: var(--texto-mutado); border: 1px solid var(--borda); }
+
+        .card-admin-acoes { display: flex; gap: 10px; border-top: 1px solid var(--borda); padding-top: 15px; }
+        .btn-acao-admin { flex: 1; padding: 8px 10px; border-radius: 6px; border: none; font-family: 'Oswald'; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 5px;}
+        .btn-ver { background: transparent; color: #fff; border: 1px solid var(--borda); }
+        .btn-ver:hover { background: rgba(255,255,255,0.05); }
+        .btn-finalizar { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border: 1px solid var(--vermelho); }
+        .btn-finalizar:hover { background: var(--vermelho); color: #fff; }
+
+        /* MODAIS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.ativo { display: flex; }
+        .modal-conteudo { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        .modal-titulo { font-family: 'Oswald'; font-size: 22px; color: #fff; margin-bottom: 5px; text-align: center; }
+        
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-size: 12px; color: var(--texto-mutado); font-weight: 600; margin-bottom: 5px; text-transform: uppercase; }
+        .modal-input { width: 100%; padding: 12px; background: var(--painel); border: 1px solid var(--borda); color: #fff; border-radius: 8px; font-size: 14px; outline: none; font-family: 'Inter'; }
+        .modal-input:focus { border-color: var(--verde); }
+        textarea.modal-input { resize: vertical; min-height: 80px; }
+        
+        .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .btn-modal { padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase; }
+        .btn-cancelar { background: transparent; border: 1px solid var(--borda); color: #fff; }
+        .btn-salvar { background: var(--verde); color: #000; }
+
+        /* LISTA DE PRESENÇA */
+        .lista-presenca { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
+        .presenca-item { display: flex; justify-content: space-between; align-items: center; background: var(--painel); padding: 12px; border-radius: 8px; border: 1px solid var(--borda); font-size: 13px; }
+        .status-p { font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; }
+        .p-presente { background: rgba(34,197,94,0.1); color: var(--verde); }
+        .p-falta { background: rgba(239,68,68,0.1); color: var(--vermelho); }
+        .p-confirmado { background: rgba(234,179,8,0.1); color: var(--amarelo); }
+
+        /* MENU ADMIN (Mobile) - AJUSTADO PARA 7 BOTÕES */
+        .menu-mobile { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10, 15, 13, 0.98); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; padding: 10px 2px; z-index: 1000; backdrop-filter: blur(10px); }
+        .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; color: var(--texto-mutado); font-size: 7px; font-weight: 600; text-decoration: none; width: 14.28%; }
+        .mob-btn i { font-size: 14px; }
+        .mob-btn.ativo { color: var(--verde); }
+
+        @media (min-width: 900px) { .menu-mobile { display: none; } }
+        @media (max-width: 900px) {
+            .topo { flex-direction: column; align-items: flex-start; }
+            .btn-novo { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="fundo-degrade"></div>
+
+    <div class="container">
+        <!-- TOPO -->
+        <div class="topo">
+            <div class="topo-esq">
+                <a href="admin.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+                <h1 class="titulo-pagina">Convocações Oficiais</h1>
+            </div>
+            <button class="btn-novo" onclick="abrirModalCriar()"><i class="fas fa-plus"></i> Nova Convocação</button>
+        </div>
+
+        <!-- LISTA DE CONVOCAÇÕES -->
+        <div class="lista-convocacoes" id="lista-admin-convocacoes">
+            <p style="text-align: center; color: var(--texto-mutado);">Carregando convocações...</p>
+        </div>
+    </div>
+
+    <!-- MODAL CRIAR CONVOCAÇÃO -->
+    <div class="modal-overlay" id="modal-criar">
+        <div class="modal-conteudo">
+            <h2 class="modal-titulo">Nova Convocação</h2>
+            <p style="text-align: center; color: var(--texto-mutado); font-size: 12px; margin-bottom: 20px;">Convoque o efetivo para uma missão ou reunião.</p>
+            
+            <div class="input-group">
+                <label>Título (Ex: Reunião de Alinhamento)</label>
+                <input type="text" id="input-titulo" class="modal-input" placeholder="Digite o motivo...">
+            </div>
+
+            <div class="input-group">
+                <label>Descrição / Instruções</label>
+                <textarea id="input-descricao" class="modal-input" placeholder="Ex: Favor comparecerem no QG portando o uniforme tático..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Data e Hora do Evento</label>
+                <input type="datetime-local" id="input-data" class="modal-input">
+            </div>
+
+            <div class="input-group">
+                <label>Recompensa em XP (Deixe 0 se for só reunião)</label>
+                <input type="number" id="input-xp" class="modal-input" placeholder="Ex: 50" value="0">
+            </div>
+
+            <div class="modal-botoes">
+                <button class="btn-modal btn-cancelar" onclick="fecharModal('modal-criar')">Cancelar</button>
+                <button class="btn-modal btn-salvar" onclick="salvarConvocacao()">Criar Convocação</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VER PRESENÇAS -->
+    <div class="modal-overlay" id="modal-presenca">
+        <div class="modal-conteudo">
+            <h2 class="modal-titulo" id="titulo-presenca">Lista de Presença</h2>
+            <p style="text-align: center; color: var(--texto-mutado); font-size: 12px; margin-bottom: 20px;" id="sub-presenca">Membros confirmados nesta convocação.</p>
+            
+            <div class="lista-presenca" id="lista-presenca-membros">
+                <!-- A lista de membros vai aparecer aqui via JS -->
+            </div>
+
+            <div class="modal-botoes" style="grid-template-columns: 1fr;">
+                <button class="btn-modal btn-cancelar" onclick="fecharModal('modal-presenca')">Fechar Lista</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MENU ADMIN INFERIOR (7 BOTÕES) -->
+    <nav class="menu-mobile">
+        <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
+        <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
+        <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
+        <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
+        <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
+        <a href="admin-convocacoes.html" class="mob-btn ativo"><i class="fas fa-bullhorn"></i> Convocar</a>
+    </nav>
+        <script>
+        let adminLogado = null;
+        let todasConvocacoes = [];
+        let convocacaoSelecionadaId = null;
+
+        const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+
+        // ==========================================
+        // 1. INICIALIZAÇÃO
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            adminLogado = JSON.parse(logado);
+            
+            const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
+            const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
+
+            if (!isAdmin) {
+                alert("Acesso negado. Área restrita.");
+                return window.location.href = 'dashboard.html';
+            }
+
+            carregarConvocacoesAdmin();
+        });
+
+        // ==========================================
+        // 2. CARREGAR E RENDERIZAR LISTA
+        // ==========================================
+        async function carregarConvocacoesAdmin() {
+            const container = document.getElementById('lista-admin-convocacoes');
+            
+            try {
+                const { data, error } = await sb.from('convocacoes')
+                    .select('*')
+                    .order('data_hora', { ascending: false });
+
+                if (error) throw error;
+                todasConvocacoes = data || [];
+
+                if (todasConvocacoes.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);">Nenhuma convocação criada ainda.</p>';
+                    return;
+                }
+
+                let html = '';
+                todasConvocacoes.forEach(c => {
+                    const dataObj = new Date(c.data_hora);
+                    const dataFormatada = dataObj.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+                    
+                    const isFinalizada = c.status === 'finalizada';
+                    const tagXp = c.recompensa_xp > 0 ? `<p><i class="fas fa-star"></i> Recompensa: ${c.recompensa_xp} XP</p>` : '<p><i class="fas fa-star"></i> Sem recompensa de XP</p>';
+                    
+                    html += `
+                        <div class="card-admin">
+                            <div class="card-admin-header">
+                                <div class="card-admin-info">
+                                    <h3>${c.titulo}</h3>
+                                    <p><i class="far fa-calendar-alt"></i> ${dataFormatada}</p>
+                                    ${tagXp}
+                                </div>
+                                <span class="tag-status ${isFinalizada ? 'tag-finalizada' : 'tag-aberta'}">
+                                    ${isFinalizada ? 'FINALIZADA' : 'ABERTA'}
+                                </span>
+                            </div>
+                            
+                            <div class="card-admin-acoes">
+                                <button class="btn-acao-admin btn-ver" onclick="verPresencas('${c.id}', '${c.titulo.replace(/'/g, "\\'")}')">
+                                    <i class="fas fa-list"></i> Ver Confirmados
+                                </button>
+                                ${!isFinalizada ? `
+                                    <button class="btn-acao-admin btn-finalizar" onclick="finalizarConvocacao('${c.id}')">
+                                        <i class="fas fa-flag-checkered"></i> Finalizar e Dar Faltas
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<p style="text-align: center; color: var(--vermelho);">Erro ao carregar convocações.</p>';
+            }
+        }
+
+        // ==========================================
+        // 3. CRIAR NOVA CONVOCAÇÃO
+        // ==========================================
+        function abrirModalCriar() {
+            document.getElementById('input-titulo').value = '';
+            document.getElementById('input-descricao').value = '';
+            document.getElementById('input-data').value = '';
+            document.getElementById('input-xp').value = '0';
+            document.getElementById('modal-criar').classList.add('ativo');
+        }
+
+        function fecharModal(id) {
+            document.getElementById(id).classList.remove('ativo');
+        }
+
+        async function salvarConvocacao() {
+            const titulo = document.getElementById('input-titulo').value.trim();
+            const descricao = document.getElementById('input-descricao').value.trim();
+            const dataHora = document.getElementById('input-data').value;
+            const xp = parseInt(document.getElementById('input-xp').value) || 0;
+
+            if (!titulo || !descricao || !dataHora) {
+                alert("Preencha todos os campos corretamente.");
+                return;
+            }
+
+            const btn = document.querySelector('#modal-criar .btn-salvar');
+            btn.innerText = "Criando..."; btn.disabled = true;
+
+            try {
+                const dataFormatada = new Date(dataHora).toISOString();
+
+                const { error } = await sb.from('convocacoes').insert([{
+                    titulo: titulo,
+                    descricao: descricao,
+                    data_hora: dataFormatada,
+                    recompensa_xp: xp,
+                    status: 'aberta',
+                    autor_nome: adminLogado.nome
+                }]);
+
+                if (error) throw error;
+                
+                fecharModal('modal-criar');
+                carregarConvocacoesAdmin();
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao criar convocação.");
+            } finally {
+                btn.innerText = "Criar Convocação"; btn.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 4. VER QUEM CONFIRMOU
+        // ==========================================
+        async function verPresencas(convocacaoId, titulo) {
+            convocacaoSelecionadaId = convocacaoId;
+            document.getElementById('titulo-presenca').innerText = titulo;
+            
+            const container = document.getElementById('lista-presenca-membros');
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando confirmados...</p>';
+            
+            document.getElementById('modal-presenca').classList.add('ativo');
+
+            try {
+                const { data, error } = await sb.from('presencas_convocacao')
+                    .select('*')
+                    .eq('convocacao_id', convocacaoId);
+
+                if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);">Ninguém confirmou presença ainda.</p>';
+                    return;
+                }
+
+                let html = '';
+                data.forEach(insc => {
+                    let classeStatus = 'p-confirmado';
+                    let textoStatus = 'Confirmado';
+
+                    if (insc.status_presenca === 'presente') {
+                        classeStatus = 'p-presente';
+                        textoStatus = 'Presente';
+                    } else if (insc.status_presenca === 'falta') {
+                        classeStatus = 'p-falta';
+                        textoStatus = 'Falta';
+                    }
+
+                    html += `
+                        <div class="presenca-item">
+                            <div><strong>${insc.nome}</strong> <br> <span style="color: var(--texto-mutado); font-size: 11px;">Passaporte: ${insc.passaporte}</span></div>
+                            <span class="status-p ${classeStatus}">${textoStatus}</span>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<p style="text-align: center; color: var(--vermelho);">Erro ao carregar a lista.</p>';
+            }
+        }
+
+        // ==========================================
+        // 5. FINALIZAR E DAR FALTAS / DAR XP
+        // ==========================================
+        async function finalizarConvocacao(convocacaoId) {
+            if (!confirm("Tem certeza? Quem confirmou e não veio receberá FALTA. Quem veio receberá o XP.")) return;
+
+            const convocacaoOriginal = todasConvocacoes.find(c => c.id === convocacaoId);
+            const xpRecompensa = convocacaoOriginal ? convocacaoOriginal.recompensa_xp : 0;
+
+            try {
+                // 1. Marca a convocação como finalizada
+                const { error: errConv } = await sb.from('convocacoes')
+                    .update({ status: 'finalizada' })
+                    .eq('id', convocacaoId);
+                if (errConv) throw errConv;
+
+                // 2. Busca todos os confirmados
+                const { data: confirmados, error: errBusca } = await sb.from('presencas_convocacao')
+                    .select('*')
+                    .eq('convocacao_id', convocacaoId);
+                
+                if (errBusca) throw errBusca;
+
+                let qtdFaltas = 0;
+                let qtdPresentes = 0;
+                const hoje = new Date().toISOString().split('T')[0];
+
+                for (const user of confirmados) {
+                    if (user.status_presenca === 'confirmado') {
+                        // Deu Falta
+                        qtdFaltas++;
+                        await sb.from('presencas_convocacao').update({ status_presenca: 'falta' }).eq('id', user.id);
+                        
+                        await sb.from('presencas').upsert([{ 
+                            passaporte: user.passaporte, 
+                            status: 'falta', 
+                            data: hoje, 
+                            marcado_por: 'sistema',
+                            marcado_por_nome: 'Convocação Oficial', 
+                            marcado_em: new Date().toISOString(), 
+                            justificativa: null, 
+                            status_justificativa: null,
+                            motivo_recusa: null
+                        }], { onConflict: 'data,passaporte' });
+
+                    } else if (user.status_presenca === 'presente') {
+                        // Deu Presença e XP
+                        qtdPresentes++;
+                        await sb.from('presencas').upsert([{ 
+                            passaporte: user.passaporte, 
+                            status: 'presente', 
+                            data: hoje, 
+                            marcado_por: 'sistema',
+                            marcado_por_nome: 'Convocação Oficial', 
+                            marcado_em: new Date().toISOString() 
+                        }], { onConflict: 'data,passaporte' });
+
+                        if (xpRecompensa > 0) {
+                            const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', user.passaporte).single();
+                            await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + xpRecompensa }).eq('passaporte', user.passaporte);
+                        }
+                    }
+                }
+
+                alert(`Convocação finalizada!\n✅ Presentes (Ganharam XP): ${qtdPresentes}\n❌ Faltas (Não compareceram): ${qtdFaltas}`);
+                carregarConvocacoesAdmin();
+
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao finalizar convocação: " + err.message);
+            }
+        }
+    </script>
+</body>
+</html>
