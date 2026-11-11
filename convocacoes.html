@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0a0f0d">
+    <title>Itália 2.0 | Convocações Oficiais</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
+        const SUPABASE_ANON_KEY = "sb_publishable_oJgT_8VwELW3AdZPpIYCsA_xk9PyoDF";
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
+
+    <style>
+        :root {
+            --verde: #22c55e; --fundo: #0a0f0d; --painel: #0d1410; --borda: #1a2b22;
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6; --amarelo: #eab308;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
+        
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -2; }
+        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; }
+
+        .topo { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; margin-bottom: 5px; }
+        .btn-voltar { width: 40px; height: 40px; background: var(--painel); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); text-decoration: none; transition: 0.3s; }
+        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
+        .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 24px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* CARDS DE CONVOCAÇÃO */
+        .card-convocacao { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; position: relative; }
+        .card-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .tag-tipo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.3); padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        
+        .conv-titulo { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 5px; }
+        .conv-desc { font-size: 13px; color: var(--texto-mutado); margin-bottom: 15px; line-height: 1.4; white-space: pre-wrap;}
+        
+        .conv-info { display: flex; gap: 20px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; }
+        .info-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; font-weight: 500; }
+        .info-item i { color: var(--verde); font-size: 16px; }
+        .info-item.destaque { color: var(--amarelo); }
+        .info-item.destaque i { color: var(--amarelo); }
+
+        /* BOTÕES DE AÇÃO */
+        .btn-acao { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-confirmar { background: var(--verde); color: #000; }
+        .btn-confirmar:hover { background: #16a34a; }
+        .btn-checkin { background: var(--azul); color: #fff; animation: pulsar 2s infinite; }
+        .btn-checkin:hover { background: #2563eb; }
+        .btn-desabilitado { background: #27272a; color: #52525b; cursor: not-allowed; }
+        .btn-presente { background: rgba(34, 197, 94, 0.15); color: var(--verde); border: 1px solid var(--verde); cursor: default; }
+        .btn-falta { background: rgba(239, 68, 68, 0.15); color: var(--vermelho); border: 1px solid var(--vermelho); cursor: default; }
+
+        @keyframes pulsar { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
+
+        /* EMPTY STATE */
+        .empty-state { text-align: center; padding: 40px 20px; background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; color: var(--texto-mutado); }
+        .empty-state i { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
+
+        /* MENU INFERIOR */
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+    </style>
+</head>
+<body>
+    <div class="fundo-degrade"></div>
+
+    <div class="container">
+        <!-- TOPO -->
+        <div class="topo">
+            <a href="mais.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
+            <h1 class="titulo-pagina">Convocações Oficiais</h1>
+        </div>
+
+        <!-- LISTA DE CONVOCAÇÕES -->
+        <div id="lista-convocacoes" style="display: flex; flex-direction: column; gap: 15px;">
+            <p style="text-align: center; color: var(--texto-mutado); font-size: 13px; margin-top: 20px;">
+                <i class="fas fa-spinner fa-spin"></i> Buscando convocações...
+            </p>
+        </div>
+    </div>
+
+    <!-- MENU INFERIOR -->
+    <nav class="menu-inferior">
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
+        <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
+    </nav>
+        <script>
+        let membroLogado = null;
+        let todasConvocacoes = [];
+        let minhasPresencas = [];
+
+        // Função para evitar quebra de layout
+        function escapeHTML(str) {
+            if (!str) return '';
+            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+        }
+
+        // Formatar Data
+        function formatarData(dataStr) {
+            const d = new Date(dataStr);
+            return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+        }
+
+        // ==========================================
+        // 1. INICIALIZAÇÃO
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            membroLogado = JSON.parse(logado);
+            carregarDados();
+        });
+
+        // ==========================================
+        // 2. BUSCAR DADOS
+        // ==========================================
+        async function carregarDados() {
+            const container = document.getElementById('lista-convocacoes');
+            
+            try {
+                // Puxa as convocações abertas
+                const { data: convocacoes, error: err1 } = await sb.from('convocacoes')
+                    .select('*')
+                    .eq('status', 'aberta')
+                    .order('data_hora', { ascending: true });
+
+                if (err1) throw err1;
+                todasConvocacoes = convocacoes || [];
+
+                // Puxa as presenças DESSE jogador
+                const { data: presencas, error: err2 } = await sb.from('presencas_convocacao')
+                    .select('*')
+                    .eq('passaporte', membroLogado.passaporte);
+
+                if (err2) throw err2;
+                minhasPresencas = presencas || [];
+
+                renderizarConvocacoes();
+
+            } catch (err) {
+                console.error(err);
+                container.innerHTML = '<div class="empty-state" style="border-color: #ef4444; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><br>Erro ao carregar as convocações.</div>';
+            }
+        }
+
+        // ==========================================
+        // 3. RENDERIZAR OS CARDS
+        // ==========================================
+        function renderizarConvocacoes() {
+            const container = document.getElementById('lista-convocacoes');
+            
+            if (todasConvocacoes.length === 0) {
+                container.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><br>Nenhuma convocação oficial no momento.</div>';
+                return;
+            }
+
+            const agora = new Date();
+            let html = '';
+
+            todasConvocacoes.forEach(conv => {
+                const dataConv = new Date(conv.data_hora);
+                const minhaPresenca = minhasPresencas.find(p => p.convocacao_id === conv.id);
+                
+                // Cálculo de tempo em minutos (positivo = falta acontecer, negativo = já aconteceu)
+                const diffMinutos = (dataConv - agora) / 1000 / 60;
+                
+                let btnHtml = '';
+                
+                // Lógica de Tempo e Botão
+                // 1. Se o evento já passou (mais de 2 horas)
+                if (diffMinutos < -120) {
+                    btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-lock"></i> ENCERRADO</button>`;
+                } 
+                // 2. Se está na janela de check-in (15 min antes até 2h depois)
+                else if (diffMinutos <= 15 && diffMinutos >= -120) {
+                    if (minhaPresenca) {
+                        if (minhaPresenca.status_presenca === 'confirmado') {
+                            btnHtml = `<button class="btn-acao btn-checkin" onclick="marcarPresenca('${minhaPresenca.id}')"><i class="fas fa-fingerprint"></i> MARCAR PRESENÇA</button>`;
+                        } else if (minhaPresenca.status_presenca === 'presente') {
+                            btnHtml = `<button class="btn-acao btn-presente" disabled><i class="fas fa-check-double"></i> PRESENÇA CONFIRMADA</button>`;
+                        } else if (minhaPresenca.status_presenca === 'falta') {
+                            btnHtml = `<button class="btn-acao btn-falta" disabled><i class="fas fa-times"></i> FALTA REGISTRADA</button>`;
+                        }
+                    } else {
+                        btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-lock"></i> FORA DO PRAZO</button>`;
+                    }
+                } 
+                // 3. Antes do evento (mais de 15 min antes)
+                else {
+                    if (minhaPresenca) {
+                        btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-check"></i> CONFIRMADO</button>`;
+                    } else {
+                        btnHtml = `<button class="btn-acao btn-confirmar" onclick="confirmarPresenca('${conv.id}')"><i class="fas fa-user-plus"></i> CONFIRMAR PRESENÇA</button>`;
+                    }
+                }
+
+                // Tag de XP
+                let tagXp = '';
+                if (conv.recompensa_xp > 0) {
+                    tagXp = `<span class="info-item destaque"><i class="fas fa-star"></i> ${conv.recompensa_xp} XP</span>`;
+                }
+
+                html += `
+                    <div class="card-convocacao">
+                        <div class="card-topo">
+                            <div class="tag-tipo"><i class="fas fa-bullhorn"></i> CONVOCAÇÃO OFICIAL</div>
+                        </div>
+                        
+                        <h2 class="conv-titulo">${escapeHTML(conv.titulo)}</h2>
+                        <div class="conv-desc">${escapeHTML(conv.descricao)}</div>
+
+                        <div class="conv-info">
+                            <div class="info-item"><i class="far fa-calendar-alt"></i> ${formatarData(conv.data_hora)}</div>
+                            ${tagXp}
+                        </div>
+
+                        ${btnHtml}
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+        }
+
+        // ==========================================
+        // 4. AÇÕES DO JOGADOR
+        // ==========================================
+        async function confirmarPresenca(convocacaoId) {
+            try {
+                const { error } = await sb.from('presencas_convocacao').insert([{
+                    convocacao_id: convocacaoId,
+                    passaporte: membroLogado.passaporte,
+                    nome: membroLogado.nome,
+                    status_presenca: 'confirmado'
+                }]);
+
+                if (error) throw error;
+                
+                alert("Presença confirmada com sucesso! Não se esqueça de comparecer.");
+                carregarDados(); // Recarrega para o botão mudar
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao confirmar presença. Tente novamente.");
+            }
+        }
+
+        async function marcarPresenca(presencaId) {
+            if (!confirm("Você está no local do evento? Confirmar sua presença agora?")) return;
+
+            try {
+                const { error } = await sb.from('presencas_convocacao')
+                    .update({ status_presenca: 'presente' })
+                    .eq('id', presencaId);
+                
+                if (error) throw error;
+                
+                alert("Check-in realizado com sucesso! Bom trabalho.");
+                carregarDados(); // Recarrega para o botão mudar
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao marcar presença.");
+            }
+        }
+    </script>
+</body>
+</html>
