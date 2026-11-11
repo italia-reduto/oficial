@@ -121,24 +121,29 @@
     <div class="particula p5"></div>
 
     <div class="layout">
-        <!-- MENU LATERAL (PC) -->
-        <aside class="sidebar">
-            <div class="sidebar-logo"><i class="fas fa-shield-alt"></i> ITÁLIA</div>
-            <div class="menu">
-                <a href="admin.html" class="nav-btn ativo"><i class="fas fa-satellite-dish"></i> Radar de Plantões</a>
-                <a href="admin-justificativas.html" class="nav-btn"><i class="fas fa-file-signature"></i> Justificativas</a>
-                <a href="admin-membros.html" class="nav-btn"><i class="fas fa-users-cog"></i> Gerenciar Membros</a>
-                <a href="admin-tickets.html" class="nav-btn"><i class="fas fa-headset"></i> Central de Suporte</a>
-                <a href="admin-avisos.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
-            </div>
-            <div class="sidebar-user">
-                <div class="user-info">
-                    <h4 id="adm-nome">Líder</h4>
-                    <p id="adm-cargo">Coordenador</p>
-                </div>
-                <button class="btn-sair" onclick="sair()"><i class="fas fa-power-off"></i></button>
-            </div>
-        </aside>
+        <!-- SIDEBAR PC -->
+<aside class="sidebar">
+    <div class="sidebar-logo"><i class="fas fa-shield-alt"></i> ITÁLIA</div>
+    <div class="menu">
+        <a href="admin.html" class="nav-btn ativo"><i class="fas fa-satellite-dish"></i> Radar de Plantões</a>
+        <a href="admin-justificativas.html" class="nav-btn"><i class="fas fa-file-signature"></i> Justificativas</a>
+        <a href="admin-membros.html" class="nav-btn"><i class="fas fa-users-cog"></i> Gerenciar Membros</a>
+        <a href="admin-tickets.html" class="nav-btn"><i class="fas fa-headset"></i> Central de Suporte</a>
+        <a href="admin-avisos.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
+        <a href="admin-treinamentos.html" class="nav-btn"><i class="fas fa-graduation-cap"></i> Treinamentos</a>
+        
+        <!-- NOVO LINK AQUI -->
+        <a href="admin-convocacoes.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Convocações</a>
+        
+    </div>
+    <div class="sidebar-user">
+        <div class="user-info">
+            <h4 id="adm-nome">Líder</h4>
+            <p id="adm-cargo">Coordenador</p>
+        </div>
+        <button class="btn-sair" onclick="sair()"><i class="fas fa-power-off"></i></button>
+    </div>
+</aside>
 
         <!-- CONTEÚDO PRINCIPAL -->
         <main class="main">
@@ -225,6 +230,7 @@
     <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
     <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
     <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
+    <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
 </nav>
         <script>
         let adminLogado = null;
