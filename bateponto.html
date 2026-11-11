@@ -446,20 +446,20 @@
                     // Deu XP
                     const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
                     await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', membroLogado.passaporte);
-                    await sb.from('presencas').insert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por: 'sistema', marcado_por_nome: 'Sistema', marcado_em: saida.toISOString() }]);
-                    customAlert("Turno encerrado! +20 XP.", "sucesso");
+                    await sb.from('presencas').upsert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por: 'sistema', marcado_por_nome: 'Sistema', marcado_em: saida.toISOString() }], { onConflict: 'data,passaporte' });
+customAlert("Turno encerrado! +20 XP.", "sucesso");
                 } else {
                     // Deu Falta
-                    const { error: errFalta } = await sb.from('presencas').insert([{ 
-                        passaporte: membroLogado.passaporte, 
-                        status: 'falta', 
-                        data: saida.toISOString().split('T')[0], 
-                        marcado_por_nome: automatico ? 'Sistema (Tempo Esgotado)' : 'Sistema', 
-                        marcado_em: saida.toISOString(), 
-                        justificativa: motivoJustificativa, 
-                        status_justificativa: motivoJustificativa ? 'pendente' : null,
-                        motivo_recusa: null // <--- ADICIONADO AQUI PARA NÃO DAR ERRO
-                    }]);
+                    const { error: errFalta } = await sb.from('presencas').upsert([{ 
+    passaporte: membroLogado.passaporte, 
+    status: 'falta', 
+    data: saida.toISOString().split('T')[0], 
+    marcado_por_nome: automatico ? 'Sistema (Tempo Esgotado)' : 'Sistema', 
+    marcado_em: saida.toISOString(), 
+    justificativa: motivoJustificativa, 
+    status_justificativa: motivoJustificativa ? 'pendente' : null,
+    motivo_recusa: null
+}], { onConflict: 'data,passaporte' });
 
                     if (errFalta) {
                         console.error("Erro no banco:", errFalta);
