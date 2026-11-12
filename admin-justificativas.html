@@ -54,11 +54,11 @@
         .titulo { font-family: 'Oswald'; font-size: 28px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .subtitulo { font-size: 13px; color: var(--texto-mutado); margin-top: 4px; }
 
-        /* ABAS (TABS) */
-        .abas { display: flex; gap: 10px; margin-bottom: 25px; }
-        .aba-btn { background: transparent; border: 1px solid var(--borda); color: var(--texto-mutado); padding: 10px 20px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; cursor: pointer; transition: 0.2s; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
-        .aba-btn:hover { background: rgba(255,255,255,0.02); }
-        .aba-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border-color: rgba(34, 197, 94, 0.3); }
+        /* ABAS */
+        .abas { display: flex; gap: 8px; margin-bottom: 25px; }
+        .aba-btn { background: rgba(0,0,0,0.3); border: 1px solid var(--borda); color: var(--texto-mutado); padding: 10px 20px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+        .aba-btn:hover { background: rgba(255,255,255,0.05); }
+        .aba-btn.ativo { background: var(--verde); color: #000; border-color: var(--verde); }
 
         /* CARDS DE JUSTIFICATIVA */
         .lista-justificativas { display: flex; flex-direction: column; gap: 15px; }
@@ -94,42 +94,21 @@
         .modal-input:focus { border-color: var(--vermelho); }
         .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;}
 
-        /* MOBILE */
-        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
+        /* MENU MOBILE CORRIGIDO */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
         .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--texto-mutado); font-size: 8px; font-weight: 600; cursor: pointer; width: 14.28%; transition: 0.2s; text-decoration: none;}
-.mob-btn i { font-size: 18px; }
+        .mob-btn i { font-size: 18px; }
         .mob-btn.ativo { color: var(--verde); }
 
         @media (max-width: 900px) {
-    .sidebar { display: none; }
-    .mobile-nav { display: flex; }
-    .main { padding: 20px 15px; padding-bottom: 90px; }
-    .topo { flex-direction: column; align-items: flex-start; gap: 15px; }
-    .card-just-acoes { flex-direction: column; }
-    .card-just-acoes .btn { width: 100%; }
-    .abas { flex-wrap: wrap; }
-    .aba-btn { flex: 1; justify-content: center; padding: 10px; }
-    
-    /* CORREÇÃO DOS KPIs NO MOBILE */
-    .grid-kpi { 
-        grid-template-columns: 1fr !important; /* Empilha um embaixo do outro */
-        gap: 10px !important; 
-    }
-    .kpi {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px !important;
-    }
-    .kpi-header {
-        margin-bottom: 0 !important;
-        font-size: 13px !important;
-        gap: 10px; /* Dá um espacinho entre o texto e o ícone */
-    }
-    .kpi-valor {
-        font-size: 24px !important;
-        margin-top: 0 !important;
-    }
+            .sidebar { display: none; }
+            .mobile-nav { display: flex; }
+            .main { padding: 20px 15px; padding-bottom: 90px; }
+            .topo { flex-direction: column; align-items: flex-start; gap: 15px; }
+            .card-just-acoes { flex-direction: column; }
+            .card-just-acoes .btn { width: 100%; }
+            .abas { flex-wrap: wrap; }
+            .aba-btn { flex: 1; justify-content: center; padding: 10px; }
         }
     </style>
 </head>
@@ -152,6 +131,8 @@
                 <a href="admin-membros.html" class="nav-btn"><i class="fas fa-users-cog"></i> Gerenciar Membros</a>
                 <a href="admin-tickets.html" class="nav-btn"><i class="fas fa-headset"></i> Central de Suporte</a>
                 <a href="admin-avisos.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
+                <a href="admin-treinamentos.html" class="nav-btn"><i class="fas fa-graduation-cap"></i> Treinamentos</a>
+                <a href="admin-convocacoes.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Convocações</a>
             </div>
             <div class="sidebar-user">
                 <div class="user-info">
@@ -169,19 +150,22 @@
                     <h1 class="titulo">Justificativas</h1>
                     <p class="subtitulo">Gerencie as faltas e justificativas enviadas pelo efetivo.</p>
                 </div>
+                <a href="dashboard.html" class="btn btn-outline" style="padding: 6px 12px; font-size: 11px; text-decoration: none;">
+                    <i class="fas fa-user"></i> Modo Jogador
+                </a>
             </div>
 
             <!-- KPIs -->
             <div class="grid-kpi" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
-                <div class="kpi" style="border-left: 4px solid var(--amarelo); background: var(--card); padding: 15px 20px; border-radius: 8px; border-top: 1px solid var(--borda); border-right: 1px solid var(--borda); border-bottom: 1px solid var(--borda);">
+                <div class="kpi" style="border-left: 4px solid var(--amarelo); background: var(--card); padding: 15px 20px; border-radius: 8px;">
                     <div class="kpi-header" style="font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between;">Pendentes <i class="fas fa-clock" style="color: var(--amarelo);"></i></div>
                     <div class="kpi-valor" id="kpi-pendentes" style="font-family: 'Oswald'; font-size: 28px; font-weight: 700; color: #fff; margin-top: 5px;">0</div>
                 </div>
-                <div class="kpi" style="border-left: 4px solid var(--verde); background: var(--card); padding: 15px 20px; border-radius: 8px; border-top: 1px solid var(--borda); border-right: 1px solid var(--borda); border-bottom: 1px solid var(--borda);">
+                <div class="kpi" style="border-left: 4px solid var(--verde); background: var(--card); padding: 15px 20px; border-radius: 8px;">
                     <div class="kpi-header" style="font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between;">Aprovadas <i class="fas fa-check-circle" style="color: var(--verde);"></i></div>
                     <div class="kpi-valor" id="kpi-aprovadas" style="font-family: 'Oswald'; font-size: 28px; font-weight: 700; color: #fff; margin-top: 5px;">0</div>
                 </div>
-                <div class="kpi" style="border-left: 4px solid var(--vermelho); background: var(--card); padding: 15px 20px; border-radius: 8px; border-top: 1px solid var(--borda); border-right: 1px solid var(--borda); border-bottom: 1px solid var(--borda);">
+                <div class="kpi" style="border-left: 4px solid var(--vermelho); background: var(--card); padding: 15px 20px; border-radius: 8px;">
                     <div class="kpi-header" style="font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between;">Recusadas <i class="fas fa-times-circle" style="color: var(--vermelho);"></i></div>
                     <div class="kpi-valor" id="kpi-recusadas" style="font-family: 'Oswald'; font-size: 28px; font-weight: 700; color: #fff; margin-top: 5px;">0</div>
                 </div>
@@ -199,7 +183,6 @@
 
             <!-- LISTA DE JUSTIFICATIVAS -->
             <div class="lista-justificativas" id="lista-justificativas">
-                <!-- Os cards serão injetados aqui via JS -->
                 <div style="text-align: center; padding: 40px; color: var(--texto-mutado);">
                     <i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i>
                     <p>Buscando justificativas...</p>
@@ -210,26 +193,22 @@
 
     <!-- MENU MOBILE -->
     <nav class="mobile-nav">
-    <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
-    <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
-    <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
-    <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
-    <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
-    <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
-    <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
+        <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
+        <a href="admin-justificativas.html" class="mob-btn ativo"><i class="fas fa-file-signature"></i> Justificar</a>
+        <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
+        <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
+        <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
+        <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
     </nav>
+
     <!-- MODAL DE RECUSA -->
     <div class="modal-overlay" id="modal-recusa">
         <div class="modal-content">
             <h3 class="modal-titulo" style="color: var(--vermelho);">Recusar Justificativa</h3>
             <p class="modal-sub" id="recusa-sub">Membro: --</p>
-            
-            <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 15px;">
-                Por favor, descreva o motivo da recusa. O jogador verá esta mensagem no painel dele.
-            </p>
-            
-            <textarea id="motivo-recusa-input" class="modal-input" rows="3" placeholder="Ex: Fora do prazo de 24h, atestado ilegível, motivo inválido..."></textarea>
-
+            <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 15px;">Descreva o motivo da recusa. O jogador verá esta mensagem.</p>
+            <textarea id="motivo-recusa-input" class="modal-input" rows="3" placeholder="Ex: Fora do prazo, motivo inválido..."></textarea>
             <div class="modal-botoes">
                 <button class="btn btn-outline" onclick="fecharModalRecusa()">Cancelar</button>
                 <button class="btn btn-vermelho" id="btn-confirmar-recusa" onclick="confirmarRecusa()">Confirmar Recusa</button>
@@ -242,51 +221,44 @@
         <div class="modal-content">
             <h3 class="modal-titulo" id="detalhes-titulo">Detalhes da Justificativa</h3>
             <p class="modal-sub" id="detalhes-sub">Membro: --</p>
-            
             <div id="detalhes-conteudo" style="margin-bottom: 20px;"></div>
-
             <div class="modal-botoes" style="grid-template-columns: 1fr;">
                 <button class="btn btn-outline" onclick="fecharModalDetalhes()">Fechar</button>
             </div>
         </div>
     </div>
-        <script>
+
+    <script>
         let adminLogado = null;
-        let abaAtual = 'pendentes'; // 'pendentes' ou 'historico'
+        let abaAtual = 'pendentes';
         let todasAsJustificativas = [];
         let justificativaSelecionada = null;
         
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
-        // Função para evitar injeção de HTML
         function escapeHTML(str) {
             if (!str) return '';
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
         }
 
-        // Formatar data YYYY-MM-DD para DD/MM/YYYY
         function formatarData(dataStr) {
             if (!dataStr) return '--/--/----';
             const [ano, mes, dia] = dataStr.split('-');
             return `${dia}/${mes}/${ano}`;
         }
 
-        // ==========================================
-        // 1. INICIALIZAÇÃO
-        // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
 
             adminLogado = JSON.parse(logado);
-            // VERIFICAÇÃO BLINDADA (IGNORA MAIÚSCULAS E MINÚSCULAS)
-const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
-const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
+            const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
+            const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
 
-if (!isAdmin) {
-    alert("Acesso negado. Área restrita.");
-    return window.location.href = 'dashboard.html';
-}
+            if (!isAdmin) {
+                alert("Acesso negado.");
+                return window.location.href = 'dashboard.html';
+            }
 
             document.getElementById('adm-nome').innerText = adminLogado.nome;
             document.getElementById('adm-cargo').innerText = adminLogado.cargo;
@@ -294,33 +266,31 @@ if (!isAdmin) {
             carregarDados();
         });
 
-        // ==========================================
-        // 2. CARREGAR DADOS (SUPABASE)
-        // ==========================================
         async function carregarDados() {
             const lista = document.getElementById('lista-justificativas');
             lista.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i><p>Buscando justificativas...</p></div>';
 
             try {
-                // Puxa as presenças que TÊM justificativa (não nulas) e que não estão mais como 'falta' (ou seja, o player justificou)
-                // Se a sua lógica de banco for diferente, ajuste o filtro 'not'
+                // Puxa as presenças que TÊM justificativa
                 const { data: presencas, error } = await sb.from('presencas')
                     .select('*')
                     .not('justificativa', 'is', null)
-                    .order('marcado_em', { ascending: false });
+                    .order('data', { ascending: false });
 
                 if (error) throw error;
 
-                // Puxa os membros para cruzar o nome atualizado (caso o nome na presença esteja desatualizado)
-                const { data: membros } = await sb.from('membros').select('passaporte, nome');
+                // Puxa os membros para pegar o nome atualizado e a foto
+                const { data: membros } = await sb.from('membros').select('passaporte, nome, foto_url');
+                const mapMembros = {};
+                if(membros) membros.forEach(m => mapMembros[String(m.passaporte)] = m);
 
-                // Junta os dados
                 todasAsJustificativas = presencas.map(p => {
-                    const m = membros.find(mem => String(mem.passaporte) === String(p.passaporte));
+                    const m = mapMembros[String(p.passaporte)];
                     return {
                         ...p,
                         nome_membro: m ? m.nome : `Passaporte ${p.passaporte}`,
-                        status_just: p.status_justificativa || 'pendente' // Fallback caso esteja nulo
+                        foto_url: m ? m.foto_url : null,
+                        status_just: p.status_justificativa || 'pendente'
                     };
                 });
 
@@ -333,9 +303,6 @@ if (!isAdmin) {
             }
         }
 
-        // ==========================================
-        // 3. KPIs E ABAS
-        // ==========================================
         function calcularKPIs() {
             const pendentes = todasAsJustificativas.filter(j => j.status_just === 'pendente').length;
             const aprovadas = todasAsJustificativas.filter(j => j.status_just === 'aprovada').length;
@@ -348,21 +315,14 @@ if (!isAdmin) {
 
         function mudarAba(aba) {
             abaAtual = aba;
-            
-            // Atualiza visual dos botões
             document.getElementById('btn-aba-pendentes').classList.toggle('ativo', aba === 'pendentes');
             document.getElementById('btn-aba-historico').classList.toggle('ativo', aba === 'historico');
-
             renderizarLista();
         }
 
-        // ==========================================
-        // 4. RENDERIZAR A LISTA
-        // ==========================================
         function renderizarLista() {
             const lista = document.getElementById('lista-justificativas');
             
-            // Filtra baseado na aba
             const filtradas = todasAsJustificativas.filter(j => {
                 if (abaAtual === 'pendentes') return j.status_just === 'pendente';
                 return j.status_just === 'aprovada' || j.status_just === 'recusada';
@@ -378,7 +338,6 @@ if (!isAdmin) {
                 const dataFalta = formatarData(j.data);
                 
                 if (abaAtual === 'pendentes') {
-                    // Visual de Pendente (Com botões de Ação)
                     html += `
                         <div class="card-justificativa">
                             <div class="card-just-header">
@@ -386,7 +345,7 @@ if (!isAdmin) {
                                     <h4><i class="fas fa-user" style="color: var(--texto-mutado); font-size: 14px;"></i> ${escapeHTML(j.nome_membro)}</h4>
                                     <p><i class="fas fa-id-card"></i> Passaporte: ${j.passaporte} <span style="margin: 0 5px;">•</span> <i class="fas fa-calendar-day"></i> Falta: ${dataFalta}</p>
                                 </div>
-                                <span class="tag-status tag-pausado" style="background: rgba(234, 179, 8, 0.15); color: var(--amarelo); border: 1px solid rgba(234, 179, 8, 0.3); padding: 5px 10px;">Pendente</span>
+                                <span class="tag-status" style="background: rgba(234, 179, 8, 0.15); color: var(--amarelo); border: 1px solid rgba(234, 179, 8, 0.3); padding: 5px 10px;">Pendente</span>
                             </div>
                             <div class="card-just-conteudo">
                                 <p>${escapeHTML(j.justificativa)}</p>
@@ -402,7 +361,6 @@ if (!isAdmin) {
                         </div>
                     `;
                 } else {
-                    // Visual de Histórico (Apenas leitura + botão de detalhes)
                     const isAprovado = j.status_just === 'aprovada';
                     const corStatus = isAprovado ? 'var(--verde)' : 'var(--vermelho)';
                     const iconeStatus = isAprovado ? 'fa-check-circle' : 'fa-times-circle';
@@ -432,9 +390,6 @@ if (!isAdmin) {
             lista.innerHTML = html;
         }
 
-        // ==========================================
-        // 5. AÇÕES: APROVAR E RECUSAR
-        // ==========================================
         async function aprovarJustificativa(id) {
             if (!confirm("Deseja realmente APROVAR esta justificativa?")) return;
 
@@ -444,12 +399,10 @@ if (!isAdmin) {
                     .eq('id', id);
 
                 if (error) throw error;
-                
-                // Recarrega os dados para atualizar a tela e os KPIs
                 carregarDados();
             } catch (err) {
                 console.error(err);
-                alert("Erro ao aprovar. Tente novamente.");
+                alert("Erro ao aprovar.");
             }
         }
 
@@ -468,15 +421,13 @@ if (!isAdmin) {
         async function confirmarRecusa() {
             const motivo = document.getElementById('motivo-recusa-input').value.trim();
             if (!motivo) {
-                // Feedback visual simples em vez de alert
                 document.getElementById('motivo-recusa-input').style.borderColor = 'var(--vermelho)';
                 setTimeout(() => document.getElementById('motivo-recusa-input').style.borderColor = 'var(--borda)', 2000);
                 return;
             }
 
             const btn = document.getElementById('btn-confirmar-recusa');
-            btn.innerText = "Processando...";
-            btn.disabled = true;
+            btn.innerText = "Processando..."; btn.disabled = true;
 
             try {
                 const { error } = await sb.from('presencas')
@@ -489,19 +440,15 @@ if (!isAdmin) {
                 if (error) throw error;
 
                 fecharModalRecusa();
-                carregarDados(); // Recarrega tudo
+                carregarDados();
             } catch (err) {
                 console.error(err);
                 alert("Erro ao recusar.");
             } finally {
-                btn.innerText = "Confirmar Recusa";
-                btn.disabled = false;
+                btn.innerText = "Confirmar Recusa"; btn.disabled = false;
             }
         }
 
-        // ==========================================
-        // 6. MODAL DE DETALHES (HISTÓRICO)
-        // ==========================================
         function verDetalhes(id) {
             const j = todasAsJustificativas.find(x => x.id === id);
             if (!j) return;
@@ -530,7 +477,7 @@ if (!isAdmin) {
                     <p style="font-size: 12px; font-weight: 600; color: var(--vermelho); text-transform: uppercase; margin-bottom: 5px;">Motivo da Recusa:</p>
                     <div style="background: rgba(239, 68, 68, 0.05); padding: 15px; border-radius: 8px; font-size: 13px; color: #fca5a5; border-left: 2px solid var(--vermelho);">
                         ${escapeHTML(j.motivo_recusa)}
-                    </div>
+                                         </div>
                 `;
             }
 
@@ -542,9 +489,6 @@ if (!isAdmin) {
             document.getElementById('modal-detalhes').classList.remove('ativo');
         }
 
-        // ==========================================
-        // 7. LOGOUT
-        // ==========================================
         function sair() {
             sessionStorage.removeItem('membro_logado');
             window.location.href = 'login.html';
