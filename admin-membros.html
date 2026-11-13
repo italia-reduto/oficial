@@ -405,51 +405,59 @@
     // 2. CARREGAR E RENDERIZAR MEMBROS
     // ==========================================
     async function carregarMembros() {
-        const tbody = document.getElementById('corpo-tabela-membros');
-        const listaMobile = document.getElementById('lista-membros-mobile');
-        
-        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Buscando efetivo no banco...</td></tr>';
-        listaMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Buscando efetivo...</p>';
-        
-        try {
-            const [resMembros, resPontos] = await Promise.all([
-                sb.from('membros').select('*').order('nome', { ascending: true }),
-                sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
-            ]);
+    const tbody = document.getElementById('corpo-tabela-membros');
+    const listaMobile = document.getElementById('lista-membros-mobile');
+    
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Buscando efetivo no banco...</td></tr>';
+    listaMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Buscando efetivo...</p>';
+    
+    try {
+        const [resMembros, resPontos] = await Promise.all([
+            sb.from('membros').select('*').order('nome', { ascending: true }),
+            sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
+        ]);
 
-            if (resMembros.error) throw new Error("Erro na tabela Membros: " + resMembros.error.message);
-            if (resPontos.error) throw new Error("Erro na tabela Pontos: " + resPontos.error.message);
+        if (resMembros.error) throw new Error("Erro na tabela Membros: " + resMembros.error.message);
+        if (resPontos.error) throw new Error("Erro na tabela Pontos: " + resPontos.error.message);
 
-            if (!resMembros.data || resMembros.data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo); padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique se o RLS do Supabase está liberado para leitura (anon).</td></tr>';
-                listaMobile.innerHTML = '<p style="color: var(--amarelo); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique o RLS no Supabase.</p>';
-                return;
-            }
-
-            const pontosMap = {};
-            if (resPontos.data) {
-                resPontos.data.forEach(p => { 
-                    if (p.passaporte) pontosMap[String(p.passaporte)] = p; 
-                });
-            }
-
-            todosOsMembros = resMembros.data.map(m => {
-                const pontoAtivo = pontosMap[String(m.passaporte)];
-                return { 
-                    ...m, 
-                    status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
-                    ponto_id: pontoAtivo ? pontoAtivo.id : null 
-                };
-            });
-
-            localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros));
-            filtrarMembros(); 
-
-        } catch (err) { 
-            // Mostra o erro na tela para você ver sem precisar de F12
-            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho); padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</td></tr>`; 
-            listaMobile.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</p>`;
+        if (!resMembros.data || resMembros.data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo); padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique se o RLS do Supabase está liberado para leitura (anon).</td></tr>';
+            listaMobile.innerHTML = '<p style="color: var(--amarelo); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique o RLS no Supabase.</p>';
+            return;
         }
+
+        const pontosMap = {};
+        if (resPontos.data) {
+            resPontos.data.forEach(p => { 
+                if (p.passaporte) pontosMap[String(p.passaporte)] = p; 
+            });
+        }
+
+        todosOsMembros = resMembros.data.map(m => {
+            const pontoAtivo = pontosMap[String(m.passaporte)];
+            return { 
+                ...m, 
+                status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
+                ponto_id: pontoAtivo ? pontoAtivo.id : null 
+            };
+        });
+
+        // --- CORREÇÃO DO ERRO DE QUOTA AQUI ---
+        try {
+            localStorage.removeItem('cache_membros'); // Limpa o cache antigo
+            localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros)); // Tenta salvar
+        } catch (storageError) {
+            // Se o cache estourar, ele só avisa no console, mas NÃO trava a tela
+            console.warn("Aviso: Cache local cheio. O app continuará funcionando normalmente sem cache.", storageError);
+        }
+        // --------------------------------------
+
+        filtrarMembros(); // Agora ele SEMPRE chega aqui e renderiza a tela!
+
+    } catch (err) { 
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho); padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</td></tr>`; 
+        listaMobile.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</p>`;
+    }
     }
 
     // ==========================================
