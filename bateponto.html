@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0f0d">
-    <title>Itália 2.0 | Plantões</title>
+    <title>Itália 2.0 | Ponto</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = "https://vclwmikzmnuqfdxobtik.supabase.co";
@@ -15,479 +13,228 @@
         const { createClient } = supabase;
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
-
     <style>
-        :root { --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        html { background-color: #0a0f0d; overflow-x: hidden; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 20px; position: relative; overflow: hidden; }
+        :root { --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; --azul: #3b82f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 20px; position: relative; }
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
-        .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
-        .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 5; }
-        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; } .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; } .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; } .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; } .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
-        @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
-
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; padding-bottom: 100px; }
-        .topo { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
-        .btn-voltar { width: 40px; height: 40px; background: var(--vidro); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); font-size: 18px; cursor: pointer; text-decoration: none; transition: 0.3s; }
-        .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
-        .titulo { font-family: 'Oswald', sans-serif; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; color: #fff; }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; z-index: 10; padding-bottom: 100px; }
         
-        #lista-plantoes { display: flex; flex-direction: column; gap: 12px; width: 100%; }
-        .card-plantao { background: var(--vidro); backdrop-filter: blur(20px); border-radius: 12px; padding: 20px; border: 1px solid var(--borda); transition: 0.3s; position: relative; overflow: hidden; -webkit-mask-image: -webkit-radial-gradient(white, black); transform: translateZ(0); width: 100%; display: block; }
-        .card-plantao.aberto { border-color: var(--verde); box-shadow: 0 0 15px rgba(34, 197, 94, 0.1); }
-        .card-plantao.lotado { opacity: 0.5; }
-        .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; position: relative; z-index: 2; }
-        .card-nome { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; display: flex; align-items: center; }
-        .card-horario { font-size: 12px; color: var(--verde); font-weight: 600; text-transform: uppercase; letter-spacing: 1px;}
-        .vagas-barra { width: 100%; height: 4px; background: #27272a; border-radius: 10px; overflow: hidden; margin-bottom: 10px; position: relative; z-index: 2; }
-        .vagas-preenchida { height: 100%; background: var(--verde); transition: 0.3s; }
-        .vagas-texto { font-size: 11px; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 15px; position: relative; z-index: 2; }
-        .btn-acao-plantao { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; position: relative; z-index: 2; }
-        .btn-entrar { background: var(--verde); color: #000; } .btn-entrar:hover { background: #4ade80; }
-        .btn-bloqueado { background: #27272a; color: #52525b; cursor: not-allowed; }
-        .card-plantao.com-imagem { background-size: cover; background-position: center; background-repeat: no-repeat; }
-        .card-plantao.com-imagem::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(10, 15, 13, 0.95) 0%, rgba(10, 15, 13, 0.7) 100%); z-index: 1; }
+        .topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .titulo { font-family: 'Oswald'; font-size: 24px; color: #fff; }
+        
+        .painel-principal { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; text-align: center; }
+        .cronometro-display { font-family: 'Oswald'; font-size: 64px; color: #fff; line-height: 1; margin-bottom: 10px; }
+        .cronometro-label { font-size: 13px; color: var(--texto-mutado); margin-bottom: 30px; }
+        
+        .btn-iniciar { width: 100%; background: var(--azul); color: #fff; border: none; padding: 16px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 10px; transition: 0.3s; }
+        .btn-iniciar:hover { background: #2563eb; }
 
-        #tela-cronometro { display: none; flex-direction: column; background: var(--vidro); padding: 25px; border-radius: 16px; border: 1px solid var(--borda); text-align: left; }
-        .cronometro-display { font-family: 'Oswald'; font-size: 56px; color: #fff; line-height: 1; text-align: center; }
-        .xp-container { width: 100%; margin-top: 20px; }
-        .xp-texto { font-size: 11px; color: var(--texto-mutado); display: flex; justify-content: space-between; margin-bottom: 5px; }
-        .xp-barra-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
-        .xp-barra-fill { height: 100%; background: var(--verde); width: 0%; transition: width 1s linear; }
-        .botoes-cronometro { display: flex; gap: 10px; margin-top: 25px; }
-        .btn-cronometro { flex: 1; background: transparent; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        .btn-pausa { color: var(--amarelo); border: 1px solid var(--amarelo); } .btn-retomar { color: var(--verde); border: 1px solid var(--verde); display: none; } .btn-encerrar { color: var(--vermelho); border: 1px solid var(--vermelho); }
+        .status-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 6px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; text-transform: uppercase; margin: 0 auto 20px auto; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--verde); box-shadow: 0 0 8px var(--verde); }
+        .dot.pausado { background: var(--amarelo); box-shadow: 0 0 8px var(--amarelo); }
 
-        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
-        .modal-overlay.ativo { display: flex; }
-        .modal-content { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; width: 100%; max-width: 400px; text-align: center; max-height: 85vh; overflow-y: auto; }
-        .botoes-confirmar { display: flex; gap: 10px; } .btn-sim { flex: 1; background: var(--verde); color: #000; border: none; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; } .btn-nao { flex: 1; background: transparent; color: var(--vermelho); border: 1px solid var(--vermelho); padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .botoes-acao { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-acao { flex: 1; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; background: transparent; }
+        .btn-pausar { border: 1px solid var(--amarelo); color: var(--amarelo); }
+        .btn-retomar { border: 1px solid var(--verde); color: var(--verde); display: none; }
+        .btn-encerrar { border: 1px solid var(--vermelho); color: var(--vermelho); }
 
-        .aviso-pulsante { background: rgba(239, 68, 68, 0.1); border: 1px solid var(--vermelho); padding: 15px; border-radius: 10px; color: #fca5a5; font-size: 12px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; text-align: left; line-height: 1.4; }
-        .aviso-pulsante i { font-size: 20px; color: var(--vermelho); animation: piscar 1s infinite; }
-        @keyframes piscar { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-        .grid-justificativas { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-        .card-justificativa { display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.3s; }
-        .card-justificativa.selecionado { border-color: var(--verde); background: rgba(34, 197, 94, 0.1); }
-        .card-justificativa i { font-size: 20px; color: var(--verde); width: 25px; text-align: center; }
-        .card-justificativa .texto { text-align: left; }
-        .card-justificativa .texto h4 { font-family: 'Oswald'; font-size: 14px; color: #fff; margin-bottom: 2px; }
-        .card-justificativa .texto p { font-size: 11px; color: var(--texto-mutado); }
-        .input-outro { width: 100%; padding: 12px; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); color: #fff; border-radius: 8px; font-family: 'Inter'; font-size: 13px; outline: none; margin-bottom: 15px; display: none; }
-        .input-outro:focus { border-color: var(--verde); }
-
-        .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--verde); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 30px rgba(34, 197, 94, 0.2); z-index: 9999; min-width: 280px; transition: top 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--azul); border-radius: 12px; padding: 15px 20px; display: flex; align-items: center; gap: 15px; z-index: 9999; min-width: 280px; transition: top 0.4s; }
         .alerta-custom.ativo { top: 20px; }
-        .alerta-custom i { font-size: 24px; color: var(--verde); }
-        .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500; }
-        .alerta-custom.erro { border-color: #ef4444; box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2); }
-        .alerta-custom.erro i { color: #ef4444; }
+        .alerta-custom i { font-size: 24px; color: var(--azul); }
+        .alerta-custom p { font-size: 13px; color: #fff; }
+        .alerta-custom.erro { border-color: var(--vermelho); } .alerta-custom.erro i { color: var(--vermelho); }
 
-        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
-        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; padding: 10px 20px; z-index: 9999; }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; }
         .item-menu i { font-size: 18px; }
-        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+        .item-menu.ativo { color: var(--azul); }
     </style>
 </head>
 <body>
-    <div class="fundo-degrade"></div><div class="grade-fundo"></div>
-    <div class="particula p1"></div><div class="particula p2"></div><div class="particula p3"></div><div class="particula p4"></div><div class="particula p5"></div>
-
+    <div class="fundo-degrade"></div>
     <div class="container">
         <div class="topo">
-            <a href="dashboard.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
-            <h1 class="titulo">Plantões</h1>
+            <h1 class="titulo">Controle de Ponto</h1>
         </div>
-        
-        <p id="subtitulo-plantoes" style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 10px;">Selecione um plantão disponível abaixo:</p>
-        
-        <!-- Lista onde os plantões são injetados -->
-        <div id="lista-plantoes"><p style="color: var(--texto-mutado); text-align: center; padding: 20px;">Carregando...</p></div>
 
-        <!-- Tela do Cronômetro (Oculta por padrão) -->
-        <div id="tela-cronometro">
-            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; margin-bottom: 20px;">
-                <div>
-                    <h2 id="nome-plantao-ativo" style="font-family: 'Oswald'; font-size: 18px; color: #fff; margin-bottom: 2px;">Carregando...</h2>
-                    <p style="font-size: 12px; color: var(--texto-mutado);" id="horario-plantao-ativo">--:-- - --:--</p>
+        <div class="painel-principal">
+            <!-- TELA INICIAL -->
+            <div id="tela-inicial">
+                <div class="cronometro-display">00:00:00</div>
+                <p class="cronometro-label">Tempo de jornada</p>
+                <button class="btn-iniciar" onclick="iniciarJornada()"><i class="fas fa-play"></i> Iniciar Jornada</button>
+            </div>
+
+            <!-- TELA ATIVA -->
+            <div id="tela-ativo" style="display: none;">
+                <div class="status-tag" id="tag-status"><div class="dot" id="status-dot"></div> <span id="txt-tag">Em Serviço</span></div>
+                <div class="cronometro-display" id="cronometro-display">00:00:00</div>
+                <p class="cronometro-label">Tempo de jornada</p>
+                
+                <div class="botoes-acao">
+                    <button class="btn-acao btn-pausar" id="btn-pausar" onclick="pausarTurno()"><i class="fas fa-pause"></i> Pausar</button>
+                    <button class="btn-acao btn-retomar" id="btn-retomar" onclick="retomarTurno()"><i class="fas fa-play"></i> Retomar</button>
+                    <button class="btn-acao btn-encerrar" onclick="solicitarEncerramento()"><i class="fas fa-stop"></i> Encerrar</button>
                 </div>
-                <div id="status-pausa-texto" style="font-family: 'Oswald'; font-size: 12px; color: var(--amarelo); text-transform: uppercase; display: none; background: rgba(234, 179, 8, 0.1); padding: 4px 8px; border-radius: 4px;">Pausado</div>
-            </div>
-            
-            <div style="text-align: center; margin-bottom: 25px;">
-                <div id="cronometro-display" class="cronometro-display">00:00:00</div>
-                <p id="label-tempo" style="font-size: 11px; color: var(--texto-mutado); margin-top: 5px; text-transform: uppercase; letter-spacing: 1px;">Tempo em Serviço</p>
-            </div>
-            
-            <div class="xp-container" id="xp-container-pausa">
-                <div class="xp-texto"><span id="xp-status-texto">Faltam 30 min para +20 XP</span><span id="xp-porcentagem">0%</span></div>
-                <div class="xp-barra-bg"><div class="xp-barra-fill" id="xp-barra-preenchida"></div></div>
-            </div>
-            
-            <div class="botoes-cronometro">
-                <button onclick="pausarTurno()" id="btn-pausar" class="btn-cronometro btn-pausa"><i class="fas fa-pause"></i> Pausar</button>
-                <button onclick="retomarTurno()" id="btn-retomar" class="btn-cronometro btn-retomar"><i class="fas fa-play"></i> Retomar</button>
-                <button onclick="solicitarEncerramento()" class="btn-cronometro btn-encerrar"><i class="fas fa-stop"></i> Encerrar</button>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DE CONFIRMAÇÃO -->
-    <div class="modal-overlay" id="modal-confirmar">
-        <div class="modal-content">
-            <p id="texto-confirmar" style="font-size: 15px; color: #fff; margin-bottom: 25px; line-height: 1.5;">Tem certeza?</p>
-            <div class="botoes-confirmar">
-                <button class="btn-nao" onclick="responderConfirmacao(false)">Cancelar</button>
-                <button class="btn-sim" onclick="responderConfirmacao(true)">Confirmar</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL DE JUSTIFICATIVA (Se sair antes de 30 min) -->
-    <div class="modal-overlay" id="modal-justificativa">
-        <div class="modal-content">
-            <div class="aviso-pulsante">
-                <i class="fas fa-exclamation-circle"></i>
-                <div><strong>ATENÇÃO:</strong> Você está saindo antes dos 30 minutos. Isso resultará em uma falta. Justifique abaixo para a liderança avaliar.</div>
-            </div>
-            <div class="grid-justificativas" id="lista-opcoes-justificativa"></div>
-            <input type="text" class="input-outro" id="input-outro" placeholder="Descreva o motivo (máx 100 letras)" maxlength="100">
-            <button class="btn-sim" style="width: 100%; margin-bottom: 10px;" onclick="enviarJustificativa()">Enviar e Encerrar</button>
-            <button onclick="fecharModal('modal-justificativa')" style="width: 100%; background: transparent; border: none; color: var(--texto-mutado); cursor: pointer; font-size: 12px;">Cancelar e Voltar</button>
-        </div>
-    </div>
-
-    <!-- SISTEMA DE ALERTA -->
     <div class="alerta-custom" id="alerta-site"><i class="fas fa-check-circle" id="alerta-icone"></i><p id="alerta-texto">Mensagem</p></div>
     
-    <!-- MENU INFERIOR -->
     <nav class="menu-inferior">
         <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
         <a href="bateponto.html" class="item-menu ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
+        <a href="equipe.html" class="item-menu"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
         <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
     </nav>
-        <script>
+
+    <script>
         let membroLogado = null;
-        let intervaloCronometro = null;
         let pontoAtual = null;
-        let acaoPendente = null;
-        let justificativaSelecionada = null;
-
-        function getMinutosBrasilia() {
-            const agora = new Date();
-            const formatter = new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hour12: false });
-            const [h, m] = formatter.format(agora).split(':').map(Number);
-            return (h * 60) + m;
-        }
-
-        // MODO LIVRE: Ignora horários e sempre libera o botão
-        function verificarStatusHorario(horarioInicio, horarioFim) {
-            return 'aberto'; 
-        }
+        let intervaloCronometro = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
             membroLogado = JSON.parse(logado);
-            carregarPlantoes();
+            verificarPonto();
         });
 
-        async function carregarPlantoes() {
-            const container = document.getElementById('lista-plantoes');
-            const telaCronometro = document.getElementById('tela-cronometro');
-            const subtitulo = document.getElementById('subtitulo-plantoes');
-            
-            try {
-                const { data: pontoAberto } = await sb.from('pontos').select('*, plantoes(nome, horario_inicio, horario_fim)').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+        async function verificarPonto() {
+            const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
-                if (pontoAberto) {
-                    pontoAtual = pontoAberto;
-                    container.style.display = 'none'; 
-                    subtitulo.style.display = 'none'; 
-                    telaCronometro.style.display = 'flex';
-                    
-                    document.getElementById('nome-plantao-ativo').innerText = pontoAberto.plantoes ? pontoAberto.plantoes.nome : 'Plantão';
-                    document.getElementById('horario-plantao-ativo').innerText = "Em serviço"; 
-                    
-                    if (pontoAberto.status === 'pausado') {
-                        document.getElementById('status-pausa-texto').style.display = 'block';
-                        document.getElementById('cronometro-display').style.color = 'var(--amarelo)';
-                        document.getElementById('btn-pausar').style.display = 'none';
-                        document.getElementById('btn-retomar').style.display = 'block';
-                        
-                        const labelTempo = document.getElementById('label-tempo');
-                        labelTempo.innerText = "Tempo em Pausa (Não conta para XP)";
-                        labelTempo.style.color = "var(--amarelo)";
-                        labelTempo.style.fontWeight = "bold";
-                        
-                        document.getElementById('xp-container-pausa').style.opacity = '0.3';
-                        iniciarCronometroPausa(pontoAberto.pausa_inicio);
-                    } else {
-                        document.getElementById('status-pausa-texto').style.display = 'none';
-                        document.getElementById('cronometro-display').style.color = '#fff';
-                        document.getElementById('btn-pausar').style.display = 'block';
-                        document.getElementById('btn-retomar').style.display = 'none';
-                        
-                        const labelTempo = document.getElementById('label-tempo');
-                        labelTempo.innerText = "Tempo em Serviço";
-                        labelTempo.style.color = "var(--texto-mutado)";
-                        labelTempo.style.fontWeight = "normal";
-                        
-                        document.getElementById('xp-container-pausa').style.opacity = '1';
-                        iniciarCronometro(pontoAberto.entrada);
-                    }
-                    return; 
+            if (data) {
+                pontoAtual = data;
+                document.getElementById('tela-inicial').style.display = 'none';
+                document.getElementById('tela-ativo').style.display = 'block';
+
+                if (data.status === 'pausado') {
+                    document.getElementById('status-dot').classList.add('pausado');
+                    document.getElementById('txt-tag').innerText = 'Pausado';
+                    document.getElementById('btn-pausar').style.display = 'none';
+                    document.getElementById('btn-retomar').style.display = 'flex';
+                    iniciarCronometroPausa(data.pausa_inicio);
+                } else {
+                    document.getElementById('status-dot').classList.remove('pausado');
+                    document.getElementById('txt-tag').innerText = 'Em Serviço';
+                    document.getElementById('btn-pausar').style.display = 'flex';
+                    document.getElementById('btn-retomar').style.display = 'none';
+                    iniciarCronometro(data.entrada);
                 }
-
-                container.style.display = 'flex'; 
-                subtitulo.style.display = 'block'; 
-                telaCronometro.style.display = 'none';
-                
-                const { data: plantoes, error } = await sb.from('plantoes').select('*');
-                if (error) throw new Error("Erro: " + error.message);
-                if (!plantoes || plantoes.length === 0) { 
-                    container.innerHTML = '<p style="color: var(--texto-mutado); text-align: center;">Nenhum plantão cadastrado.</p>'; 
-                    return; 
-                }
-
-                const { data: pontosHoje } = await sb.from('pontos').select('plantao_id').in('status', ['aberto', 'pausado']);
-                
-                let html = '';
-                plantoes.forEach((p) => {
-                    const ocupadas = pontosHoje ? pontosHoje.filter(pt => pt.plantao_id === p.id).length : 0;
-                    const restantes = p.vagas_totais - ocupadas;
-                    
-                    let classeCard = '', btnHtml = '', iconeHtml = '', classeImagem = '', estiloFundo = '';
-                    if (p.tipo === 'rota') { iconeHtml = '<i class="fas fa-car" style="color: var(--verde); margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793658013726.jpg');`; } 
-                    else if (p.tipo === 'venda') { iconeHtml = '<i class="fas fa-dollar-sign" style="color: #eab308; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = p.nome.toLowerCase().includes('lockpick') ? `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659093972.jpg');` : `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659504717.jpg');`; } 
-                    else if (p.tipo === 'apoio') { iconeHtml = '<i class="fas fa-shield-alt" style="color: #3b82f6; margin-right: 8px;"></i>'; classeImagem = 'com-imagem'; estiloFundo = `background-image: url('https://raw.githubusercontent.com/italia-reduto/oficial/main/1793659618901.jpg');`; }
-
-                    if (restantes <= 0) { 
-                        classeCard = 'lotado'; 
-                        btnHtml = `<button class="btn-acao-plantao btn-bloqueado" disabled><i class="fas fa-lock"></i> LOTADO</button>`; 
-                    } else { 
-                        classeCard = 'aberto'; 
-                        btnHtml = `<button class="btn-acao-plantao btn-entrar" onclick="entrarPlantao('${p.id}', '${p.nome}')"><i class="fas fa-play"></i> ENTRAR AGORA</button>`; 
-                    }
-
-                    const porcentagem = (ocupadas / p.vagas_totais) * 100;
-                    html += `
-                        <div class="card-plantao ${classeCard} ${classeImagem}" style="${estiloFundo}">
-                            <div class="card-header"><span class="card-nome">${iconeHtml} ${p.nome}</span><span class="card-horario">LIVRE</span></div>
-                            <div class="vagas-barra"><div class="vagas-preenchida" style="width: ${porcentagem}%"></div></div>
-                            <div class="vagas-texto"><span>Preenchidas: ${ocupadas}/${p.vagas_totais}</span><span>${restantes} restantes</span></div>
-                            ${btnHtml}
-                        </div>`;
-                });
-                container.innerHTML = html;
-            } catch (err) { 
-                container.innerHTML = `<div style="color: red; padding: 15px; text-align: center;">${err.message}</div>`; 
+            } else {
+                document.getElementById('tela-inicial').style.display = 'block';
+                document.getElementById('tela-ativo').style.display = 'none';
             }
         }
 
-        function iniciarCronometro(horarioEntrada) {
-            if (intervaloCronometro) clearInterval(intervaloCronometro);
-            const display = document.getElementById('cronometro-display');
-            const dataEntrada = new Date(horarioEntrada);
-            const barraXP = document.getElementById('xp-barra-preenchida');
-            const textoXP = document.getElementById('xp-status-texto');
-            const porcXP = document.getElementById('xp-porcentagem');
+        async function iniciarJornada() {
+            // Sorteia uma equipe entre 1 e 3 (P1, P2, P3) - Certifique-se que esses IDs existem na tabela 'equipes'
+            const equipeSorteadaId = Math.floor(Math.random() * 3) + 1; 
+            const posicaoSorteada = `P${equipeSorteadaId}`;
 
-            intervaloCronometro = setInterval(() => {
-                const agora = new Date();
-                const diferenca = agora - dataEntrada;
-                if (diferenca < 0) return;
-
-                const horas = Math.floor(diferenca / (1000 * 60 * 60));
-                const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-                const segundos = Math.floor((diferenca / 1000) % 60);
-                display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
-
-                const minutosTotais = diferenca / 1000 / 60;
-                let porcentagem = (minutosTotais / 30) * 100;
-                if (porcentagem > 100) porcentagem = 100;
-                barraXP.style.width = porcentagem + '%';
-                porcXP.innerText = Math.floor(porcentagem) + '%';
+            try {
+                const { error } = await sb.from('pontos').insert([{ 
+                    passaporte: membroLogado.passaporte, 
+                    nome: membroLogado.nome, 
+                    entrada: new Date().toISOString(), 
+                    status: 'aberto', 
+                    equipe_id: equipeSorteadaId,
+                    posicao: posicaoSorteada,
+                    troca_equipe_em: new Date().toISOString(),
+                    pausa_qtd: 0,
+                    pausa_acumulada_seg: 0
+                }]);
                 
-                if (porcentagem >= 100) { textoXP.innerText = "XP Garantido! +20 XP"; textoXP.style.color = "var(--verde)"; } 
-                else { textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`; textoXP.style.color = "var(--texto-mutado)"; }
-            }, 1000);
+                if (error) throw error;
+                customAlert(`Você foi designado para a equipe ${posicaoSorteada}!`);
+                verificarPonto();
+            } catch (err) { 
+                console.error(err);
+                customAlert("Erro ao iniciar jornada.", "erro"); 
+            }
         }
 
-        function iniciarCronometroPausa(horarioPausa) {
+        function iniciarCronometro(entrada) {
             if (intervaloCronometro) clearInterval(intervaloCronometro);
             const display = document.getElementById('cronometro-display');
-            const dataPausa = new Date(horarioPausa);
+            const dataEntrada = new Date(entrada);
 
             intervaloCronometro = setInterval(() => {
-                const agora = new Date();
-                const diferenca = agora - dataPausa;
-                if (diferenca < 0) return;
-
-                const horas = Math.floor(diferenca / (1000 * 60 * 60));
-                const minutos = Math.floor((diferenca / (1000 * 60)) % 60);
-                const segundos = Math.floor((diferenca / 1000) % 60);
-                display.innerText = `${String(horas).padStart(2, '0')}:${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+                const dif = new Date() - dataEntrada;
+                if (dif < 0) return;
+                const h = Math.floor(dif / 3600000);
+                const m = Math.floor((dif / 60000) % 60);
+                const s = Math.floor((dif / 1000) % 60);
+                display.innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             }, 1000);
         }
 
-        function mostrarConfirmacao(mensagem, acao) {
-            document.getElementById('texto-confirmar').innerText = mensagem;
-            document.getElementById('modal-confirmar').classList.add('ativo');
-            acaoPendente = acao;
-        }
+        function iniciarCronometroPausa(pausaInicio) {
+            if (intervaloCronometro) clearInterval(intervaloCronometro);
+            const display = document.getElementById('cronometro-display');
+            const dataPausa = new Date(pausaInicio);
 
-        function responderConfirmacao(resposta) {
-            document.getElementById('modal-confirmar').classList.remove('ativo');
-            if (resposta && acaoPendente) acaoPendente();
-            acaoPendente = null;
-        }
-
-        function fecharModal(id) { document.getElementById(id).classList.remove('ativo'); }
-
-        async function entrarPlantao(id, nome) {
-            mostrarConfirmacao(`Deseja entrar no plantão: ${nome}?`, async () => {
-                try {
-                    const { error } = await sb.from('pontos').insert([{ passaporte: membroLogado.passaporte, nome: membroLogado.nome, entrada: new Date().toISOString(), status: 'aberto', plantao_id: id }]);
-                    if (error) throw error;
-                    customAlert("Você entrou no plantão!", "sucesso");
-                    carregarPlantoes();
-                } catch (err) { customAlert("Erro ao entrar.", "erro"); }
-            });
+            intervaloCronometro = setInterval(() => {
+                const dif = new Date() - dataPausa;
+                if (dif < 0) return;
+                const h = Math.floor(dif / 3600000);
+                const m = Math.floor((dif / 60000) % 60);
+                const s = Math.floor((dif / 1000) % 60);
+                display.innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+            }, 1000);
         }
 
         async function pausarTurno() {
-            mostrarConfirmacao("Deseja pausar o seu turno? O tempo não contará para o XP.", async () => {
-                try {
-                    await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString() }).eq('id', pontoAtual.id);
-                    customAlert("Turno pausado.", "sucesso");
-                    carregarPlantoes();
-                } catch (err) { customAlert("Erro ao pausar.", "erro"); }
-            });
+            if(!confirm("Deseja pausar o turno?")) return;
+            await sb.from('pontos').update({ 
+                status: 'pausado', 
+                pausa_inicio: new Date().toISOString(),
+                pausa_qtd: (pontoAtual.pausa_qtd || 0) + 1
+            }).eq('id', pontoAtual.id);
+            verificarPonto();
         }
 
         async function retomarTurno() {
-            mostrarConfirmacao("Deseja retomar o seu turno?", async () => {
-                try {
-                    const agora = new Date();
-                    const tempoPausadoMinutos = (agora - new Date(pontoAtual.pausa_inicio)) / 1000 / 60;
-                    const novaEntrada = new Date(new Date(pontoAtual.entrada).getTime() + (tempoPausadoMinutos * 60000));
-                    
-                    await sb.from('pontos').update({ status: 'aberto', pausa_fim: agora.toISOString(), entrada: novaEntrada.toISOString() }).eq('id', pontoAtual.id);
-                    customAlert("Turno retomado!", "sucesso");
-                    carregarPlantoes();
-                } catch (err) { customAlert("Erro ao retomar.", "erro"); }
-            });
-        }
-
-        function solicitarEncerramento() {
-            const entrada = new Date(pontoAtual.entrada);
+            if(!confirm("Deseja retomar o turno?")) return;
             const agora = new Date();
-            const diferencaMinutos = (agora - entrada) / 1000 / 60;
-
-            if (diferencaMinutos < 30) {
-                abrirJustificativa();
-            } else {
-                mostrarConfirmacao("Você completou os 30 minutos e vai garantir o XP. Deseja encerrar agora?", async () => {
-                    processarEncerramento(pontoAtual, true);
-                });
-            }
+            const segPausados = Math.floor((agora - new Date(pontoAtual.pausa_inicio)) / 1000);
+            
+            await sb.from('pontos').update({ 
+                status: 'aberto', 
+                pausa_fim: agora.toISOString(),
+                pausa_acumulada_seg: (pontoAtual.pausa_acumulada_seg || 0) + segPausados
+            }).eq('id', pontoAtual.id);
+            verificarPonto();
         }
 
-        const opcoesJustificativa = [
-            { id: 'medica', icone: 'fa-hospital', titulo: 'Emergência Médica', desc: 'Doença, acidente.' },
-            { id: 'escola', icone: 'fa-graduation-cap', titulo: 'Escola / Trabalho', desc: 'Prova, trabalho real.' },
-            { id: 'tecnico', icone: 'fa-bolt', titulo: 'Problema Técnico', desc: 'Internet caiu, falta de luz.' },
-            { id: 'outro', icone: 'fa-question', titulo: 'Outro Motivo', desc: 'Descreva abaixo (máx 100 letras).' }
-        ];
+        async function solicitarEncerramento() {
+            if(!confirm("Deseja encerrar o seu turno agora?")) return;
+            const saida = new Date();
+            await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtual.id);
+            
+            // Registra a presença (dá o XP)
+            await sb.from('presencas').upsert([{ 
+                passaporte: membroLogado.passaporte, 
+                status: 'presente', 
+                data: saida.toISOString().split('T')[0], 
+                marcado_por_nome: 'Sistema', 
+                marcado_em: saida.toISOString() 
+            }], { onConflict: 'data,passaporte' });
 
-        function abrirJustificativa() {
-            justificativaSelecionada = null;
-            document.getElementById('input-outro').style.display = 'none';
-            document.getElementById('input-outro').value = '';
-            const container = document.getElementById('lista-opcoes-justificativa');
-            let html = '';
-            opcoesJustificativa.forEach(op => { 
-                html += `<div class="card-justificativa" onclick="selecionarJustificativa('${op.id}', this)"><i class="fas ${op.icone}"></i><div class="texto"><h4>${op.titulo}</h4><p>${op.desc}</p></div></div>`; 
-            });
-            container.innerHTML = html;
-            document.getElementById('modal-justificativa').classList.add('ativo');
+            customAlert("Turno encerrado com sucesso!");
+            setTimeout(() => { verificarPonto(); }, 1500);
         }
 
-        function selecionarJustificativa(id, el) {
-            document.querySelectorAll('.card-justificativa').forEach(c => c.classList.remove('selecionado'));
-            el.classList.add('selecionado');
-            justificativaSelecionada = id;
-            document.getElementById('input-outro').style.display = (id === 'outro') ? 'block' : 'none';
-        }
-
-        async function enviarJustificativa() {
-            if (!justificativaSelecionada) { customAlert("Selecione um motivo.", "erro"); return; }
-            let motivoFinal = justificativaSelecionada;
-            if (justificativaSelecionada === 'outro') {
-                const texto = document.getElementById('input-outro').value.trim();
-                if (!texto) { customAlert("Escreva o motivo.", "erro"); return; }
-                motivoFinal = texto;
-            }
-            fecharModal('modal-justificativa');
-            await processarEncerramento(pontoAtual, false, motivoFinal, false);
-        }
-
-        async function processarEncerramento(ponto, ganhouXP, motivoJustificativa = null, automatico = false) {
-            if (!ponto) return;
-            try {
-                const saida = new Date();
-                // Fecha o ponto
-                await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString(), justificativa: motivoJustificativa }).eq('id', ponto.id);
-
-                if (ganhouXP) {
-                    // Deu XP
-                    const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
-                    await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', membroLogado.passaporte);
-                    await sb.from('presencas').upsert([{ passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], marcado_por: 'sistema', marcado_por_nome: 'Sistema', marcado_em: saida.toISOString() }], { onConflict: 'data,passaporte' });
-customAlert("Turno encerrado! +20 XP.", "sucesso");
-                } else {
-                    // Deu Falta
-                    const { error: errFalta } = await sb.from('presencas').upsert([{ 
-    passaporte: membroLogado.passaporte, 
-    status: 'falta', 
-    data: saida.toISOString().split('T')[0], 
-    marcado_por_nome: automatico ? 'Sistema (Tempo Esgotado)' : 'Sistema', 
-    marcado_em: saida.toISOString(), 
-    justificativa: motivoJustificativa, 
-    status_justificativa: motivoJustificativa ? 'pendente' : null,
-    motivo_recusa: null
-}], { onConflict: 'data,passaporte' });
-
-                    if (errFalta) {
-                        console.error("Erro no banco:", errFalta);
-                        alert("ERRO AO SALVAR NO BANCO: " + errFalta.message);
-                        return;
-                    }
-                    
-                    if(motivoJustificativa) customAlert("Saída justificada! Aguarde análise.", "sucesso");
-                    else customAlert("Encerrado antes dos 30 min. Falta registrada.", "erro");
-                }
-                setTimeout(() => { carregarPlantoes(); }, 2000); 
-            } catch (err) { 
-                console.error(err);
-                alert("Erro ao encerrar: " + err.message);
-                customAlert("Erro ao encerrar.", "erro"); 
-            }
-        }
-
-        function customAlert(mensagem, tipo = 'sucesso') {
-            const alerta = document.getElementById('alerta-site');
-            const icone = document.getElementById('alerta-icone');
-            const texto = document.getElementById('alerta-texto');
-            if (!alerta) return;
-            texto.innerText = mensagem;
-            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
-            else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
-            alerta.classList.add('ativo');
-            setTimeout(() => alerta.classList.remove('ativo'), 3000);
+        function customAlert(msg, tipo='sucesso') {
+            const a = document.getElementById('alerta-site'); const t = document.getElementById('alerta-texto'); const i = document.getElementById('alerta-icone');
+            t.innerText = msg; i.className = tipo === 'erro' ? 'fas fa-times-circle' : 'fas fa-check-circle';
+            a.style.borderColor = tipo === 'erro' ? 'var(--vermelho)' : 'var(--azul)';
+            i.style.color = tipo === 'erro' ? 'var(--vermelho)' : 'var(--azul)';
+            a.classList.add('ativo'); setTimeout(() => a.classList.remove('ativo'), 3000);
         }
     </script>
 </body>
