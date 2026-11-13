@@ -22,7 +22,7 @@
             --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6; --amarelo: #eab308;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px 15px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
         
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -2; }
         .container { width: 100%; max-width: 800px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; }
@@ -49,13 +49,12 @@
         .tag-concluido { background: rgba(255, 255, 255, 0.1); color: var(--texto-mutado); border: 1px solid var(--borda); }
 
         .card-admin-acoes { display: flex; gap: 10px; border-top: 1px solid var(--borda); padding-top: 15px; }
-        .btn-acao-admin { flex: 1; padding: 10px; border-radius: 6px; border: none; font-family: 'Oswald'; font-size: 13px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 5px;}
+        .btn-acao-admin { flex: 1; padding: 8px 10px; border-radius: 6px; border: none; font-family: 'Oswald'; font-size: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: flex; justify-content: center; align-items: center; gap: 5px;}
         .btn-ver { background: transparent; color: #fff; border: 1px solid var(--borda); }
         .btn-ver:hover { background: rgba(255,255,255,0.05); }
         .btn-finalizar { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border: 1px solid var(--vermelho); }
         .btn-finalizar:hover { background: var(--vermelho); color: #fff; }
-
-        /* MODAIS */
+                /* MODAIS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(5px); z-index: 9999; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.ativo { display: flex; }
         .modal-conteudo { background: var(--fundo); border: 1px solid var(--borda); border-radius: 16px; padding: 25px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
@@ -68,11 +67,11 @@
         textarea.modal-input { resize: vertical; min-height: 80px; }
         
         .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        .btn-modal { padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase; }
+        .btn-modal { padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; font-weight: bold; cursor: pointer; border: none; text-transform: uppercase; }
         .btn-cancelar { background: transparent; border: 1px solid var(--borda); color: #fff; }
         .btn-salvar { background: var(--verde); color: #000; }
 
-        /* LISTA DE PRESENÇA */
+        /* LISTA DE PRESENÇA (DENTRO DO MODAL) */
         .lista-presenca { display: flex; flex-direction: column; gap: 8px; margin-top: 15px; }
         .presenca-item { display: flex; justify-content: space-between; align-items: center; background: var(--painel); padding: 12px; border-radius: 8px; border: 1px solid var(--borda); font-size: 13px; }
         .status-p { font-size: 11px; font-weight: bold; padding: 3px 8px; border-radius: 4px; }
@@ -80,14 +79,14 @@
         .p-falta { background: rgba(239,68,68,0.1); color: var(--vermelho); }
         .p-inscrito { background: rgba(234,179,8,0.1); color: var(--amarelo); }
 
-        /* MENU ADMIN (Mobile) - CORRIGIDO PARA 6 BOTÕES */
-        .menu-mobile { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(10, 15, 13, 0.98); border-top: 1px solid var(--borda); display: flex; justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
+        /* MENU ADMIN (Mobile) - 7 BOTÕES */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
         .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--texto-mutado); font-size: 8px; font-weight: 600; cursor: pointer; width: 14.28%; transition: 0.2s; text-decoration: none;}
-.mob-btn i { font-size: 18px; }
+        .mob-btn i { font-size: 18px; }
         .mob-btn.ativo { color: var(--verde); }
 
-        @media (min-width: 900px) { .menu-mobile { display: none; } }
         @media (max-width: 900px) {
+            .mobile-nav { display: flex; }
             .topo { flex-direction: column; align-items: flex-start; }
             .btn-novo { width: 100%; justify-content: center; }
         }
@@ -166,15 +165,15 @@
         </div>
     </div>
 
-    <!-- MENU ADMIN INFERIOR CORRIGIDO (6 BOTÕES) -->
+    <!-- MENU MOBILE (7 BOTÕES PADRONIZADOS) -->
     <nav class="mobile-nav">
-    <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
-    <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
-    <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
-    <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
-    <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
-    <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
-    <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
+        <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
+        <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
+        <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
+        <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
+        <a href="admin-treinamentos.html" class="mob-btn ativo"><i class="fas fa-graduation-cap"></i> Treinos</a>
+        <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
     </nav>
         <script>
         let adminLogado = null;
@@ -184,7 +183,7 @@
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
         // ==========================================
-        // 1. INICIALIZAÇÃO E VERIFICAÇÃO DE ADMIN
+        // 1. INICIALIZAÇÃO
         // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
@@ -192,7 +191,6 @@
 
             adminLogado = JSON.parse(logado);
             
-            // Verificação Blindada (ignora maiúsculas/minúsculas)
             const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
             const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
 
@@ -205,7 +203,7 @@
         });
 
         // ==========================================
-        // 2. CARREGAR E RENDERIZAR LISTA DE TREINOS
+        // 2. CARREGAR LISTA
         // ==========================================
         async function carregarTreinosAdmin() {
             const container = document.getElementById('lista-admin-treinos');
@@ -213,13 +211,13 @@
             try {
                 const { data, error } = await sb.from('treinamentos')
                     .select('*')
-                    .order('data_hora', { ascending: false }); // Mais recentes primeiro
+                    .order('data_hora', { ascending: false });
 
                 if (error) throw error;
                 todosTreinos = data || [];
 
                 if (todosTreinos.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); grid-column: 1/-1;">Nenhum treinamento criado ainda.</p>';
+                    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);">Nenhum treinamento criado ainda.</p>';
                     return;
                 }
 
@@ -297,7 +295,6 @@
             btn.innerText = "Criando..."; btn.disabled = true;
 
             try {
-                // Converte a data local para UTC para o Supabase salvar certo
                 const dataFormatada = new Date(dataHora).toISOString();
 
                 const { error } = await sb.from('treinamentos').insert([{
@@ -394,6 +391,8 @@
                 
                 if (errBusca) throw errBusca;
 
+                const hoje = new Date().toISOString().split('T')[0];
+
                 // 3. Atualiza o status deles para 'falta' na tabela do treinamento
                 if (faltosos && faltosos.length > 0) {
                     const idsFaltosos = faltosos.map(f => f.id);
@@ -406,13 +405,17 @@
 
                     // 4. Joga a falta no histórico geral do membro (tabela 'presencas')
                     for (const f of faltosos) {
-                        await sb.from('presencas').insert([{
+                        await sb.from('presencas').upsert([{
                             passaporte: f.passaporte,
                             status: 'falta',
-                            data: new Date().toISOString().split('T')[0],
+                            data: hoje,
+                            marcado_por: 'sistema',
                             marcado_por_nome: adminLogado.nome,
-                            justificativa: 'Falta em Treinamento'
-                        }]);
+                            marcado_em: new Date().toISOString(),
+                            justificativa: 'Falta em Treinamento',
+                            status_justificativa: null,
+                            motivo_recusa: null // Evita erro de constraint
+                        }], { onConflict: 'data,passaporte' });
                     }
                 }
 
@@ -421,8 +424,16 @@
 
             } catch (err) {
                 console.error(err);
-                alert("Erro ao finalizar o treinamento.");
+                alert("Erro ao finalizar o treinamento: " + err.message);
             }
+        }
+
+        // ==========================================
+        // 6. LOGOUT
+        // ==========================================
+        function sair() {
+            sessionStorage.removeItem('membro_logado');
+            window.location.href = 'login.html';
         }
     </script>
 </body>
