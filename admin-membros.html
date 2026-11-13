@@ -50,7 +50,7 @@
 
         /* MAIN */
         .main { flex: 1; display: flex; flex-direction: column; overflow-y: auto; padding: 30px 40px; }
-        .topo { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .topo { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; flex-wrap: wrap; gap: 15px;}
         .titulo { font-family: 'Oswald'; font-size: 28px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .subtitulo { font-size: 13px; color: var(--texto-mutado); margin-top: 4px; }
         .input-busca { background: var(--fundo); border: 1px solid var(--borda); color: #fff; padding: 10px 15px; border-radius: 8px; font-size: 13px; outline: none; width: 100%; max-width: 300px; }
@@ -69,8 +69,7 @@
         .card-mob-header p { font-size: 11px; color: var(--texto-mutado); }
         .card-mob-stats { display: flex; gap: 15px; font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px;}
         .card-mob-stats strong { color: #fff; }
-
-        /* BOTÕES E TAGS */
+                /* BOTÕES E TAGS */
         .btn { padding: 8px 12px; border-radius: 6px; font-family: 'Oswald'; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; justify-content: center;}
         .btn-outline { background: transparent; color: var(--texto); border-color: var(--borda); }
         .btn-outline-vermelho { background: transparent; color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
@@ -94,7 +93,7 @@
         .modal-input:focus { border-color: var(--verde); }
         .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;}
 
-        /* GRID DE CATEGORIAS */
+        /* GRID DE CATEGORIAS DE ADVERTÊNCIA */
         .grid-categorias { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
         .card-cat { background: rgba(255,255,255,0.02); border: 1px solid var(--borda); padding: 10px; border-radius: 8px; cursor: pointer; text-align: center; transition: 0.3s; }
         .card-cat:hover { border-color: var(--vermelho); background: rgba(239, 68, 68, 0.05); }
@@ -102,10 +101,20 @@
         .card-cat i { color: var(--vermelho); font-size: 18px; margin-bottom: 5px; display: block; }
         .card-cat span { font-size: 11px; font-weight: 600; color: #fff; }
 
-        /* MOBILE */
-        .mobile-nav { display: none; position: fixed; bottom: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
+        /* BOTÕES P, F, J (FICHA DO MEMBRO) */
+        .acoes-rh { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid var(--borda); padding-bottom: 20px;}
+        .btn-rh { flex: 1; padding: 10px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: bold; cursor: pointer; text-align: center; border: 1px solid transparent; transition: 0.3s; text-transform: uppercase; }
+        .btn-p { background: rgba(34, 197, 94, 0.1); color: var(--verde); border-color: var(--verde); }
+        .btn-p:hover { background: var(--verde); color: #000; }
+        .btn-f { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border-color: var(--vermelho); }
+        .btn-f:hover { background: var(--vermelho); color: #fff; }
+        .btn-j { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: var(--amarelo); }
+        .btn-j:hover { background: var(--amarelo); color: #000; }
+
+        /* MENU MOBILE (7 BOTÕES) */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
         .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--texto-mutado); font-size: 8px; font-weight: 600; cursor: pointer; width: 14.28%; transition: 0.2s; text-decoration: none;}
-.mob-btn i { font-size: 18px; }
+        .mob-btn i { font-size: 18px; }
         .mob-btn.ativo { color: var(--verde); }
 
         @media (max-width: 900px) {
@@ -140,6 +149,8 @@
                 <a href="admin-membros.html" class="nav-btn ativo"><i class="fas fa-users-cog"></i> Gerenciar Membros</a>
                 <a href="admin-tickets.html" class="nav-btn"><i class="fas fa-headset"></i> Central de Suporte</a>
                 <a href="admin-avisos.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
+                <a href="admin-treinamentos.html" class="nav-btn"><i class="fas fa-graduation-cap"></i> Treinamentos</a>
+                <a href="admin-convocacoes.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Convocações</a>
             </div>
             <div class="sidebar-user">
                 <div class="user-info">
@@ -186,16 +197,16 @@
 
     <!-- MENU MOBILE -->
     <nav class="mobile-nav">
-    <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
-    <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
-    <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
-    <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
-    <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
-    <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
-    <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
+        <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
+        <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
+        <a href="admin-membros.html" class="mob-btn ativo"><i class="fas fa-users-cog"></i> Membros</a>
+        <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
+        <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
+        <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
     </nav>
 
-    <!-- MODAIS -->
+    <!-- MODAL DE AÇÃO (XP) -->
     <div class="modal-overlay" id="modal-acao">
         <div class="modal-content">
             <h3 id="modal-titulo" class="modal-titulo">Ação</h3>
@@ -208,19 +219,35 @@
         </div>
     </div>
 
+    <!-- MODAL DE ADVERTÊNCIA -->
     <div class="modal-overlay" id="modal-advertencia">
         <div class="modal-content">
             <h3 class="modal-titulo" style="color: var(--vermelho);">Aplicar Advertência</h3>
             <p id="adv-subtitulo" class="modal-sub">Membro: --</p>
+            
             <div class="grid-categorias" id="grid-cats-adv">
-                <div class="card-cat" onclick="selecionarCatAdv('Quebra de RP', this)"><i class="fas fa-theater-masks"></i><span>Quebra de RP</span></div>
-                <div class="card-cat" onclick="selecionarCatAdv('RDM / VDM', this)"><i class="fas fa-crosshairs"></i><span>RDM / VDM</span></div>
-                <div class="card-cat" onclick="selecionarCatAdv('Desrespeito', this)"><i class="fas fa-user-slash"></i><span>Desrespeito</span></div>
-                <div class="card-cat" onclick="selecionarCatAdv('Inatividade', this)"><i class="fas fa-bed"></i><span>Inatividade</span></div>
-                <div class="card-cat" onclick="selecionarCatAdv('Prejuízo à Org', this)"><i class="fas fa-hand-holding-usd"></i><span>Prejuízo à Org</span></div>
-                <div class="card-cat" onclick="selecionarCatAdv('Outros', this)"><i class="fas fa-ellipsis-h"></i><span>Outros</span></div>
+                <div class="card-cat" onclick="selecionarCatAdv('Quebra de RP', this)">
+                    <i class="fas fa-theater-masks"></i><span>Quebra de RP</span>
+                </div>
+                <div class="card-cat" onclick="selecionarCatAdv('RDM / VDM', this)">
+                    <i class="fas fa-crosshairs"></i><span>RDM / VDM</span>
+                </div>
+                <div class="card-cat" onclick="selecionarCatAdv('Desrespeito', this)">
+                    <i class="fas fa-user-slash"></i><span>Desrespeito</span>
+                </div>
+                <div class="card-cat" onclick="selecionarCatAdv('Inatividade', this)">
+                    <i class="fas fa-bed"></i><span>Inatividade</span>
+                </div>
+                <div class="card-cat" onclick="selecionarCatAdv('Prejuízo à Org', this)">
+                    <i class="fas fa-hand-holding-usd"></i><span>Prejuízo à Org</span>
+                </div>
+                <div class="card-cat" onclick="selecionarCatAdv('Outros', this)">
+                    <i class="fas fa-ellipsis-h"></i><span>Outros</span>
+                </div>
             </div>
+
             <input type="text" id="adv-motivo-detalhe" class="modal-input" placeholder="Descreva o motivo detalhado..." style="font-size: 13px;">
+
             <div class="modal-botoes">
                 <button class="btn btn-outline" onclick="fecharModalAdv()">Cancelar</button>
                 <button class="btn btn-vermelho" onclick="confirmarAdvertencia()">Aplicar Punição</button>
@@ -228,11 +255,16 @@
         </div>
     </div>
 
+    <!-- MODAL: REMOVER ADVERTÊNCIA -->
     <div class="modal-overlay" id="modal-remover-adv">
         <div class="modal-content">
             <h3 class="modal-titulo" style="color: var(--verde);">Remover Advertência</h3>
             <p id="rem-adv-subtitulo" class="modal-sub">Membro: --</p>
-            <p style="font-size: 13px; color: var(--texto-mutado); text-align: center; margin-bottom: 20px;">Tem certeza que deseja remover <strong>1 advertência</strong> deste membro?</p>
+            
+            <p style="font-size: 13px; color: var(--texto-mutado); text-align: center; margin-bottom: 20px;">
+                Tem certeza que deseja remover <strong>1 advertência</strong> deste membro?
+            </p>
+
             <div class="modal-botoes">
                 <button class="btn btn-outline" onclick="fecharModalRemoverAdv()">Cancelar</button>
                 <button class="btn btn-verde" onclick="confirmarRemoverAdv()">Remover Adv</button>
@@ -240,12 +272,33 @@
         </div>
     </div>
 
+    <!-- MODAL: JUSTIFICAR FALTA (NOVO) -->
+    <div class="modal-overlay" id="modal-justificar-falta">
+        <div class="modal-content">
+            <h3 class="modal-titulo" style="color: var(--amarelo);">Justificar Falta</h3>
+            <p id="just-falta-sub" class="modal-sub">Membro: --</p>
+            
+            <p style="font-size: 13px; color: var(--texto-mutado); margin-bottom: 15px;">
+                Escreva o motivo (ex: Atestado médico, avisou no privado, etc). Isso registrará a falta como justificada.
+            </p>
+            
+            <textarea id="just-motivo-input" class="modal-input" rows="3" placeholder="Motivo da justificativa..."></textarea>
+
+            <div class="modal-botoes">
+                <button class="btn btn-outline" onclick="fecharModalJustificar()">Cancelar</button>
+                <button class="btn btn-amarelo" onclick="confirmarJustificativaManual()">Confirmar Justificativa</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE PERFIL COMPLETO (RAIO-X) -->
     <div class="modal-overlay" id="modal-perfil">
         <div class="modal-content" style="max-width: 600px;">
             <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--borda); padding-bottom: 15px; margin-bottom: 15px;">
                 <h3 id="perfil-nome-modal" class="modal-titulo" style="font-size: 24px; margin: 0;">Nome</h3>
                 <button class="btn btn-outline" onclick="fecharModalPerfil()">Fechar</button>
             </div>
+            
             <div style="display: flex; gap: 20px; align-items: center; margin-bottom: 20px;">
                 <div id="perfil-avatar-modal" style="width: 70px; height: 70px; border-radius: 50%; background: #000; border: 2px solid var(--verde); display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: bold; color: var(--verde); background-size: cover; background-position: center;">?</div>
                 <div>
@@ -254,192 +307,202 @@
                     <p style="font-size: 13px; color: var(--texto-mutado);">XP Total: <strong id="perfil-xp-modal" style="color: #fff;">0</strong></p>
                 </div>
             </div>
+
+            <!-- BOTÕES P, F, J -->
+            <div class="acoes-rh">
+                <button class="btn-rh btn-p" onclick="lancarPresencaManual()">P</button>
+                <button class="btn-rh btn-f" onclick="lancarFaltaManual()">F</button>
+                <button class="btn-rh btn-j" onclick="abrirModalJustificar()">J</button>
+            </div>
+
+            <!-- Abas do Perfil -->
             <div style="display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 1px solid var(--borda);">
                 <button class="btn btn-outline" style="border: none; border-bottom: 2px solid var(--verde); color: var(--verde); border-radius: 0;" onclick="mudarAbaPerfil('historico', this)">Histórico de Ponto</button>
                 <button class="btn btn-outline" style="border: none; border-bottom: 2px solid transparent; border-radius: 0;" onclick="mudarAbaPerfil('punições', this)">Punições/Faltas</button>
             </div>
-            <div id="aba-perfil-historico" style="display: block; max-height: 200px; overflow-y: auto;"><p style="font-size: 13px; color: var(--texto-mutado);">Carregando...</p></div>
-            <div id="aba-perfil-punicoes" style="display: none; max-height: 200px; overflow-y: auto;"><p style="font-size: 13px; color: var(--texto-mutado);">Carregando...</p></div>
+
+            <!-- Conteúdo Histórico -->
+            <div id="aba-perfil-historico" style="display: block; max-height: 200px; overflow-y: auto;">
+                <p style="font-size: 13px; color: var(--texto-mutado);">Carregando histórico...</p>
+            </div>
+
+            <!-- Conteúdo Punições -->
+            <div id="aba-perfil-punicoes" style="display: none; max-height: 200px; overflow-y: auto;">
+                <p style="font-size: 13px; color: var(--texto-mutado);">Carregando punições...</p>
+            </div>
         </div>
     </div>
-    <script>
-    let adminLogado = null;
-    let todosOsMembros = [];
-    let acaoPendente = { passaporte: null, tipo: null, nome: null };
-    let categoriaAdvSelecionada = null;
-    let membroPerfilAtual = null;
-    let membroRemoverAdv = null; 
-    
-    const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
+        <script>
+        let adminLogado = null;
+        let todosOsMembros = [];
+        let acaoPendente = { passaporte: null, tipo: null, nome: null };
+        let categoriaAdvSelecionada = null;
+        let membroPerfilAtual = null;
+        let membroRemoverAdv = null; 
+        
+        const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
-    // 0. FUNÇÃO DE CORES DOS CARGOS
-    function getCargoColor(cargo) {
-        const cores = {
-            'Líder da organização': '#fbbf24', 'Líder da Organização': '#fbbf24', 
-            '01 da organização': '#cbd5e1', '01 da Organização': '#cbd5e1',
-            'Gerente geral': '#a855f7', 'Gerente Geral': '#a855f7',
-            'Gerente': '#3b82f6', 'Coordenador': '#06b6d4', 
-            'Auxiliar - Gerência': '#f97316', 'Auxiliar - Gerencia': '#f97316'  
-        };
-        return cores[cargo] || 'var(--verde)';
-    }
-
-    // 1. INICIALIZAÇÃO E CACHE LOCAL
-    window.addEventListener('DOMContentLoaded', async () => {
-        const logado = sessionStorage.getItem('membro_logado');
-        if (!logado) return window.location.href = 'login.html';
-
-        adminLogado = JSON.parse(logado);
-        // VERIFICAÇÃO BLINDADA (IGNORA MAIÚSCULAS E MINÚSCULAS)
-const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
-const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
-
-if (!isAdmin) {
-    alert("Acesso negado. Área restrita.");
-    return window.location.href = 'dashboard.html';
-}
-
-        document.getElementById('adm-nome').innerText = adminLogado.nome;
-        document.getElementById('adm-cargo').innerText = adminLogado.cargo;
-
-        // MÁGICA DA VELOCIDADE: Puxa do cache do celular primeiro
-        const cacheLocal = localStorage.getItem('cache_membros');
-        if (cacheLocal) {
-            todosOsMembros = JSON.parse(cacheLocal);
-            filtrarMembros(); // Renderiza na tela instantaneamente
-        }
-
-        carregarMembros(); // Busca os dados novos no fundo
-    });
-        // 2. CARREGAR E RENDERIZAR MEMBROS (OTIMIZADO)
-async function carregarMembros() {
-    const tbody = document.getElementById('corpo-tabela-membros');
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo);">Buscando efetivo...</td></tr>';
-    
-    try {
-        // 1. Busca SÓ os membros primeiro (Rápido e garantido)
-        const { data: membros, error: errMembros } = await sb.from('membros')
-            .select('nome, passaporte, cargo, xp_total, advertencias')
-            .order('nome');
-
-        if (errMembros) throw errMembros;
-
-        // 2. Tenta buscar os pontos. Se der erro, ele ignora e mostra todo mundo offline.
-        let pontos = [];
-        try {
-            const { data: resPontos } = await sb.from('pontos')
-                .select('id, passaporte, status')
-                .in('status', ['aberto', 'pausado']);
-            if (resPontos) pontos = resPontos;
-        } catch (e) { 
-            console.log("Aviso: Não foi possível carregar os pontos agora."); 
-        }
-
-        // 3. Junta os dados com segurança (evita que o código quebre se vier vazio)
-        todosOsMembros = membros.map(m => {
-            const pontoAtivo = pontos.find(p => String(p.passaporte) === String(m.passaporte));
-            return { 
-                ...m, 
-                nome: m.nome || 'Sem Nome', // Proteção
-                cargo: m.cargo || 'Membro', // Proteção
-                status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
-                ponto_id: pontoAtivo ? pontoAtivo.id : null 
+        function getCargoColor(cargo) {
+            const cores = {
+                'Líder da organização': '#fbbf24', 'Líder da Organização': '#fbbf24', 
+                '01 da organização': '#cbd5e1', '01 da Organização': '#cbd5e1',
+                'Gerente geral': '#a855f7', 'Gerente Geral': '#a855f7',
+                'Gerente': '#3b82f6', 'Coordenador': '#06b6d4', 
+                'Auxiliar - Gerência': '#f97316', 'Auxiliar - Gerencia': '#f97316'  
             };
+            return cores[cargo] || 'var(--verde)';
+        }
+
+        // ==========================================
+        // 1. INICIALIZAÇÃO E CACHE
+        // ==========================================
+        window.addEventListener('DOMContentLoaded', async () => {
+            const logado = sessionStorage.getItem('membro_logado');
+            if (!logado) return window.location.href = 'login.html';
+
+            adminLogado = JSON.parse(logado);
+            const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
+            const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
+
+            if (!isAdmin) {
+                alert("Acesso negado.");
+                return window.location.href = 'dashboard.html';
+            }
+
+            document.getElementById('adm-nome').innerText = adminLogado.nome;
+            document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+
+            // Cache local para carregar instantâneo
+            const cacheLocal = localStorage.getItem('cache_membros');
+            if (cacheLocal) {
+                todosOsMembros = JSON.parse(cacheLocal);
+                filtrarMembros(); 
+            }
+
+            carregarMembros(); 
         });
 
-        filtrarMembros(); // Manda desenhar a tela
+        // ==========================================
+        // 2. CARREGAR E RENDERIZAR
+        // ==========================================
+        async function carregarMembros() {
+            const tbody = document.getElementById('corpo-tabela-membros');
+            if (!localStorage.getItem('cache_membros')) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado);">Buscando efetivo...</td></tr>';
+            }
+            
+            try {
+                const [resMembros, resPontos] = await Promise.all([
+                    sb.from('membros').select('*').order('nome'),
+                    sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
+                ]);
 
-    } catch (err) { 
-        console.error(err);
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro no banco: ${err.message}</td></tr>`; 
-    }
-}
-function filtrarMembros() {
-    const termoEl = document.getElementById('input-busca-membros');
-    const termo = termoEl ? termoEl.value.toLowerCase() : '';
+                if (resMembros.error) throw resMembros.error;
+                if (resPontos.error) throw resPontos.error;
 
-    const filtrados = todosOsMembros.filter(m => {
-        const nome = m.nome || '';
-        const passaporte = String(m.passaporte || '');
-        return nome.toLowerCase().includes(termo) || passaporte.includes(termo);
-    });
+                const pontosMap = {};
+                if (resPontos.data) {
+                    resPontos.data.forEach(p => { pontosMap[String(p.passaporte)] = p; });
+                }
 
-    let htmlDesktop = '';
-    let htmlMobile = '';
+                todosOsMembros = resMembros.data.map(m => {
+                    const pontoAtivo = pontosMap[String(m.passaporte)];
+                    return { 
+                        ...m, 
+                        status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
+                        ponto_id: pontoAtivo ? pontoAtivo.id : null 
+                    };
+                });
 
-    filtrados.forEach(m => {
-        const cargoColor = getCargoColor(m.cargo || 'Membro');
-        
-        let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
-        let botoesPonto = '';
+                localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros));
+                filtrarMembros();
 
-        if (m.status_ponto === 'aberto') {
-            tagPonto = `<span class="tag-status tag-ativo">Em Serviço</span>`;
-            botoesPonto = `
-                <button class="btn btn-amarelo" onclick="controlarPonto('pausar', '${m.ponto_id}')" title="Pausar"><i class="fas fa-pause"></i></button>
-                <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
-            `;
-        } else if (m.status_ponto === 'pausado') {
-            tagPonto = `<span class="tag-status tag-pausado">Pausado</span>`;
-            botoesPonto = `
-                <button class="btn btn-verde" onclick="controlarPonto('retomar', '${m.ponto_id}')" title="Retomar"><i class="fas fa-play"></i></button>
-                <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
-            `;
+            } catch (err) { 
+                console.error(err);
+                if (!document.querySelector('.card-mob')) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro de conexão.</td></tr>`; 
+                }
+            }
         }
 
-        // --- HTML DESKTOP ---
-        htmlDesktop += `
-            <tr>
-                <td>
-                    <strong style="cursor: pointer; text-decoration: underline;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</strong><br>
-                    <span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span>
-                </td>
-                <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span></td>
-                <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0}</td>
-                <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
-                <td>${tagPonto} <div style="display:inline-flex; gap:5px; margin-left: 5px;">${botoesPonto}</div></td>
-                <td style="text-align: right; white-space: nowrap;">
-                    <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
-                    <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
-                    <button class="btn btn-amarelo" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
-                    <button class="btn btn-outline-vermelho" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
-                </td>
-            </tr>
-        `;
+        function filtrarMembros() {
+            const termo = document.getElementById('input-busca-membros').value.toLowerCase();
+            const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
 
-        // --- HTML MOBILE ---
-        htmlMobile += `
-            <div class="card-mob">
-                <div class="card-mob-header">
-                    <div>
-                        <h4 style="text-decoration: underline; cursor: pointer;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</h4>
-                        <p>Passaporte: ${m.passaporte}</p>
+            let htmlDesktop = '';
+            let htmlMobile = '';
+
+            filtrados.forEach(m => {
+                const cargoColor = getCargoColor(m.cargo);
+                let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
+                let botoesPonto = '';
+
+                if (m.status_ponto === 'aberto') {
+                    tagPonto = `<span class="tag-status tag-ativo">Em Serviço</span>`;
+                    botoesPonto = `
+                        <button class="btn btn-amarelo" onclick="controlarPonto('pausar', '${m.ponto_id}')" title="Pausar"><i class="fas fa-pause"></i></button>
+                        <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
+                    `;
+                } else if (m.status_ponto === 'pausado') {
+                    tagPonto = `<span class="tag-status tag-pausado">Pausado</span>`;
+                    botoesPonto = `
+                        <button class="btn btn-verde" onclick="controlarPonto('retomar', '${m.ponto_id}')" title="Retomar"><i class="fas fa-play"></i></button>
+                        <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
+                    `;
+                }
+
+                htmlDesktop += `
+                    <tr>
+                        <td>
+                            <strong style="cursor: pointer; text-decoration: underline;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</strong><br>
+                            <span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span>
+                        </td>
+                        <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span></td>
+                        <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0}</td>
+                        <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
+                        <td>${tagPonto} <div style="display:inline-flex; gap:5px; margin-left: 5px;">${botoesPonto}</div></td>
+                        <td style="text-align: right; white-space: nowrap;">
+                            <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
+                            <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
+                            <button class="btn btn-amarelo" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
+                            <button class="btn btn-outline-vermelho" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
+                        </td>
+                    </tr>
+                `;
+
+                htmlMobile += `
+                    <div class="card-mob">
+                        <div class="card-mob-header">
+                            <div>
+                                <h4 style="text-decoration: underline; cursor: pointer;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</h4>
+                                <p>Passaporte: ${m.passaporte}</p>
+                            </div>
+                            <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span>
+                        </div>
+                        <div class="card-mob-stats">
+                            <div>XP: <strong>${m.xp_total || 0}</strong></div>
+                            <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
+                            <div style="margin-left: auto;">${tagPonto}</div>
+                        </div>
+                        
+                        <div class="acoes-mobile">
+                            ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
+                            <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
+                            <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
+                        </div>
+                        <div class="acoes-mobile">
+                            <button class="btn btn-amarelo" style="flex: 1;" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
+                            <button class="btn btn-outline-vermelho" style="flex: 1;" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
+                        </div>
                     </div>
-                    <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span>
-                </div>
-                <div class="card-mob-stats">
-                    <div>XP: <strong>${m.xp_total || 0}</strong></div>
-                    <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
-                    <div style="margin-left: auto;">${tagPonto}</div>
-                </div>
-                
-                <div class="acoes-mobile">
-                    ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
-                    <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
-                    <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
-                </div>
-                <div class="acoes-mobile">
-                    <button class="btn btn-amarelo" style="flex: 1;" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
-                    <button class="btn btn-outline-vermelho" style="flex: 1;" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
-                </div>
-            </div>
-        `;
-    });
+                `;
+            });
 
-    document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
-    document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
-}
-                // ==========================================
+            document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
+            document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
+        }
+
+        // ==========================================
         // 3. CONTROLE DE PONTO
         // ==========================================
         async function controlarPonto(acao, pontoId) {
@@ -453,7 +516,7 @@ function filtrarMembros() {
                     if (!confirm("Deseja forçar o encerramento do ponto deste membro?")) return;
                     await sb.from('pontos').update({ status: 'fechado', saida: new Date().toISOString() }).eq('id', pontoId);
                 }
-                localStorage.removeItem('cache_membros'); // Limpa o cache para mostrar o status novo
+                localStorage.removeItem('cache_membros');
                 carregarMembros();
             } catch (e) { console.error("Erro ao alterar ponto.", e); }
         }
@@ -495,14 +558,14 @@ function filtrarMembros() {
                 await sb.from('membros').update({ xp_total: novoXP }).eq('passaporte', acaoPendente.passaporte);
                 
                 fecharModal();
-                localStorage.removeItem('cache_membros'); // Limpa o cache
+                localStorage.removeItem('cache_membros'); 
                 carregarMembros();
             } catch (e) { console.error(e); } 
             finally { btn.innerText = "Confirmar"; btn.disabled = false; }
         }
 
         // ==========================================
-        // 5. ADVERTÊNCIA (ADICIONAR)
+        // 5. ADVERTÊNCIA (ADICIONAR E REMOVER)
         // ==========================================
         function abrirModalAdv(passaporte, nome) {
             acaoPendente = { passaporte, nome };
@@ -536,15 +599,12 @@ function filtrarMembros() {
                 await sb.from('membros').update({ advertencias: novaQtd }).eq('passaporte', acaoPendente.passaporte);
                 
                 fecharModalAdv();
-                localStorage.removeItem('cache_membros'); // Limpa o cache
+                localStorage.removeItem('cache_membros'); 
                 carregarMembros();
             } catch (e) { console.error(e); } 
             finally { btn.innerText = "Aplicar Punição"; btn.disabled = false; }
         }
 
-        // ==========================================
-        // 5.1 ADVERTÊNCIA (REMOVER)
-        // ==========================================
         function abrirModalRemoverAdv(passaporte, nome) {
             membroRemoverAdv = { passaporte, nome };
             document.getElementById('rem-adv-subtitulo').innerText = `Membro: ${nome}`;
@@ -568,16 +628,82 @@ function filtrarMembros() {
                 await sb.from('membros').update({ advertencias: novaQtd }).eq('passaporte', membroRemoverAdv.passaporte);
 
                 fecharModalRemoverAdv();
-                localStorage.removeItem('cache_membros'); // Limpa o cache
+                localStorage.removeItem('cache_membros'); 
                 carregarMembros();
             } catch (e) { console.error(e); } 
-            finally { 
-                btn.innerText = "Remover Adv"; btn.disabled = false; 
-            }
+            finally { btn.innerText = "Remover Adv"; btn.disabled = false; }
         }
 
         // ==========================================
-        // 6. FICHA COMPLETA (RAIO-X)
+        // 6. LANÇAMENTO MANUAL DE PRESENÇA (P, F, J)
+        // ==========================================
+        function lancarPresencaManual() {
+            if (!membroPerfilAtual) return;
+            if(!confirm(`Confirmar PRESENÇA de ${membroPerfilAtual.nome} para hoje?`)) return;
+            registrarPresencaBanco('presente', null, false);
+        }
+
+        function lancarFaltaManual() {
+            if (!membroPerfilAtual) return;
+            if(!confirm(`Registrar FALTA de ${membroPerfilAtual.nome} para hoje?`)) return;
+            registrarPresencaBanco('falta', null, false);
+        }
+
+        function abrirModalJustificar() {
+            if (!membroPerfilAtual) return;
+            document.getElementById('just-falta-sub').innerText = `Membro: ${membroPerfilAtual.nome}`;
+            document.getElementById('just-motivo-input').value = '';
+            document.getElementById('modal-justificar-falta').classList.add('ativo');
+        }
+
+        function fecharModalJustificar() {
+            document.getElementById('modal-justificar-falta').classList.remove('ativo');
+        }
+
+        async function confirmarJustificativaManual() {
+            const motivo = document.getElementById('just-motivo-input').value.trim();
+            if (!motivo) {
+                document.getElementById('just-motivo-input').style.borderColor = 'var(--vermelho)';
+                setTimeout(() => document.getElementById('just-motivo-input').style.borderColor = 'var(--borda)', 2000);
+                return;
+            }
+            registrarPresencaBanco('falta', motivo, true);
+        }
+
+        async function registrarPresencaBanco(status, justificativa, isJustificada) {
+            if (!membroPerfilAtual) return;
+            const hoje = new Date().toISOString().split('T')[0];
+            
+            try {
+                const { error } = await sb.from('presencas').upsert([{
+                    passaporte: membroPerfilAtual.passaporte,
+                    status: status, // 'presente' ou 'falta'
+                    data: hoje,
+                    marcado_por: adminLogado.nome,
+                    marcado_por_nome: adminLogado.nome,
+                    marcado_em: new Date().toISOString(),
+                    justificativa: justificativa,
+                    status_justificativa: isJustificada ? 'aprovada' : null,
+                    motivo_recusa: null
+                }], { onConflict: 'data,passaporte' });
+
+                if (error) throw error;
+                
+                customAlert("Registro salvo com sucesso!", "sucesso");
+                fecharModalJustificar();
+                
+                // Atualiza a ficha do membro e a lista principal
+                carregarHistoricoPerfil(membroPerfilAtual.passaporte);
+                carregarPunicoesPerfil(membroPerfilAtual.passaporte);
+                carregarMembros(); // Atualiza os KPIs na tela principal se houver
+            } catch (err) {
+                console.error(err);
+                alert("Erro ao registrar: " + err.message);
+            }
+        }
+
+              // ==========================================
+        // 7. FICHA COMPLETA (RAIO-X)
         // ==========================================
         async function abrirPerfil(passaporte) {
             const membro = todosOsMembros.find(m => String(m.passaporte) === String(passaporte));
@@ -609,6 +735,7 @@ function filtrarMembros() {
 
         function fecharModalPerfil() {
             document.getElementById('modal-perfil').classList.remove('ativo');
+            membroPerfilAtual = null;
         }
 
         function mudarAbaPerfil(aba, el) {
@@ -674,8 +801,21 @@ function filtrarMembros() {
             container.innerHTML = html;
         }
 
+        function customAlert(mensagem, tipo = 'sucesso') {
+            const alerta = document.getElementById('alerta-site');
+            if (!alerta) { alert(mensagem); return; }
+            const icone = document.getElementById('alerta-icone');
+            const texto = document.getElementById('alerta-texto');
+            
+            texto.innerText = mensagem;
+            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
+            else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
+            alerta.classList.add('ativo');
+            setTimeout(() => alerta.classList.remove('ativo'), 3000);
+        }
+
         // ==========================================
-        // 7. LOGOUT
+        // 8. LOGOUT
         // ==========================================
         function sair() {
             localStorage.removeItem('cache_membros'); 
