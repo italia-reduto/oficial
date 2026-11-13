@@ -764,33 +764,35 @@ async function carregarMembros() {
         }
 
         async function registrarPresencaBanco(status, justificativa, isJustificada) {
-            if (!membroPerfilAtual) return;
-            const hoje = new Date().toISOString().split('T')[0];
-            
-            try {
-                const { error } = await sb.from('presencas').upsert([{
-                    passaporte: membroPerfilAtual.passaporte,
-                    status: status, 
-                    data: hoje,
-                    marcado_por: 'sistema', 
-                    marcado_por_nome: adminLogado.nome,
-                    marcado_em: new Date().toISOString(),
-                    justificativa: justificativa,
-                    status_justificativa: isJustificada ? 'aprovada' : null,
-                    motivo_recusa: null
-                }], { onConflict: 'data,passaporte' });
+    if (!membroPerfilAtual) return;
+    const hoje = new Date().toISOString().split('T')[0];
+    
+    try {
+        const { error } = await sb.from('presencas').upsert([{
+            passaporte: String(membroPerfilAtual.passaporte), // Força ser texto
+            status: status, 
+            data: hoje,
+            marcado_por: 'sistema', 
+            marcado_por_nome: adminLogado.nome,
+            marcado_em: new Date().toISOString(),
+            justificativa: justificativa || null,
+            status_justificativa: isJustificada ? 'aprovada' : null,
+            motivo_recusa: null
+        }], { onConflict: 'data,passaporte' });
 
-                if (error) throw error;
-                
-                alert("Registro salvo com sucesso!");
-                fecharModalJustificar();
-                
-                carregarHistoricoPerfil(membroPerfilAtual.passaporte);
-                carregarPunicoesPerfil(membroPerfilAtual.passaporte);
-            } catch (err) {
-                console.error(err);
-                alert("Erro ao registrar no banco: " + err.message);
-            }
+        if (error) throw error;
+        
+        alert("Registro de " + status.toUpperCase() + " salvo com sucesso!");
+        fecharModalJustificar();
+        
+        // Atualiza a tela na hora
+        carregarHistoricoPerfil(membroPerfilAtual.passaporte);
+        carregarPunicoesPerfil(membroPerfilAtual.passaporte);
+        carregarMembros(); // Atualiza a lista principal e o cache
+    } catch (err) {
+        console.error(err);
+        alert("Erro Crítico ao registrar no banco:\n" + err.message + "\n\nVerifique o RLS da tabela presencas no Supabase.");
+    }
         }
 
         // ==========================================
@@ -869,27 +871,39 @@ async function carregarMembros() {
         }
 
         async function carregarPunicoesPerfil(passaporte) {
-            const container = document.getElementById('aba-perfil-punicoes');
-            container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px;">Carregando...</p>';
-            
-            const { data: faltas } = await sb.from('presencas').select('*').eq('passaporte', passaporte).eq('status', 'falta').order('data', { ascending: false });
-            
-            if (!faltas || faltas.length === 0) {
-                container.innerHTML = '<p style="color: var(--verde); font-size: 13px;">Nenhuma falta registrada. Ficha limpa!</p>';
-                return;
-            }
+    const container = document.getElementById('aba-perfil-punicoes');
+    container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px;">Carregando faltas...</p>';
+    
+    // Busca no banco forçando o passaporte a ser texto para não dar erro de tipo
+    const { data: faltas, error } = await sb.from('presencas')
+        .select('*')
+        .eq('passaporte', String(passaporte)) 
+        .eq('status', 'falta')
+        .order('data', { ascending: false });
+    
+    // Se o Supabase bloquear a leitura (RLS), mostramos o erro na tela
+    if (error) {
+        console.error("Erro ao buscar faltas:", error);
+        container.innerHTML = `<p style="color: var(--vermelho); font-size: 12px; text-align: center;">Erro do Supabase: ${error.message}<br><br>Verifique o RLS da tabela 'presencas'.</p>`;
+        return;
+    }
 
-            let html = '';
-            faltas.forEach(f => {
-                const data = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
-                html += `
-                    <div style="padding: 10px; border-bottom: 1px solid var(--borda); font-size: 12px;">
-                        <strong style="color: var(--vermelho);">FALTA</strong> - ${data}
-                        <p style="color: var(--texto-mutado); margin-top: 4px;">Justificativa: ${f.justificativa || 'Nenhuma'}</p>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
+    if (!faltas || faltas.length === 0) {
+        container.innerHTML = '<p style="color: var(--verde); font-size: 13px; text-align: center;">Nenhuma falta registrada. Ficha limpa!</p>';
+        return;
+    }
+
+    let html = '';
+    faltas.forEach(f => {
+        const data = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
+        html += `
+            <div style="padding: 10px; border-bottom: 1px solid var(--borda); font-size: 12px;">
+                <strong style="color: var(--vermelho);">FALTA REGISTRADA</strong> - ${data}
+                <p style="color: var(--texto-mutado); margin-top: 4px;">Justificativa: ${f.justificativa || 'Sem justificativa'}</p>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
         }
 
         // ==========================================
