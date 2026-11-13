@@ -401,15 +401,50 @@
         carregarMembros(); 
     });
 
-    // ==========================================
-    // 2. CARREGAR E RENDERIZAR MEMBROS
-    // ==========================================
-    async function carregarMembros() {
+// ==========================================
+// 1. INICIALIZAÇÃO
+// ==========================================
+window.addEventListener('DOMContentLoaded', async () => {
+    const logado = sessionStorage.getItem('membro_logado');
+    if (!logado) return window.location.href = 'login.html';
+
+    try { adminLogado = JSON.parse(logado); } catch(e) { return window.location.href = 'login.html'; }
+
+    const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
+    const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
+    if (!isAdmin) { alert("Acesso negado."); return window.location.href = 'dashboard.html'; }
+
+    document.getElementById('adm-nome').innerText = adminLogado.nome;
+    document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+
+    // 1. TENTA RENDERIZAR O CACHE IMEDIATAMENTE (TELA INSTANTÂNEA)
+    const cacheLocal = localStorage.getItem('cache_membros');
+    if (cacheLocal) {
+        try {
+            const parsed = JSON.parse(cacheLocal);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                todosOsMembros = parsed;
+                filtrarMembros(); // Desenha na tela AGORA, sem esperar o Supabase
+            }
+        } catch(e) {}
+    }
+
+    // 2. BUSCA OS DADOS ATUALIZADOS EM SEGUNDO PLANO
+    carregarMembros(); 
+});
+
+// ==========================================
+// 2. CARREGAR E RENDERIZAR MEMBROS
+// ==========================================
+async function carregarMembros() {
     const tbody = document.getElementById('corpo-tabela-membros');
     const listaMobile = document.getElementById('lista-membros-mobile');
     
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Buscando efetivo no banco...</td></tr>';
-    listaMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Buscando efetivo...</p>';
+    // Se já tem membros na tela pelo cache, não mostra "Buscando..." para não piscar
+    if (todosOsMembros.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Buscando efetivo...</td></tr>';
+        listaMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Buscando efetivo...</p>';
+    }
     
     try {
         const [resMembros, resPontos] = await Promise.all([
@@ -417,23 +452,15 @@
             sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
         ]);
 
-        if (resMembros.error) throw new Error("Erro na tabela Membros: " + resMembros.error.message);
-        if (resPontos.error) throw new Error("Erro na tabela Pontos: " + resPontos.error.message);
-
-        if (!resMembros.data || resMembros.data.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo); padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique se o RLS do Supabase está liberado para leitura (anon).</td></tr>';
-            listaMobile.innerHTML = '<p style="color: var(--amarelo); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique o RLS no Supabase.</p>';
-            return;
-        }
+        if (resMembros.error) throw new Error(resMembros.error.message);
+        if (!resMembros.data || resMembros.data.length === 0) return;
 
         const pontosMap = {};
         if (resPontos.data) {
-            resPontos.data.forEach(p => { 
-                if (p.passaporte) pontosMap[String(p.passaporte)] = p; 
-            });
+            resPontos.data.forEach(p => { if (p.passaporte) pontosMap[String(p.passaporte)] = p; });
         }
 
-        todosOsMembros = resMembros.data.map(m => {
+        const membrosAtualizados = resMembros.data.map(m => {
             const pontoAtivo = pontosMap[String(m.passaporte)];
             return { 
                 ...m, 
@@ -442,23 +469,31 @@
             };
         });
 
-        // --- CORREÇÃO DO ERRO DE QUOTA AQUI ---
-        try {
-            localStorage.removeItem('cache_membros'); // Limpa o cache antigo
-            localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros)); // Tenta salvar
-        } catch (storageError) {
-            // Se o cache estourar, ele só avisa no console, mas NÃO trava a tela
-            console.warn("Aviso: Cache local cheio. O app continuará funcionando normalmente sem cache.", storageError);
-        }
-        // --------------------------------------
+        // Limpa fotos Base64 gigantes para o cache não estourar o limite do celular
+        const membrosParaCache = membrosAtualizados.map(m => {
+            const membroLimpo = { ...m };
+            if (membroLimpo.foto_url && membroLimpo.foto_url.startsWith('data:image')) {
+                membroLimpo.foto_url = null; 
+            }
+            return membroLimpo;
+        });
 
-        filtrarMembros(); // Agora ele SEMPRE chega aqui e renderiza a tela!
+        try {
+            localStorage.setItem('cache_membros', JSON.stringify(membrosParaCache));
+        } catch (e) { 
+            console.warn("Cache cheio, mas a tela não vai travar."); 
+        }
+
+        todosOsMembros = membrosAtualizados;
+        filtrarMembros(); // Atualiza a tela silenciosamente com dados frescos
 
     } catch (err) { 
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho); padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</td></tr>`; 
-        listaMobile.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</p>`;
+        console.error(err);
+        if (todosOsMembros.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho); padding: 20px;">Erro: ${err.message}</td></tr>`;
+        }
     }
-    }
+}
 
     // ==========================================
     // 3. FILTRAR E RENDERIZAR NA TELA
