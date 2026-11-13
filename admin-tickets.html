@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
+    <meta name="color-scheme" content="dark">
     <title>Itália | Central de Suporte</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -52,9 +53,9 @@
         .tickets-header { padding: 20px; border-bottom: 1px solid var(--borda); }
         .tickets-header h1 { font-family: 'Oswald'; font-size: 20px; color: #fff; text-transform: uppercase; margin-bottom: 15px; }
         
-        .filtro-abas { display: flex; gap: 8px; margin-top: 15px; }
-.filtro-btn { flex: 1; padding: 10px; border: 1px solid var(--borda); background: rgba(0,0,0,0.3); color: var(--texto-mutado); font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; }
-.filtro-btn.ativo { background: var(--verde); color: #000; border-color: var(--verde); box-shadow: 0 0 10px rgba(34, 197, 94, 0.2); }
+        .filtro-abas { display: flex; gap: 8px; }
+        .filtro-btn { flex: 1; padding: 10px; border: 1px solid var(--borda); background: rgba(0,0,0,0.3); color: var(--texto-mutado); font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.3s; }
+        .filtro-btn.ativo { background: var(--verde); color: #000; border-color: var(--verde); box-shadow: 0 0 10px rgba(34, 197, 94, 0.2); }
 
         .lista-scroll { flex: 1; overflow-y: auto; padding: 10px; }
         
@@ -76,8 +77,7 @@
         .tag-denuncia { background: rgba(234, 179, 8, 0.15); color: var(--amarelo); }
         .tag-queixa { background: rgba(59, 130, 246, 0.15); color: var(--azul); }
         .tag-outros { background: rgba(156, 163, 175, 0.15); color: var(--texto-mutado); }
-
-        /* COLUNA DO CHAT */
+                /* COLUNA DO CHAT */
         .col-chat { flex: 1; display: flex; flex-direction: column; background: var(--fundo); position: relative; }
         
         .chat-header { padding: 15px 20px; border-bottom: 1px solid var(--borda); background: rgba(13, 20, 16, 0.95); display: flex; justify-content: space-between; align-items: center; backdrop-filter: blur(10px); z-index: 10;}
@@ -122,11 +122,11 @@
         .chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--texto-mutado); }
         .chat-empty i { font-size: 50px; margin-bottom: 15px; opacity: 0.2; }
 
-       /* MENU MOBILE */
-.mobile-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
-.mob-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--texto-mutado); font-size: 8px; font-weight: 600; cursor: pointer; width: 14.28%; transition: 0.2s; text-decoration: none;}
-.mob-btn i { font-size: 18px; }
-.mob-btn.ativo { color: var(--verde); }
+        /* MENU MOBILE (7 BOTÕES) */
+        .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
+        .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--texto-mutado); font-size: 8px; font-weight: 600; cursor: pointer; width: 14.28%; transition: 0.2s; text-decoration: none;}
+        .mob-btn i { font-size: 18px; }
+        .mob-btn.ativo { color: var(--verde); }
         
         .btn-voltar-mobile { display: none; background: none; border: none; color: var(--texto); font-size: 20px; margin-right: 10px; cursor: pointer; }
 
@@ -134,7 +134,7 @@
             .sidebar { display: none; }
             .mobile-nav { display: flex; }
             .col-tickets { width: 100%; border-right: none; }
-            .col-chat { position: absolute; inset: 0; z-index: 100; transform: translateX(100%); transition: transform 0.3s ease; padding-bottom: 60px; }
+            .col-chat { position: absolute; inset: 0; z-index: 100; transform: translateX(100%); transition: transform 0.3s ease; padding-bottom: 60px; background: var(--fundo); }
             .col-chat.aberto { transform: translateX(0); }
             .btn-voltar-mobile { display: block; }
             .chat-header { padding: 15px; flex-wrap: wrap; gap: 10px;}
@@ -165,6 +165,7 @@
                 <a href="admin-tickets.html" class="nav-btn ativo"><i class="fas fa-headset"></i> Central de Suporte</a>
                 <a href="admin-avisos.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Mural de Avisos</a>
                 <a href="admin-treinamentos.html" class="nav-btn"><i class="fas fa-graduation-cap"></i> Treinamentos</a>
+                <a href="admin-convocacoes.html" class="nav-btn"><i class="fas fa-bullhorn"></i> Convocações</a>
             </div>
             <div class="sidebar-user">
                 <div class="user-info">
@@ -247,16 +248,17 @@
         </main>
     </div>
 
-    <!-- MENU MOBILE (COM 6 BOTÕES) -->
+    <!-- MENU MOBILE (7 BOTÕES) -->
     <nav class="mobile-nav">
-    <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
-    <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
-    <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
-    <a href="admin-tickets.html" class="mob-btn"><i class="fas fa-headset"></i> Suporte</a>
-    <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
-    <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
-    <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
-    </nav>                                                                  <script>
+        <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
+        <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
+        <a href="admin-membros.html" class="mob-btn"><i class="fas fa-users-cog"></i> Membros</a>
+        <a href="admin-tickets.html" class="mob-btn ativo"><i class="fas fa-headset"></i> Suporte</a>
+        <a href="admin-avisos.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Avisos</a>
+        <a href="admin-treinamentos.html" class="mob-btn"><i class="fas fa-graduation-cap"></i> Treinos</a>
+        <a href="admin-convocacoes.html" class="mob-btn"><i class="fas fa-bullhorn"></i> Convocar</a>
+    </nav>
+        <script>
         let adminLogado = null;
         let filtroAtual = 'aberto';
         let ticketSelecionado = null;
@@ -264,7 +266,7 @@
 
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
-        // Função para evitar injeção de código
+        // Função para evitar injeção de código (segurança)
         function escapeHTML(str) {
             if (!str) return '';
             return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
@@ -276,7 +278,7 @@
         }
 
         // ==========================================
-        // 1. INICIALIZAÇÃO
+        // 1. INICIALIZAÇÃO E VERIFICAÇÃO
         // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
@@ -339,18 +341,18 @@
                     
                     // Pega os dados reais do membro
                     const membroInfo = mapMembros[String(t.passaporte)];
-                    const nomeReal = membroInfo ? membroInfo.nome : (t.nome_membro || 'Membro Desconhecido');
+                    const nomeReal = membroInfo ? membroInfo.nome : (t.nome_membro || 'Membro');
                     const fotoUrl = membroInfo ? membroInfo.foto_url : null;
 
-                    // Configura o Avatar
+                    // Gera iniciais ou a foto
                     const iniciais = nomeReal.substring(0, 2).toUpperCase();
                     const avatarStyle = fotoUrl ? `background-image: url('${fotoUrl}'); background-size: cover; background-position: center;` : '';
                     const avatarContent = fotoUrl ? '' : iniciais;
 
                     const tagClass = t.categoria === 'Bug' ? 'tag-bug' : t.categoria === 'Denúncia' ? 'tag-denuncia' : t.categoria === 'Queixa' ? 'tag-queixa' : 'tag-outros';
                     
-                    // Cadeado na lista
-                    const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;"></i>` : '';
+                    // Cadeado na lista se estiver assumido
+                    const cadeado = t.assumido_por ? `<i class="fas fa-lock" style="color: var(--amarelo); font-size: 11px;" title="Assumido por ${t.assumido_por}"></i>` : '';
 
                     html += `
                         <div class="ticket-item ${isAtivo}" onclick="abrirTicket(${t.id}, '${escapeHTML(nomeReal)}', '${escapeHTML(t.categoria)}', '${t.passaporte}', '${t.status}', '${t.assumido_por || ''}')">
@@ -375,7 +377,7 @@
         }
 
         // ==========================================
-        // 3. ABRIR CHAT E LÓGICA DE ASSUMIR (CORRIGIDO)
+        // 3. ABRIR CHAT E LÓGICA DE ASSUMIR
         // ==========================================
         function abrirTicket(id, nome, categoria, passaporte, status, assumido_por) {
             ticketSelecionado = id;
@@ -396,6 +398,7 @@
             const areaCadeado = document.getElementById('area-cadeado');
             const nomeAssumiu = document.getElementById('nome-assumiu');
 
+            // Reseta UI de bloqueio
             inputArea.classList.remove('chat-bloqueado');
             document.getElementById('input-mensagem').disabled = false;
 
@@ -413,6 +416,7 @@
                     areaCadeado.style.display = 'flex';
                     nomeAssumiu.innerText = `Assumido por: ${assumido_por}`;
 
+                    // Se quem assumiu NÃO for eu, bloqueia a digitação
                     if (assumido_por !== adminLogado.nome) {
                         inputArea.classList.add('chat-bloqueado');
                         document.getElementById('input-mensagem').disabled = true;
@@ -427,7 +431,7 @@
             // Atualiza a lista de tickets para marcar o ativo
             carregarTickets();
 
-            // Carrega mensagens (pode demorar um pouquinho, mas a tela já abriu)
+            // Carrega mensagens
             carregarMensagens();
             if(intervalAtualizacao) clearInterval(intervalAtualizacao);
             intervalAtualizacao = setInterval(carregarMensagens, 3000); 
@@ -467,7 +471,6 @@
                     const isAdmin = m.remetente === 'admin';
                     const tipo = isAdmin ? 'admin' : 'membro';
                     
-                    // Lógica para renderizar Imagem e/ou Texto
                     let conteudoImagem = '';
                     if (m.anexo) {
                         conteudoImagem = `<img src="${m.anexo}" class="chat-img" onclick="window.open('${m.anexo}', '_blank')">`;
@@ -488,6 +491,7 @@
                     `;
                 });
 
+                // Só atualiza se houver mensagem nova (evita piscar a tela)
                 if (chatContainer.innerHTML !== html && html !== '') {
                     chatContainer.innerHTML = html;
                     chatContainer.scrollTop = chatContainer.scrollHeight; 
@@ -520,12 +524,11 @@
             }
         }
 
-        // FUNÇÃO: ENVIAR FOTO (ADMIN)
+        // FUNÇÃO ENVIAR FOTO (ADMIN)
         function enviarFoto(input) {
             if (input.files && input.files[0]) {
                 const file = input.files[0];
                 
-                // Limite de 2MB
                 if (file.size > 2 * 1024 * 1024) {
                     alert("A imagem é muito grande. Escolha uma foto menor que 2MB.");
                     input.value = '';
