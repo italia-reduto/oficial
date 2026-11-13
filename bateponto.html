@@ -60,14 +60,12 @@
         </div>
 
         <div class="painel-principal">
-            <!-- TELA INICIAL -->
             <div id="tela-inicial">
                 <div class="cronometro-display">00:00:00</div>
                 <p class="cronometro-label">Tempo de jornada</p>
                 <button class="btn-iniciar" onclick="iniciarJornada()"><i class="fas fa-play"></i> Iniciar Jornada</button>
             </div>
 
-            <!-- TELA ATIVA -->
             <div id="tela-ativo" style="display: none;">
                 <div class="status-tag" id="tag-status"><div class="dot" id="status-dot"></div> <span id="txt-tag">Em Serviço</span></div>
                 <div class="cronometro-display" id="cronometro-display">00:00:00</div>
@@ -132,25 +130,33 @@
         }
 
         async function iniciarJornada() {
-            // Sorteia uma equipe entre 1 e 3 (P1, P2, P3) - Certifique-se que esses IDs existem na tabela 'equipes'
-            const equipeSorteadaId = Math.floor(Math.random() * 3) + 1; 
-            const posicaoSorteada = `P${equipeSorteadaId}`;
-
             try {
+                // 1. Busca as equipes reais cadastradas e ativas no banco
+                const { data: equipes, error: eqError } = await sb.from('equipes').select('*').eq('ativa', true);
+                
+                if (eqError || !equipes || equipes.length === 0) {
+                    return customAlert("Nenhuma equipe ativa encontrada no banco.", "erro");
+                }
+
+                // 2. Sorteia uma equipe do array real
+                const equipeSorteada = equipes[Math.floor(Math.random() * equipes.length)];
+
+                // 3. Salva o ponto com os dados reais
                 const { error } = await sb.from('pontos').insert([{ 
                     passaporte: membroLogado.passaporte, 
                     nome: membroLogado.nome, 
                     entrada: new Date().toISOString(), 
                     status: 'aberto', 
-                    equipe_id: equipeSorteadaId,
-                    posicao: posicaoSorteada,
+                    equipe_id: equipeSorteada.id, 
+                    posicao: equipeSorteada.nome, // Salva "ROTA 1", "VENDAS P1" etc.
                     troca_equipe_em: new Date().toISOString(),
                     pausa_qtd: 0,
                     pausa_acumulada_seg: 0
                 }]);
                 
                 if (error) throw error;
-                customAlert(`Você foi designado para a equipe ${posicaoSorteada}!`);
+                
+                customAlert(`Sorteio concluído: Você foi para ${equipeSorteada.nome}!`);
                 verificarPonto();
             } catch (err) { 
                 console.error(err);
@@ -216,7 +222,6 @@
             const saida = new Date();
             await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtual.id);
             
-            // Registra a presença (dá o XP)
             await sb.from('presencas').upsert([{ 
                 passaporte: membroLogado.passaporte, 
                 status: 'presente', 
