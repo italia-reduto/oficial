@@ -195,7 +195,7 @@
         </main>
     </div>
 
-    <!-- MENU MOBILE -->
+    <!-- MENU MOBILE (7 BOTÕES) -->
     <nav class="mobile-nav">
         <a href="admin.html" class="mob-btn"><i class="fas fa-satellite-dish"></i> Radar</a>
         <a href="admin-justificativas.html" class="mob-btn"><i class="fas fa-file-signature"></i> Justificar</a>
@@ -286,7 +286,7 @@
 
             <div class="modal-botoes">
                 <button class="btn btn-outline" onclick="fecharModalJustificar()">Cancelar</button>
-                <button class="btn btn-amarelo" onclick="confirmarJustificativaManual()">Confirmar Justificativa</button>
+                <button class="btn btn-amarelo" onclick="confirmarJustificativaManual()">Confirmar</button>
             </div>
         </div>
     </div>
@@ -342,6 +342,7 @@
         
         const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
+        // Função para cores dos cargos
         function getCargoColor(cargo) {
             const cores = {
                 'Líder da organização': '#fbbf24', 'Líder da Organização': '#fbbf24', 
@@ -354,7 +355,7 @@
         }
 
         // ==========================================
-        // 1. INICIALIZAÇÃO E CACHE
+        // 1. INICIALIZAÇÃO
         // ==========================================
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
@@ -372,7 +373,7 @@
             document.getElementById('adm-nome').innerText = adminLogado.nome;
             document.getElementById('adm-cargo').innerText = adminLogado.cargo;
 
-            // Cache local para carregar instantâneo
+            // Carrega instantâneo do cache se existir
             const cacheLocal = localStorage.getItem('cache_membros');
             if (cacheLocal) {
                 todosOsMembros = JSON.parse(cacheLocal);
@@ -383,7 +384,7 @@
         });
 
         // ==========================================
-        // 2. CARREGAR E RENDERIZAR
+        // 2. CARREGAR E RENDERIZAR MEMBROS
         // ==========================================
         async function carregarMembros() {
             const tbody = document.getElementById('corpo-tabela-membros');
@@ -397,8 +398,8 @@
                     sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
                 ]);
 
-                if (resMembros.error) throw resMembros.error;
-                if (resPontos.error) throw resPontos.error;
+                if (resMembros.error) throw new Error("Tabela Membros: " + resMembros.error.message);
+                if (resPontos.error) throw new Error("Tabela Pontos: " + resPontos.error.message);
 
                 const pontosMap = {};
                 if (resPontos.data) {
@@ -419,9 +420,8 @@
 
             } catch (err) { 
                 console.error(err);
-                if (!document.querySelector('.card-mob')) {
-                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho);">Erro de conexão.</td></tr>`; 
-                }
+                // MOSTRA O ERRO NA TELA PARA NÃO FICAR NO LIMBO
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho); padding: 20px; font-weight: bold;">Erro: ${err.message}</td></tr>`; 
             }
         }
 
@@ -503,7 +503,7 @@
         }
 
         // ==========================================
-        // 3. CONTROLE DE PONTO
+        // 3. CONTROLE DE PONTO (PAUSAR/RETOMAR)
         // ==========================================
         async function controlarPonto(acao, pontoId) {
             if (!pontoId) return;
@@ -565,7 +565,7 @@
         }
 
         // ==========================================
-        // 5. ADVERTÊNCIA (ADICIONAR E REMOVER)
+        // 5. ADVERTÊNCIA (ADICIONAR / REMOVER)
         // ==========================================
         function abrirModalAdv(passaporte, nome) {
             acaoPendente = { passaporte, nome };
@@ -677,9 +677,9 @@
             try {
                 const { error } = await sb.from('presencas').upsert([{
                     passaporte: membroPerfilAtual.passaporte,
-                    status: status, // 'presente' ou 'falta'
+                    status: status, 
                     data: hoje,
-                    marcado_por: adminLogado.nome,
+                    marcado_por: 'sistema', // Evita erro de UUID
                     marcado_por_nome: adminLogado.nome,
                     marcado_em: new Date().toISOString(),
                     justificativa: justificativa,
@@ -689,20 +689,18 @@
 
                 if (error) throw error;
                 
-                customAlert("Registro salvo com sucesso!", "sucesso");
+                alert("Registro salvo com sucesso!");
                 fecharModalJustificar();
                 
-                // Atualiza a ficha do membro e a lista principal
                 carregarHistoricoPerfil(membroPerfilAtual.passaporte);
                 carregarPunicoesPerfil(membroPerfilAtual.passaporte);
-                carregarMembros(); // Atualiza os KPIs na tela principal se houver
             } catch (err) {
                 console.error(err);
-                alert("Erro ao registrar: " + err.message);
+                alert("Erro ao registrar no banco: " + err.message);
             }
         }
 
-              // ==========================================
+        // ==========================================
         // 7. FICHA COMPLETA (RAIO-X)
         // ==========================================
         async function abrirPerfil(passaporte) {
@@ -799,19 +797,6 @@
                 `;
             });
             container.innerHTML = html;
-        }
-
-        function customAlert(mensagem, tipo = 'sucesso') {
-            const alerta = document.getElementById('alerta-site');
-            if (!alerta) { alert(mensagem); return; }
-            const icone = document.getElementById('alerta-icone');
-            const texto = document.getElementById('alerta-texto');
-            
-            texto.innerText = mensagem;
-            if (tipo === 'erro') { alerta.classList.add('erro'); icone.className = 'fas fa-times-circle'; } 
-            else { alerta.classList.remove('erro'); icone.className = 'fas fa-check-circle'; }
-            alerta.classList.add('ativo');
-            setTimeout(() => alerta.classList.remove('ativo'), 3000);
         }
 
         // ==========================================
