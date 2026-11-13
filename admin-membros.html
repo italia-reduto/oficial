@@ -769,29 +769,31 @@ async function carregarMembros() {
     
     try {
         const { error } = await sb.from('presencas').upsert([{
-            passaporte: String(membroPerfilAtual.passaporte), // Força ser texto
+            passaporte: String(membroPerfilAtual.passaporte),
             status: status, 
             data: hoje,
             marcado_por: 'sistema', 
             marcado_por_nome: adminLogado.nome,
             marcado_em: new Date().toISOString(),
             justificativa: justificativa || null,
-            status_justificativa: isJustificada ? 'aprovada' : null,
-            motivo_recusa: null
+            status_justificativa: isJustificada ? 'aprovada' : null
         }], { onConflict: 'data,passaporte' });
 
-        if (error) throw error;
+        // RAIO-X: Se o banco rejeitar, vai aparecer na sua tela!
+        if (error) {
+            alert("❌ ERRO AO SALVAR NO BANCO:\n" + error.message + "\n\nDetalhes: " + error.details);
+            return; 
+        }
         
-        alert("Registro de " + status.toUpperCase() + " salvo com sucesso!");
+        alert("✅ Salvo com sucesso no banco! Atualizando tela...");
         fecharModalJustificar();
         
-        // Atualiza a tela na hora
         carregarHistoricoPerfil(membroPerfilAtual.passaporte);
-        carregarPunicoesPerfil(membroPerfilAtual.passaporte);
-        carregarMembros(); // Atualiza a lista principal e o cache
+        carregarPunicoesPerfil(membroPerfilAtual.passaporte); 
+        carregarMembros(); 
+        
     } catch (err) {
-        console.error(err);
-        alert("Erro Crítico ao registrar no banco:\n" + err.message + "\n\nVerifique o RLS da tabela presencas no Supabase.");
+        alert("❌ Erro inesperado: " + err.message);
     }
         }
 
@@ -872,40 +874,47 @@ async function carregarMembros() {
 
         async function carregarPunicoesPerfil(passaporte) {
     const container = document.getElementById('aba-perfil-punicoes');
-    container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px;">Carregando faltas...</p>';
+    container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">Buscando no banco...</p>';
     
-    // Busca no banco forçando o passaporte a ser texto para não dar erro de tipo
-    const { data: faltas, error } = await sb.from('presencas')
+    // Tiramos o filtro de status para o banco trazer TUDO o que tem para esse passaporte
+    const { data: registros, error } = await sb.from('presencas')
         .select('*')
-        .eq('passaporte', String(passaporte)) 
-        .eq('status', 'falta')
-        .order('data', { ascending: false });
+        .eq('passaporte', String(passaporte));
     
-    // Se o Supabase bloquear a leitura (RLS), mostramos o erro na tela
+    // Se a segurança do banco (RLS) bloquear, mostra o erro em vermelho
     if (error) {
-        console.error("Erro ao buscar faltas:", error);
-        container.innerHTML = `<p style="color: var(--vermelho); font-size: 12px; text-align: center;">Erro do Supabase: ${error.message}<br><br>Verifique o RLS da tabela 'presencas'.</p>`;
+        container.innerHTML = `<p style="color: var(--vermelho); font-size: 12px; text-align: center; padding: 10px;">❌ Erro de Leitura (RLS): ${error.message}</p>`;
         return;
     }
 
-    if (!faltas || faltas.length === 0) {
-        container.innerHTML = '<p style="color: var(--verde); font-size: 13px; text-align: center;">Nenhuma falta registrada. Ficha limpa!</p>';
+    if (!registros || registros.length === 0) {
+        container.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center;">O banco não encontrou NENHUM registro para este passaporte na tabela presencas.</p>';
         return;
     }
 
+    // Filtra na tela para achar as faltas
+    const faltas = registros.filter(r => String(r.status).toLowerCase() === 'falta');
+
+    if (faltas.length === 0) {
+        // Se achou registros mas nenhum é falta, mostra o que ele achou para você ver
+        let statusAchados = registros.map(r => r.status).join(', ');
+        container.innerHTML = `<p style="color: var(--amarelo); font-size: 13px; text-align: center;">O banco achou ${registros.length} registros, mas NENHUM com o status "falta".<br>Os status salvos foram: <b>${statusAchados}</b></p>`;
+        return;
+    }
+
+    // Se achou as faltas, renderiza bonitinho
     let html = '';
     faltas.forEach(f => {
         const data = new Date(f.data + 'T12:00:00').toLocaleDateString('pt-BR');
         html += `
             <div style="padding: 10px; border-bottom: 1px solid var(--borda); font-size: 12px;">
                 <strong style="color: var(--vermelho);">FALTA REGISTRADA</strong> - ${data}
-                <p style="color: var(--texto-mutado); margin-top: 4px;">Justificativa: ${f.justificativa || 'Sem justificativa'}</p>
+                <p style="color: var(--texto-mutado); margin-top: 4px;">Motivo: ${f.justificativa || 'Não justificado'}</p>
             </div>
         `;
     });
     container.innerHTML = html;
-        }
-
+                                                                                         }
         // ==========================================
         // 9. LOGOUT
         // ==========================================
