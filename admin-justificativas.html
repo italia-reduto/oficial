@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="theme-color" content="#0a0f0d">
-    <meta name="color-scheme" content="dark">
     <title>Itália | Justificativas</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Oswald:wght@500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -19,20 +18,16 @@
 
     <style>
         :root {
-            --verde: #22c55e; --verde-hover: #16a34a; --fundo: #050806; --painel: #0d1410; --card: #131b16;
+            --verde: #22c55e; --fundo: #050806; --painel: #0d1410; --card: #131b16;
             --borda: #233029; --texto: #f3f4f6; --texto-mutado: #9ca3af;
             --amarelo: #eab308; --vermelho: #ef4444; --azul: #3b82f6;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--fundo); color: var(--texto); height: 100vh; overflow: hidden; display: flex; }
 
-        /* FUNDO */
-        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
-        .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; mask-image: radial-gradient(circle at center, black 10%, transparent 90%); -webkit-mask-image: radial-gradient(circle at center, black 10%, transparent 90%); }
-        .particula { position: fixed; bottom: -10px; background-color: var(--verde); border-radius: 50%; box-shadow: 0 0 10px var(--verde); opacity: 0; animation: subir linear infinite; z-index: 0; }
-        .p1 { width: 3px; height: 3px; left: 10%; animation-duration: 6s; } .p2 { width: 4px; height: 4px; left: 30%; animation-duration: 8s; animation-delay: 2s; } .p3 { width: 2px; height: 2px; left: 50%; animation-duration: 5s; animation-delay: 1s; } .p4 { width: 5px; height: 5px; left: 70%; animation-duration: 9s; animation-delay: 3s; } .p5 { width: 3px; height: 3px; left: 90%; animation-duration: 7s; animation-delay: 1.5s; }
-        @keyframes subir { 0% { transform: translateY(0) scale(1); opacity: 0; } 20% { opacity: 0.6; } 80% { opacity: 0.6; } 100% { transform: translateY(-100vh) scale(1.5); opacity: 0; } }
-
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -2; }
+        .grade-fundo { position: fixed; inset: 0; background-image: linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px); background-size: 40px 40px; z-index: -1; }
+        
         .layout { display: flex; width: 100%; height: 100vh; z-index: 10; position: relative; }
         
         /* SIDEBAR PC */
@@ -53,6 +48,14 @@
         .topo { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; flex-wrap: wrap; gap: 15px; }
         .titulo { font-family: 'Oswald'; font-size: 28px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .subtitulo { font-size: 13px; color: var(--texto-mutado); margin-top: 4px; }
+
+        /* KPIs CORRIGIDOS */
+        .grid-kpi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px; }
+        .kpi { border-left: 4px solid var(--amarelo); background: var(--card); padding: 15px 20px; border-radius: 8px; border-top: 1px solid var(--borda); border-right: 1px solid var(--borda); border-bottom: 1px solid var(--borda); }
+        .kpi.aprovada { border-left-color: var(--verde); }
+        .kpi.recusada { border-left-color: var(--vermelho); }
+        .kpi-header { font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between; align-items: center;}
+        .kpi-valor { font-family: 'Oswald'; font-size: 28px; font-weight: 700; color: #fff; margin-top: 5px; }
 
         /* ABAS */
         .abas { display: flex; gap: 8px; margin-bottom: 25px; }
@@ -94,7 +97,7 @@
         .modal-input:focus { border-color: var(--vermelho); }
         .modal-botoes { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;}
 
-        /* MENU MOBILE CORRIGIDO */
+        /* MENU MOBILE */
         .mobile-nav { display: none; position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(13, 20, 16, 0.98); border-top: 1px solid var(--borda); justify-content: space-around; padding: 10px 5px; z-index: 1000; backdrop-filter: blur(10px); }
         .mob-btn { display: flex; flex-direction: column; align-items: center; gap: 3px; background: none; border: none; color: var(--texto-mutado); font-size: 8px; font-weight: 600; cursor: pointer; width: 14.28%; transition: 0.2s; text-decoration: none;}
         .mob-btn i { font-size: 18px; }
@@ -109,17 +112,17 @@
             .card-just-acoes .btn { width: 100%; }
             .abas { flex-wrap: wrap; }
             .aba-btn { flex: 1; justify-content: center; padding: 10px; }
+            /* CORREÇÃO DOS CARDS ESPREMIDOS */
+            .grid-kpi { display: flex; flex-direction: column; gap: 10px; }
+            .kpi { padding: 12px 15px; display: flex; justify-content: space-between; align-items: center; }
+            .kpi-header { margin-bottom: 0; }
+            .kpi-valor { margin-top: 0; font-size: 24px; }
         }
     </style>
 </head>
 <body>
     <div class="fundo-degrade"></div>
     <div class="grade-fundo"></div>
-    <div class="particula p1"></div>
-    <div class="particula p2"></div>
-    <div class="particula p3"></div>
-    <div class="particula p4"></div>
-    <div class="particula p5"></div>
 
     <div class="layout">
         <!-- SIDEBAR PC -->
@@ -156,18 +159,18 @@
             </div>
 
             <!-- KPIs -->
-            <div class="grid-kpi" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 25px;">
-                <div class="kpi" style="border-left: 4px solid var(--amarelo); background: var(--card); padding: 15px 20px; border-radius: 8px;">
-                    <div class="kpi-header" style="font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between;">Pendentes <i class="fas fa-clock" style="color: var(--amarelo);"></i></div>
-                    <div class="kpi-valor" id="kpi-pendentes" style="font-family: 'Oswald'; font-size: 28px; font-weight: 700; color: #fff; margin-top: 5px;">0</div>
+            <div class="grid-kpi">
+                <div class="kpi">
+                    <div class="kpi-header">Pendentes <i class="fas fa-clock" style="color: var(--amarelo);"></i></div>
+                    <div class="kpi-valor" id="kpi-pendentes">0</div>
                 </div>
-                <div class="kpi" style="border-left: 4px solid var(--verde); background: var(--card); padding: 15px 20px; border-radius: 8px;">
-                    <div class="kpi-header" style="font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between;">Aprovadas <i class="fas fa-check-circle" style="color: var(--verde);"></i></div>
-                    <div class="kpi-valor" id="kpi-aprovadas" style="font-family: 'Oswald'; font-size: 28px; font-weight: 700; color: #fff; margin-top: 5px;">0</div>
+                <div class="kpi aprovada">
+                    <div class="kpi-header">Aprovadas <i class="fas fa-check-circle" style="color: var(--verde);"></i></div>
+                    <div class="kpi-valor" id="kpi-aprovadas">0</div>
                 </div>
-                <div class="kpi" style="border-left: 4px solid var(--vermelho); background: var(--card); padding: 15px 20px; border-radius: 8px;">
-                    <div class="kpi-header" style="font-size: 11px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; display: flex; justify-content: space-between;">Recusadas <i class="fas fa-times-circle" style="color: var(--vermelho);"></i></div>
-                    <div class="kpi-valor" id="kpi-recusadas" style="font-family: 'Oswald'; font-size: 28px; font-weight: 700; color: #fff; margin-top: 5px;">0</div>
+                <div class="kpi recusada">
+                    <div class="kpi-header">Recusadas <i class="fas fa-times-circle" style="color: var(--vermelho);"></i></div>
+                    <div class="kpi-valor" id="kpi-recusadas">0</div>
                 </div>
             </div>
 
@@ -271,7 +274,6 @@
             lista.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin" style="font-size: 24px; margin-bottom: 10px;"></i><p>Buscando justificativas...</p></div>';
 
             try {
-                // Puxa as presenças que TÊM justificativa
                 const { data: presencas, error } = await sb.from('presencas')
                     .select('*')
                     .not('justificativa', 'is', null)
@@ -279,7 +281,6 @@
 
                 if (error) throw error;
 
-                // Puxa os membros para pegar o nome atualizado e a foto
                 const { data: membros } = await sb.from('membros').select('passaporte, nome, foto_url');
                 const mapMembros = {};
                 if(membros) membros.forEach(m => mapMembros[String(m.passaporte)] = m);
@@ -477,7 +478,7 @@
                     <p style="font-size: 12px; font-weight: 600; color: var(--vermelho); text-transform: uppercase; margin-bottom: 5px;">Motivo da Recusa:</p>
                     <div style="background: rgba(239, 68, 68, 0.05); padding: 15px; border-radius: 8px; font-size: 13px; color: #fca5a5; border-left: 2px solid var(--vermelho);">
                         ${escapeHTML(j.motivo_recusa)}
-                                         </div>
+                    </div>
                 `;
             }
 
@@ -495,4 +496,4 @@
         }
     </script>
 </body>
-</html>
+    </html>
