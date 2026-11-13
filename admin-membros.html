@@ -426,87 +426,95 @@
         }
 
         function filtrarMembros() {
-            const termo = document.getElementById('input-busca-membros').value.toLowerCase();
-            const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
+    const input = document.getElementById('input-busca-membros');
+    const termo = input ? input.value.toLowerCase() : '';
+    
+    // Filtro seguro: verifica se o nome não é nulo antes de procurar
+    const filtrados = (todosOsMembros || []).filter(m => {
+        const nome = (m.nome || '').toLowerCase();
+        const passaporte = String(m.passaporte || '');
+        return nome.includes(termo) || passaporte.includes(termo);
+    });
 
-            if (filtrados.length === 0) {
-    document.getElementById('corpo-tabela-membros').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Nenhum membro encontrado (ou o banco está vazio).</td></tr>';
-    document.getElementById('lista-membros-mobile').innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Nenhum membro encontrado (ou o banco está vazio).</p>';
-    return;
-            }
+    if (filtrados.length === 0) {
+        document.getElementById('corpo-tabela-membros').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Nenhum membro encontrado ou banco vazio.</td></tr>';
+        document.getElementById('lista-membros-mobile').innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Nenhum membro encontrado ou banco vazio.</p>';
+        return;
+    }
 
-            let htmlDesktop = '';
-            let htmlMobile = '';
+    let htmlDesktop = '';
+    let htmlMobile = '';
 
-            filtrados.forEach(m => {
-                const cargoColor = getCargoColor(m.cargo);
-                let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
-                let botoesPonto = '';
+    filtrados.forEach(m => {
+        const cargoColor = getCargoColor(m.cargo);
+        const nomeExibir = m.nome || 'Sem Nome';
+        let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
+        let botoesPonto = '';
 
-                if (m.status_ponto === 'aberto') {
-                    tagPonto = `<span class="tag-status tag-ativo">Em Serviço</span>`;
-                    botoesPonto = `
-                        <button class="btn btn-amarelo" onclick="controlarPonto('pausar', '${m.ponto_id}')" title="Pausar"><i class="fas fa-pause"></i></button>
-                        <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
-                    `;
-                } else if (m.status_ponto === 'pausado') {
-                    tagPonto = `<span class="tag-status tag-pausado">Pausado</span>`;
-                    botoesPonto = `
-                        <button class="btn btn-verde" onclick="controlarPonto('retomar', '${m.ponto_id}')" title="Retomar"><i class="fas fa-play"></i></button>
-                        <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
-                    `;
-                }
-
-                htmlDesktop += `
-                    <tr>
-                        <td>
-                            <strong style="cursor: pointer; text-decoration: underline;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</strong><br>
-                            <span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span>
-                        </td>
-                        <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span></td>
-                        <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0}</td>
-                        <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
-                        <td>${tagPonto} <div style="display:inline-flex; gap:5px; margin-left: 5px;">${botoesPonto}</div></td>
-                        <td style="text-align: right; white-space: nowrap;">
-                            <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
-                            <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
-                            <button class="btn btn-amarelo" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
-                            <button class="btn btn-outline-vermelho" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
-                        </td>
-                    </tr>
-                `;
-
-                htmlMobile += `
-                    <div class="card-mob">
-                        <div class="card-mob-header">
-                            <div>
-                                <h4 style="text-decoration: underline; cursor: pointer;" onclick="abrirPerfil('${m.passaporte}')">${m.nome}</h4>
-                                <p>Passaporte: ${m.passaporte}</p>
-                            </div>
-                            <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span>
-                        </div>
-                        <div class="card-mob-stats">
-                            <div>XP: <strong>${m.xp_total || 0}</strong></div>
-                            <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
-                            <div style="margin-left: auto;">${tagPonto}</div>
-                        </div>
-                        
-                        <div class="acoes-mobile">
-                            ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
-                            <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'add_xp')">+ XP</button>
-                            <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${m.nome}', 'sub_xp')">- XP</button>
-                        </div>
-                        <div class="acoes-mobile">
-                            <button class="btn btn-amarelo" style="flex: 1;" onclick="abrirModalAdv('${m.passaporte}', '${m.nome}')">+ Adv</button>
-                            <button class="btn btn-outline-vermelho" style="flex: 1;" onclick="abrirModalRemoverAdv('${m.passaporte}', '${m.nome}')">- Adv</button>
-                        </div>
-                    </div>
-                `;
-            });
-
-            document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
-            document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
+        if (m.status_ponto === 'aberto') {
+            tagPonto = `<span class="tag-status tag-ativo">Em Serviço</span>`;
+            botoesPonto = `
+                <button class="btn btn-amarelo" onclick="controlarPonto('pausar', '${m.ponto_id}')" title="Pausar"><i class="fas fa-pause"></i></button>
+                <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
+            `;
+        } else if (m.status_ponto === 'pausado') {
+            tagPonto = `<span class="tag-status tag-pausado">Pausado</span>`;
+            botoesPonto = `
+                <button class="btn btn-verde" onclick="controlarPonto('retomar', '${m.ponto_id}')" title="Retomar"><i class="fas fa-play"></i></button>
+                <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
+            `;
         }
+
+        htmlDesktop += `
+            <tr>
+                <td>
+                    <strong style="cursor: pointer; text-decoration: underline;" onclick="abrirPerfil('${m.passaporte}')">${nomeExibir}</strong><br>
+                    <span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span>
+                </td>
+                <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span></td>
+                <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0}</td>
+                <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
+                <td>${tagPonto} <div style="display:inline-flex; gap:5px; margin-left: 5px;">${botoesPonto}</div></td>
+                <td style="text-align: right; white-space: nowrap;">
+                    <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'add_xp')">+ XP</button>
+                    <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'sub_xp')">- XP</button>
+                    <button class="btn btn-amarelo" onclick="abrirModalAdv('${m.passaporte}', '${nomeExibir}')">+ Adv</button>
+                    <button class="btn btn-outline-vermelho" onclick="abrirModalRemoverAdv('${m.passaporte}', '${nomeExibir}')">- Adv</button>
+                </td>
+            </tr>
+        `;
+
+        htmlMobile += `
+            <div class="card-mob">
+                <div class="card-mob-header">
+                    <div>
+                        <h4 style="text-decoration: underline; cursor: pointer;" onclick="abrirPerfil('${m.passaporte}')">${nomeExibir}</h4>
+                        <p>Passaporte: ${m.passaporte}</p>
+                    </div>
+                    <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span>
+                </div>
+                <div class="card-mob-stats">
+                    <div>XP: <strong>${m.xp_total || 0}</strong></div>
+                    <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
+                    <div style="margin-left: auto;">${tagPonto}</div>
+                </div>
+                
+                <div class="acoes-mobile">
+                    ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
+                    <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'add_xp')">+ XP</button>
+                    <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'sub_xp')">- XP</button>
+                </div>
+                <div class="acoes-mobile">
+                    <button class="btn btn-amarelo" style="flex: 1;" onclick="abrirModalAdv('${m.passaporte}', '${nomeExibir}')">+ Adv</button>
+                    <button class="btn btn-outline-vermelho" style="flex: 1;" onclick="abrirModalRemoverAdv('${m.passaporte}', '${nomeExibir}')">- Adv</button>
+                </div>
+            </div>
+        `;
+    });
+
+    document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
+    document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
+                      }
 
         // ==========================================
         // 3. CONTROLE DE PONTO (PAUSAR/RETOMAR)
