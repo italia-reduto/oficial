@@ -69,7 +69,8 @@
         .card-mob-header p { font-size: 11px; color: var(--texto-mutado); }
         .card-mob-stats { display: flex; gap: 15px; font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 6px;}
         .card-mob-stats strong { color: #fff; }
-                /* BOTÕES E TAGS */
+        
+        /* BOTÕES E TAGS */
         .btn { padding: 8px 12px; border-radius: 6px; font-family: 'Oswald'; font-size: 12px; font-weight: 600; cursor: pointer; border: 1px solid transparent; transition: 0.2s; text-transform: uppercase; display: inline-flex; align-items: center; gap: 5px; justify-content: center;}
         .btn-outline { background: transparent; color: var(--texto); border-color: var(--borda); }
         .btn-outline-vermelho { background: transparent; color: var(--vermelho); border-color: rgba(239, 68, 68, 0.3); }
@@ -129,8 +130,8 @@
             .acoes-mobile:last-child { margin-bottom: 0; }
         }
     </style>
-</head>
-<body>
+    </head>
+    <body>
     <div class="fundo-degrade"></div>
     <div class="grade-fundo"></div>
     <div class="particula p1"></div>
@@ -272,7 +273,7 @@
         </div>
     </div>
 
-    <!-- MODAL: JUSTIFICAR FALTA (NOVO) -->
+    <!-- MODAL: JUSTIFICAR FALTA -->
     <div class="modal-overlay" id="modal-justificar-falta">
         <div class="modal-content">
             <h3 class="modal-titulo" style="color: var(--amarelo);">Justificar Falta</h3>
@@ -331,193 +332,228 @@
                 <p style="font-size: 13px; color: var(--texto-mutado);">Carregando punições...</p>
             </div>
         </div>
-    </div>
+        </div>
         <script>
-        let adminLogado = null;
-        let todosOsMembros = [];
-        let acaoPendente = { passaporte: null, tipo: null, nome: null };
-        let categoriaAdvSelecionada = null;
-        let membroPerfilAtual = null;
-        let membroRemoverAdv = null; 
-        
-        const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
-
-        // Função para cores dos cargos
-        function getCargoColor(cargo) {
-            const cores = {
-                'Líder da organização': '#fbbf24', 'Líder da Organização': '#fbbf24', 
-                '01 da organização': '#cbd5e1', '01 da Organização': '#cbd5e1',
-                'Gerente geral': '#a855f7', 'Gerente Geral': '#a855f7',
-                'Gerente': '#3b82f6', 'Coordenador': '#06b6d4', 
-                'Auxiliar - Gerência': '#f97316', 'Auxiliar - Gerencia': '#f97316'  
-            };
-            return cores[cargo] || 'var(--verde)';
-        }
-
-        // ==========================================
-        // 1. INICIALIZAÇÃO
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', async () => {
-            const logado = sessionStorage.getItem('membro_logado');
-            if (!logado) return window.location.href = 'login.html';
-
-            adminLogado = JSON.parse(logado);
-            const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
-            const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
-
-            if (!isAdmin) {
-                alert("Acesso negado.");
-                return window.location.href = 'dashboard.html';
-            }
-
-            document.getElementById('adm-nome').innerText = adminLogado.nome;
-            document.getElementById('adm-cargo').innerText = adminLogado.cargo;
-
-            // Carrega instantâneo do cache se existir
-            const cacheLocal = localStorage.getItem('cache_membros');
-            if (cacheLocal) {
-                todosOsMembros = JSON.parse(cacheLocal);
-                filtrarMembros(); 
-            }
-
-            carregarMembros(); 
-        });
-
-        // ==========================================
-        // 2. CARREGAR E RENDERIZAR MEMBROS
-        // ==========================================
-        async function carregarMembros() {
-            const tbody = document.getElementById('corpo-tabela-membros');
-            if (!localStorage.getItem('cache_membros')) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado);">Buscando efetivo...</td></tr>';
-            }
-            
-            try {
-                const [resMembros, resPontos] = await Promise.all([
-                    sb.from('membros').select('*').order('nome'),
-                    sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
-                ]);
-
-                if (resMembros.error) throw new Error("Tabela Membros: " + resMembros.error.message);
-                if (resPontos.error) throw new Error("Tabela Pontos: " + resPontos.error.message);
-
-                const pontosMap = {};
-                if (resPontos.data) {
-                    resPontos.data.forEach(p => { pontosMap[String(p.passaporte)] = p; });
-                }
-
-                todosOsMembros = resMembros.data.map(m => {
-                    const pontoAtivo = pontosMap[String(m.passaporte)];
-                    return { 
-                        ...m, 
-                        status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
-                        ponto_id: pontoAtivo ? pontoAtivo.id : null 
-                    };
-                });
-
-                localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros));
-                filtrarMembros();
-
-            } catch (err) { 
-                console.error(err);
-                // MOSTRA O ERRO NA TELA PARA NÃO FICAR NO LIMBO
-                tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho); padding: 20px; font-weight: bold;">Erro: ${err.message}</td></tr>`; 
-            }
-        }
-
-        function filtrarMembros() {
-    const input = document.getElementById('input-busca-membros');
-    const termo = input ? input.value.toLowerCase() : '';
+    let adminLogado = null;
+    let todosOsMembros = [];
+    let acaoPendente = { passaporte: null, tipo: null, nome: null };
+    let categoriaAdvSelecionada = null;
+    let membroPerfilAtual = null;
+    let membroRemoverAdv = null; 
     
-    // Filtro seguro: verifica se o nome não é nulo antes de procurar
-    const filtrados = (todosOsMembros || []).filter(m => {
-        const nome = (m.nome || '').toLowerCase();
-        const passaporte = String(m.passaporte || '');
-        return nome.includes(termo) || passaporte.includes(termo);
-    });
+    const CARGOS_LIDERANCA = ['Líder da organização', '01 da organização', 'Coordenador', 'Gerente geral', 'Gerente'];
 
-    if (filtrados.length === 0) {
-        document.getElementById('corpo-tabela-membros').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Nenhum membro encontrado ou banco vazio.</td></tr>';
-        document.getElementById('lista-membros-mobile').innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Nenhum membro encontrado ou banco vazio.</p>';
-        return;
+    // Função para cores dos cargos
+    function getCargoColor(cargo) {
+        const cores = {
+            'Líder da organização': '#fbbf24', 'Líder da Organização': '#fbbf24', 
+            '01 da organização': '#cbd5e1', '01 da Organização': '#cbd5e1',
+            'Gerente geral': '#a855f7', 'Gerente Geral': '#a855f7',
+            'Gerente': '#3b82f6', 'Coordenador': '#06b6d4', 
+            'Auxiliar - Gerência': '#f97316', 'Auxiliar - Gerencia': '#f97316'  
+        };
+        return cores[cargo] || 'var(--verde)';
     }
 
-    let htmlDesktop = '';
-    let htmlMobile = '';
+    // ==========================================
+    // 1. INICIALIZAÇÃO
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', async () => {
+        const logado = sessionStorage.getItem('membro_logado');
+        if (!logado) return window.location.href = 'login.html';
 
-    filtrados.forEach(m => {
-        const cargoColor = getCargoColor(m.cargo);
-        const nomeExibir = m.nome || 'Sem Nome';
-        let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
-        let botoesPonto = '';
-
-        if (m.status_ponto === 'aberto') {
-            tagPonto = `<span class="tag-status tag-ativo">Em Serviço</span>`;
-            botoesPonto = `
-                <button class="btn btn-amarelo" onclick="controlarPonto('pausar', '${m.ponto_id}')" title="Pausar"><i class="fas fa-pause"></i></button>
-                <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
-            `;
-        } else if (m.status_ponto === 'pausado') {
-            tagPonto = `<span class="tag-status tag-pausado">Pausado</span>`;
-            botoesPonto = `
-                <button class="btn btn-verde" onclick="controlarPonto('retomar', '${m.ponto_id}')" title="Retomar"><i class="fas fa-play"></i></button>
-                <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
-            `;
+        try {
+            adminLogado = JSON.parse(logado);
+        } catch(e) {
+            return window.location.href = 'login.html';
         }
 
-        htmlDesktop += `
-            <tr>
-                <td>
-                    <strong style="cursor: pointer; text-decoration: underline;" onclick="abrirPerfil('${m.passaporte}')">${nomeExibir}</strong><br>
-                    <span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span>
-                </td>
-                <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span></td>
-                <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0}</td>
-                <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
-                <td>${tagPonto} <div style="display:inline-flex; gap:5px; margin-left: 5px;">${botoesPonto}</div></td>
-                <td style="text-align: right; white-space: nowrap;">
-                    <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'add_xp')">+ XP</button>
-                    <button class="btn btn-outline" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'sub_xp')">- XP</button>
-                    <button class="btn btn-amarelo" onclick="abrirModalAdv('${m.passaporte}', '${nomeExibir}')">+ Adv</button>
-                    <button class="btn btn-outline-vermelho" onclick="abrirModalRemoverAdv('${m.passaporte}', '${nomeExibir}')">- Adv</button>
-                </td>
-            </tr>
-        `;
+        const cargoDoCara = String(adminLogado.cargo || '').trim().toLowerCase();
+        const isAdmin = CARGOS_LIDERANCA.map(c => c.toLowerCase()).includes(cargoDoCara);
 
-        htmlMobile += `
-            <div class="card-mob">
-                <div class="card-mob-header">
-                    <div>
-                        <h4 style="text-decoration: underline; cursor: pointer;" onclick="abrirPerfil('${m.passaporte}')">${nomeExibir}</h4>
-                        <p>Passaporte: ${m.passaporte}</p>
-                    </div>
-                    <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span>
-                </div>
-                <div class="card-mob-stats">
-                    <div>XP: <strong>${m.xp_total || 0}</strong></div>
-                    <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
-                    <div style="margin-left: auto;">${tagPonto}</div>
-                </div>
-                
-                <div class="acoes-mobile">
-                    ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
-                    <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'add_xp')">+ XP</button>
-                    <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${m.passaporte}', '${nomeExibir}', 'sub_xp')">- XP</button>
-                </div>
-                <div class="acoes-mobile">
-                    <button class="btn btn-amarelo" style="flex: 1;" onclick="abrirModalAdv('${m.passaporte}', '${nomeExibir}')">+ Adv</button>
-                    <button class="btn btn-outline-vermelho" style="flex: 1;" onclick="abrirModalRemoverAdv('${m.passaporte}', '${nomeExibir}')">- Adv</button>
-                </div>
-            </div>
-        `;
+        if (!isAdmin) {
+            alert("Acesso negado.");
+            return window.location.href = 'dashboard.html';
+        }
+
+        document.getElementById('adm-nome').innerText = adminLogado.nome;
+        document.getElementById('adm-cargo').innerText = adminLogado.cargo;
+
+        // --- CORREÇÃO DO CACHE AQUI ---
+        const cacheLocal = localStorage.getItem('cache_membros');
+        if (cacheLocal) {
+            try {
+                const parsed = JSON.parse(cacheLocal);
+                // Só usa o cache se for um array e tiver pelo menos 1 membro
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    todosOsMembros = parsed;
+                    filtrarMembros(); 
+                } else {
+                    // Se o cache for vazio, limpa ele para não travar a tela
+                    localStorage.removeItem('cache_membros');
+                }
+            } catch(e) {
+                localStorage.removeItem('cache_membros');
+            }
+        }
+
+        // Busca os dados fresquinhos do Supabase
+        carregarMembros(); 
     });
 
-    document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
-    document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
-                      }
+    // ==========================================
+    // 2. CARREGAR E RENDERIZAR MEMBROS
+    // ==========================================
+    async function carregarMembros() {
+        const tbody = document.getElementById('corpo-tabela-membros');
+        const listaMobile = document.getElementById('lista-membros-mobile');
+        
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Buscando efetivo no banco...</td></tr>';
+        listaMobile.innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Buscando efetivo...</p>';
+        
+        try {
+            const [resMembros, resPontos] = await Promise.all([
+                sb.from('membros').select('*').order('nome', { ascending: true }),
+                sb.from('pontos').select('*').in('status', ['aberto', 'pausado'])
+            ]);
 
-        // ==========================================
-        // 3. CONTROLE DE PONTO (PAUSAR/RETOMAR)
+            if (resMembros.error) throw new Error("Erro na tabela Membros: " + resMembros.error.message);
+            if (resPontos.error) throw new Error("Erro na tabela Pontos: " + resPontos.error.message);
+
+            if (!resMembros.data || resMembros.data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--amarelo); padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique se o RLS do Supabase está liberado para leitura (anon).</td></tr>';
+                listaMobile.innerHTML = '<p style="color: var(--amarelo); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Atenção: O banco retornou 0 membros.<br>Verifique o RLS no Supabase.</p>';
+                return;
+            }
+
+            const pontosMap = {};
+            if (resPontos.data) {
+                resPontos.data.forEach(p => { 
+                    if (p.passaporte) pontosMap[String(p.passaporte)] = p; 
+                });
+            }
+
+            todosOsMembros = resMembros.data.map(m => {
+                const pontoAtivo = pontosMap[String(m.passaporte)];
+                return { 
+                    ...m, 
+                    status_ponto: pontoAtivo ? pontoAtivo.status : 'offline', 
+                    ponto_id: pontoAtivo ? pontoAtivo.id : null 
+                };
+            });
+
+            localStorage.setItem('cache_membros', JSON.stringify(todosOsMembros));
+            filtrarMembros(); 
+
+        } catch (err) { 
+            // Mostra o erro na tela para você ver sem precisar de F12
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--vermelho); padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</td></tr>`; 
+            listaMobile.innerHTML = `<p style="color: var(--vermelho); font-size: 13px; text-align: center; padding: 20px; font-weight: bold;">Erro Crítico: ${err.message}</p>`;
+        }
+    }
+
+    // ==========================================
+    // 3. FILTRAR E RENDERIZAR NA TELA
+    // ==========================================
+    function filtrarMembros() {
+        const input = document.getElementById('input-busca-membros');
+        const termo = input ? input.value.toLowerCase().trim() : '';
+        
+        if (!Array.isArray(todosOsMembros)) todosOsMembros = [];
+
+        const filtrados = todosOsMembros.filter(m => {
+            if (!m) return false;
+            const nome = (m.nome || '').toLowerCase();
+            const passaporte = String(m.passaporte || '');
+            return nome.includes(termo) || passaporte.includes(termo);
+        });
+
+        if (filtrados.length === 0) {
+            document.getElementById('corpo-tabela-membros').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Nenhum membro encontrado ou banco vazio.</td></tr>';
+            document.getElementById('lista-membros-mobile').innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Nenhum membro encontrado ou banco vazio.</p>';
+            return;
+        }
+
+        let htmlDesktop = '';
+        let htmlMobile = '';
+
+        filtrados.forEach(m => {
+            const cargoColor = getCargoColor(m.cargo);
+            const nomeExibir = m.nome || 'Sem Nome';
+            
+            // Previne quebra de código se o nome tiver aspas
+            const passaporteSafe = String(m.passaporte).replace(/'/g, "\\'");
+            const nomeSafe = nomeExibir.replace(/'/g, "\\'");
+
+            let tagPonto = `<span class="tag-status tag-offline">Offline</span>`;
+            let botoesPonto = '';
+
+            if (m.status_ponto === 'aberto') {
+                tagPonto = `<span class="tag-status tag-ativo">Em Serviço</span>`;
+                botoesPonto = `
+                    <button class="btn btn-amarelo" onclick="controlarPonto('pausar', '${m.ponto_id}')" title="Pausar"><i class="fas fa-pause"></i></button>
+                    <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
+                `;
+            } else if (m.status_ponto === 'pausado') {
+                tagPonto = `<span class="tag-status tag-pausado">Pausado</span>`;
+                botoesPonto = `
+                    <button class="btn btn-verde" onclick="controlarPonto('retomar', '${m.ponto_id}')" title="Retomar"><i class="fas fa-play"></i></button>
+                    <button class="btn btn-vermelho" onclick="controlarPonto('fechar', '${m.ponto_id}')" title="Encerrar"><i class="fas fa-stop"></i></button>
+                `;
+            }
+
+            htmlDesktop += `
+                <tr>
+                    <td>
+                        <strong style="cursor: pointer; text-decoration: underline;" onclick="abrirPerfil('${passaporteSafe}')">${nomeExibir}</strong><br>
+                        <span style="font-size: 11px; color: var(--texto-mutado);">${m.passaporte}</span>
+                    </td>
+                    <td><span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span></td>
+                    <td style="color: var(--verde); font-weight: 600;">${m.xp_total || 0}</td>
+                    <td style="color: var(--vermelho); font-weight: 600;">${m.advertencias || 0}</td>
+                    <td>${tagPonto} <div style="display:inline-flex; gap:5px; margin-left: 5px;">${botoesPonto}</div></td>
+                    <td style="text-align: right; white-space: nowrap;">
+                        <button class="btn btn-outline" onclick="abrirModalXP('${passaporteSafe}', '${nomeSafe}', 'add_xp')">+ XP</button>
+                        <button class="btn btn-outline" onclick="abrirModalXP('${passaporteSafe}', '${nomeSafe}', 'sub_xp')">- XP</button>
+                        <button class="btn btn-amarelo" onclick="abrirModalAdv('${passaporteSafe}', '${nomeSafe}')">+ Adv</button>
+                        <button class="btn btn-outline-vermelho" onclick="abrirModalRemoverAdv('${passaporteSafe}', '${nomeSafe}')">- Adv</button>
+                    </td>
+                </tr>
+            `;
+
+            htmlMobile += `
+                <div class="card-mob">
+                    <div class="card-mob-header">
+                        <div>
+                            <h4 style="text-decoration: underline; cursor: pointer;" onclick="abrirPerfil('${passaporteSafe}')">${nomeExibir}</h4>
+                            <p>Passaporte: ${m.passaporte}</p>
+                        </div>
+                        <span class="tag-status" style="background: rgba(255,255,255,0.05); color: ${cargoColor}; border: 1px solid ${cargoColor}40;">${m.cargo}</span>
+                    </div>
+                    <div class="card-mob-stats">
+                        <div>XP: <strong>${m.xp_total || 0}</strong></div>
+                        <div>Adv: <strong style="color: var(--vermelho);">${m.advertencias || 0}</strong></div>
+                        <div style="margin-left: auto;">${tagPonto}</div>
+                    </div>
+                    
+                    <div class="acoes-mobile">
+                        ${botoesPonto ? `<div style="display:flex; gap:8px; width:100%; margin-bottom:8px;">${botoesPonto}</div>` : ''}
+                        <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${passaporteSafe}', '${nomeSafe}', 'add_xp')">+ XP</button>
+                        <button class="btn btn-outline" style="flex: 1;" onclick="abrirModalXP('${passaporteSafe}', '${nomeSafe}', 'sub_xp')">- XP</button>
+                    </div>
+                    <div class="acoes-mobile">
+                        <button class="btn btn-amarelo" style="flex: 1;" onclick="abrirModalAdv('${passaporteSafe}', '${nomeSafe}')">+ Adv</button>
+                        <button class="btn btn-outline-vermelho" style="flex: 1;" onclick="abrirModalRemoverAdv('${passaporteSafe}', '${nomeSafe}')">- Adv</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        document.getElementById('corpo-tabela-membros').innerHTML = htmlDesktop;
+        document.getElementById('lista-membros-mobile').innerHTML = htmlMobile;
+    }
+                    // ==========================================
+        // 4. CONTROLE DE PONTO (PAUSAR/RETOMAR)
         // ==========================================
         async function controlarPonto(acao, pontoId) {
             if (!pontoId) return;
@@ -536,7 +572,7 @@
         }
 
         // ==========================================
-        // 4. XP (ADICIONAR / RETIRAR)
+        // 5. XP (ADICIONAR / RETIRAR)
         // ==========================================
         function abrirModalXP(passaporte, nome, tipo) {
             acaoPendente = { passaporte, nome, tipo };
@@ -579,7 +615,7 @@
         }
 
         // ==========================================
-        // 5. ADVERTÊNCIA (ADICIONAR / REMOVER)
+        // 6. ADVERTÊNCIA (ADICIONAR / REMOVER)
         // ==========================================
         function abrirModalAdv(passaporte, nome) {
             acaoPendente = { passaporte, nome };
@@ -649,7 +685,7 @@
         }
 
         // ==========================================
-        // 6. LANÇAMENTO MANUAL DE PRESENÇA (P, F, J)
+        // 7. LANÇAMENTO MANUAL DE PRESENÇA (P, F, J)
         // ==========================================
         function lancarPresencaManual() {
             if (!membroPerfilAtual) return;
@@ -693,7 +729,7 @@
                     passaporte: membroPerfilAtual.passaporte,
                     status: status, 
                     data: hoje,
-                    marcado_por: 'sistema', // Evita erro de UUID
+                    marcado_por: 'sistema', 
                     marcado_por_nome: adminLogado.nome,
                     marcado_em: new Date().toISOString(),
                     justificativa: justificativa,
@@ -715,7 +751,7 @@
         }
 
         // ==========================================
-        // 7. FICHA COMPLETA (RAIO-X)
+        // 8. FICHA COMPLETA (RAIO-X)
         // ==========================================
         async function abrirPerfil(passaporte) {
             const membro = todosOsMembros.find(m => String(m.passaporte) === String(passaporte));
@@ -814,7 +850,7 @@
         }
 
         // ==========================================
-        // 8. LOGOUT
+        // 9. LOGOUT
         // ==========================================
         function sair() {
             localStorage.removeItem('cache_membros'); 
