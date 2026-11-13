@@ -366,50 +366,51 @@
         carregarMembrosRapido(); 
     });
             // ==========================================
-        // 2. PROGRESSÃO DE CARREIRA
-        // ==========================================
-        function calcularProgressao(xpTotal, nomeCargoAtual) {
-            const CARGOS_ESCALA = [
-                { nome: 'Novato', xp_min: 0, xp_max: 500 },
-                { nome: 'Executor', xp_min: 500, xp_max: 1500 },
-                { nome: 'Raiz', xp_min: 1500, xp_max: 3000 },
-                { nome: 'O Vigia', xp_min: 3000, xp_max: 5000 },
-                { nome: 'Controle', xp_min: 5000, xp_max: 999999 }
-            ];
-            
-            let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
-            
-            if (xpTotal >= 5000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle')) {
-                document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
-                document.getElementById('label-cargo-proximo').innerText = 'MAX';
-                document.getElementById('barra-progressao').style.width = '100%';
-                document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
-                return;
-            }
-            if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
+// 2. PROGRESSÃO DE CARREIRA (NOVA RÉGUA RÍGIDA)
+// ==========================================
+function calcularProgressao(xpTotal, nomeCargoAtual) {
+    const CARGOS_ESCALA = [
+        { nome: 'Novato', xp_min: 0, xp_max: 1500 },
+        { nome: 'Executor', xp_min: 1500, xp_max: 5000 },
+        { nome: 'Raiz', xp_min: 5000, xp_max: 10000 },
+        { nome: 'O Vigia', xp_min: 10000, xp_max: 20000 },
+        { nome: 'Controle', xp_min: 20000, xp_max: 999999999 } // Cargo Máximo
+    ];
+    
+    let nivelAtual = CARGOS_ESCALA.find(n => xpTotal >= n.xp_min && xpTotal < n.xp_max);
+    
+    // Verifica se já atingiu o cargo máximo
+    if (xpTotal >= 20000 && (nomeCargoAtual === 'Mentor' || nomeCargoAtual === 'Controle' || nomeCargoAtual === 'O Vigia')) {
+        document.getElementById('label-cargo-atual').innerText = nomeCargoAtual;
+        document.getElementById('label-cargo-proximo').innerText = 'MAX';
+        document.getElementById('barra-progressao').style.width = '100%';
+        document.getElementById('texto-progressao').innerText = xpTotal + ' XP (Máximo)';
+        return;
+    }
+    
+    if (!nivelAtual) nivelAtual = CARGOS_ESCALA[0];
 
-            let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
-            
-            if (!proximoNivel) {
-                document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-                document.getElementById('label-cargo-proximo').innerText = 'MAX';
-                document.getElementById('barra-progressao').style.width = '100%';
-                document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
-                return;
-            }
+    let proximoNivel = CARGOS_ESCALA.find(n => n.xp_min === nivelAtual.xp_max);
+    
+    if (!proximoNivel) {
+        document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+        document.getElementById('label-cargo-proximo').innerText = 'MAX';
+        document.getElementById('barra-progressao').style.width = '100%';
+        document.getElementById('texto-progressao').innerText = xpTotal + ' XP';
+        return;
+    }
 
-            document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
-            document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
-            
-            const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
-            const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
-            let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
-            
-            if (porcentagem > 100) porcentagem = 100;
-            document.getElementById('barra-progressao').style.width = porcentagem + '%';
-            document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
-        }
-
+    document.getElementById('label-cargo-atual').innerText = nivelAtual.nome;
+    document.getElementById('label-cargo-proximo').innerText = proximoNivel.nome;
+    
+    const xpNecessario = proximoNivel.xp_min - nivelAtual.xp_min;
+    const xpAtualNoCargo = xpTotal - nivelAtual.xp_min;
+    let porcentagem = (xpAtualNoCargo / xpNecessario) * 100;
+    
+    if (porcentagem > 100) porcentagem = 100;
+    document.getElementById('barra-progressao').style.width = porcentagem + '%';
+    document.getElementById('texto-progressao').innerText = `${xpTotal} / ${proximoNivel.xp_min} XP`;
+}
         // ==========================================
         // 3. MÉTRICAS E AVISOS
         // ==========================================
