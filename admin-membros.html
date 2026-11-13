@@ -429,6 +429,12 @@
             const termo = document.getElementById('input-busca-membros').value.toLowerCase();
             const filtrados = todosOsMembros.filter(m => m.nome.toLowerCase().includes(termo) || String(m.passaporte).includes(termo));
 
+            if (filtrados.length === 0) {
+    document.getElementById('corpo-tabela-membros').innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--texto-mutado); padding: 20px;">Nenhum membro encontrado (ou o banco está vazio).</td></tr>';
+    document.getElementById('lista-membros-mobile').innerHTML = '<p style="color: var(--texto-mutado); font-size: 13px; text-align: center; padding: 20px;">Nenhum membro encontrado (ou o banco está vazio).</p>';
+    return;
+            }
+
             let htmlDesktop = '';
             let htmlMobile = '';
 
