@@ -19,68 +19,61 @@
     </script>
     <style>
         :root { 
-            --verde: #22c55e; 
-            --fundo: #0a0f0d; 
-            --vidro: rgba(15, 23, 20, 0.6); 
-            --borda: rgba(34, 197, 94, 0.2); 
-            --texto: #f3f4f6; 
-            --texto-mutado: #9ca3af; 
-            --amarelo: #eab308; 
-            --vermelho: #ef4444; 
+            --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); 
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; 
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 15px; position: relative; overflow-x: hidden; }
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -1; }
 
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; z-index: 10; padding-bottom: 100px; margin-top: 10px; }
-        
-        /* Topo e Info */
         .topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .titulo { font-family: 'Oswald'; font-size: 24px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .subtitulo { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
+        
         .info-usuario { display: flex; gap: 15px; margin-bottom: 5px; background: var(--vidro); backdrop-filter: blur(10px); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--borda); }
         .info-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--texto-mutado); }
         .info-item strong { color: #fff; font-weight: 500; }
         .info-item i { color: var(--verde); font-size: 14px; }
 
-        /* Grid Stats Topo */
         .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .card-stat { background: var(--vidro); backdrop-filter: blur(10px); border: 1px solid var(--borda); border-radius: 10px; padding: 12px 15px; }
+        .card-stat { background: var(--vidro); backdrop-filter: blur(10px); border: 1px solid var(--borda); border-radius: 10px; padding: 12px 15px; transition: 0.3s; }
         .stat-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--texto-mutado); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-header i { color: var(--texto-mutado); font-size: 12px; }
-        .stat-valor { font-family: 'Oswald'; font-size: 22px; color: #fff; }
+        .stat-valor { font-family: 'Oswald'; font-size: 22px; color: #fff; transition: 0.3s; }
 
-        /* Painel Principal */
         .painel-principal { background: var(--vidro); backdrop-filter: blur(15px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        
-        /* Abas */
         .abas-internas { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
         .aba-btn { flex: 1; padding: 10px; border: 1px solid transparent; background: transparent; color: var(--texto-mutado); font-family: 'Oswald'; font-size: 14px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 8px; transition: 0.3s; }
         .aba-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); }
         
-        /* TELA DE PONTO */
         #content-ponto { text-align: center; }
-        .cronometro-display { font-family: 'Oswald'; font-weight: 500; font-size: 56px; color: #fff; line-height: 1; margin-bottom: 5px; letter-spacing: 1px; }
-        .cronometro-label { font-size: 11px; color: var(--texto-mutado); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
+        .cronometro-display { font-family: 'Oswald'; font-weight: 500; font-size: 56px; color: #fff; line-height: 1; margin-bottom: 5px; letter-spacing: 1px; transition: 0.3s;}
+        .cronometro-display.amarelo { color: var(--amarelo); }
+        .cronometro-label { font-size: 11px; color: var(--texto-mutado); margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .barra-xp-container { width: 100%; margin-bottom: 25px; }
+        .barra-xp-texto { font-size: 10px; color: var(--texto-mutado); text-align: right; margin-bottom: 4px; display: flex; justify-content: space-between; }
+        .barra-xp-bg { width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; }
+        .barra-xp-fill { height: 100%; background: var(--verde); width: 0%; transition: width 1s linear; box-shadow: 0 0 8px var(--verde); }
+
         .btn-iniciar { width: 100%; background: var(--verde); color: #000; border: none; padding: 16px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s; }
         .btn-iniciar:hover { background: #4ade80; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.2); }
-        
-        /* Botão Bloqueado (Cooldown) */
         .btn-bloqueado { background: rgba(255,255,255,0.05); color: var(--texto-mutado); cursor: not-allowed; border: 1px solid rgba(255,255,255,0.1); }
         .btn-bloqueado:hover { transform: none; box-shadow: none; background: rgba(255,255,255,0.05); }
 
         #tela-ativo { display: none; flex-direction: column; text-align: center; }
-        .tag-ponto { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto 15px auto; }
-        .tag-ponto .dot { width: 8px; height: 8px; background: var(--verde); border-radius: 50%; box-shadow: 0 0 8px var(--verde); }
+        .tag-ponto { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto 15px auto; transition: 0.3s;}
+        .tag-ponto .dot { width: 8px; height: 8px; background: var(--verde); border-radius: 50%; box-shadow: 0 0 8px var(--verde); transition: 0.3s;}
         .tag-ponto.pausado { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: var(--amarelo); }
         .tag-ponto.pausado .dot { background: var(--amarelo); box-shadow: 0 0 8px var(--amarelo); }
+
         .botoes-acao { display: flex; gap: 10px; margin-top: 20px; }
         .btn-acao { flex: 1; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 6px; background: transparent; }
         .btn-pausar { border: 1px solid rgba(234, 179, 8, 0.3); color: var(--amarelo); }
         .btn-retomar { border: 1px solid rgba(34, 197, 94, 0.3); color: var(--verde); display: none; }
         .btn-encerrar { border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); }
 
-        /* TELA DE HISTÓRICO */
         #content-historico { display: none; text-align: left; }
         .hist-header-desc { font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px; line-height: 1.4; }
         .hist-filtros { display: flex; gap: 10px; margin-bottom: 10px; }
@@ -111,7 +104,6 @@
         .hist-horas-detalhe { font-size: 11px; color: var(--texto-mutado); margin-top: 4px; display: flex; gap: 10px;}
         .hist-total-detalhe { font-family: 'Oswald'; font-size: 18px; color: var(--verde); }
 
-        /* MODAL DE ENCERRAMENTO (ESTILO ITÁLIA) */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.ativo { display: flex; }
         .modal-content { background: #121814; border: 1px solid var(--borda); border-radius: 12px; padding: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
@@ -124,14 +116,12 @@
         .btn-nao { flex: 1; background: transparent; color: var(--texto-mutado); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
         .btn-nao:hover { background: rgba(255,255,255,0.05); color: #fff;}
 
-        /* Alertas */
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 9999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
         .alerta-custom.ativo { top: 20px; }
         .alerta-custom i { font-size: 20px; color: var(--verde); }
         .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500;}
         .alerta-custom.erro { border-left-color: var(--vermelho); } .alerta-custom.erro i { color: var(--vermelho); }
 
-        /* Menu Inferior */
         .menu-inferior { position: fixed; bottom: 15px; left: 0; right: 0; margin: 0 auto; width: 90%; max-width: 400px; background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-radius: 20px; display: flex; justify-content: space-around; padding: 8px 10px; z-index: 9999; }
         .item-menu { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--texto-mutado); font-size: 9px; font-weight: 500; padding: 6px 12px; border-radius: 10px; transition: 0.2s;}
         .item-menu i { font-size: 18px; }
@@ -155,7 +145,7 @@
         </div>
 
         <div class="grid-stats">
-            <div class="card-stat">
+            <div class="card-stat" id="card-status">
                 <div class="stat-header">Meu Status <i class="far fa-clock"></i></div>
                 <div class="stat-valor" id="stat-status">Fora</div>
             </div>
@@ -187,12 +177,23 @@
                     <button class="btn-iniciar" id="btn-iniciar-jornada" onclick="iniciarJornada()"><i class="fas fa-play"></i> Iniciar Jornada</button>
                 </div>
                 <div id="tela-ativo">
-                    <div class="tag-ponto" id="tag-status"><div class="dot"></div> <span id="txt-tag">Em Serviço</span></div>
+                    <div class="tag-ponto" id="tag-status"><div class="dot" id="dot-status"></div> <span id="txt-tag">Em Serviço</span></div>
                     <div class="cronometro-display" id="cronometro-display">00:00:00</div>
                     <p class="cronometro-label">Tempo de jornada</p>
+                    
+                    <div class="barra-xp-container">
+                        <div class="barra-xp-texto">
+                            <span id="xp-texto">Faltam 30 min para +20 XP</span>
+                            <span id="xp-porcento">0%</span>
+                        </div>
+                        <div class="barra-xp-bg">
+                            <div class="barra-xp-fill" id="barra-xp-fill"></div>
+                        </div>
+                    </div>
+
                     <div class="botoes-acao">
-                        <button class="btn-acao btn-pausar" id="btn-pausar" onclick="pausarTurno()"><i class="fas fa-pause"></i> Pausar</button>
-                        <button class="btn-acao btn-retomar" id="btn-retomar" onclick="retomarTurno()"><i class="fas fa-play"></i> Retomar</button>
+                        <button class="btn-acao btn-pausar" id="btn-pausar" onclick="abrirModalPausar()"><i class="fas fa-pause"></i> Pausar</button>
+                        <button class="btn-acao btn-retomar" id="btn-retomar" onclick="abrirModalRetomar()"><i class="fas fa-play"></i> Retomar</button>
                         <button class="btn-acao btn-encerrar" onclick="abrirModalEncerrar()"><i class="fas fa-stop"></i> Encerrar</button>
                     </div>
                 </div>
@@ -249,15 +250,28 @@
         </div>
     </div>
 
+    <!-- MODAL GENÉRICO (PAUSAR/RETOMAR) -->
+    <div class="modal-overlay" id="modal-generico">
+        <div class="modal-content">
+            <i class="fas fa-info-circle modal-icone" id="modal-gen-icone"></i>
+            <h2 class="modal-titulo" id="modal-gen-titulo">Confirmação</h2>
+            <p style="color: var(--texto-mutado); font-size: 13px; margin-bottom: 20px;" id="modal-gen-msg">Deseja continuar?</p>
+            <div class="botoes-confirmar">
+                <button class="btn-nao" onclick="fecharModalGenerico()">Cancelar</button>
+                <button class="btn-sim" id="modal-gen-btn-sim">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
     <!-- MODAL DE ENCERRAMENTO -->
     <div class="modal-overlay" id="modal-encerrar">
         <div class="modal-content">
             <i class="fas fa-stop-circle modal-icone"></i>
             <h2 class="modal-titulo">Encerrar Jornada?</h2>
             
-            <div class="modal-aviso">
-                <i class="fas fa-exclamation-triangle"></i>
-                <div>
+            <div class="modal-aviso" id="modal-encerrar-aviso">
+                <i class="fas fa-exclamation-triangle" id="modal-encerrar-icone-aviso"></i>
+                <div id="modal-encerrar-texto-aviso">
                     <strong>Atenção:</strong> Ao confirmar o encerramento, você deverá aguardar <strong>30 minutos</strong> para poder iniciar uma nova jornada.
                 </div>
             </div>
@@ -278,195 +292,187 @@
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Tickets</span></a>
         <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
     </nav>
-        <script>
-        let membroLogado = null;
-        let pontoAtual = null;
-        let intervaloCronometro = null;
-        let intervaloStats = null;
-        let intervaloCooldown = null;
-        let dadosHistoricoGlobal = []; 
+    <script>
+    let membroLogado = null;
+    let pontoAtual = null;
+    let intervaloCronometro = null;
+    let intervaloStats = null;
+    let intervaloCooldown = null;
+    let intervaloPausaAuto = null;
+    let dadosHistoricoGlobal = []; 
+    let xpGanhoNestaSessao = false;
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            const logado = sessionStorage.getItem('membro_logado');
-            if (!logado) return window.location.href = 'login.html';
-            membroLogado = JSON.parse(logado);
-            
-            document.getElementById('user-nome').innerText = membroLogado.nome;
-            document.getElementById('user-pass').innerText = membroLogado.passaporte;
+    window.addEventListener('DOMContentLoaded', async () => {
+        const logado = sessionStorage.getItem('membro_logado');
+        if (!logado) return window.location.href = 'login.html';
+        membroLogado = JSON.parse(logado);
+        
+        document.getElementById('user-nome').innerText = membroLogado.nome;
+        document.getElementById('user-pass').innerText = membroLogado.passaporte;
 
-            verificarPonto();
-            carregarEstatisticas();
-            intervaloStats = setInterval(carregarEstatisticas, 60000);
-            setFiltroRapido('7dias');
-        });
+        verificarPonto();
+        carregarEstatisticas();
+        intervaloStats = setInterval(carregarEstatisticas, 60000);
+        setFiltroRapido('7dias');
+    });
 
-        // ==========================================
-        // 1. VERIFICAÇÃO DE PONTO E COOLDOWN (30 min)
-        // ==========================================
-        async function verificarPonto() {
-            const { data: pontoAberto } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+    // ==========================================
+    // 1. VERIFICAÇÃO DE PONTO E COOLDOWN
+    // ==========================================
+    async function verificarPonto() {
+        const { data: pontoAberto } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
-            if (pontoAberto) {
-                if (intervaloCooldown) clearInterval(intervaloCooldown);
-                pontoAtual = pontoAberto;
-                document.getElementById('tela-inicial').style.display = 'none';
-                document.getElementById('tela-ativo').style.display = 'flex';
-                document.getElementById('stat-status').innerText = pontoAberto.status === 'pausado' ? 'Pausado' : 'Em Serviço';
-
-                if (pontoAberto.status === 'pausado') {
-                    document.getElementById('tag-status').classList.add('pausado');
-                    document.getElementById('txt-tag').innerText = 'Pausado';
-                    document.getElementById('btn-pausar').style.display = 'none';
-                    document.getElementById('btn-retomar').style.display = 'flex';
-                    iniciarCronometroPausa(pontoAberto.pausa_inicio);
-                } else {
-                    document.getElementById('tag-status').classList.remove('pausado');
-                    document.getElementById('txt-tag').innerText = 'Em Serviço';
-                    document.getElementById('btn-pausar').style.display = 'flex';
-                    document.getElementById('btn-retomar').style.display = 'none';
-                    iniciarCronometro(pontoAberto.entrada);
-                }
-            } else {
-                document.getElementById('tela-ativo').style.display = 'none';
-                document.getElementById('tela-inicial').style.display = 'block';
-                document.getElementById('stat-status').innerText = 'Fora';
-                verificarCooldown();
-            }
-        }
-
-        async function verificarCooldown() {
-            const { data: ultimoPonto } = await sb.from('pontos')
-                .select('saida')
-                .eq('passaporte', membroLogado.passaporte)
-                .eq('status', 'fechado')
-                .order('saida', { ascending: false })
-                .limit(1)
-                .maybeSingle();
-
-            const btnIniciar = document.getElementById('btn-iniciar-jornada');
-
-            if (ultimoPonto && ultimoPonto.saida) {
-                const dataSaida = new Date(ultimoPonto.saida);
-                const agora = new Date();
-                const difMs = agora - dataSaida;
-                const tempoCastigoMs = 30 * 60 * 1000; // 30 minutos
-
-                if (difMs < tempoCastigoMs) {
-                    btnIniciar.disabled = true;
-                    btnIniciar.className = 'btn-iniciar btn-bloqueado';
-                    
-                    if (intervaloCooldown) clearInterval(intervaloCooldown);
-                    
-                    intervaloCooldown = setInterval(() => {
-                        const tempoAtual = new Date();
-                        const difAtual = tempoAtual - dataSaida;
-                        const restante = tempoCastigoMs - difAtual;
-
-                        if (restante <= 0) {
-                            clearInterval(intervaloCooldown);
-                            btnIniciar.disabled = false;
-                            btnIniciar.className = 'btn-iniciar';
-                            btnIniciar.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
-                        } else {
-                            const mins = Math.floor(restante / 60000);
-                            const segs = Math.floor((restante % 60000) / 1000);
-                            btnIniciar.innerHTML = `<i class="fas fa-lock"></i> Aguarde ${String(mins).padStart(2, '0')}:${String(segs).padStart(2, '0')}`;
-                        }
-                    }, 1000);
-                    return;
-                }
-            }
-
+        if (pontoAberto) {
             if (intervaloCooldown) clearInterval(intervaloCooldown);
-            btnIniciar.disabled = false;
-            btnIniciar.className = 'btn-iniciar';
-            btnIniciar.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
-        }
-
-        // ==========================================
-        // 2. INICIAR JORNADA (REGRA B: BALANCEAMENTO)
-        // ==========================================
-        async function iniciarJornada() {
-            const btn = document.getElementById('btn-iniciar-jornada');
-            const textoOriginal = btn.innerHTML;
+            pontoAtual = pontoAberto;
             
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; // Ícone de carregando
-            btn.disabled = true;
+            const tempoAbertoMin = (new Date() - new Date(pontoAtual.entrada)) / 60000;
+            if (tempoAbertoMin >= 30) xpGanhoNestaSessao = true;
 
-            try {
-                const { data: equipes } = await sb.from('equipes').select('*').eq('ativa', true);
-                if (!equipes || equipes.length === 0) {
-                    throw new Error("Nenhuma equipe ativa encontrada.");
-                }
+            document.getElementById('tela-inicial').style.display = 'none';
+            document.getElementById('tela-ativo').style.display = 'flex';
+            
+            if (pontoAberto.status === 'pausado') {
+                aplicarVisualPausa(true);
+                iniciarCronometroPausa(pontoAberto.pausa_inicio);
+                iniciarAutoFechamentoPausa(pontoAberto.pausa_inicio);
+            } else {
+                aplicarVisualPausa(false);
+                iniciarCronometro(pontoAberto.entrada);
+            }
+        } else {
+            document.getElementById('tela-ativo').style.display = 'none';
+            document.getElementById('tela-inicial').style.display = 'block';
+            document.getElementById('stat-status').innerText = 'Fora';
+            document.getElementById('card-status').style.borderColor = 'var(--borda)';
+            verificarCooldown();
+        }
+    }
 
-                const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+    async function verificarCooldown() {
+        const { data: ultimoPonto } = await sb.from('pontos')
+            .select('saida').eq('passaporte', membroLogado.passaporte).eq('status', 'fechado')
+            .order('saida', { ascending: false }).limit(1).maybeSingle();
+
+        const btnIniciar = document.getElementById('btn-iniciar-jornada');
+
+        if (ultimoPonto && ultimoPonto.saida) {
+            const dataSaida = new Date(ultimoPonto.saida);
+            const difMs = new Date() - dataSaida;
+            const tempoCastigoMs = 30 * 60 * 1000; 
+
+            if (difMs < tempoCastigoMs) {
+                btnIniciar.disabled = true;
+                btnIniciar.className = 'btn-iniciar btn-bloqueado';
+                if (intervaloCooldown) clearInterval(intervaloCooldown);
                 
-                let contagemEquipes = {};
-                equipes.forEach(eq => contagemEquipes[eq.id] = 0); 
-                
-                if (pontosAtivos) {
-                    pontosAtivos.forEach(p => {
-                        if (contagemEquipes[p.equipe_id] !== undefined) {
-                            contagemEquipes[p.equipe_id]++;
-                        }
-                    });
-                }
-
-                // Lógica do Balanceamento
-                let menorQtd = Infinity;
-                let equipesEmpatadas = [];
-
-                equipes.forEach(eq => {
-                    const qtd = contagemEquipes[eq.id];
-                    if (qtd < menorQtd) {
-                        menorQtd = qtd;
-                        equipesEmpatadas = [eq];
-                    } else if (qtd === menorQtd) {
-                        equipesEmpatadas.push(eq);
+                intervaloCooldown = setInterval(() => {
+                    const restante = tempoCastigoMs - (new Date() - dataSaida);
+                    if (restante <= 0) {
+                        clearInterval(intervaloCooldown);
+                        btnIniciar.disabled = false;
+                        btnIniciar.className = 'btn-iniciar';
+                        btnIniciar.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
+                    } else {
+                        const mins = Math.floor(restante / 60000);
+                        const segs = Math.floor((restante % 60000) / 1000);
+                        btnIniciar.innerHTML = `<i class="fas fa-lock"></i> Aguarde ${String(mins).padStart(2, '0')}:${String(segs).padStart(2, '0')}`;
                     }
-                });
-
-                const equipeSorteada = equipesEmpatadas[Math.floor(Math.random() * equipesEmpatadas.length)];
-
-                const { error } = await sb.from('pontos').insert([{ 
-                    passaporte: membroLogado.passaporte, 
-                    nome: membroLogado.nome, 
-                    entrada: new Date().toISOString(), 
-                    status: 'aberto', 
-                    equipe_id: equipeSorteada.id, 
-                    posicao: equipeSorteada.nome,
-                    troca_equipe_em: new Date().toISOString(),
-                    pausa_qtd: 0,
-                    pausa_acumulada_seg: 0
-                }]);
-                
-                if (error) throw error;
-                
-                customAlert(`Você foi designado para ${equipeSorteada.nome}!`);
-                verificarPonto();
-                carregarEstatisticas();
-            } catch (err) { 
-                customAlert(err.message || "Erro ao iniciar jornada.", "erro"); 
-                btn.innerHTML = textoOriginal;
-                btn.disabled = false;
+                }, 1000);
+                return;
             }
         }
+        if (intervaloCooldown) clearInterval(intervaloCooldown);
+        btnIniciar.disabled = false;
+        btnIniciar.className = 'btn-iniciar';
+        btnIniciar.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
+    }
 
-        // ==========================================
-        // 3. CONTROLE DE TEMPO E PAUSAS
+    // ==========================================
+    // 2. INICIAR JORNADA (SORTEIO BALANCEADO)
+    // ==========================================
+    async function iniciarJornada() {
+        const btn = document.getElementById('btn-iniciar-jornada');
+        const textoOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; 
+        btn.disabled = true;
+        xpGanhoNestaSessao = false;
+
+        try {
+            const { data: equipes } = await sb.from('equipes').select('*').eq('ativa', true);
+            if (!equipes || equipes.length === 0) throw new Error("Nenhuma equipe ativa encontrada.");
+
+            const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+            
+            let contagemEquipes = {};
+            equipes.forEach(eq => contagemEquipes[eq.id] = 0); 
+            if (pontosAtivos) pontosAtivos.forEach(p => { if (contagemEquipes[p.equipe_id] !== undefined) contagemEquipes[p.equipe_id]++; });
+
+            let menorQtd = Infinity;
+            let equipesEmpatadas = [];
+            equipes.forEach(eq => {
+                const qtd = contagemEquipes[eq.id];
+                if (qtd < menorQtd) { menorQtd = qtd; equipesEmpatadas = [eq]; } 
+                else if (qtd === menorQtd) { equipesEmpatadas.push(eq); }
+            });
+
+            const equipeSorteada = equipesEmpatadas[Math.floor(Math.random() * equipesEmpatadas.length)];
+
+            const { error } = await sb.from('pontos').insert([{ 
+                passaporte: membroLogado.passaporte, nome: membroLogado.nome, 
+                entrada: new Date().toISOString(), status: 'aberto', 
+                equipe_id: equipeSorteada.id, posicao: equipeSorteada.nome,
+                troca_equipe_em: new Date().toISOString(), pausa_qtd: 0, pausa_acumulada_seg: 0
+            }]);
+            
+            if (error) throw error;
+            customAlert(`Você foi designado para ${equipeSorteada.nome}!`);
+            verificarPonto(); carregarEstatisticas();
+        } catch (err) { 
+            customAlert(err.message || "Erro ao iniciar jornada.", "erro"); 
+            btn.innerHTML = textoOriginal; btn.disabled = false;
+        }
+    }
+                // ==========================================
+        // 3. CRONÔMETRO, XP E PAUSAS
         // ==========================================
         function iniciarCronometro(entrada) {
             if (intervaloCronometro) clearInterval(intervaloCronometro);
+            if (intervaloPausaAuto) clearInterval(intervaloPausaAuto);
+            
             const display = document.getElementById('cronometro-display');
+            const barraXP = document.getElementById('barra-xp-fill');
+            const textoXP = document.getElementById('xp-texto');
+            const porcXP = document.getElementById('xp-porcento');
             const dataEntrada = new Date(entrada);
 
             intervaloCronometro = setInterval(() => {
-                const dif = new Date() - dataEntrada;
-                if (dif < 0) return;
-                const h = Math.floor(dif / 3600000);
-                const m = Math.floor((dif / 60000) % 60);
-                const s = Math.floor((dif / 1000) % 60);
+                const difMs = new Date() - dataEntrada;
+                if (difMs < 0) return;
+
+                const h = Math.floor(difMs / 3600000);
+                const m = Math.floor((difMs / 60000) % 60);
+                const s = Math.floor((difMs / 1000) % 60);
                 display.innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+                const minutosTotais = difMs / 60000;
+                let porcentagem = (minutosTotais / 30) * 100;
+                if (porcentagem > 100) porcentagem = 100;
+                
+                barraXP.style.width = porcentagem + '%';
+                porcXP.innerText = Math.floor(porcentagem) + '%';
+
+                if (porcentagem >= 100) {
+                    textoXP.innerText = "XP Garantido! +20 XP";
+                    textoXP.style.color = "var(--verde)";
+                    if (!xpGanhoNestaSessao) {
+                        darXP();
+                        xpGanhoNestaSessao = true;
+                    }
+                } else {
+                    textoXP.innerText = `Faltam ${30 - Math.floor(minutosTotais)} min para +20 XP`;
+                    textoXP.style.color = "var(--texto-mutado)";
+                }
             }, 1000);
         }
 
@@ -476,84 +482,142 @@
             const dataPausa = new Date(pausaInicio);
 
             intervaloCronometro = setInterval(() => {
-                const dif = new Date() - dataPausa;
-                if (dif < 0) return;
-                const h = Math.floor(dif / 3600000);
-                const m = Math.floor((dif / 60000) % 60);
-                const s = Math.floor((dif / 1000) % 60);
+                const difMs = new Date() - dataPausa;
+                if (difMs < 0) return;
+                const h = Math.floor(difMs / 3600000);
+                const m = Math.floor((difMs / 60000) % 60);
+                const s = Math.floor((difMs / 1000) % 60);
                 display.innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
             }, 1000);
         }
 
-        async function pausarTurno() {
-            if(!confirm("Deseja pausar o turno?")) return;
-            await sb.from('pontos').update({ 
-                status: 'pausado', 
-                pausa_inicio: new Date().toISOString(),
-                pausa_qtd: (pontoAtual.pausa_qtd || 0) + 1
-            }).eq('id', pontoAtual.id);
-            verificarPonto();
-            carregarEstatisticas();
+        function iniciarAutoFechamentoPausa(pausaInicio) {
+            if (intervaloPausaAuto) clearInterval(intervaloPausaAuto);
+            const dataPausa = new Date(pausaInicio);
+
+            intervaloPausaAuto = setInterval(async () => {
+                const difMin = (new Date() - dataPausa) / 60000;
+                if (difMin >= 30) {
+                    clearInterval(intervaloPausaAuto);
+                    await sb.from('pontos').update({ status: 'fechado', saida: new Date().toISOString() }).eq('id', pontoAtual.id);
+                    customAlert("Ponto fechado automaticamente por inatividade (30 min de pausa).", "erro");
+                    setTimeout(() => { verificarPonto(); carregarEstatisticas(); }, 2000);
+                }
+            }, 10000); 
         }
 
-        async function retomarTurno() {
-            if(!confirm("Deseja retomar o turno?")) return;
-            const agora = new Date();
-            const segPausados = Math.floor((agora - new Date(pontoAtual.pausa_inicio)) / 1000);
+        async function darXP() {
+            try {
+                const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', membroLogado.passaporte).single();
+                await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + 20 }).eq('passaporte', membroLogado.passaporte);
+                customAlert("Você completou 30 minutos e ganhou +20 XP!");
+            } catch (e) { console.error("Erro ao dar XP", e); }
+        }
+
+        function aplicarVisualPausa(isPausado) {
+            const display = document.getElementById('cronometro-display');
+            const tag = document.getElementById('tag-status');
+            const txtTag = document.getElementById('txt-tag');
+            const btnPausar = document.getElementById('btn-pausar');
+            const btnRetomar = document.getElementById('btn-retomar');
+            const statStatus = document.getElementById('stat-status');
+            const cardStatus = document.getElementById('card-status');
+
+            if (isPausado) {
+                display.classList.add('amarelo');
+                tag.classList.add('pausado');
+                txtTag.innerText = 'Pausado';
+                btnPausar.style.display = 'none';
+                btnRetomar.style.display = 'flex';
+                statStatus.innerText = 'Pausado';
+                statStatus.style.color = 'var(--amarelo)';
+                cardStatus.style.borderColor = 'var(--amarelo)';
+            } else {
+                display.classList.remove('amarelo');
+                tag.classList.remove('pausado');
+                txtTag.innerText = 'Em Serviço';
+                btnPausar.style.display = 'flex';
+                btnRetomar.style.display = 'none';
+                statStatus.innerText = 'Em Serviço';
+                statStatus.style.color = '#fff';
+                cardStatus.style.borderColor = 'var(--borda)';
+            }
+        }
+
+        // ==========================================
+        // 4. MODAIS CUSTOMIZADOS
+        // ==========================================
+        function abrirModalGenerico(titulo, msg, icone, acaoSim) {
+            document.getElementById('modal-gen-titulo').innerText = titulo;
+            document.getElementById('modal-gen-msg').innerText = msg;
+            document.getElementById('modal-gen-icone').className = `fas ${icone} modal-icone`;
             
-            await sb.from('pontos').update({ 
-                status: 'aberto', 
-                pausa_fim: agora.toISOString(),
-                pausa_acumulada_seg: (pontoAtual.pausa_acumulada_seg || 0) + segPausados
-            }).eq('id', pontoAtual.id);
-            verificarPonto();
-            carregarEstatisticas();
+            const btnSim = document.getElementById('modal-gen-btn-sim');
+            btnSim.onclick = () => { fecharModalGenerico(); acaoSim(); };
+            
+            document.getElementById('modal-generico').classList.add('ativo');
         }
 
-        // ==========================================
-        // 4. MODAL DE ENCERRAMENTO (ESTILO ITÁLIA)
-        // ==========================================
+        function fecharModalGenerico() { document.getElementById('modal-generico').classList.remove('ativo'); }
+
+        function abrirModalPausar() {
+            abrirModalGenerico("Pausar Turno?", "O tempo de pausa não conta para o seu XP.", "fa-pause-circle", async () => {
+                await sb.from('pontos').update({ status: 'pausado', pausa_inicio: new Date().toISOString(), pausa_qtd: (pontoAtual.pausa_qtd || 0) + 1 }).eq('id', pontoAtual.id);
+                verificarPonto(); carregarEstatisticas();
+            });
+        }
+
+        function abrirModalRetomar() {
+            abrirModalGenerico("Retomar Turno?", "Deseja voltar para o serviço agora?", "fa-play-circle", async () => {
+                const agora = new Date();
+                const segPausados = Math.floor((agora - new Date(pontoAtual.pausa_inicio)) / 1000);
+                await sb.from('pontos').update({ status: 'aberto', pausa_fim: agora.toISOString(), pausa_acumulada_seg: (pontoAtual.pausa_acumulada_seg || 0) + segPausados }).eq('id', pontoAtual.id);
+                verificarPonto(); carregarEstatisticas();
+            });
+        }
+
         function abrirModalEncerrar() {
+            const tempoAbertoMin = (new Date() - new Date(pontoAtual.entrada)) / 60000;
+            const avisoDiv = document.getElementById('modal-encerrar-aviso');
+            const avisoTexto = document.getElementById('modal-encerrar-texto-aviso');
+            const avisoIcone = document.getElementById('modal-encerrar-icone-aviso');
+
+            if (tempoAbertoMin < 30 && !xpGanhoNestaSessao) {
+                avisoDiv.style.background = 'rgba(239, 68, 68, 0.1)';
+                avisoDiv.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                avisoTexto.style.color = 'var(--vermelho)';
+                avisoIcone.style.color = 'var(--vermelho)';
+                avisoTexto.innerHTML = "<strong>Atenção:</strong> Você está encerrando antes dos 30 minutos. Você <strong>não receberá os +20 XP</strong> e deverá aguardar 30 minutos para iniciar novamente.";
+            } else {
+                avisoDiv.style.background = 'rgba(234, 179, 8, 0.1)';
+                avisoDiv.style.borderColor = 'rgba(234, 179, 8, 0.3)';
+                avisoTexto.style.color = 'var(--amarelo)';
+                avisoIcone.style.color = 'var(--amarelo)';
+                avisoTexto.innerHTML = "<strong>Atenção:</strong> Ao confirmar o encerramento, você deverá aguardar <strong>30 minutos</strong> para poder iniciar uma nova jornada.";
+            }
+
             document.getElementById('modal-encerrar').classList.add('ativo');
         }
 
-        function fecharModalEncerrar() {
-            document.getElementById('modal-encerrar').classList.remove('ativo');
-        }
+        function fecharModalEncerrar() { document.getElementById('modal-encerrar').classList.remove('ativo'); }
 
         async function confirmarEncerramento() {
             fecharModalEncerrar();
             const saida = new Date();
-            
             const btnSim = document.querySelector('#modal-encerrar .btn-sim');
-            const textoOriginal = btnSim.innerText;
-            btnSim.innerText = "Encerrando...";
-            btnSim.disabled = true;
+            btnSim.innerText = "Encerrando..."; btnSim.disabled = true;
 
             try {
                 await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtual.id);
-                
                 await sb.from('presencas').upsert([{ 
-                    passaporte: membroLogado.passaporte, 
-                    status: 'presente', 
-                    data: saida.toISOString().split('T')[0], 
-                    marcado_por_nome: 'Sistema', 
-                    marcado_em: saida.toISOString() 
+                    passaporte: membroLogado.passaporte, status: 'presente', data: saida.toISOString().split('T')[0], 
+                    marcado_por_nome: 'Sistema', marcado_em: saida.toISOString() 
                 }], { onConflict: 'data,passaporte' });
 
                 customAlert("Jornada encerrada com sucesso!");
-                
-                setTimeout(() => { 
-                    verificarPonto(); 
-                    carregarEstatisticas(); 
-                }, 1500);
-
-            } catch (error) {
-                customAlert("Erro ao encerrar jornada.", "erro");
-            } finally {
-                btnSim.innerText = textoOriginal;
-                btnSim.disabled = false;
-            }
+                setTimeout(() => { verificarPonto(); carregarEstatisticas(); }, 1500);
+            } catch (error) { customAlert("Erro ao encerrar jornada.", "erro"); } 
+            finally { btnSim.innerText = "Sim, Encerrar"; btnSim.disabled = false; }
         }
 
         // ==========================================
@@ -568,37 +632,27 @@
             const { data: pontosHoje } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).gte('entrada', hojeStr + 'T00:00:00Z');
             const { data: pontosSemana } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).gte('entrada', inicioSemanaStr + 'T00:00:00Z');
             
-            let minutosHoje = 0;
-            let pausasHoje = 0;
+            let minutosHoje = 0, pausasHoje = 0, minutosSemana = 0;
             
-            if (pontosHoje) {
-                pontosHoje.forEach(p => {
-                    let fim = p.saida ? new Date(p.saida) : new Date();
-                    let inicio = new Date(p.entrada);
-                    let difMin = (fim - inicio) / 60000;
-                    if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60);
-                    minutosHoje += Math.max(0, difMin);
-                    pausasHoje += (p.pausa_qtd || 0);
-                });
-            }
+            if (pontosHoje) pontosHoje.forEach(p => {
+                let fim = p.saida ? new Date(p.saida) : new Date();
+                let difMin = (fim - new Date(p.entrada)) / 60000;
+                if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60);
+                minutosHoje += Math.max(0, difMin);
+                pausasHoje += (p.pausa_qtd || 0);
+            });
 
-            let minutosSemana = 0;
-            if (pontosSemana) {
-                pontosSemana.forEach(p => {
-                    let fim = p.saida ? new Date(p.saida) : new Date();
-                    let inicio = new Date(p.entrada);
-                    let difMin = (fim - inicio) / 60000;
-                    if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60);
-                    minutosSemana += Math.max(0, difMin);
-                });
-            }
+            if (pontosSemana) pontosSemana.forEach(p => {
+                let fim = p.saida ? new Date(p.saida) : new Date();
+                let difMin = (fim - new Date(p.entrada)) / 60000;
+                if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60);
+                minutosSemana += Math.max(0, difMin);
+            });
 
             const formatarTempo = (mins) => {
                 mins = Math.floor(mins);
                 if (mins < 60) return `${mins}m`;
-                const h = Math.floor(mins / 60);
-                const m = mins % 60;
-                return `${h}h${String(m).padStart(2, '0')}`;
+                return `${Math.floor(mins / 60)}h${String(mins % 60).padStart(2, '0')}`;
             };
 
             document.getElementById('stat-hoje').innerText = formatarTempo(minutosHoje);
@@ -608,15 +662,11 @@
 
         function mudarAba(aba) {
             if (aba === 'ponto') {
-                document.getElementById('btn-aba-ponto').classList.add('ativo');
-                document.getElementById('btn-aba-historico').classList.remove('ativo');
-                document.getElementById('content-ponto').style.display = 'block';
-                document.getElementById('content-historico').style.display = 'none';
+                document.getElementById('btn-aba-ponto').classList.add('ativo'); document.getElementById('btn-aba-historico').classList.remove('ativo');
+                document.getElementById('content-ponto').style.display = 'block'; document.getElementById('content-historico').style.display = 'none';
             } else {
-                document.getElementById('btn-aba-ponto').classList.remove('ativo');
-                document.getElementById('btn-aba-historico').classList.add('ativo');
-                document.getElementById('content-ponto').style.display = 'none';
-                document.getElementById('content-historico').style.display = 'block';
+                document.getElementById('btn-aba-ponto').classList.remove('ativo'); document.getElementById('btn-aba-historico').classList.add('ativo');
+                document.getElementById('content-ponto').style.display = 'none'; document.getElementById('content-historico').style.display = 'block';
                 carregarHistorico();
             }
         }
@@ -625,9 +675,7 @@
             document.querySelectorAll('.btn-rapido').forEach(b => b.classList.remove('ativo'));
             if(event && event.target) event.target.classList.add('ativo');
 
-            const hoje = new Date();
-            let dataDe = new Date();
-            
+            const hoje = new Date(); let dataDe = new Date();
             if (tipo === 'hoje') dataDe = hoje;
             else if (tipo === '7dias') dataDe.setDate(hoje.getDate() - 7);
             else if (tipo === '30dias') dataDe.setDate(hoje.getDate() - 30);
@@ -645,19 +693,11 @@
             const resumoCard = document.getElementById('hist-resumo-card');
 
             if(!dataDe || !dataAte) return; 
-
             container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando registros...</p>';
             resumoCard.style.display = 'none';
 
-            const inicioDia = dataDe + 'T00:00:00Z';
-            const fimDia = dataAte + 'T23:59:59Z';
-
-            const { data, error } = await sb.from('pontos')
-                .select('*')
-                .eq('passaporte', membroLogado.passaporte)
-                .gte('entrada', inicioDia)
-                .lte('entrada', fimDia)
-                .order('entrada', { ascending: false });
+            const { data, error } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte)
+                .gte('entrada', dataDe + 'T00:00:00Z').lte('entrada', dataAte + 'T23:59:59Z').order('entrada', { ascending: false });
 
             if (error || !data || data.length === 0) {
                 container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Nenhum registro encontrado neste período.</p>';
@@ -665,13 +705,9 @@
             }
 
             dadosHistoricoGlobal = data;
-
-            let totalMinutos = 0;
-            let totalPausasMin = 0;
-            let diasUnicos = new Set();
-            let inicios = data.length;
-
+            let totalMinutos = 0, totalPausasMin = 0, diasUnicos = new Set(), inicios = data.length;
             let html = '';
+
             data.forEach(p => {
                 const dataEntrada = new Date(p.entrada);
                 const dataStr = dataEntrada.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'});
@@ -682,16 +718,12 @@
                 
                 let difMin = 0;
                 if (p.saida) {
-                    difMin = (new Date(p.saida) - new Date(p.entrada)) / 60000;
+                    difMin = (new Date(p.saida) - dataEntrada) / 60000;
                     const pausaMin = (p.pausa_acumulada_seg || 0) / 60;
-                    difMin -= pausaMin;
-                    totalMinutos += Math.max(0, difMin);
-                    totalPausasMin += pausaMin;
+                    difMin -= pausaMin; totalMinutos += Math.max(0, difMin); totalPausasMin += pausaMin;
                 }
 
-                const h = Math.floor(difMin / 60);
-                const m = Math.floor(difMin % 60);
-                const tempoTotalStr = p.saida ? `${h}h${String(m).padStart(2, '0')}` : '--';
+                const tempoTotalStr = p.saida ? `${Math.floor(difMin / 60)}h${String(Math.floor(difMin % 60)).padStart(2, '0')}` : '--';
                 const statusColor = p.saida ? 'var(--verde)' : 'var(--amarelo)';
 
                 html += `
@@ -701,64 +733,49 @@
                             <p class="hist-horas-detalhe"><i class="fas fa-sign-in-alt"></i> ${horaIn} <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> ${horaOut}</p>
                         </div>
                         <div class="hist-total-detalhe" style="color: ${statusColor};">${tempoTotalStr}</div>
-                    </div>
-                `;
+                    </div>`;
             });
 
             container.innerHTML = html;
             resumoCard.style.display = 'block';
 
-            const th = Math.floor(totalMinutos / 60);
-            const tm = Math.floor(totalMinutos % 60);
-            const tp_h = Math.floor(totalPausasMin / 60);
-            const tp_m = Math.floor(totalPausasMin % 60);
-
-                document.getElementById('resumo-avatar').innerText = membroLogado.nome.charAt(0).toUpperCase();
+            document.getElementById('resumo-avatar').innerText = membroLogado.nome.charAt(0).toUpperCase();
             document.getElementById('resumo-nome').innerText = membroLogado.nome;
-            document.getElementById('resumo-horas').innerText = `${th}h${String(tm).padStart(2, '0')}`;
+            document.getElementById('resumo-horas').innerText = `${Math.floor(totalMinutos / 60)}h${String(Math.floor(totalMinutos % 60)).padStart(2, '0')}`;
             document.getElementById('resumo-matricula').innerText = `Mat. ${membroLogado.passaporte}`;
             document.getElementById('resumo-dias').innerHTML = `<strong>${diasUnicos.size}</strong> dias`;
             document.getElementById('resumo-inicios').innerHTML = `<strong>${inicios}</strong> inícios`;
-            document.getElementById('resumo-pausas').innerText = `pausa ${tp_h}h${String(tp_m).padStart(2, '0')}`;
+            document.getElementById('resumo-pausas').innerText = `pausa ${Math.floor(totalPausasMin / 60)}h${String(Math.floor(totalPausasMin % 60)).padStart(2, '0')}`;
         }
 
         function exportarCSV() {
             if (dadosHistoricoGlobal.length === 0) return customAlert("Nenhum dado para exportar.", "erro");
-
             let csvContent = "Data,Entrada,Saida,Pausa (min),Total Trabalhado\n";
             dadosHistoricoGlobal.forEach(p => {
                 const dataEntrada = new Date(p.entrada);
-                const dataStr = dataEntrada.toLocaleDateString('pt-BR');
                 const horaIn = dataEntrada.toLocaleTimeString('pt-BR');
                 const horaOut = p.saida ? new Date(p.saida).toLocaleTimeString('pt-BR') : 'Em Aberto';
                 const pausaMin = ((p.pausa_acumulada_seg || 0) / 60).toFixed(0);
-                
                 let totalStr = 'Em Aberto';
                 if (p.saida) {
                     const dif = ((new Date(p.saida) - dataEntrada) / 60000) - pausaMin;
                     totalStr = `${Math.floor(dif / 60)}h${Math.floor(dif % 60)}m`;
                 }
-                csvContent += `${dataStr},${horaIn},${horaOut},${pausaMin},${totalStr}\n`;
+                csvContent += `${dataEntrada.toLocaleDateString('pt-BR')},${horaIn},${horaOut},${pausaMin},${totalStr}\n`;
             });
-
             const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement("a");
-            link.setAttribute("href", URL.createObjectURL(blob));
-            link.setAttribute("download", `relatorio_ponto_${membroLogado.passaporte}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
+            const link = document.createElement("a"); link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", `relatorio_${membroLogado.passaporte}.csv`);
+            document.body.appendChild(link); link.click(); document.body.removeChild(link);
             customAlert("Relatório exportado!");
         }
 
         function customAlert(msg, tipo='sucesso') {
             const a = document.getElementById('alerta-site'); const t = document.getElementById('alerta-texto'); const i = document.getElementById('alerta-icone');
-            t.innerText = msg; 
-            i.className = tipo === 'erro' ? 'fas fa-times-circle' : 'fas fa-check-circle';
+            t.innerText = msg; i.className = tipo === 'erro' ? 'fas fa-times-circle' : 'fas fa-check-circle';
             a.style.borderLeftColor = tipo === 'erro' ? 'var(--vermelho)' : 'var(--verde)';
             i.style.color = tipo === 'erro' ? 'var(--vermelho)' : 'var(--verde)';
-            a.classList.add('ativo'); 
-            setTimeout(() => a.classList.remove('ativo'), 3000);
+            a.classList.add('ativo'); setTimeout(() => a.classList.remove('ativo'), 3000);
         }
     </script>
 </body>
