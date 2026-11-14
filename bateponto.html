@@ -359,7 +359,7 @@
         if (ultimoPonto && ultimoPonto.saida) {
             const dataSaida = new Date(ultimoPonto.saida);
             const difMs = new Date() - dataSaida;
-            const tempoCastigoMs = 30 * 60 * 1000; 
+            const tempoCastigoMs = 0;  
 
             if (difMs < tempoCastigoMs) {
                 btnIniciar.disabled = true;
