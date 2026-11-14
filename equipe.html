@@ -18,62 +18,73 @@
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
     <style>
-        :root { --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; }
+        :root { --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; --azul: #3b82f6; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 15px; position: relative; }
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -2; }
         
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; z-index: 10; padding-bottom: 100px; margin-top: 10px; }
         
-        /* Aviso de Cooldown */
-        .aviso-bloqueio { background: rgba(234, 179, 8, 0.1); border: 1px solid var(--amarelo); border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 5px; }
-        .aviso-bloqueio i { font-size: 20px; color: var(--amarelo); }
-        .aviso-bloqueio div h4 { font-size: 12px; color: var(--texto-mutado); }
-        .aviso-bloqueio div p { font-size: 14px; color: #fff; font-weight: bold; }
+        /* Cabeçalho da Página */
+        .page-header { margin-bottom: 5px; }
+        .page-header h1 { font-family: 'Oswald'; font-size: 22px; color: #fff; text-transform: uppercase; }
+        .page-header p { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
+
+        /* Notificação de Troca (Estilo App) */
+        .aviso-bloqueio { background: #1c1a14; border: 1px solid rgba(234, 179, 8, 0.4); border-left: 4px solid var(--amarelo); border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px; margin-bottom: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .aviso-bloqueio i { font-size: 18px; color: var(--amarelo); }
+        .aviso-bloqueio div h4 { font-size: 11px; color: var(--amarelo); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;}
+        .aviso-bloqueio div p { font-size: 14px; color: #fff; font-weight: 600; }
 
         /* Card Principal */
         .card-escala { background: var(--vidro); backdrop-filter: blur(15px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
-        .escala-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
-        .escala-header h3 { font-family: 'Oswald'; font-size: 12px; color: var(--verde); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
-        .escala-header h2 { font-family: 'Oswald'; font-size: 32px; color: #fff; }
-        .tag-servico { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
+        .escala-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .escala-header h3 { font-family: 'Oswald'; font-size: 11px; color: var(--verde); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .escala-header h2 { font-family: 'Oswald'; font-size: 32px; color: #fff; line-height: 1; }
+        .tag-servico { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; display: flex; align-items: center; gap: 5px;}
 
-        /* Grid de Informações (6 blocos) */
-        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .box-info { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; }
-        .box-info p { font-size: 10px; color: var(--texto-mutado); margin-bottom: 5px; text-transform: uppercase; font-weight: 600;}
-        .box-info h4 { font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .box-info i { font-size: 12px; color: var(--verde); margin-right: 5px; }
-        .box-info.destaque { border-color: rgba(234, 179, 8, 0.3); }
-        .box-info.destaque h4 { color: var(--amarelo); }
+        /* Grid de Informações (Padrão BPM) */
+        .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;}
+        .box-info { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.03); border-radius: 8px; padding: 10px 12px; display: flex; flex-direction: column; gap: 4px;}
+        .box-info p { font-size: 9px; color: var(--texto-mutado); text-transform: uppercase; font-weight: 600; letter-spacing: 0.5px;}
+        .box-info h4 { font-size: 14px; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .box-info i { font-size: 10px; color: var(--verde); margin-right: 3px; }
+        
+        /* Destaques */
+        .box-info.destaque-troca { border-color: rgba(234, 179, 8, 0.2); }
+        .box-info.destaque-troca h4 { color: var(--amarelo); }
+        .box-info.destaque-assento { border-color: rgba(34, 197, 94, 0.2); }
+        .box-info.destaque-assento h4 { color: var(--verde); }
 
         /* Integrantes */
-        .integrantes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .integrantes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 5px;}
         .integrantes-header h3 { font-family: 'Oswald'; font-size: 16px; color: #fff; }
         .badge-qtd { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; }
         
         .integrante { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; }
-        .integrante.eu { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
-        .integrante-info { display: flex; align-items: center; gap: 10px; }
-        .integrante-avatar { width: 35px; height: 35px; border-radius: 8px; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; color: var(--texto-mutado); }
-        .integrante-nome { font-size: 13px; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 6px;}
+        .integrante.eu { border-color: rgba(34, 197, 94, 0.4); background: rgba(34, 197, 94, 0.05); }
+        
+        .integrante-info { display: flex; align-items: center; gap: 12px; }
+        .integrante-avatar { width: 35px; height: 35px; border-radius: 8px; background: rgba(255,255,255,0.05); display: flex; justify-content: center; align-items: center; color: var(--texto-mutado); font-size: 14px;}
+        
+        .integrante-nome { font-size: 13px; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 6px; margin-bottom: 2px;}
         .integrante-pass { font-size: 11px; color: var(--texto-mutado); }
         
-        /* Bolinha de Status */
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
-        .dot.ativo { background: var(--verde); box-shadow: 0 0 6px var(--verde); }
-        .dot.pausado { background: var(--amarelo); box-shadow: 0 0 6px var(--amarelo); }
+        /* Bolinha de Status Corrigida */
+        .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0;}
+        .dot.ativo { background: var(--verde); box-shadow: 0 0 6px rgba(34, 197, 94, 0.5); }
+        .dot.pausado { background: var(--amarelo); box-shadow: 0 0 6px rgba(234, 179, 8, 0.5); }
 
-        .integrante-tempo { font-size: 11px; color: var(--texto-mutado); text-align: right; }
-        .integrante-tempo span { color: #fff; display: block; font-weight: bold; }
+        .integrante-tempo { font-size: 10px; color: var(--texto-mutado); text-align: right; text-transform: uppercase;}
+        .integrante-tempo span { color: #fff; display: block; font-weight: 600; font-size: 12px;}
 
         /* Botão Trocar */
-        .btn-trocar { width: 100%; background: transparent; border: 1px solid var(--texto-mutado); color: var(--texto-mutado); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; cursor: not-allowed; display: flex; justify-content: center; align-items: center; gap: 8px; text-transform: uppercase; margin-top: 15px;}
+        .btn-trocar { width: 100%; background: transparent; border: 1px solid var(--texto-mutado); color: var(--texto-mutado); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; cursor: not-allowed; display: flex; justify-content: center; align-items: center; gap: 8px; text-transform: uppercase; margin-top: 15px; transition: 0.3s;}
         .btn-trocar.liberado { border-color: var(--verde); color: var(--verde); cursor: pointer; }
 
         /* Rodapé Sincronizado */
-        .rodape-sync { display: flex; justify-content: space-between; margin-top: 15px; font-size: 10px; color: var(--texto-mutado); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+        .rodape-sync { display: flex; justify-content: space-between; margin-top: 20px; font-size: 10px; color: var(--texto-mutado); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
         .rodape-sync i { margin-right: 4px; color: var(--verde); }
 
         /* Tela Bloqueio */
@@ -89,13 +100,19 @@
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
-    </head>
-    <body>
+</head>
+<body>
     <div class="fundo-degrade"></div>
     
     <div class="container" id="container-principal" style="display: none;">
         
-        <!-- Aviso de Troca -->
+        <!-- Cabeçalho Explicativo -->
+        <div class="page-header">
+            <h1>Minha Equipe</h1>
+            <p>Acompanhe sua alocação atual e os membros ao seu redor.</p>
+        </div>
+
+        <!-- Notificação de Troca Estilo App -->
         <div class="aviso-bloqueio" id="aviso-cooldown" style="display: none;">
             <i class="fas fa-clock"></i>
             <div>
@@ -111,10 +128,10 @@
                     <h3>Escala Atual</h3>
                     <h2 id="nome-equipe">---</h2>
                 </div>
-                <div class="tag-servico"><i class="fas fa-circle" style="font-size: 8px; margin-right: 5px;"></i> Em Serviço</div>
+                <div class="tag-servico"><i class="fas fa-circle" style="font-size: 6px;"></i> Em Serviço</div>
             </div>
 
-            <!-- Grid com 6 blocos de informação -->
+            <!-- Grid de Informações -->
             <div class="grid-info">
                 <div class="box-info">
                     <p><i class="fas fa-map-marker-alt"></i> Área</p>
@@ -128,10 +145,13 @@
                     <p><i class="fas fa-shield-alt"></i> Comando</p>
                     <h4 id="info-lider">---</h4>
                 </div>
-                <div class="box-info destaque">
-                    <p><i class="fas fa-exchange-alt"></i> Próxima Troca</p>
-                    <h4 id="info-troca">Aguardando...</h4>
+                
+                <!-- Card de Assento (Só aparece para Rotas) -->
+                <div class="box-info destaque-assento" id="box-assento" style="display: none;">
+                    <p><i class="fas fa-car"></i> Meu Assento</p>
+                    <h4 id="info-assento">---</h4>
                 </div>
+                
                 <div class="box-info">
                     <p><i class="fas fa-sign-in-alt"></i> Minha Entrada</p>
                     <h4 id="info-entrada">--:--</h4>
@@ -144,13 +164,14 @@
 
             <!-- Lista de Integrantes -->
             <div class="integrantes-header">
-                <h3>Integrantes</h3>
+                <h3>Quem está comigo</h3>
                 <span class="badge-qtd" id="badge-qtd">0 INTEGRANTES</span>
             </div>
             <div id="lista-integrantes">
                 <!-- Injetado via JS -->
             </div>
 
+            <!-- Botão de Troca -->
             <button class="btn-trocar" id="btn-trocar" onclick="solicitarTroca()" disabled>
                 <i class="fas fa-exchange-alt"></i> <span id="txt-trocar">Aguarde para trocar</span>
             </button>
@@ -185,7 +206,6 @@
         let intervaloRelogio = null;
         let intervaloAtualizacaoSync = null;
 
-        // Hierarquia de cargos para descobrir quem é o Líder da Equipe
         const CARGOS_HIERARQUIA = [
             'Líder da organização', '01 da organização', 'Coordenador', 
             'Gerente geral', 'Gerente', 'Auxiliar - Gerência', 
@@ -199,7 +219,7 @@
             
             carregarEquipe();
             atualizarSync();
-            intervaloAtualizacaoSync = setInterval(atualizarSync, 60000); // Atualiza a hora do sync a cada minuto
+            intervaloAtualizacaoSync = setInterval(atualizarSync, 60000);
         });
 
         async function carregarEquipe() {
@@ -210,10 +230,10 @@
                 document.getElementById('tela-bloqueio').style.display = 'none';
                 document.getElementById('container-principal').style.display = 'flex';
 
-                // Puxa os dados da equipe
                 const { data: equipeInfo } = await sb.from('equipes').select('*').eq('id', pontoAtual.equipe_id).single();
                 
-                document.getElementById('nome-equipe').innerText = equipeInfo ? equipeInfo.nome : 'Desconhecida';
+                const nomeEquipe = equipeInfo ? equipeInfo.nome : 'Desconhecida';
+                document.getElementById('nome-equipe').innerText = nomeEquipe;
                 document.getElementById('info-area').innerText = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
                 document.getElementById('info-funcao').innerText = equipeInfo && equipeInfo.funcao ? equipeInfo.funcao : 'Geral';
                 
@@ -230,7 +250,15 @@
                     document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
                 }, 1000);
 
-                carregarIntegrantes(pontoAtual.equipe_id);
+                // Lógica do Aviso Amarelo: Só mostra se ele já trocou de equipe (diferença de + de 10 seg entre entrada e troca)
+                const difTempo = new Date(pontoAtual.troca_equipe_em || 0) - new Date(pontoAtual.entrada);
+                if (difTempo > 10000) {
+                    document.getElementById('aviso-cooldown').style.display = 'flex';
+                } else {
+                    document.getElementById('aviso-cooldown').style.display = 'none';
+                }
+
+                await carregarIntegrantes(pontoAtual.equipe_id, nomeEquipe);
                 iniciarCooldown(pontoAtual.troca_equipe_em || pontoAtual.entrada);
 
             } else {
@@ -239,9 +267,9 @@
             }
         }
 
-        async function carregarIntegrantes(equipeId) {
-            // Puxa todos os pontos ativos nessa equipe
-            const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']);
+        async function carregarIntegrantes(equipeId, nomeEquipe) {
+            // Puxa membros ordenados por entrada para definir os assentos
+            const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']).order('entrada', { ascending: true });
             
             const container = document.getElementById('lista-integrantes');
             if (!membrosAtivos || membrosAtivos.length === 0) {
@@ -251,7 +279,7 @@
 
             document.getElementById('badge-qtd').innerText = `${membrosAtivos.length} INTEGRANTES`;
 
-            // Descobrir quem é o Líder (maior cargo)
+            // Descobrir Líder
             let passaportes = membrosAtivos.map(m => String(m.passaporte));
             const { data: dadosMembros } = await sb.from('membros').select('passaporte, cargo').in('passaporte', passaportes);
 
@@ -270,7 +298,19 @@
             }
             document.getElementById('info-lider').innerText = liderNome;
 
-            // Renderizar lista de integrantes
+            // Lógica do Assento (Apenas para ROTAS)
+            const isRota = nomeEquipe.toUpperCase().includes('ROTA');
+            if (isRota) {
+                document.getElementById('box-assento').style.display = 'flex';
+                const indexMeuAssento = membrosAtivos.findIndex(m => String(m.passaporte) === String(membroLogado.passaporte));
+                // P1, P2, P3, P4 baseado no index (0 = P1)
+                const meuAssento = indexMeuAssento >= 0 && indexMeuAssento < 4 ? `P${indexMeuAssento + 1}` : 'Excedente';
+                document.getElementById('info-assento').innerText = meuAssento;
+            } else {
+                document.getElementById('box-assento').style.display = 'none';
+            }
+
+            // Renderizar lista
             let html = '';
             membrosAtivos.forEach(m => {
                 const isEu = String(m.passaporte) === String(membroLogado.passaporte);
@@ -282,8 +322,8 @@
                         <div class="integrante-info">
                             <div class="integrante-avatar"><i class="fas fa-user"></i></div>
                             <div>
-                                <p class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''} <div class="dot ${statusClass}"></div></p>
-                                <p class="integrante-pass">Passaporte ${m.passaporte} • ${m.posicao}</p>
+                                <div class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''} <span class="dot ${statusClass}"></span></div>
+                                <div class="integrante-pass">Passaporte ${m.passaporte} • ${m.posicao}</div>
                             </div>
                         </div>
                         <div class="integrante-tempo">desde<span>${hora}</span></div>
@@ -296,7 +336,6 @@
         function iniciarCooldown(trocaEquipeEm) {
             if (intervaloCooldown) clearInterval(intervaloCooldown);
             
-            const aviso = document.getElementById('aviso-cooldown');
             const btn = document.getElementById('btn-trocar');
             const txt = document.getElementById('txt-trocar');
             const timerSpan = document.getElementById('timer-cooldown');
@@ -311,13 +350,12 @@
                 
                 if (diferenca >= TEMPO_COOLDOWN_MS) {
                     clearInterval(intervaloCooldown);
-                    aviso.style.display = 'none';
+                    document.getElementById('aviso-cooldown').style.display = 'none';
                     btn.classList.add('liberado');
                     btn.disabled = false;
                     txt.innerText = 'Trocar de Equipe';
-                    infoTrocaBox.innerText = 'Liberado';
+                    infoTrocaBox.innerText = 'Disponível';
                 } else {
-                    aviso.style.display = 'flex';
                     const restante = TEMPO_COOLDOWN_MS - diferenca;
                     const mins = Math.floor(restante / 60000);
                     const segs = Math.floor((restante % 60000) / 1000);
@@ -333,13 +371,16 @@
             if(!confirm("Deseja realmente trocar de equipe? Você será realocado.")) return;
             
             try {
+                // Pega equipes ativas e filtra a atual
                 const { data: equipes } = await sb.from('equipes').select('*').eq('ativa', true);
                 let opcoes = equipes.filter(e => e.id !== pontoAtual.equipe_id);
                 
                 if (opcoes.length === 0) opcoes = equipes; 
 
+                // Sorteia a nova
                 const novaEquipe = opcoes[Math.floor(Math.random() * opcoes.length)];
                 
+                // Atualiza a entrada para a hora atual (para o assento resetar) e marca a troca
                 await sb.from('pontos').update({ 
                     equipe_id: novaEquipe.id,
                     posicao: novaEquipe.nome,
@@ -347,6 +388,7 @@
                 }).eq('id', pontoAtual.id);
                 
                 alert(`Você foi realocado para a equipe ${novaEquipe.nome}!`);
+                document.getElementById('aviso-cooldown').style.display = 'flex'; // Mostra o aviso agora que trocou
                 carregarEquipe();
             } catch (e) {
                 alert("Erro ao trocar de equipe.");
