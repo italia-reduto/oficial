@@ -30,23 +30,21 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 15px; position: relative; overflow-x: hidden; }
-        
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -1; }
 
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; z-index: 10; padding-bottom: 100px; margin-top: 10px; }
         
-        /* Topo */
+        /* Topo e Info */
         .topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .titulo { font-family: 'Oswald'; font-size: 24px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .subtitulo { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
-
-        /* Info Usuario */
+        
         .info-usuario { display: flex; gap: 15px; margin-bottom: 5px; background: var(--vidro); backdrop-filter: blur(10px); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--borda); }
         .info-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--texto-mutado); }
         .info-item strong { color: #fff; font-weight: 500; }
         .info-item i { color: var(--verde); font-size: 14px; }
 
-        /* Grid Stats */
+        /* Grid Stats Topo */
         .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .card-stat { background: var(--vidro); backdrop-filter: blur(10px); border: 1px solid var(--borda); border-radius: 10px; padding: 12px 15px; }
         .stat-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--texto-mutado); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
@@ -54,53 +52,82 @@
         .stat-valor { font-family: 'Oswald'; font-size: 22px; color: #fff; }
 
         /* Painel Principal */
-        .painel-principal { background: var(--vidro); backdrop-filter: blur(15px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .painel-principal { background: var(--vidro); backdrop-filter: blur(15px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
         /* Abas */
-        .abas-internas { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;}
+        .abas-internas { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
         .aba-btn { flex: 1; padding: 10px; border: 1px solid transparent; background: transparent; color: var(--texto-mutado); font-family: 'Oswald'; font-size: 14px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 8px; transition: 0.3s; }
         .aba-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); }
         
-        .cronometro-display { font-family: 'Oswald'; font-weight: 500; font-size: 56px; color: #fff; line-height: 1; margin-bottom: 5px; letter-spacing: 1px;}
-        .cronometro-label { font-size: 11px; color: var(--texto-mutado); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;}
-
-        /* Botão Iniciar */
+        /* TELA DE PONTO */
+        #content-ponto { text-align: center; }
+        .cronometro-display { font-family: 'Oswald'; font-weight: 500; font-size: 56px; color: #fff; line-height: 1; margin-bottom: 5px; letter-spacing: 1px; }
+        .cronometro-label { font-size: 11px; color: var(--texto-mutado); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-iniciar { width: 100%; background: var(--verde); color: #000; border: none; padding: 16px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s; }
         .btn-iniciar:hover { background: #4ade80; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.2); }
-
         #tela-ativo { display: none; flex-direction: column; text-align: center; }
-        
         .tag-ponto { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto 15px auto; }
         .tag-ponto .dot { width: 8px; height: 8px; background: var(--verde); border-radius: 50%; box-shadow: 0 0 8px var(--verde); }
         .tag-ponto.pausado { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: var(--amarelo); }
         .tag-ponto.pausado .dot { background: var(--amarelo); box-shadow: 0 0 8px var(--amarelo); }
-
         .botoes-acao { display: flex; gap: 10px; margin-top: 20px; }
         .btn-acao { flex: 1; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 6px; background: transparent; }
         .btn-pausar { border: 1px solid rgba(234, 179, 8, 0.3); color: var(--amarelo); }
-        .btn-pausar:hover { background: rgba(234, 179, 8, 0.1); }
         .btn-retomar { border: 1px solid rgba(34, 197, 94, 0.3); color: var(--verde); display: none; }
-        .btn-retomar:hover { background: rgba(34, 197, 94, 0.1); }
         .btn-encerrar { border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); }
-        .btn-encerrar:hover { background: rgba(239, 68, 68, 0.1); }
 
-        /* HISTÓRICO */
-        #content-historico { display: none; text-align: left; max-height: 300px; overflow-y: auto; padding-right: 5px; }
-        .hist-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .hist-item:last-child { border-bottom: none; }
-        .hist-data { font-size: 13px; color: #fff; font-weight: 600; }
-        .hist-horas { font-size: 11px; color: var(--texto-mutado); margin-top: 2px; }
-        .hist-total { font-family: 'Oswald'; font-size: 16px; color: var(--verde); }
+        /* ==========================================
+           TELA DE HISTÓRICO (ESTILO ITÁLIA 2.0)
+           ========================================== */
+        #content-historico { display: none; text-align: left; }
+        
+        .hist-header-desc { font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px; line-height: 1.4; }
+        
+        /* Filtros e Botões Rápidos */
+        .hist-filtros { display: flex; gap: 10px; margin-bottom: 10px; }
+        .filtro-group { flex: 1; }
+        .filtro-group label { font-size: 10px; color: var(--texto-mutado); font-weight: 600; margin-bottom: 5px; display: block; text-transform: uppercase; }
+        .filtro-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); color: #fff; padding: 10px; border-radius: 8px; font-family: 'Inter'; font-size: 12px; outline: none; }
+        .filtro-input:focus { border-color: var(--verde); }
+        
+        .hist-botoes-rapidos { display: flex; gap: 8px; margin-bottom: 15px; }
+        .btn-rapido { flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--texto-mutado); padding: 8px 0; border-radius: 6px; font-family: 'Inter'; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; text-transform: uppercase;}
+        .btn-rapido:hover, .btn-rapido.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); }
+        
+        .btn-csv { width: 100%; background: transparent; border: 1px solid var(--borda); color: var(--texto); padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; transition: 0.2s; text-transform: uppercase;}
+        .btn-csv:hover { background: rgba(255,255,255,0.05); }
+
+        /* Card de Resumo (Estilo do Dashboard) */
+        .hist-resumo { background: rgba(0,0,0,0.3); border: 1px solid var(--borda); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .resumo-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
+        .resumo-user { display: flex; align-items: center; gap: 10px; }
+        .resumo-avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(34,197,94,0.1); border: 1px solid var(--verde); color: var(--verde); display: flex; justify-content: center; align-items: center; font-family: 'Oswald'; font-size: 18px; font-weight: bold; }
+        .resumo-nome { font-size: 14px; color: #fff; font-weight: 600; font-family: 'Oswald'; letter-spacing: 1px;}
+        .resumo-total { text-align: right; }
+        .resumo-total h4 { font-family: 'Oswald'; font-size: 24px; color: var(--verde); }
+        .resumo-total p { font-size: 10px; color: var(--texto-mutado); text-transform: uppercase; }
+        
+        .resumo-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+        .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 11px; color: var(--texto-mutado); }
+        .badge strong { color: #fff; }
+
+        /* Lista Detalhada (Cards estilo Itália) */
+        .hist-lista-titulo { font-family: 'Oswald'; font-size: 16px; color: var(--texto-mutado); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
+        .hist-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--verde); border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
+        .hist-item:hover { background: rgba(255,255,255,0.04); }
+        .hist-data-detalhe { font-size: 13px; color: #fff; font-weight: 600; font-family: 'Oswald'; letter-spacing: 0.5px;}
+        .hist-horas-detalhe { font-size: 11px; color: var(--texto-mutado); margin-top: 4px; display: flex; gap: 10px;}
+        .hist-total-detalhe { font-family: 'Oswald'; font-size: 18px; color: var(--verde); }
 
         /* Alertas */
-        .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 9999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+        .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 9999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
         .alerta-custom.ativo { top: 20px; }
         .alerta-custom i { font-size: 20px; color: var(--verde); }
         .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500;}
         .alerta-custom.erro { border-left-color: var(--vermelho); } .alerta-custom.erro i { color: var(--vermelho); }
 
         /* Menu Inferior */
-        .menu-inferior { position: fixed; bottom: 15px; left: 0; right: 0; margin: 0 auto; width: 90%; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 20px; display: flex; justify-content: space-around; padding: 8px 10px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .menu-inferior { position: fixed; bottom: 15px; left: 0; right: 0; margin: 0 auto; width: 90%; max-width: 400px; background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-radius: 20px; display: flex; justify-content: space-around; padding: 8px 10px; z-index: 9999; }
         .item-menu { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--texto-mutado); font-size: 9px; font-weight: 500; padding: 6px 12px; border-radius: 10px; transition: 0.2s;}
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
@@ -147,20 +174,17 @@
                 <button class="aba-btn" id="btn-aba-historico" onclick="mudarAba('historico')">Histórico</button>
             </div>
 
+            <!-- ABA: MEU PONTO -->
             <div id="content-ponto">
-                <!-- TELA INICIAL -->
                 <div id="tela-inicial">
                     <div class="cronometro-display">00:00:00</div>
                     <p class="cronometro-label">Tempo de jornada</p>
                     <button class="btn-iniciar" onclick="iniciarJornada()"><i class="fas fa-play"></i> Iniciar Jornada</button>
                 </div>
-
-                <!-- TELA ATIVA -->
                 <div id="tela-ativo">
                     <div class="tag-ponto" id="tag-status"><div class="dot"></div> <span id="txt-tag">Em Serviço</span></div>
                     <div class="cronometro-display" id="cronometro-display">00:00:00</div>
                     <p class="cronometro-label">Tempo de jornada</p>
-                    
                     <div class="botoes-acao">
                         <button class="btn-acao btn-pausar" id="btn-pausar" onclick="pausarTurno()"><i class="fas fa-pause"></i> Pausar</button>
                         <button class="btn-acao btn-retomar" id="btn-retomar" onclick="retomarTurno()"><i class="fas fa-play"></i> Retomar</button>
@@ -169,10 +193,56 @@
                 </div>
             </div>
 
-            <!-- TELA DE HISTÓRICO -->
+            <!-- ABA: HISTÓRICO ITÁLIA -->
             <div id="content-historico">
-                <div id="lista-historico">
-                    <p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Carregando histórico...</p>
+                <h3 class="hist-lista-titulo">Registro de Atividades</h3>
+                <p class="hist-header-desc">Selecione o período para auditar seus horários, pausas e totais de serviço.</p>
+                
+                <div class="hist-filtros">
+                    <div class="filtro-group">
+                        <label>De</label>
+                        <input type="date" id="filtro-de" class="filtro-input">
+                    </div>
+                    <div class="filtro-group">
+                        <label>Até</label>
+                        <input type="date" id="filtro-ate" class="filtro-input">
+                    </div>
+                </div>
+
+                <div class="hist-botoes-rapidos">
+                    <button class="btn-rapido" onclick="setFiltroRapido('hoje')">Hoje</button>
+                    <button class="btn-rapido ativo" onclick="setFiltroRapido('7dias')">7 dias</button>
+                    <button class="btn-rapido" onclick="setFiltroRapido('30dias')">30 dias</button>
+                    <button class="btn-rapido" onclick="setFiltroRapido('90dias')">90 dias</button>
+                </div>
+
+                <button class="btn-csv" onclick="exportarCSV()"><i class="fas fa-download"></i> Exportar Relatório</button>
+
+                <!-- Card de Resumo -->
+                <div class="hist-resumo" id="hist-resumo-card" style="display: none;">
+                    <div class="resumo-topo">
+                        <div class="resumo-user">
+                            <div class="resumo-avatar" id="resumo-avatar">D</div>
+                            <div>
+                                <p class="resumo-nome" id="resumo-nome">Membro</p>
+                            </div>
+                        </div>
+                        <div class="resumo-total">
+                            <h4 id="resumo-horas">0h00</h4>
+                            <p>Total Trabalhado</p>
+                        </div>
+                    </div>
+                    <div class="resumo-badges">
+                        <span class="badge" id="resumo-matricula">Mat. ---</span>
+                        <span class="badge" id="resumo-dias"><strong>0</strong> dias</span>
+                        <span class="badge" id="resumo-inicios"><strong>0</strong> inícios</span>
+                        <span class="badge" id="resumo-pausas">pausa 0h00</span>
+                    </div>
+                </div>
+
+                <!-- Lista Detalhada -->
+                <div id="hist-lista-itens">
+                    <!-- Injetado via JS -->
                 </div>
             </div>
         </div>
@@ -186,12 +256,13 @@
         <a href="equipe.html" class="item-menu"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Tickets</span></a>
         <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
-    </nav>
-        <script>
+                                                                                              </nav>
+                                                                                                  <script>
         let membroLogado = null;
         let pontoAtual = null;
         let intervaloCronometro = null;
         let intervaloStats = null;
+        let dadosHistoricoGlobal = []; // Guarda os dados para exportar CSV
 
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
@@ -203,11 +274,15 @@
 
             verificarPonto();
             carregarEstatisticas();
-            
             intervaloStats = setInterval(carregarEstatisticas, 60000);
+
+            // Inicia o filtro de histórico padrão para "7 dias"
+            setFiltroRapido('7dias');
         });
 
-        // LÓGICA DAS ABAS
+        // ==========================================
+        // LÓGICA DE ABAS E HISTÓRICO
+        // ==========================================
         function mudarAba(aba) {
             if (aba === 'ponto') {
                 document.getElementById('btn-aba-ponto').classList.add('ativo');
@@ -219,60 +294,162 @@
                 document.getElementById('btn-aba-historico').classList.add('ativo');
                 document.getElementById('content-ponto').style.display = 'none';
                 document.getElementById('content-historico').style.display = 'block';
-                carregarHistorico(); // Busca os dados quando clica
+                carregarHistorico();
             }
         }
 
-        async function carregarHistorico() {
-            const container = document.getElementById('lista-historico');
-            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando histórico...</p>';
+        function setFiltroRapido(tipo) {
+            // Remove active de todos
+            document.querySelectorAll('.btn-rapido').forEach(b => b.classList.remove('ativo'));
+            // Adiciona active no clicado
+            event.target.classList.add('ativo');
+
+            const hoje = new Date();
+            let dataDe = new Date();
             
-            // Busca os últimos 15 registros desse membro
+            if (tipo === 'hoje') {
+                dataDe = hoje;
+            } else if (tipo === '7dias') {
+                dataDe.setDate(hoje.getDate() - 7);
+            } else if (tipo === '30dias') {
+                dataDe.setDate(hoje.getDate() - 30);
+            } else if (tipo === '90dias') {
+                dataDe.setDate(hoje.getDate() - 90);
+            }
+
+            // Formata YYYY-MM-DD
+            document.getElementById('filtro-de').value = dataDe.toISOString().split('T')[0];
+            document.getElementById('filtro-ate').value = hoje.toISOString().split('T')[0];
+            
+            carregarHistorico();
+        }
+
+        async function carregarHistorico() {
+            const dataDe = document.getElementById('filtro-de').value;
+            const dataAte = document.getElementById('filtro-ate').value;
+            const container = document.getElementById('hist-lista-itens');
+            const resumoCard = document.getElementById('hist-resumo-card');
+
+            if(!dataDe || !dataAte) return; // Aguarda preencher as datas
+
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando registros...</p>';
+            resumoCard.style.display = 'none';
+
+            // Ajusta as datas para pegar o dia inteiro (00:00 até 23:59)
+            const inicioDia = dataDe + 'T00:00:00Z';
+            const fimDia = dataAte + 'T23:59:59Z';
+
             const { data, error } = await sb.from('pontos')
                 .select('*')
                 .eq('passaporte', membroLogado.passaporte)
-                .order('entrada', { ascending: false })
-                .limit(15);
+                .gte('entrada', inicioDia)
+                .lte('entrada', fimDia)
+                .order('entrada', { ascending: false });
 
-            if (error) {
-                container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao carregar histórico.</p>';
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Nenhum registro encontrado neste período.</p>';
                 return;
             }
 
-            if (!data || data.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Nenhum registro encontrado.</p>';
-                return;
-            }
+            dadosHistoricoGlobal = data; // Salva para o CSV
+
+            let totalMinutos = 0;
+            let totalPausasMin = 0;
+            let diasUnicos = new Set();
+            let inicios = data.length;
 
             let html = '';
             data.forEach(p => {
                 const dataEntrada = new Date(p.entrada);
-                const dataStr = dataEntrada.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit'});
+                const dataStr = dataEntrada.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'});
+                diasUnicos.add(dataStr);
+
                 const horaIn = dataEntrada.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 const horaOut = p.saida ? new Date(p.saida).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) : 'Em Aberto';
                 
-                let tempoTotalStr = '--';
+                let difMin = 0;
                 if (p.saida) {
-                    let difMin = (new Date(p.saida) - new Date(p.entrada)) / 60000;
-                    if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60);
-                    const h = Math.floor(difMin / 60);
-                    const m = Math.floor(difMin % 60);
-                    tempoTotalStr = `${h}h${String(m).padStart(2, '0')}`;
+                    difMin = (new Date(p.saida) - new Date(p.entrada)) / 60000;
+                    const pausaMin = (p.pausa_acumulada_seg || 0) / 60;
+                    difMin -= pausaMin;
+                    totalMinutos += Math.max(0, difMin);
+                    totalPausasMin += pausaMin;
                 }
 
+                const h = Math.floor(difMin / 60);
+                const m = Math.floor(difMin % 60);
+                const tempoTotalStr = p.saida ? `${h}h${String(m).padStart(2, '0')}` : '--';
+                const statusColor = p.saida ? 'var(--verde)' : 'var(--amarelo)';
+
                 html += `
-                    <div class="hist-item">
+                    <div class="hist-item" style="border-left-color: ${statusColor}">
                         <div>
-                            <p class="hist-data">${dataStr}</p>
-                            <p class="hist-horas">${horaIn} às ${horaOut}</p>
+                            <p class="hist-data-detalhe">${dataStr}</p>
+                            <p class="hist-horas-detalhe"><i class="fas fa-sign-in-alt"></i> ${horaIn} <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> ${horaOut}</p>
                         </div>
-                        <div class="hist-total" style="color: ${p.saida ? 'var(--verde)' : 'var(--amarelo)'};">${p.saida ? tempoTotalStr : 'Ativo'}</div>
+                        <div class="hist-total-detalhe" style="color: ${statusColor};">${tempoTotalStr}</div>
                     </div>
                 `;
             });
+
             container.innerHTML = html;
+
+            // Preenche o Resumo
+            resumoCard.style.display = 'block';
+            const th = Math.floor(totalMinutos / 60);
+            const tm = Math.floor(totalMinutos % 60);
+            const tp_h = Math.floor(totalPausasMin / 60);
+            const tp_m = Math.floor(totalPausasMin % 60);
+
+            document.getElementById('resumo-avatar').innerText = membroLogado.nome.charAt(0).toUpperCase();
+            document.getElementById('resumo-nome').innerText = membroLogado.nome;
+            document.getElementById('resumo-horas').innerText = `${th}h${String(tm).padStart(2, '0')}`;
+            document.getElementById('resumo-matricula').innerText = `Mat. ${membroLogado.passaporte}`;
+            document.getElementById('resumo-dias').innerHTML = `<strong>${diasUnicos.size}</strong> dias`;
+            document.getElementById('resumo-inicios').innerHTML = `<strong>${inicios}</strong> inícios`;
+            document.getElementById('resumo-pausas').innerText = `pausa ${tp_h}h${String(tp_m).padStart(2, '0')}`;
         }
 
+        function exportarCSV() {
+            if (dadosHistoricoGlobal.length === 0) {
+                return customAlert("Nenhum dado para exportar.", "erro");
+            }
+
+            let csvContent = "Data,Entrada,Saida,Pausa (min),Total Trabalhado\n";
+
+            dadosHistoricoGlobal.forEach(p => {
+                const dataEntrada = new Date(p.entrada);
+                const dataStr = dataEntrada.toLocaleDateString('pt-BR');
+                const horaIn = dataEntrada.toLocaleTimeString('pt-BR');
+                const horaOut = p.saida ? new Date(p.saida).toLocaleTimeString('pt-BR') : 'Em Aberto';
+                const pausaMin = ((p.pausa_acumulada_seg || 0) / 60).toFixed(0);
+                
+                let totalStr = 'Em Aberto';
+                if (p.saida) {
+                    const dif = ((new Date(p.saida) - dataEntrada) / 60000) - pausaMin;
+                    const h = Math.floor(dif / 60);
+                    const m = Math.floor(dif % 60);
+                    totalStr = `${h}h${m}m`;
+                }
+
+                csvContent += `${dataStr},${horaIn},${horaOut},${pausaMin},${totalStr}\n`;
+            });
+
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }); // \ufeff é BOM para o Excel ler acentos
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            link.setAttribute("href", url);
+            link.setAttribute("download", `relatorio_ponto_${membroLogado.passaporte}.csv`);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            customAlert("Relatório exportado!");
+        }
+
+        // ==========================================
+        // LÓGICA DO CRONÔMETRO E PONTO
+        // ==========================================
         async function verificarPonto() {
             const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
@@ -401,7 +578,7 @@
                 marcado_em: saida.toISOString() 
             }], { onConflict: 'data,passaporte' });
 
-            customAlert("Turno encerrado! Presença registrada.");
+            customAlert("Turno encerrado!");
             setTimeout(() => { verificarPonto(); carregarEstatisticas(); }, 1500);
         }
 
