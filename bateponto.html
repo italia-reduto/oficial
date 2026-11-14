@@ -38,7 +38,6 @@
         .topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
         .titulo { font-family: 'Oswald'; font-size: 24px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
         .subtitulo { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
-        
         .info-usuario { display: flex; gap: 15px; margin-bottom: 5px; background: var(--vidro); backdrop-filter: blur(10px); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--borda); }
         .info-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--texto-mutado); }
         .info-item strong { color: #fff; font-weight: 500; }
@@ -65,6 +64,11 @@
         .cronometro-label { font-size: 11px; color: var(--texto-mutado); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px; }
         .btn-iniciar { width: 100%; background: var(--verde); color: #000; border: none; padding: 16px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s; }
         .btn-iniciar:hover { background: #4ade80; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.2); }
+        
+        /* Botão Bloqueado (Cooldown) */
+        .btn-bloqueado { background: rgba(255,255,255,0.05); color: var(--texto-mutado); cursor: not-allowed; border: 1px solid rgba(255,255,255,0.1); }
+        .btn-bloqueado:hover { transform: none; box-shadow: none; background: rgba(255,255,255,0.05); }
+
         #tela-ativo { display: none; flex-direction: column; text-align: center; }
         .tag-ponto { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto 15px auto; }
         .tag-ponto .dot { width: 8px; height: 8px; background: var(--verde); border-radius: 50%; box-shadow: 0 0 8px var(--verde); }
@@ -76,28 +80,19 @@
         .btn-retomar { border: 1px solid rgba(34, 197, 94, 0.3); color: var(--verde); display: none; }
         .btn-encerrar { border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); }
 
-        /* ==========================================
-           TELA DE HISTÓRICO (ESTILO ITÁLIA 2.0)
-           ========================================== */
+        /* TELA DE HISTÓRICO */
         #content-historico { display: none; text-align: left; }
-        
         .hist-header-desc { font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px; line-height: 1.4; }
-        
-        /* Filtros e Botões Rápidos */
         .hist-filtros { display: flex; gap: 10px; margin-bottom: 10px; }
         .filtro-group { flex: 1; }
         .filtro-group label { font-size: 10px; color: var(--texto-mutado); font-weight: 600; margin-bottom: 5px; display: block; text-transform: uppercase; }
         .filtro-input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--borda); color: #fff; padding: 10px; border-radius: 8px; font-family: 'Inter'; font-size: 12px; outline: none; }
         .filtro-input:focus { border-color: var(--verde); }
-        
         .hist-botoes-rapidos { display: flex; gap: 8px; margin-bottom: 15px; }
         .btn-rapido { flex: 1; background: transparent; border: 1px solid rgba(255,255,255,0.1); color: var(--texto-mutado); padding: 8px 0; border-radius: 6px; font-family: 'Inter'; font-size: 11px; font-weight: 600; cursor: pointer; transition: 0.2s; text-transform: uppercase;}
         .btn-rapido:hover, .btn-rapido.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); }
-        
         .btn-csv { width: 100%; background: transparent; border: 1px solid var(--borda); color: var(--texto); padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 20px; transition: 0.2s; text-transform: uppercase;}
         .btn-csv:hover { background: rgba(255,255,255,0.05); }
-
-        /* Card de Resumo (Estilo do Dashboard) */
         .hist-resumo { background: rgba(0,0,0,0.3); border: 1px solid var(--borda); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
         .resumo-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
         .resumo-user { display: flex; align-items: center; gap: 10px; }
@@ -106,18 +101,28 @@
         .resumo-total { text-align: right; }
         .resumo-total h4 { font-family: 'Oswald'; font-size: 24px; color: var(--verde); }
         .resumo-total p { font-size: 10px; color: var(--texto-mutado); text-transform: uppercase; }
-        
         .resumo-badges { display: flex; flex-wrap: wrap; gap: 6px; }
         .badge { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 4px 8px; border-radius: 6px; font-size: 11px; color: var(--texto-mutado); }
         .badge strong { color: #fff; }
-
-        /* Lista Detalhada (Cards estilo Itália) */
         .hist-lista-titulo { font-family: 'Oswald'; font-size: 16px; color: var(--texto-mutado); text-transform: uppercase; margin-bottom: 10px; letter-spacing: 1px; }
         .hist-item { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-left: 3px solid var(--verde); border-radius: 6px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; transition: 0.2s; }
         .hist-item:hover { background: rgba(255,255,255,0.04); }
         .hist-data-detalhe { font-size: 13px; color: #fff; font-weight: 600; font-family: 'Oswald'; letter-spacing: 0.5px;}
         .hist-horas-detalhe { font-size: 11px; color: var(--texto-mutado); margin-top: 4px; display: flex; gap: 10px;}
         .hist-total-detalhe { font-family: 'Oswald'; font-size: 18px; color: var(--verde); }
+
+        /* MODAL DE ENCERRAMENTO (ESTILO ITÁLIA) */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.ativo { display: flex; }
+        .modal-content { background: #121814; border: 1px solid var(--borda); border-radius: 12px; padding: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
+        .modal-icone { font-size: 40px; color: var(--verde); margin-bottom: 15px; }
+        .modal-titulo { font-family: 'Oswald'; font-size: 22px; color: #fff; margin-bottom: 10px; text-transform: uppercase; }
+        .modal-aviso { background: rgba(234, 179, 8, 0.1); border: 1px solid rgba(234, 179, 8, 0.3); padding: 12px; border-radius: 8px; margin-bottom: 20px; font-size: 13px; color: var(--amarelo); line-height: 1.4; text-align: left; display: flex; gap: 10px; align-items: flex-start;}
+        .modal-aviso i { font-size: 16px; margin-top: 2px; }
+        .botoes-confirmar { display: flex; gap: 10px; } 
+        .btn-sim { flex: 1; background: var(--verde); color: #000; border: none; padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
+        .btn-nao { flex: 1; background: transparent; color: var(--texto-mutado); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
+        .btn-nao:hover { background: rgba(255,255,255,0.05); color: #fff;}
 
         /* Alertas */
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 9999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
@@ -179,7 +184,7 @@
                 <div id="tela-inicial">
                     <div class="cronometro-display">00:00:00</div>
                     <p class="cronometro-label">Tempo de jornada</p>
-                    <button class="btn-iniciar" onclick="iniciarJornada()"><i class="fas fa-play"></i> Iniciar Jornada</button>
+                    <button class="btn-iniciar" id="btn-iniciar-jornada" onclick="iniciarJornada()"><i class="fas fa-play"></i> Iniciar Jornada</button>
                 </div>
                 <div id="tela-ativo">
                     <div class="tag-ponto" id="tag-status"><div class="dot"></div> <span id="txt-tag">Em Serviço</span></div>
@@ -188,12 +193,12 @@
                     <div class="botoes-acao">
                         <button class="btn-acao btn-pausar" id="btn-pausar" onclick="pausarTurno()"><i class="fas fa-pause"></i> Pausar</button>
                         <button class="btn-acao btn-retomar" id="btn-retomar" onclick="retomarTurno()"><i class="fas fa-play"></i> Retomar</button>
-                        <button class="btn-acao btn-encerrar" onclick="solicitarEncerramento()"><i class="fas fa-stop"></i> Encerrar</button>
+                        <button class="btn-acao btn-encerrar" onclick="abrirModalEncerrar()"><i class="fas fa-stop"></i> Encerrar</button>
                     </div>
                 </div>
             </div>
 
-            <!-- ABA: HISTÓRICO ITÁLIA -->
+            <!-- ABA: HISTÓRICO -->
             <div id="content-historico">
                 <h3 class="hist-lista-titulo">Registro de Atividades</h3>
                 <p class="hist-header-desc">Selecione o período para auditar seus horários, pausas e totais de serviço.</p>
@@ -218,7 +223,6 @@
 
                 <button class="btn-csv" onclick="exportarCSV()"><i class="fas fa-download"></i> Exportar Relatório</button>
 
-                <!-- Card de Resumo -->
                 <div class="hist-resumo" id="hist-resumo-card" style="display: none;">
                     <div class="resumo-topo">
                         <div class="resumo-user">
@@ -240,10 +244,27 @@
                     </div>
                 </div>
 
-                <!-- Lista Detalhada -->
-                <div id="hist-lista-itens">
-                    <!-- Injetado via JS -->
+                <div id="hist-lista-itens"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ENCERRAMENTO -->
+    <div class="modal-overlay" id="modal-encerrar">
+        <div class="modal-content">
+            <i class="fas fa-stop-circle modal-icone"></i>
+            <h2 class="modal-titulo">Encerrar Jornada?</h2>
+            
+            <div class="modal-aviso">
+                <i class="fas fa-exclamation-triangle"></i>
+                <div>
+                    <strong>Atenção:</strong> Ao confirmar o encerramento, você deverá aguardar <strong>30 minutos</strong> para poder iniciar uma nova jornada.
                 </div>
+            </div>
+
+            <div class="botoes-confirmar">
+                <button class="btn-nao" onclick="fecharModalEncerrar()">Cancelar</button>
+                <button class="btn-sim" onclick="confirmarEncerramento()">Sim, Encerrar</button>
             </div>
         </div>
     </div>
@@ -256,13 +277,14 @@
         <a href="equipe.html" class="item-menu"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Tickets</span></a>
         <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
-                                                                                              </nav>
-                                                                                                  <script>
+    </nav>
+        <script>
         let membroLogado = null;
         let pontoAtual = null;
         let intervaloCronometro = null;
         let intervaloStats = null;
-        let dadosHistoricoGlobal = []; // Guarda os dados para exportar CSV
+        let intervaloCooldown = null;
+        let dadosHistoricoGlobal = []; 
 
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
@@ -275,218 +297,136 @@
             verificarPonto();
             carregarEstatisticas();
             intervaloStats = setInterval(carregarEstatisticas, 60000);
-
-            // Inicia o filtro de histórico padrão para "7 dias"
             setFiltroRapido('7dias');
         });
 
         // ==========================================
-        // LÓGICA DE ABAS E HISTÓRICO
-        // ==========================================
-        function mudarAba(aba) {
-            if (aba === 'ponto') {
-                document.getElementById('btn-aba-ponto').classList.add('ativo');
-                document.getElementById('btn-aba-historico').classList.remove('ativo');
-                document.getElementById('content-ponto').style.display = 'block';
-                document.getElementById('content-historico').style.display = 'none';
-            } else {
-                document.getElementById('btn-aba-ponto').classList.remove('ativo');
-                document.getElementById('btn-aba-historico').classList.add('ativo');
-                document.getElementById('content-ponto').style.display = 'none';
-                document.getElementById('content-historico').style.display = 'block';
-                carregarHistorico();
-            }
-        }
-
-        function setFiltroRapido(tipo) {
-            // Remove active de todos
-            document.querySelectorAll('.btn-rapido').forEach(b => b.classList.remove('ativo'));
-            // Adiciona active no clicado
-            event.target.classList.add('ativo');
-
-            const hoje = new Date();
-            let dataDe = new Date();
-            
-            if (tipo === 'hoje') {
-                dataDe = hoje;
-            } else if (tipo === '7dias') {
-                dataDe.setDate(hoje.getDate() - 7);
-            } else if (tipo === '30dias') {
-                dataDe.setDate(hoje.getDate() - 30);
-            } else if (tipo === '90dias') {
-                dataDe.setDate(hoje.getDate() - 90);
-            }
-
-            // Formata YYYY-MM-DD
-            document.getElementById('filtro-de').value = dataDe.toISOString().split('T')[0];
-            document.getElementById('filtro-ate').value = hoje.toISOString().split('T')[0];
-            
-            carregarHistorico();
-        }
-
-        async function carregarHistorico() {
-            const dataDe = document.getElementById('filtro-de').value;
-            const dataAte = document.getElementById('filtro-ate').value;
-            const container = document.getElementById('hist-lista-itens');
-            const resumoCard = document.getElementById('hist-resumo-card');
-
-            if(!dataDe || !dataAte) return; // Aguarda preencher as datas
-
-            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando registros...</p>';
-            resumoCard.style.display = 'none';
-
-            // Ajusta as datas para pegar o dia inteiro (00:00 até 23:59)
-            const inicioDia = dataDe + 'T00:00:00Z';
-            const fimDia = dataAte + 'T23:59:59Z';
-
-            const { data, error } = await sb.from('pontos')
-                .select('*')
-                .eq('passaporte', membroLogado.passaporte)
-                .gte('entrada', inicioDia)
-                .lte('entrada', fimDia)
-                .order('entrada', { ascending: false });
-
-            if (error || !data || data.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Nenhum registro encontrado neste período.</p>';
-                return;
-            }
-
-            dadosHistoricoGlobal = data; // Salva para o CSV
-
-            let totalMinutos = 0;
-            let totalPausasMin = 0;
-            let diasUnicos = new Set();
-            let inicios = data.length;
-
-            let html = '';
-            data.forEach(p => {
-                const dataEntrada = new Date(p.entrada);
-                const dataStr = dataEntrada.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'});
-                diasUnicos.add(dataStr);
-
-                const horaIn = dataEntrada.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                const horaOut = p.saida ? new Date(p.saida).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) : 'Em Aberto';
-                
-                let difMin = 0;
-                if (p.saida) {
-                    difMin = (new Date(p.saida) - new Date(p.entrada)) / 60000;
-                    const pausaMin = (p.pausa_acumulada_seg || 0) / 60;
-                    difMin -= pausaMin;
-                    totalMinutos += Math.max(0, difMin);
-                    totalPausasMin += pausaMin;
-                }
-
-                const h = Math.floor(difMin / 60);
-                const m = Math.floor(difMin % 60);
-                const tempoTotalStr = p.saida ? `${h}h${String(m).padStart(2, '0')}` : '--';
-                const statusColor = p.saida ? 'var(--verde)' : 'var(--amarelo)';
-
-                html += `
-                    <div class="hist-item" style="border-left-color: ${statusColor}">
-                        <div>
-                            <p class="hist-data-detalhe">${dataStr}</p>
-                            <p class="hist-horas-detalhe"><i class="fas fa-sign-in-alt"></i> ${horaIn} <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> ${horaOut}</p>
-                        </div>
-                        <div class="hist-total-detalhe" style="color: ${statusColor};">${tempoTotalStr}</div>
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-
-            // Preenche o Resumo
-            resumoCard.style.display = 'block';
-            const th = Math.floor(totalMinutos / 60);
-            const tm = Math.floor(totalMinutos % 60);
-            const tp_h = Math.floor(totalPausasMin / 60);
-            const tp_m = Math.floor(totalPausasMin % 60);
-
-            document.getElementById('resumo-avatar').innerText = membroLogado.nome.charAt(0).toUpperCase();
-            document.getElementById('resumo-nome').innerText = membroLogado.nome;
-            document.getElementById('resumo-horas').innerText = `${th}h${String(tm).padStart(2, '0')}`;
-            document.getElementById('resumo-matricula').innerText = `Mat. ${membroLogado.passaporte}`;
-            document.getElementById('resumo-dias').innerHTML = `<strong>${diasUnicos.size}</strong> dias`;
-            document.getElementById('resumo-inicios').innerHTML = `<strong>${inicios}</strong> inícios`;
-            document.getElementById('resumo-pausas').innerText = `pausa ${tp_h}h${String(tp_m).padStart(2, '0')}`;
-        }
-
-        function exportarCSV() {
-            if (dadosHistoricoGlobal.length === 0) {
-                return customAlert("Nenhum dado para exportar.", "erro");
-            }
-
-            let csvContent = "Data,Entrada,Saida,Pausa (min),Total Trabalhado\n";
-
-            dadosHistoricoGlobal.forEach(p => {
-                const dataEntrada = new Date(p.entrada);
-                const dataStr = dataEntrada.toLocaleDateString('pt-BR');
-                const horaIn = dataEntrada.toLocaleTimeString('pt-BR');
-                const horaOut = p.saida ? new Date(p.saida).toLocaleTimeString('pt-BR') : 'Em Aberto';
-                const pausaMin = ((p.pausa_acumulada_seg || 0) / 60).toFixed(0);
-                
-                let totalStr = 'Em Aberto';
-                if (p.saida) {
-                    const dif = ((new Date(p.saida) - dataEntrada) / 60000) - pausaMin;
-                    const h = Math.floor(dif / 60);
-                    const m = Math.floor(dif % 60);
-                    totalStr = `${h}h${m}m`;
-                }
-
-                csvContent += `${dataStr},${horaIn},${horaOut},${pausaMin},${totalStr}\n`;
-            });
-
-            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' }); // \ufeff é BOM para o Excel ler acentos
-            const link = document.createElement("a");
-            const url = URL.createObjectURL(blob);
-            link.setAttribute("href", url);
-            link.setAttribute("download", `relatorio_ponto_${membroLogado.passaporte}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            customAlert("Relatório exportado!");
-        }
-
-        // ==========================================
-        // LÓGICA DO CRONÔMETRO E PONTO
+        // 1. VERIFICAÇÃO DE PONTO E COOLDOWN (30 min)
         // ==========================================
         async function verificarPonto() {
-            const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+            const { data: pontoAberto } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
-            if (data) {
-                pontoAtual = data;
+            if (pontoAberto) {
+                if (intervaloCooldown) clearInterval(intervaloCooldown);
+                pontoAtual = pontoAberto;
                 document.getElementById('tela-inicial').style.display = 'none';
                 document.getElementById('tela-ativo').style.display = 'flex';
-                document.getElementById('stat-status').innerText = data.status === 'pausado' ? 'Pausado' : 'Em Serviço';
+                document.getElementById('stat-status').innerText = pontoAberto.status === 'pausado' ? 'Pausado' : 'Em Serviço';
 
-                if (data.status === 'pausado') {
+                if (pontoAberto.status === 'pausado') {
                     document.getElementById('tag-status').classList.add('pausado');
                     document.getElementById('txt-tag').innerText = 'Pausado';
                     document.getElementById('btn-pausar').style.display = 'none';
                     document.getElementById('btn-retomar').style.display = 'flex';
-                    iniciarCronometroPausa(data.pausa_inicio);
+                    iniciarCronometroPausa(pontoAberto.pausa_inicio);
                 } else {
                     document.getElementById('tag-status').classList.remove('pausado');
                     document.getElementById('txt-tag').innerText = 'Em Serviço';
                     document.getElementById('btn-pausar').style.display = 'flex';
                     document.getElementById('btn-retomar').style.display = 'none';
-                    iniciarCronometro(data.entrada);
+                    iniciarCronometro(pontoAberto.entrada);
                 }
             } else {
-                document.getElementById('tela-inicial').style.display = 'block';
                 document.getElementById('tela-ativo').style.display = 'none';
+                document.getElementById('tela-inicial').style.display = 'block';
                 document.getElementById('stat-status').innerText = 'Fora';
+                verificarCooldown();
             }
         }
 
+        async function verificarCooldown() {
+            const { data: ultimoPonto } = await sb.from('pontos')
+                .select('saida')
+                .eq('passaporte', membroLogado.passaporte)
+                .eq('status', 'fechado')
+                .order('saida', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            const btnIniciar = document.getElementById('btn-iniciar-jornada');
+
+            if (ultimoPonto && ultimoPonto.saida) {
+                const dataSaida = new Date(ultimoPonto.saida);
+                const agora = new Date();
+                const difMs = agora - dataSaida;
+                const tempoCastigoMs = 30 * 60 * 1000; // 30 minutos
+
+                if (difMs < tempoCastigoMs) {
+                    btnIniciar.disabled = true;
+                    btnIniciar.className = 'btn-iniciar btn-bloqueado';
+                    
+                    if (intervaloCooldown) clearInterval(intervaloCooldown);
+                    
+                    intervaloCooldown = setInterval(() => {
+                        const tempoAtual = new Date();
+                        const difAtual = tempoAtual - dataSaida;
+                        const restante = tempoCastigoMs - difAtual;
+
+                        if (restante <= 0) {
+                            clearInterval(intervaloCooldown);
+                            btnIniciar.disabled = false;
+                            btnIniciar.className = 'btn-iniciar';
+                            btnIniciar.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
+                        } else {
+                            const mins = Math.floor(restante / 60000);
+                            const segs = Math.floor((restante % 60000) / 1000);
+                            btnIniciar.innerHTML = `<i class="fas fa-lock"></i> Aguarde ${String(mins).padStart(2, '0')}:${String(segs).padStart(2, '0')}`;
+                        }
+                    }, 1000);
+                    return;
+                }
+            }
+
+            if (intervaloCooldown) clearInterval(intervaloCooldown);
+            btnIniciar.disabled = false;
+            btnIniciar.className = 'btn-iniciar';
+            btnIniciar.innerHTML = '<i class="fas fa-play"></i> Iniciar Jornada';
+        }
+
+        // ==========================================
+        // 2. INICIAR JORNADA (REGRA B: BALANCEAMENTO)
+        // ==========================================
         async function iniciarJornada() {
+            const btn = document.getElementById('btn-iniciar-jornada');
+            const textoOriginal = btn.innerHTML;
+            
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'; // Ícone de carregando
+            btn.disabled = true;
+
             try {
-                const { data: equipes, error: eqError } = await sb.from('equipes').select('*').eq('ativa', true);
-                if (eqError || !equipes || equipes.length === 0) {
-                    return customAlert("Nenhuma equipe ativa encontrada.", "erro");
+                const { data: equipes } = await sb.from('equipes').select('*').eq('ativa', true);
+                if (!equipes || equipes.length === 0) {
+                    throw new Error("Nenhuma equipe ativa encontrada.");
                 }
 
-                const equipeSorteada = equipes[Math.floor(Math.random() * equipes.length)];
+                const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+                
+                let contagemEquipes = {};
+                equipes.forEach(eq => contagemEquipes[eq.id] = 0); 
+                
+                if (pontosAtivos) {
+                    pontosAtivos.forEach(p => {
+                        if (contagemEquipes[p.equipe_id] !== undefined) {
+                            contagemEquipes[p.equipe_id]++;
+                        }
+                    });
+                }
+
+                // Lógica do Balanceamento
+                let menorQtd = Infinity;
+                let equipesEmpatadas = [];
+
+                equipes.forEach(eq => {
+                    const qtd = contagemEquipes[eq.id];
+                    if (qtd < menorQtd) {
+                        menorQtd = qtd;
+                        equipesEmpatadas = [eq];
+                    } else if (qtd === menorQtd) {
+                        equipesEmpatadas.push(eq);
+                    }
+                });
+
+                const equipeSorteada = equipesEmpatadas[Math.floor(Math.random() * equipesEmpatadas.length)];
 
                 const { error } = await sb.from('pontos').insert([{ 
                     passaporte: membroLogado.passaporte, 
@@ -502,14 +442,19 @@
                 
                 if (error) throw error;
                 
-                customAlert(`Sorteio: Você foi para ${equipeSorteada.nome}!`);
+                customAlert(`Você foi designado para ${equipeSorteada.nome}!`);
                 verificarPonto();
                 carregarEstatisticas();
             } catch (err) { 
-                customAlert("Erro ao iniciar jornada.", "erro"); 
+                customAlert(err.message || "Erro ao iniciar jornada.", "erro"); 
+                btn.innerHTML = textoOriginal;
+                btn.disabled = false;
             }
         }
 
+        // ==========================================
+        // 3. CONTROLE DE TEMPO E PAUSAS
+        // ==========================================
         function iniciarCronometro(entrada) {
             if (intervaloCronometro) clearInterval(intervaloCronometro);
             const display = document.getElementById('cronometro-display');
@@ -565,23 +510,55 @@
             carregarEstatisticas();
         }
 
-        async function solicitarEncerramento() {
-            if(!confirm("Deseja encerrar o seu turno agora?")) return;
-            const saida = new Date();
-            await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtual.id);
-            
-            await sb.from('presencas').upsert([{ 
-                passaporte: membroLogado.passaporte, 
-                status: 'presente', 
-                data: saida.toISOString().split('T')[0], 
-                marcado_por_nome: 'Sistema', 
-                marcado_em: saida.toISOString() 
-            }], { onConflict: 'data,passaporte' });
-
-            customAlert("Turno encerrado!");
-            setTimeout(() => { verificarPonto(); carregarEstatisticas(); }, 1500);
+        // ==========================================
+        // 4. MODAL DE ENCERRAMENTO (ESTILO ITÁLIA)
+        // ==========================================
+        function abrirModalEncerrar() {
+            document.getElementById('modal-encerrar').classList.add('ativo');
         }
 
+        function fecharModalEncerrar() {
+            document.getElementById('modal-encerrar').classList.remove('ativo');
+        }
+
+        async function confirmarEncerramento() {
+            fecharModalEncerrar();
+            const saida = new Date();
+            
+            const btnSim = document.querySelector('#modal-encerrar .btn-sim');
+            const textoOriginal = btnSim.innerText;
+            btnSim.innerText = "Encerrando...";
+            btnSim.disabled = true;
+
+            try {
+                await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtual.id);
+                
+                await sb.from('presencas').upsert([{ 
+                    passaporte: membroLogado.passaporte, 
+                    status: 'presente', 
+                    data: saida.toISOString().split('T')[0], 
+                    marcado_por_nome: 'Sistema', 
+                    marcado_em: saida.toISOString() 
+                }], { onConflict: 'data,passaporte' });
+
+                customAlert("Jornada encerrada com sucesso!");
+                
+                setTimeout(() => { 
+                    verificarPonto(); 
+                    carregarEstatisticas(); 
+                }, 1500);
+
+            } catch (error) {
+                customAlert("Erro ao encerrar jornada.", "erro");
+            } finally {
+                btnSim.innerText = textoOriginal;
+                btnSim.disabled = false;
+            }
+        }
+
+        // ==========================================
+        // 5. ESTATÍSTICAS E HISTÓRICO
+        // ==========================================
         async function carregarEstatisticas() {
             const hojeStr = new Date().toISOString().split('T')[0];
             const inicioSemana = new Date();
@@ -627,6 +604,151 @@
             document.getElementById('stat-hoje').innerText = formatarTempo(minutosHoje);
             document.getElementById('stat-semana').innerText = formatarTempo(minutosSemana);
             document.getElementById('stat-pausas').innerText = pausasHoje;
+        }
+
+        function mudarAba(aba) {
+            if (aba === 'ponto') {
+                document.getElementById('btn-aba-ponto').classList.add('ativo');
+                document.getElementById('btn-aba-historico').classList.remove('ativo');
+                document.getElementById('content-ponto').style.display = 'block';
+                document.getElementById('content-historico').style.display = 'none';
+            } else {
+                document.getElementById('btn-aba-ponto').classList.remove('ativo');
+                document.getElementById('btn-aba-historico').classList.add('ativo');
+                document.getElementById('content-ponto').style.display = 'none';
+                document.getElementById('content-historico').style.display = 'block';
+                carregarHistorico();
+            }
+        }
+
+        function setFiltroRapido(tipo) {
+            document.querySelectorAll('.btn-rapido').forEach(b => b.classList.remove('ativo'));
+            if(event && event.target) event.target.classList.add('ativo');
+
+            const hoje = new Date();
+            let dataDe = new Date();
+            
+            if (tipo === 'hoje') dataDe = hoje;
+            else if (tipo === '7dias') dataDe.setDate(hoje.getDate() - 7);
+            else if (tipo === '30dias') dataDe.setDate(hoje.getDate() - 30);
+            else if (tipo === '90dias') dataDe.setDate(hoje.getDate() - 90);
+
+            document.getElementById('filtro-de').value = dataDe.toISOString().split('T')[0];
+            document.getElementById('filtro-ate').value = hoje.toISOString().split('T')[0];
+            carregarHistorico();
+        }
+
+        async function carregarHistorico() {
+            const dataDe = document.getElementById('filtro-de').value;
+            const dataAte = document.getElementById('filtro-ate').value;
+            const container = document.getElementById('hist-lista-itens');
+            const resumoCard = document.getElementById('hist-resumo-card');
+
+            if(!dataDe || !dataAte) return; 
+
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando registros...</p>';
+            resumoCard.style.display = 'none';
+
+            const inicioDia = dataDe + 'T00:00:00Z';
+            const fimDia = dataAte + 'T23:59:59Z';
+
+            const { data, error } = await sb.from('pontos')
+                .select('*')
+                .eq('passaporte', membroLogado.passaporte)
+                .gte('entrada', inicioDia)
+                .lte('entrada', fimDia)
+                .order('entrada', { ascending: false });
+
+            if (error || !data || data.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Nenhum registro encontrado neste período.</p>';
+                return;
+            }
+
+            dadosHistoricoGlobal = data;
+
+            let totalMinutos = 0;
+            let totalPausasMin = 0;
+            let diasUnicos = new Set();
+            let inicios = data.length;
+
+            let html = '';
+            data.forEach(p => {
+                const dataEntrada = new Date(p.entrada);
+                const dataStr = dataEntrada.toLocaleDateString('pt-BR', {day: '2-digit', month: '2-digit', year: 'numeric'});
+                diasUnicos.add(dataStr);
+
+                const horaIn = dataEntrada.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const horaOut = p.saida ? new Date(p.saida).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'}) : 'Em Aberto';
+                
+                let difMin = 0;
+                if (p.saida) {
+                    difMin = (new Date(p.saida) - new Date(p.entrada)) / 60000;
+                    const pausaMin = (p.pausa_acumulada_seg || 0) / 60;
+                    difMin -= pausaMin;
+                    totalMinutos += Math.max(0, difMin);
+                    totalPausasMin += pausaMin;
+                }
+
+                const h = Math.floor(difMin / 60);
+                const m = Math.floor(difMin % 60);
+                const tempoTotalStr = p.saida ? `${h}h${String(m).padStart(2, '0')}` : '--';
+                const statusColor = p.saida ? 'var(--verde)' : 'var(--amarelo)';
+
+                html += `
+                    <div class="hist-item" style="border-left-color: ${statusColor}">
+                        <div>
+                            <p class="hist-data-detalhe">${dataStr}</p>
+                            <p class="hist-horas-detalhe"><i class="fas fa-sign-in-alt"></i> ${horaIn} <i class="fas fa-sign-out-alt" style="margin-left: 5px;"></i> ${horaOut}</p>
+                        </div>
+                        <div class="hist-total-detalhe" style="color: ${statusColor};">${tempoTotalStr}</div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            resumoCard.style.display = 'block';
+
+            const th = Math.floor(totalMinutos / 60);
+            const tm = Math.floor(totalMinutos % 60);
+            const tp_h = Math.floor(totalPausasMin / 60);
+            const tp_m = Math.floor(totalPausasMin % 60);
+
+                document.getElementById('resumo-avatar').innerText = membroLogado.nome.charAt(0).toUpperCase();
+            document.getElementById('resumo-nome').innerText = membroLogado.nome;
+            document.getElementById('resumo-horas').innerText = `${th}h${String(tm).padStart(2, '0')}`;
+            document.getElementById('resumo-matricula').innerText = `Mat. ${membroLogado.passaporte}`;
+            document.getElementById('resumo-dias').innerHTML = `<strong>${diasUnicos.size}</strong> dias`;
+            document.getElementById('resumo-inicios').innerHTML = `<strong>${inicios}</strong> inícios`;
+            document.getElementById('resumo-pausas').innerText = `pausa ${tp_h}h${String(tp_m).padStart(2, '0')}`;
+        }
+
+        function exportarCSV() {
+            if (dadosHistoricoGlobal.length === 0) return customAlert("Nenhum dado para exportar.", "erro");
+
+            let csvContent = "Data,Entrada,Saida,Pausa (min),Total Trabalhado\n";
+            dadosHistoricoGlobal.forEach(p => {
+                const dataEntrada = new Date(p.entrada);
+                const dataStr = dataEntrada.toLocaleDateString('pt-BR');
+                const horaIn = dataEntrada.toLocaleTimeString('pt-BR');
+                const horaOut = p.saida ? new Date(p.saida).toLocaleTimeString('pt-BR') : 'Em Aberto';
+                const pausaMin = ((p.pausa_acumulada_seg || 0) / 60).toFixed(0);
+                
+                let totalStr = 'Em Aberto';
+                if (p.saida) {
+                    const dif = ((new Date(p.saida) - dataEntrada) / 60000) - pausaMin;
+                    totalStr = `${Math.floor(dif / 60)}h${Math.floor(dif % 60)}m`;
+                }
+                csvContent += `${dataStr},${horaIn},${horaOut},${pausaMin},${totalStr}\n`;
+            });
+
+            const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            link.setAttribute("href", URL.createObjectURL(blob));
+            link.setAttribute("download", `relatorio_ponto_${membroLogado.passaporte}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            customAlert("Relatório exportado!");
         }
 
         function customAlert(msg, tipo='sucesso') {
