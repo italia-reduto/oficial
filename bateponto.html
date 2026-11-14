@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Itália 2.0 | Ponto</title>
     
-    <!-- TAG QUE DEIXA A BARRA DO CHROME ESCURA -->
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
     
@@ -22,57 +21,64 @@
         :root { 
             --verde: #22c55e; 
             --fundo: #0a0f0d; 
-            --card: #121814; 
-            --borda: #1e2e24; 
+            --vidro: rgba(15, 23, 20, 0.6); 
+            --borda: rgba(34, 197, 94, 0.2); 
             --texto: #f3f4f6; 
-            --texto-mutado: #8b948f; 
+            --texto-mutado: #9ca3af; 
             --amarelo: #eab308; 
             --vermelho: #ef4444; 
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 15px; position: relative; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 15px; position: relative; overflow-x: hidden; }
         
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; z-index: 10; padding-bottom: 100px; }
+        /* Fundo sutil do 2.0 */
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -1; }
+
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; z-index: 10; padding-bottom: 100px; margin-top: 10px; }
         
         /* Topo */
-        .topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
-        .titulo { font-family: 'Inter'; font-weight: 600; font-size: 20px; color: #fff; }
-        .subtitulo { font-size: 12px; color: var(--texto-mutado); margin-top: 4px; }
-        .btn-sair { background: transparent; border: 1px solid rgba(239, 68, 68, 0.2); color: var(--vermelho); padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+        .titulo { font-family: 'Oswald'; font-size: 24px; text-transform: uppercase; color: #fff; letter-spacing: 1px; }
+        .subtitulo { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
+        .btn-sair { background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--vermelho); padding: 6px 12px; border-radius: 6px; font-family: 'Oswald'; font-size: 12px; font-weight: 600; text-transform: uppercase; cursor: pointer; display: flex; align-items: center; gap: 5px; }
 
         /* Info Usuario */
-        .info-usuario { display: flex; gap: 15px; margin-bottom: 5px; background: rgba(255,255,255,0.02); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--borda); }
+        .info-usuario { display: flex; gap: 15px; margin-bottom: 5px; background: var(--vidro); backdrop-filter: blur(10px); padding: 12px 15px; border-radius: 8px; border: 1px solid var(--borda); }
         .info-item { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--texto-mutado); }
         .info-item strong { color: #fff; font-weight: 500; }
         .info-item i { color: var(--verde); font-size: 14px; }
 
         /* Grid Stats */
         .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .card-stat { background: var(--card); border: 1px solid var(--borda); border-radius: 8px; padding: 12px 15px; }
-        .stat-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--texto-mutado); margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
+        .card-stat { background: var(--vidro); backdrop-filter: blur(10px); border: 1px solid var(--borda); border-radius: 10px; padding: 12px 15px; }
+        .stat-header { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--texto-mutado); margin-bottom: 5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;}
         .stat-header i { color: var(--texto-mutado); font-size: 12px; }
-        .stat-valor { font-family: 'Inter'; font-weight: 600; font-size: 20px; color: #fff; }
+        .stat-valor { font-family: 'Oswald'; font-size: 22px; color: #fff; }
 
         /* Painel Principal */
-        .painel-principal { background: var(--card); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; text-align: center; }
-        .abas-internas { display: flex; background: var(--fundo); border-radius: 6px; padding: 3px; margin-bottom: 25px; }
-        .aba-btn { flex: 1; padding: 8px; border: none; background: transparent; color: var(--texto-mutado); font-family: 'Inter'; font-size: 12px; font-weight: 500; cursor: pointer; border-radius: 4px; transition: 0.2s; }
-        .aba-btn.ativo { background: #1a261f; color: #fff; }
+        .painel-principal { background: var(--vidro); backdrop-filter: blur(15px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         
-        .cronometro-display { font-family: 'Inter'; font-weight: 600; font-size: 48px; color: #fff; line-height: 1; margin-bottom: 5px; letter-spacing: -1px;}
-        .cronometro-label { font-size: 12px; color: var(--texto-mutado); margin-bottom: 25px; }
+        /* Abas no padrão 2.0 */
+        .abas-internas { display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px;}
+        .aba-btn { flex: 1; padding: 10px; border: 1px solid transparent; background: transparent; color: var(--texto-mutado); font-family: 'Oswald'; font-size: 14px; font-weight: 600; text-transform: uppercase; cursor: pointer; border-radius: 8px; transition: 0.3s; }
+        .aba-btn.ativo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); }
+        
+        .cronometro-display { font-family: 'Oswald'; font-weight: 500; font-size: 56px; color: #fff; line-height: 1; margin-bottom: 5px; letter-spacing: 1px;}
+        .cronometro-label { font-size: 11px; color: var(--texto-mutado); margin-bottom: 25px; text-transform: uppercase; letter-spacing: 1px;}
 
-        .btn-iniciar { width: 100%; background: #1b4d31; color: #4ade80; border: 1px solid #225c3a; padding: 14px; border-radius: 6px; font-family: 'Inter'; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.2s; }
-        .btn-iniciar:hover { background: #225c3a; }
+        /* Botão Iniciar padrão 2.0 */
+        .btn-iniciar { width: 100%; background: var(--verde); color: #000; border: none; padding: 16px; border-radius: 8px; font-family: 'Oswald'; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; transition: 0.3s; }
+        .btn-iniciar:hover { background: #4ade80; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(34, 197, 94, 0.2); }
 
         #tela-ativo { display: none; flex-direction: column; text-align: center; }
-        .tag-ponto { background: rgba(34, 197, 94, 0.05); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.2); padding: 6px 12px; border-radius: 6px; font-size: 11px; font-weight: 600; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto 20px auto; }
-        .tag-ponto .dot { width: 6px; height: 6px; background: var(--verde); border-radius: 50%; }
-        .tag-ponto.pausado { background: rgba(234, 179, 8, 0.05); color: var(--amarelo); border-color: rgba(234, 179, 8, 0.2); }
-        .tag-ponto.pausado .dot { background: var(--amarelo); }
+        
+        .tag-ponto { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; text-transform: uppercase; display: inline-flex; align-items: center; gap: 6px; margin: 0 auto 15px auto; }
+        .tag-ponto .dot { width: 8px; height: 8px; background: var(--verde); border-radius: 50%; box-shadow: 0 0 8px var(--verde); }
+        .tag-ponto.pausado { background: rgba(234, 179, 8, 0.1); color: var(--amarelo); border-color: var(--amarelo); }
+        .tag-ponto.pausado .dot { background: var(--amarelo); box-shadow: 0 0 8px var(--amarelo); }
 
         .botoes-acao { display: flex; gap: 10px; margin-top: 20px; }
-        .btn-acao { flex: 1; padding: 12px; border-radius: 6px; font-family: 'Inter'; font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.2s; display: flex; justify-content: center; align-items: center; gap: 6px; background: transparent; }
+        .btn-acao { flex: 1; padding: 12px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; justify-content: center; align-items: center; gap: 6px; background: transparent; }
         .btn-pausar { border: 1px solid rgba(234, 179, 8, 0.3); color: var(--amarelo); }
         .btn-pausar:hover { background: rgba(234, 179, 8, 0.1); }
         .btn-retomar { border: 1px solid rgba(34, 197, 94, 0.3); color: var(--verde); display: none; }
@@ -81,20 +87,22 @@
         .btn-encerrar:hover { background: rgba(239, 68, 68, 0.1); }
 
         /* Alertas */
-        .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: #121814; border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 6px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 9999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+        .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(10px); border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 9999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
         .alerta-custom.ativo { top: 20px; }
         .alerta-custom i { font-size: 20px; color: var(--verde); }
         .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500;}
         .alerta-custom.erro { border-left-color: var(--vermelho); } .alerta-custom.erro i { color: var(--vermelho); }
 
         /* Menu Inferior */
-        .menu-inferior { position: fixed; bottom: 15px; left: 0; right: 0; margin: 0 auto; width: 95%; max-width: 400px; background: #0d1410; border: 1px solid var(--borda); border-radius: 12px; display: flex; justify-content: space-around; padding: 8px 5px; z-index: 9999; }
-        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--texto-mutado); font-size: 9px; font-weight: 500; padding: 6px 12px; border-radius: 6px; transition: 0.2s;}
-        .item-menu i { font-size: 16px; }
-        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); }
+        .menu-inferior { position: fixed; bottom: 15px; left: 0; right: 0; margin: 0 auto; width: 90%; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 20px; display: flex; justify-content: space-around; padding: 8px 10px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--texto-mutado); font-size: 9px; font-weight: 500; padding: 6px 12px; border-radius: 10px; transition: 0.2s;}
+        .item-menu i { font-size: 18px; }
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
 </head>
 <body>
+    <div class="fundo-degrade"></div>
+
     <div class="container">
         <div class="topo">
             <div>
@@ -160,12 +168,12 @@
     
     <nav class="menu-inferior">
         <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Painel</span></a>
-        <a href="bateponto.html" class="item-menu ativo"><i class="far fa-clock"></i><span>Ponto</span></a>
+        <a href="bateponto.html" class="item-menu ativo"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="equipe.html" class="item-menu"><i class="fas fa-users"></i><span>Equipe</span></a>
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Tickets</span></a>
         <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
-    </nav>
-        <script>
+                                                                                                                       </nav>
+                                                                                                                           <script>
         let membroLogado = null;
         let pontoAtual = null;
         let intervaloCronometro = null;
@@ -182,6 +190,7 @@
             verificarPonto();
             carregarEstatisticas();
             
+            // Atualiza as estatísticas (Hoje, Semana) a cada 1 minuto
             intervaloStats = setInterval(carregarEstatisticas, 60000);
         });
 
@@ -216,20 +225,23 @@
 
         async function iniciarJornada() {
             try {
+                // Busca as equipes ativas no banco para o sorteio
                 const { data: equipes, error: eqError } = await sb.from('equipes').select('*').eq('ativa', true);
                 if (eqError || !equipes || equipes.length === 0) {
                     return customAlert("Nenhuma equipe ativa encontrada. Contate a liderança.", "erro");
                 }
 
+                // Sorteia uma equipe
                 const equipeSorteada = equipes[Math.floor(Math.random() * equipes.length)];
 
+                // Salva o ponto no banco
                 const { error } = await sb.from('pontos').insert([{ 
                     passaporte: membroLogado.passaporte, 
                     nome: membroLogado.nome, 
                     entrada: new Date().toISOString(), 
                     status: 'aberto', 
                     equipe_id: equipeSorteada.id, 
-                    posicao: equipeSorteada.nome,
+                    posicao: equipeSorteada.nome, // Salva "ROTA 1", "VENDAS P1", etc.
                     troca_equipe_em: new Date().toISOString(),
                     pausa_qtd: 0,
                     pausa_acumulada_seg: 0
@@ -237,7 +249,7 @@
                 
                 if (error) throw error;
                 
-                customAlert(`Sorteio concluído: Você foi para ${equipeSorteada.nome}!`);
+                customAlert(`Sorteio: Você foi designado para ${equipeSorteada.nome}!`);
                 verificarPonto();
                 carregarEstatisticas();
             } catch (err) { 
@@ -306,6 +318,7 @@
             const saida = new Date();
             await sb.from('pontos').update({ status: 'fechado', saida: saida.toISOString() }).eq('id', pontoAtual.id);
             
+            // Registra a presença do dia para contar no XP e nas Faltas/Presenças do painel
             await sb.from('presencas').upsert([{ 
                 passaporte: membroLogado.passaporte, 
                 status: 'presente', 
@@ -321,7 +334,7 @@
         async function carregarEstatisticas() {
             const hojeStr = new Date().toISOString().split('T')[0];
             const inicioSemana = new Date();
-            inicioSemana.setDate(inicioSemana.getDate() - inicioSemana.getDay());
+            inicioSemana.setDate(inicioSemana.getDate() - inicioSemana.getDay()); // Domingo como início
             const inicioSemanaStr = inicioSemana.toISOString().split('T')[0];
 
             const { data: pontosHoje } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).gte('entrada', hojeStr + 'T00:00:00Z');
@@ -335,6 +348,7 @@
                     let fim = p.saida ? new Date(p.saida) : new Date();
                     let inicio = new Date(p.entrada);
                     let difMin = (fim - inicio) / 60000;
+                    // Subtrai as pausas
                     if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60);
                     minutosHoje += Math.max(0, difMin);
                     pausasHoje += (p.pausa_qtd || 0);
@@ -347,11 +361,12 @@
                     let fim = p.saida ? new Date(p.saida) : new Date();
                     let inicio = new Date(p.entrada);
                     let difMin = (fim - inicio) / 60000;
-                    if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60000);
+                    if(p.pausa_acumulada_seg) difMin -= (p.pausa_acumulada_seg / 60);
                     minutosSemana += Math.max(0, difMin);
                 });
             }
 
+            // Formata o tempo para "0m" ou "0h30"
             const formatarTempo = (mins) => {
                 mins = Math.floor(mins);
                 if (mins < 60) return `${mins}m`;
