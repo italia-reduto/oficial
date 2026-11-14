@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Itália 2.0 | Minha Equipe</title>
     
-    <!-- TAG QUE DEIXA A BARRA DO CHROME ESCURA -->
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
     
@@ -21,62 +20,91 @@
     <style>
         :root { --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 20px; position: relative; }
-        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%), radial-gradient(circle at 90% 90%, rgba(20, 83, 45, 0.2) 0%, transparent 50%); z-index: -2; }
-        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; z-index: 10; padding-bottom: 100px; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 15px; position: relative; }
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -2; }
         
-        .aviso-bloqueio { background: rgba(234, 179, 8, 0.1); border: 1px solid var(--amarelo); border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; z-index: 10; padding-bottom: 100px; margin-top: 10px; }
+        
+        /* Aviso de Cooldown */
+        .aviso-bloqueio { background: rgba(234, 179, 8, 0.1); border: 1px solid var(--amarelo); border-radius: 12px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 5px; }
         .aviso-bloqueio i { font-size: 20px; color: var(--amarelo); }
         .aviso-bloqueio div h4 { font-size: 12px; color: var(--texto-mutado); }
         .aviso-bloqueio div p { font-size: 14px; color: #fff; font-weight: bold; }
 
-        .card-escala { background: var(--vidro); border: 1px solid var(--borda); border-radius: 16px; padding: 20px; margin-bottom: 15px; }
-        .escala-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+        /* Card Principal */
+        .card-escala { background: var(--vidro); backdrop-filter: blur(15px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        
+        .escala-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 15px; }
         .escala-header h3 { font-family: 'Oswald'; font-size: 12px; color: var(--verde); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
         .escala-header h2 { font-family: 'Oswald'; font-size: 32px; color: #fff; }
         .tag-servico { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; text-transform: uppercase; }
 
+        /* Grid de Informações (6 blocos) */
         .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-        .box-info { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 10px; padding: 12px; }
-        .box-info p { font-size: 10px; color: var(--texto-mutado); margin-bottom: 5px; text-transform: uppercase; }
-        .box-info h4 { font-size: 16px; color: #fff; }
+        .box-info { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; }
+        .box-info p { font-size: 10px; color: var(--texto-mutado); margin-bottom: 5px; text-transform: uppercase; font-weight: 600;}
+        .box-info h4 { font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .box-info i { font-size: 12px; color: var(--verde); margin-right: 5px; }
+        .box-info.destaque { border-color: rgba(234, 179, 8, 0.3); }
+        .box-info.destaque h4 { color: var(--amarelo); }
 
-        .integrantes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .integrantes-header h3 { font-family: 'Oswald'; font-size: 18px; color: #fff; }
-        .badge-qtd { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+        /* Integrantes */
+        .integrantes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .integrantes-header h3 { font-family: 'Oswald'; font-size: 16px; color: #fff; }
+        .badge-qtd { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid var(--verde); padding: 4px 10px; border-radius: 20px; font-size: 10px; font-weight: bold; }
         
-        .integrante { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 10px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; }
+        .integrante { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px; }
         .integrante.eu { border-color: var(--verde); background: rgba(34, 197, 94, 0.05); }
         .integrante-info { display: flex; align-items: center; gap: 10px; }
         .integrante-avatar { width: 35px; height: 35px; border-radius: 8px; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; color: var(--texto-mutado); }
-        .integrante-nome { font-size: 13px; color: #fff; font-weight: bold; }
+        .integrante-nome { font-size: 13px; color: #fff; font-weight: 600; display: flex; align-items: center; gap: 6px;}
         .integrante-pass { font-size: 11px; color: var(--texto-mutado); }
+        
+        /* Bolinha de Status */
+        .dot { width: 8px; height: 8px; border-radius: 50%; }
+        .dot.ativo { background: var(--verde); box-shadow: 0 0 6px var(--verde); }
+        .dot.pausado { background: var(--amarelo); box-shadow: 0 0 6px var(--amarelo); }
+
         .integrante-tempo { font-size: 11px; color: var(--texto-mutado); text-align: right; }
-        .integrante-tempo span { color: var(--verde); display: block; font-weight: bold; }
+        .integrante-tempo span { color: #fff; display: block; font-weight: bold; }
 
-        .btn-trocar { width: 100%; background: transparent; border: 1px solid var(--texto-mutado); color: var(--texto-mutado); padding: 15px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: bold; cursor: not-allowed; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        /* Botão Trocar */
+        .btn-trocar { width: 100%; background: transparent; border: 1px solid var(--texto-mutado); color: var(--texto-mutado); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; cursor: not-allowed; display: flex; justify-content: center; align-items: center; gap: 8px; text-transform: uppercase; margin-top: 15px;}
         .btn-trocar.liberado { border-color: var(--verde); color: var(--verde); cursor: pointer; }
-        .btn-trocar.liberado:hover { background: rgba(34, 197, 94, 0.1); }
 
-        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; padding: 10px 20px; z-index: 9999; }
-        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; }
+        /* Rodapé Sincronizado */
+        .rodape-sync { display: flex; justify-content: space-between; margin-top: 15px; font-size: 10px; color: var(--texto-mutado); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+        .rodape-sync i { margin-right: 4px; color: var(--verde); }
+
+        /* Tela Bloqueio */
+        .tela-bloqueio { display: none; flex-direction: column; align-items: center; text-align: center; margin-top: 50px; z-index: 10; padding: 20px;}
+        .tela-bloqueio i { font-size: 60px; color: var(--verde); margin-bottom: 20px; }
+        .tela-bloqueio h2 { font-family: 'Oswald'; color: #fff; font-size: 24px; margin-bottom: 10px; }
+        .tela-bloqueio p { color: var(--texto-mutado); font-size: 14px; margin-bottom: 30px; }
+        .btn-ir-ponto { background: var(--verde); color: #000; padding: 15px 30px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; text-decoration: none; text-transform: uppercase; }
+
+        /* Menu Inferior */
+        .menu-inferior { position: fixed; bottom: 15px; left: 0; right: 0; margin: 0 auto; width: 90%; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 20px; display: flex; justify-content: space-around; padding: 8px 10px; z-index: 9999; }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--texto-mutado); font-size: 9px; font-weight: 500; padding: 6px 12px; border-radius: 10px; }
         .item-menu i { font-size: 18px; }
-        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border-radius: 10px; padding: 5px 10px;}
+        .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
-</head>
-<body>
+    </head>
+    <body>
     <div class="fundo-degrade"></div>
+    
     <div class="container" id="container-principal" style="display: none;">
         
+        <!-- Aviso de Troca -->
         <div class="aviso-bloqueio" id="aviso-cooldown" style="display: none;">
             <i class="fas fa-clock"></i>
             <div>
-                <h4>Troca de equipe temporariamente bloqueada</h4>
+                <h4>Troca de equipe bloqueada</h4>
                 <p>Próxima troca em: <span id="timer-cooldown">10:00</span></p>
             </div>
         </div>
 
+        <!-- Card Principal -->
         <div class="card-escala">
             <div class="escala-header">
                 <div>
@@ -86,62 +114,92 @@
                 <div class="tag-servico"><i class="fas fa-circle" style="font-size: 8px; margin-right: 5px;"></i> Em Serviço</div>
             </div>
 
+            <!-- Grid com 6 blocos de informação -->
             <div class="grid-info">
                 <div class="box-info">
                     <p><i class="fas fa-map-marker-alt"></i> Área</p>
-                    <h4 id="local-equipe">---</h4>
+                    <h4 id="info-area">---</h4>
                 </div>
                 <div class="box-info">
                     <p><i class="fas fa-briefcase"></i> Função</p>
-                    <h4 id="funcao-equipe">---</h4>
+                    <h4 id="info-funcao">---</h4>
+                </div>
+                <div class="box-info">
+                    <p><i class="fas fa-shield-alt"></i> Comando</p>
+                    <h4 id="info-lider">---</h4>
+                </div>
+                <div class="box-info destaque">
+                    <p><i class="fas fa-exchange-alt"></i> Próxima Troca</p>
+                    <h4 id="info-troca">Aguardando...</h4>
                 </div>
                 <div class="box-info">
                     <p><i class="fas fa-sign-in-alt"></i> Minha Entrada</p>
-                    <h4 id="hora-entrada">--:--</h4>
+                    <h4 id="info-entrada">--:--</h4>
                 </div>
                 <div class="box-info">
                     <p><i class="fas fa-stopwatch"></i> Em serviço há</p>
-                    <h4 id="tempo-servico">00:00</h4>
+                    <h4 id="info-tempo">00:00</h4>
                 </div>
             </div>
 
+            <!-- Lista de Integrantes -->
             <div class="integrantes-header">
                 <h3>Integrantes</h3>
                 <span class="badge-qtd" id="badge-qtd">0 INTEGRANTES</span>
             </div>
-            <div id="lista-integrantes"></div>
+            <div id="lista-integrantes">
+                <!-- Injetado via JS -->
+            </div>
 
             <button class="btn-trocar" id="btn-trocar" onclick="solicitarTroca()" disabled>
                 <i class="fas fa-exchange-alt"></i> <span id="txt-trocar">Aguarde para trocar</span>
             </button>
+
+            <div class="rodape-sync">
+                <span><i class="fas fa-sync-alt"></i> Sincronização automática</span>
+                <span id="hora-sync">Sincronizado agora</span>
+            </div>
         </div>
     </div>
 
-    <div class="container" id="tela-bloqueio" style="display: none; align-items: center; text-align: center; margin-top: 50px;">
-        <i class="fas fa-info-circle" style="font-size: 60px; color: var(--verde); margin-bottom: 20px;"></i>
-        <h2 style="font-family: 'Oswald'; color: #fff; font-size: 24px; margin-bottom: 10px;">Nenhum serviço ativo</h2>
-        <p style="color: var(--texto-mutado); font-size: 14px; margin-bottom: 30px;">Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p>
-        <a href="bateponto.html" class="btn-trocar liberado" style="text-decoration: none; width: auto; padding: 15px 30px;">Ir ao Controle de Ponto</a>
+    <!-- Tela de Bloqueio (Se não tiver ponto aberto) -->
+    <div class="tela-bloqueio" id="tela-bloqueio">
+        <i class="fas fa-info-circle"></i>
+        <h2>Nenhum serviço ativo</h2>
+        <p>Inicie sua jornada no controle de ponto para ser alocado em uma equipe.</p>
+        <a href="bateponto.html" class="btn-ir-ponto">Ir ao Controle de Ponto</a>
     </div>
 
+    <!-- Menu Inferior -->
     <nav class="menu-inferior">
-        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
+        <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Painel</span></a>
         <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="equipe.html" class="item-menu ativo"><i class="fas fa-users"></i><span>Equipe</span></a>
-        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
+        <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Tickets</span></a>
         <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
-            </nav>
-                <script>
+    </nav>
+        <script>
         let membroLogado = null;
         let pontoAtual = null;
         let intervaloCooldown = null;
         let intervaloRelogio = null;
+        let intervaloAtualizacaoSync = null;
+
+        // Hierarquia de cargos para descobrir quem é o Líder da Equipe
+        const CARGOS_HIERARQUIA = [
+            'Líder da organização', '01 da organização', 'Coordenador', 
+            'Gerente geral', 'Gerente', 'Auxiliar - Gerência', 
+            'O Vigia', 'Raiz', 'Executor', 'Novato'
+        ];
 
         window.addEventListener('DOMContentLoaded', async () => {
             const logado = sessionStorage.getItem('membro_logado');
             if (!logado) return window.location.href = 'login.html';
             membroLogado = JSON.parse(logado);
+            
             carregarEquipe();
+            atualizarSync();
+            intervaloAtualizacaoSync = setInterval(atualizarSync, 60000); // Atualiza a hora do sync a cada minuto
         });
 
         async function carregarEquipe() {
@@ -152,26 +210,28 @@
                 document.getElementById('tela-bloqueio').style.display = 'none';
                 document.getElementById('container-principal').style.display = 'flex';
 
+                // Puxa os dados da equipe
                 const { data: equipeInfo } = await sb.from('equipes').select('*').eq('id', pontoAtual.equipe_id).single();
                 
                 document.getElementById('nome-equipe').innerText = equipeInfo ? equipeInfo.nome : 'Desconhecida';
-                document.getElementById('local-equipe').innerText = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
-                document.getElementById('funcao-equipe').innerText = equipeInfo && equipeInfo.funcao ? equipeInfo.funcao : 'Geral';
+                document.getElementById('info-area').innerText = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
+                document.getElementById('info-funcao').innerText = equipeInfo && equipeInfo.funcao ? equipeInfo.funcao : 'Geral';
                 
                 const horaEntrada = new Date(pontoAtual.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                document.getElementById('hora-entrada').innerText = horaEntrada;
+                document.getElementById('info-entrada').innerText = horaEntrada;
 
+                // Relógio de tempo em serviço
                 if(intervaloRelogio) clearInterval(intervaloRelogio);
                 intervaloRelogio = setInterval(() => {
                     const dif = new Date() - new Date(pontoAtual.entrada);
                     const h = Math.floor(dif / 3600000);
                     const m = Math.floor((dif / 60000) % 60);
                     const s = Math.floor((dif / 1000) % 60);
-                    document.getElementById('tempo-servico').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                    document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
                 }, 1000);
 
                 carregarIntegrantes(pontoAtual.equipe_id);
-                iniciarCooldown(pontoAtual.troca_equipe_em);
+                iniciarCooldown(pontoAtual.troca_equipe_em || pontoAtual.entrada);
 
             } else {
                 document.getElementById('tela-bloqueio').style.display = 'flex';
@@ -180,27 +240,49 @@
         }
 
         async function carregarIntegrantes(equipeId) {
-            const { data: membros } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']);
+            // Puxa todos os pontos ativos nessa equipe
+            const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']);
             
             const container = document.getElementById('lista-integrantes');
-            if (!membros || membros.length === 0) {
-                container.innerHTML = '<p style="font-size: 12px; color: var(--texto-mutado); text-align: center;">Ninguém nesta equipe.</p>';
+            if (!membrosAtivos || membrosAtivos.length === 0) {
+                container.innerHTML = '<p style="font-size: 12px; color: var(--texto-mutado); text-align: center; padding: 10px;">Ninguém nesta equipe.</p>';
                 return;
             }
 
-            document.getElementById('badge-qtd').innerText = `${membros.length} INTEGRANTES`;
+            document.getElementById('badge-qtd').innerText = `${membrosAtivos.length} INTEGRANTES`;
+
+            // Descobrir quem é o Líder (maior cargo)
+            let passaportes = membrosAtivos.map(m => String(m.passaporte));
+            const { data: dadosMembros } = await sb.from('membros').select('passaporte, cargo').in('passaporte', passaportes);
+
+            let liderNome = 'Sem Comando';
+            let menorIndexHierarquia = 999;
+
+            if (dadosMembros) {
+                dadosMembros.forEach(dm => {
+                    const index = CARGOS_HIERARQUIA.indexOf(dm.cargo);
+                    if (index !== -1 && index < menorIndexHierarquia) {
+                        menorIndexHierarquia = index;
+                        const mInfo = membrosAtivos.find(m => String(m.passaporte) === String(dm.passaporte));
+                        if (mInfo) liderNome = mInfo.nome;
+                    }
+                });
+            }
+            document.getElementById('info-lider').innerText = liderNome;
+
+            // Renderizar lista de integrantes
             let html = '';
-            
-            membros.forEach(m => {
-                const isEu = m.passaporte === membroLogado.passaporte;
+            membrosAtivos.forEach(m => {
+                const isEu = String(m.passaporte) === String(membroLogado.passaporte);
                 const hora = new Date(m.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const statusClass = m.status === 'aberto' ? 'ativo' : 'pausado';
                 
                 html += `
                     <div class="integrante ${isEu ? 'eu' : ''}">
                         <div class="integrante-info">
                             <div class="integrante-avatar"><i class="fas fa-user"></i></div>
                             <div>
-                                <p class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''}</p>
+                                <p class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''} <div class="dot ${statusClass}"></div></p>
                                 <p class="integrante-pass">Passaporte ${m.passaporte} • ${m.posicao}</p>
                             </div>
                         </div>
@@ -218,6 +300,7 @@
             const btn = document.getElementById('btn-trocar');
             const txt = document.getElementById('txt-trocar');
             const timerSpan = document.getElementById('timer-cooldown');
+            const infoTrocaBox = document.getElementById('info-troca');
             
             const TEMPO_COOLDOWN_MS = 10 * 60 * 1000; 
             const dataBase = new Date(trocaEquipeEm || pontoAtual.entrada);
@@ -232,12 +315,16 @@
                     btn.classList.add('liberado');
                     btn.disabled = false;
                     txt.innerText = 'Trocar de Equipe';
+                    infoTrocaBox.innerText = 'Liberado';
                 } else {
                     aviso.style.display = 'flex';
                     const restante = TEMPO_COOLDOWN_MS - diferenca;
                     const mins = Math.floor(restante / 60000);
                     const segs = Math.floor((restante % 60000) / 1000);
-                    timerSpan.innerText = `${String(mins).padStart(2, '0')}:${String(segs).padStart(2, '0')}`;
+                    const tempoStr = `${String(mins).padStart(2, '0')}:${String(segs).padStart(2, '0')}`;
+                    
+                    timerSpan.innerText = tempoStr;
+                    infoTrocaBox.innerText = tempoStr;
                 }
             }, 1000);
         }
@@ -265,6 +352,12 @@
                 alert("Erro ao trocar de equipe.");
                 console.error(e);
             }
+        }
+
+        function atualizarSync() {
+            const agora = new Date();
+            const hora = agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+            document.getElementById('hora-sync').innerText = `Sincronizado ${hora}`;
         }
     </script>
 </body>
