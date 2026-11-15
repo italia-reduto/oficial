@@ -468,15 +468,27 @@
     fecharModalConfirmar();
 
     try {
+        // 1. BLINDAGEM: Busca o ponto ativo do banco novamente antes de atualizar
+        const { data: pontoBanco, error: erroBusca } = await sb.from('pontos')
+            .select('id')
+            .eq('passaporte', membroLogado.passaporte)
+            .in('status', ['aberto', 'pausado'])
+            .maybeSingle();
+
+        if (erroBusca || !pontoBanco) {
+            customAlert("Erro: Nenhum ponto ativo encontrado.", "erro");
+            return;
+        }
+
+        // 2. Atualiza usando o ID seguro que acabamos de buscar
         const { error } = await sb.from('pontos').update({ 
             equipe_id: equipeSelecionadaParaTroca.id,
             posicao: equipeSelecionadaParaTroca.nome,
             entrada: new Date().toISOString(),
             troca_equipe_em: new Date().toISOString()
-        }).eq('id', pontoAtual.id);
+        }).eq('id', pontoBanco.id);
         
         if (error) {
-            // MOSTRA O ERRO REAL DO SUPABASE NA TELA
             customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
             return;
         }
