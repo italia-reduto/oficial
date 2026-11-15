@@ -159,31 +159,45 @@
         // 2. BUSCAR DADOS
         // ==========================================
         async function carregarDados() {
-            const container = document.getElementById('lista-treinamentos');
-            
-            try {
-                // Puxa todos os treinos
-                const { data: treinos, error: err1 } = await sb.from('treinamentos')
-                    .select('*')
-                    .order('data_hora', { ascending: true });
+    const container = document.getElementById('lista-treinamentos'); // ou 'lista-convocacoes' dependendo do arquivo
+    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando treinamentos...</p>';
+    
+    try {
+        // Busca os treinamentos que estão agendados
+        const { data: treinos, error: err1 } = await sb.from('treinamentos')
+            .select('*')
+            .eq('status', 'agendado') // Garante que só puxa os que não foram finalizados
+            .order('data_hora', { ascending: true });
 
-                if (err1) throw err1;
-                todosTreinos = treinos || [];
+        if (err1) throw new Error("Erro na tabela treinamentos: " + err1.message);
 
-                // Puxa as inscrições DESSE jogador
-                const { data: inscricoes, error: err2 } = await sb.from('presencas_treinamento')
-                    .select('*')
-                    .eq('passaporte', membroLogado.passaporte);
+        // Se não achar nada, avisa
+        if (!treinos || treinos.length === 0) {
+            container.innerHTML = '<div class="empty-state"><i class="fas fa-graduation-cap"></i><br>Nenhum treinamento agendado no momento.</div>';
+            return;
+        }
 
-                if (err2) throw err2;
-                minhasInscricoes = inscricoes || [];
+        // Busca as inscrições do jogador logado
+        const { data: presencas, error: err2 } = await sb.from('presencas_treinamento')
+            .select('*')
+            .eq('passaporte', membroLogado.passaporte);
 
-                renderizarTreinos();
+        if (err2) throw new Error("Erro na tabela presenças: " + err2.message);
 
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<div class="empty-state" style="border-color: #ef4444; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><br>Erro ao carregar os treinamentos.</div>';
-            }
+        // Renderiza os cards (A função original que você já tem no código)
+        renderizarTreinos(treinos, presencas || []);
+
+    } catch (err) {
+        console.error(err);
+        // MOSTRA O ERRO REAL NA TELA DO JOGADOR
+        container.innerHTML = `
+            <div class="empty-state" style="border-color: var(--vermelho); color: var(--vermelho);">
+                <i class="fas fa-exclamation-triangle"></i><br>
+                <strong>Erro ao carregar:</strong><br>
+                <span style="font-size: 12px;">${err.message}</span>
+            </div>
+        `;
+    }
         }
 
         // ==========================================
