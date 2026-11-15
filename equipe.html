@@ -464,29 +464,33 @@
         }
 
         async function confirmarTroca() {
-    if (!equipeSelecionadaParaTroca) return;
+    // 1. Verifica se a equipe foi selecionada
+    if (!equipeSelecionadaParaTroca || !equipeSelecionadaParaTroca.id) {
+        customAlert("Erro: Nenhuma equipe válida selecionada.", "erro");
+        return;
+    }
     fecharModalConfirmar();
 
     try {
-        // 1. BLINDAGEM: Busca o ponto ativo do banco novamente antes de atualizar
-        const { data: pontoBanco, error: erroBusca } = await sb.from('pontos')
+        // 2. Busca o ID do seu ponto ativo DIRETO do banco agora
+        const { data: pontoDb, error: errPonto } = await sb.from('pontos')
             .select('id')
             .eq('passaporte', membroLogado.passaporte)
             .in('status', ['aberto', 'pausado'])
-            .maybeSingle();
+            .single();
 
-        if (erroBusca || !pontoBanco) {
-            customAlert("Erro: Nenhum ponto ativo encontrado.", "erro");
+        if (errPonto || !pontoDb || !pontoDb.id) {
+            customAlert("Erro: Ponto ativo não encontrado.", "erro");
             return;
         }
 
-        // 2. Atualiza usando o ID seguro que acabamos de buscar
+        // 3. Faz a atualização usando os IDs seguros
         const { error } = await sb.from('pontos').update({ 
             equipe_id: equipeSelecionadaParaTroca.id,
             posicao: equipeSelecionadaParaTroca.nome,
             entrada: new Date().toISOString(),
             troca_equipe_em: new Date().toISOString()
-        }).eq('id', pontoBanco.id);
+        }).eq('id', pontoDb.id);
         
         if (error) {
             customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
@@ -496,7 +500,7 @@
         customAlert(`Você foi realocado para ${equipeSelecionadaParaTroca.nome}!`);
         carregarEquipe();
     } catch (e) {
-        customAlert("Erro ao trocar de equipe. " + e.message, "erro");
+        customAlert("Erro ao trocar: " + e.message, "erro");
     }
         }
         // ==========================================
