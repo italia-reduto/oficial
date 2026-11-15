@@ -413,55 +413,53 @@
         // 6. DAR FALTAS
         // ==========================================
         async function darFaltasTreinamento(treinoId) {
-            if (!confirm("Tem certeza que deseja dar FALTA para todos os inscritos que não compareceram?")) return;
+    if (!confirm("Tem certeza que deseja dar FALTA para todos os inscritos que NÃO marcaram presença?")) return;
 
-            try {
-                const { data: faltosos, error: errBusca } = await sb.from('presencas_treinamento')
-                    .select('id, passaporte')
-                    .eq('treinamento_id', treinoId)
-                    .eq('status', 'inscrito');
-                
-                if (errBusca) throw errBusca;
+    try {
+        // Busca ESTRITAMENTE quem está com o status 'inscrito' (ou seja, não marcou presença)
+        const { data: faltosos, error: errBusca } = await sb.from('presencas_treinamento')
+            .select('id, passaporte, nome, status')
+            .eq('treinamento_id', treinoId)
+            .eq('status', 'inscrito'); // Filtro de segurança
+        
+        if (errBusca) throw errBusca;
 
-                if (!faltosos || faltosos.length === 0) {
-                    alert("Ninguém para dar falta! Ou todos já foram marcados, ou a lista está vazia.");
-                    return;
-                }
-
-                const hoje = new Date().toISOString().split('T')[0];
-                const idsFaltosos = faltosos.map(f => f.id);
-                
-                // Atualiza a tabela de presenças do treinamento
-                const { error: errFalta } = await sb.from('presencas_treinamento')
-                    .update({ status: 'falta' })
-                    .in('id', idsFaltosos);
-                
-                if (errFalta) throw errFalta;
-
-                // Joga a falta na ficha geral do membro
-                for (const f of faltosos) {
-                    await sb.from('presencas').upsert([{
-                        passaporte: f.passaporte,
-                        status: 'falta',
-                        data: hoje,
-                        marcado_por: 'sistema',
-                        marcado_por_nome: adminLogado.nome,
-                        marcado_em: new Date().toISOString(),
-                        justificativa: 'Falta em Treinamento',
-                        status_justificativa: null,
-                        motivo_recusa: null
-                    }], { onConflict: 'data,passaporte' });
-                }
-
-                alert(`${faltosos.length} falta(s) registrada(s) com sucesso!`);
-                carregarTreinosAdmin();
-
-            } catch (err) {
-                console.error(err);
-                alert("Erro ao dar faltas: " + err.message);
-            }
+        if (!faltosos || faltosos.length === 0) {
+            alert("Ninguém para dar falta! Todos os inscritos já constam como 'Presente' ou 'Falta'.");
+            return;
         }
 
+        const hoje = new Date().toISOString().split('T')[0];
+        
+        // Aplica a falta
+        for (const f of faltosos) {
+            // Atualiza a tabela do treinamento
+            await sb.from('presencas_treinamento')
+                .update({ status: 'falta' })
+                .eq('id', f.id);
+                
+            // Joga no histórico geral
+            await sb.from('presencas').upsert([{
+                passaporte: f.passaporte,
+                status: 'falta',
+                data: hoje,
+                marcado_por: 'sistema',
+                marcado_por_nome: adminLogado.nome,
+                marcado_em: new Date().toISOString(),
+                justificativa: 'Falta em Treinamento',
+                status_justificativa: null,
+                motivo_recusa: null
+            }], { onConflict: 'data,passaporte' });
+        }
+
+        alert(`${faltosos.length} falta(s) registrada(s) com sucesso!`);
+        carregarTreinosAdmin();
+
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao dar faltas: " + err.message);
+    }
+        }
         // ==========================================
         // 7. DELETAR TREINAMENTO CONCLUÍDO
         // ==========================================
