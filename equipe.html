@@ -280,17 +280,17 @@
             document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         }, 1000);
 
-        // LÓGICA DE TROCA ÚNICA: Verifica se a data de troca é diferente da data de entrada
-        const dataEntrada = new Date(pontoAtual.entrada).getTime();
-        const dataTroca = new Date(pontoAtual.troca_equipe_em || 0).getTime();
-        const btnTrocar = document.querySelector('.btn-trocar');
+        // LÓGICA DE TROCA ÚNICA
+const dataEntrada = new Date(pontoAtual.entrada).getTime();
+const dataTroca = pontoAtual.troca_equipe_em ? new Date(pontoAtual.troca_equipe_em).getTime() : 0;
+const btnTrocar = document.querySelector('.btn-trocar');
 
-        // Se a diferença for maior que 5 segundos, ele já trocou uma vez.
-        if (dataTroca - dataEntrada > 5000) {
-            btnTrocar.style.display = 'none'; // Esconde o botão de trocar
-        } else {
-            btnTrocar.style.display = 'flex'; // Mostra o botão
-        }
+// Se ele já trocou de equipe (data da troca é maior que a data de entrada), esconde o botão
+if (dataTroca > (dataEntrada + 1000)) {
+    btnTrocar.style.display = 'none'; 
+} else {
+    btnTrocar.style.display = 'flex'; 
+}
 
         await carregarIntegrantes(pontoAtual.equipe_id, nomeEquipe, areaEquipe);
 
@@ -476,50 +476,32 @@ function fecharModalConfirmar() {
 }
 
 async function confirmarTroca() {
-    // Trava 1: Se não tem ID, para tudo
-    if (!idTrocaPendente) {
-        customAlert("Erro: Nenhuma equipe selecionada.", "erro");
-        return;
-    }
-
-    // Trava 2: Verifica se o membro está logado
-    if (!membroLogado || !membroLogado.passaporte) {
-        customAlert("Erro: Sessão expirada.", "erro");
-        return;
-    }
+    if (!idTrocaPendente) return;
+    fecharModalConfirmar();
 
     try {
-        // 1. Busca o ponto DIRETO do banco (não confia na memória do celular)
-        const { data: pontoDb, error: errBusca } = await sb.from('pontos')
-            .select('id')
-            .eq('passaporte', membroLogado.passaporte)
-            .in('status', ['aberto', 'pausado'])
-            .maybeSingle();
+        const { data: pontoDb } = await sb.from('pontos').select('id').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
-        if (errBusca || !pontoDb || !pontoDb.id) {
-            customAlert("Erro: Ponto ativo não encontrado no banco.", "erro");
+        if (!pontoDb) {
+            customAlert("Erro: Ponto ativo não encontrado.", "erro");
             return;
         }
 
-        // 2. Faz a atualização usando o ID seguro
-        const { error: errUpdate } = await sb.from('pontos').update({ 
+        // AQUI: Não atualizamos a 'entrada', apenas a equipe e a data de troca.
+        const { error } = await sb.from('pontos').update({ 
             equipe_id: idTrocaPendente,
             posicao: nomeTrocaPendente,
-            entrada: new Date().toISOString(),
             troca_equipe_em: new Date().toISOString()
         }).eq('id', pontoDb.id);
         
-        if (errUpdate) {
-            customAlert(`ERRO DO BANCO: ${errUpdate.message}`, "erro");
+        if (error) {
+            customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
             return;
         }
 
-        // 3. Se deu tudo certo, avisa e recarrega a tela
         customAlert(`Você foi realocado para ${nomeTrocaPendente}!`);
-        
         idTrocaPendente = null;
         nomeTrocaPendente = null;
-        
         setTimeout(() => { window.location.reload(); }, 1500);
         
     } catch (e) {
