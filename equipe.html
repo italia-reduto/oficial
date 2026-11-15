@@ -41,20 +41,7 @@
         .box-info h4 { font-size: 14px; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
         .box-info.destaque-assento { border-color: rgba(34, 197, 94, 0.3); }
-        .box-p-verde {
-            background: var(--verde-claro);
-            color: #000;
-            font-family: 'Oswald', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            width: 36px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            margin-top: 4px;
-        }
+        .box-p-verde { background: var(--verde-claro); color: #000; font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 6px; margin-top: 4px; }
 
         .integrantes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 5px;}
         .integrantes-header h3 { font-family: 'Oswald'; font-size: 16px; color: #fff; }
@@ -247,6 +234,7 @@
         });
 
         async function carregarEquipe() {
+            // Busca o ponto atual do membro
             const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
             if (data) {
@@ -254,9 +242,14 @@
                 document.getElementById('tela-bloqueio').style.display = 'none';
                 document.getElementById('container-principal').style.display = 'flex';
 
-                // BLINDAGEM: Busca a equipe e compara IDs como texto para evitar "Desconhecida"
+                // BLINDAGEM 1: Puxa todas as equipes e compara ID como texto para não dar "Desconhecida"
                 const { data: todasEquipes } = await sb.from('equipes').select('*');
-                const equipeInfo = todasEquipes.find(eq => String(eq.id) === String(pontoAtual.equipe_id));
+                let equipeInfo = todasEquipes.find(eq => String(eq.id) === String(pontoAtual.equipe_id));
+                
+                // BLINDAGEM 2: Se não achar pelo ID (banco bagunçado), tenta achar pelo nome salvo
+                if (!equipeInfo && pontoAtual.posicao) {
+                    equipeInfo = todasEquipes.find(eq => eq.nome === pontoAtual.posicao);
+                }
                 
                 const nomeEquipe = equipeInfo ? equipeInfo.nome : 'Desconhecida';
                 const areaEquipe = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
@@ -264,7 +257,7 @@
                 document.getElementById('nome-equipe').innerText = nomeEquipe;
                 document.getElementById('info-area').innerText = areaEquipe;
                 
-                // Turno (Blocos de 3h)
+                // Lógica do Turno (Blocos de 3h)
                 const horaAtual = new Date().getHours();
                 const blocoTurno = Math.floor(horaAtual / 3) * 3;
                 const proxBloco = (blocoTurno + 3) % 24;
@@ -273,6 +266,7 @@
                 const horaEntrada = new Date(pontoAtual.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 document.getElementById('info-entrada').innerText = horaEntrada;
 
+                // Relógio
                 if(intervaloRelogio) clearInterval(intervaloRelogio);
                 intervaloRelogio = setInterval(() => {
                     const dif = new Date() - new Date(pontoAtual.entrada);
@@ -282,11 +276,12 @@
                     document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
                 }, 1000);
 
-                // REGRA DO BOTÃO SUMIR: Se já trocou (data de troca > data de entrada), esconde.
+                // REGRA: O botão de trocar some após a primeira troca
                 const dataEntrada = new Date(pontoAtual.entrada).getTime();
                 const dataTroca = pontoAtual.troca_equipe_em ? new Date(pontoAtual.troca_equipe_em).getTime() : 0;
                 const btnTrocar = document.getElementById('btn-trocar-global');
 
+                // 5000 milissegundos = 5 segundos de tolerância para não bugar com lentidão
                 if (dataTroca > (dataEntrada + 5000)) {
                     btnTrocar.style.display = 'none'; 
                 } else {
@@ -302,7 +297,7 @@
         }
 
         async function carregarIntegrantes(equipeId, nomeEquipe, areaEquipe) {
-            // Busca membros da equipe
+            // Puxa membros da equipe ordenados por entrada
             const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']).order('entrada', { ascending: true });
             
             const container = document.getElementById('lista-integrantes');
@@ -334,7 +329,7 @@
             }
             document.getElementById('info-lider').innerText = liderNome;
 
-            // 2. Lógica de Posição (P1, P2, P3)
+            // 2. Lógica do Quadradinho P1, P2, P3 (CORRIGIDA POR TIPO DE EQUIPE)
             const areaUpper = (areaEquipe || '').toUpperCase();
             const nomeUpper = (nomeEquipe || '').toUpperCase();
             
@@ -344,6 +339,7 @@
             let textoPosicao = '---';
 
             if (nomeUpper.includes('ROTA')) {
+                // REGRA: Equipe ROTA é por ordem de chegada (P1, P2, P3, P4)
                 mostrarAssento = true;
                 labelTexto = "Meu Assento";
                 iconeHTML = '<i class="fas fa-car"></i>';
@@ -358,6 +354,7 @@
                 }
 
             } else if (areaUpper.includes('VENDA') || areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO')) {
+                // REGRA: Vendas, Segurança e Apoio puxam P1/P2 do NOME DA EQUIPE
                 mostrarAssento = true;
                 labelTexto = "Minha Posição";
                 iconeHTML = areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO') ? '<i class="fas fa-shield-alt"></i>' : '<i class="fas fa-cash-register"></i>';
@@ -406,7 +403,7 @@
         }
 
         // ==========================================
-        // SISTEMA DE TROCA DE EQUIPE
+        // SISTEMA DE TROCA DE EQUIPE (BLINDADO COM DATA-ATTRIBUTES)
         // ==========================================
         async function abrirModalTroca() {
             document.getElementById('modal-troca').classList.add('ativo');
@@ -426,14 +423,13 @@
                     if (String(eq.id) === String(pontoAtual.equipe_id)) return; 
                     
                     const ocupados = contagem[eq.id] || 0;
+                    // Limite máximo: Rotas = 4, Outras = 2
                     const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; 
                     
                     if (ocupados < limite) {
-                        const idSafe = JSON.stringify(eq.id);
-                        const nomeSafe = JSON.stringify(eq.nome);
-
+                        // Guarda os dados no botão sem quebrar o código com aspas
                         html += `
-                            <button class="btn-equipe-opcao" onclick='selecionarEquipeTroca(${idSafe}, ${nomeSafe})'>
+                            <button class="btn-equipe-opcao" data-id="${eq.id}" data-nome="${eq.nome}" onclick="selecionarEquipeTroca(this)">
                                 <span>${eq.nome}</span>
                                 <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
                             </button>
@@ -452,7 +448,16 @@
             document.getElementById('modal-troca').classList.remove('ativo');
         }
 
-        function selecionarEquipeTroca(id, nome) {
+        function selecionarEquipeTroca(botaoClicado) {
+            // Pega os valores reais do botão (resolve o bug do 'null')
+            const id = botaoClicado.getAttribute('data-id');
+            const nome = botaoClicado.getAttribute('data-nome');
+
+            if (!id || !nome) {
+                customAlert("Erro ao carregar equipe. Tente novamente.", "erro");
+                return;
+            }
+
             idTrocaPendente = id;
             nomeTrocaPendente = nome;
             
@@ -468,11 +473,14 @@
         }
 
         async function confirmarTroca() {
-            if (!idTrocaPendente) return;
+            if (!idTrocaPendente || !nomeTrocaPendente) {
+                customAlert("Erro: Nenhuma equipe válida selecionada.", "erro");
+                return;
+            }
             fecharModalConfirmar();
 
             try {
-                // Busca o ID do ponto atualizado no banco (evita erros de null)
+                // Busca o ID do ponto direto do banco (segurança contra cache)
                 const { data: pontoDb } = await sb.from('pontos').select('id').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
                 if (!pontoDb) {
