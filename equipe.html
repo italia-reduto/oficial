@@ -403,40 +403,40 @@
         // SISTEMA DE TROCA DE EQUIPE (BLINDADO)
         // ==========================================
         async function abrirModalTroca() {
-            document.getElementById('modal-troca').classList.add('ativo');
-            const container = document.getElementById('lista-opcoes-equipe');
-            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando equipes...</p>';
+    document.getElementById('modal-troca').classList.add('ativo');
+    const container = document.getElementById('lista-opcoes-equipe');
+    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando equipes...</p>';
 
-            try {
-                const { data: todasEquipes } = await sb.from('equipes').select('*').eq('ativa', true);
-                const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+    try {
+        const { data: todasEquipes } = await sb.from('equipes').select('*').eq('ativa', true);
+        const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
 
-                let contagem = {};
-                if (pontosAtivos) pontosAtivos.forEach(p => { contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1; });
+        let contagem = {};
+        if (pontosAtivos) pontosAtivos.forEach(p => { contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1; });
 
-                let html = '';
-                todasEquipes.forEach(eq => {
-                    if (String(eq.id) === String(pontoAtual.equipe_id)) return; // Não mostra a atual
-                    
-                    const ocupados = contagem[eq.id] || 0;
-                    const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; 
-                    
-                    if (ocupados < limite) {
-                        // BLINDAGEM: Passa os dados via data-attribute em vez de quebrar o HTML com aspas
-                        html += `
-                            <button class="btn-equipe-opcao" data-id="${eq.id}" data-nome="${eq.nome}" onclick="selecionarEquipeTroca(this)">
-                                <span>${eq.nome}</span>
-                                <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
-                            </button>
-                        `;
-                    }
-                });
-
-                if (html === '') html = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Todas as outras equipes estão lotadas.</p>';
-                container.innerHTML = html;
-            } catch (e) {
-                container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao buscar equipes.</p>';
+        let html = '';
+        todasEquipes.forEach(eq => {
+            if (String(eq.id) === String(pontoAtual.equipe_id)) return; 
+            
+            const ocupados = contagem[eq.id] || 0;
+            const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; 
+            
+            if (ocupados < limite) {
+                // BLINDAGEM: Guarda o ID e o Nome no botão (data-id e data-nome)
+                html += `
+                    <button class="btn-equipe-opcao" data-id="${eq.id}" data-nome="${eq.nome}" onclick="selecionarEquipeTroca(this)">
+                        <span>${eq.nome}</span>
+                        <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
+                    </button>
+                `;
             }
+        });
+
+        if (html === '') html = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Todas as outras equipes estão lotadas.</p>';
+        container.innerHTML = html;
+    } catch (e) {
+        container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao buscar equipes.</p>';
+    }
         }
 
         function fecharModalTroca() {
@@ -444,23 +444,22 @@
         }
 
         function selecionarEquipeTroca(botaoClicado) {
-            // Pega os valores reais direto do botão (resolve o bug do 'null')
-            const id = botaoClicado.getAttribute('data-id');
-            const nome = botaoClicado.getAttribute('data-nome');
+    // Pega os dados dos cofres (data-attributes) em vez de tentar ler o texto
+    const id = botaoClicado.getAttribute('data-id');
+    const nome = botaoClicado.getAttribute('data-nome');
 
-            if (!id || !nome) {
-                customAlert("Erro ao carregar equipe. Tente novamente.", "erro");
-                return;
+    if (!id || !nome) {
+        customAlert("Erro ao selecionar equipe.", "erro");
+        return;
+    }
+
+    idTrocaPendente = id;
+    nomeTrocaPendente = nome;
+    
+    document.getElementById('nome-nova-equipe').innerText = nome;
+    fecharModalTroca();
+    document.getElementById('modal-confirmar-troca').classList.add('ativo');
             }
-
-            idTrocaPendente = id;
-            nomeTrocaPendente = nome;
-            
-            document.getElementById('nome-nova-equipe').innerText = nome;
-            fecharModalTroca();
-            document.getElementById('modal-confirmar-troca').classList.add('ativo');
-        }
-
         function fecharModalConfirmar() {
             document.getElementById('modal-confirmar-troca').classList.remove('ativo');
             idTrocaPendente = null;
@@ -468,38 +467,41 @@
         }
 
         async function confirmarTroca() {
-            if (!idTrocaPendente || !nomeTrocaPendente) {
-                customAlert("Erro: Nenhuma equipe válida selecionada.", "erro");
-                return;
-            }
-            fecharModalConfirmar();
+    if (!idTrocaPendente || !nomeTrocaPendente) {
+        customAlert("Erro: Nenhuma equipe válida selecionada.", "erro");
+        return;
+    }
+    fecharModalConfirmar();
 
-            try {
-                // Busca o ID do ponto e da equipe DIRETO do banco para garantir que não há nulos
-                const { data: pontoDb } = await sb.from('pontos').select('id').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+    try {
+        // Busca o ID do seu ponto ativo no banco
+        const { data: pontoDb } = await sb.from('pontos').select('id').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
-                if (!pontoDb) {
-                    customAlert("Erro: Ponto ativo não encontrado.", "erro");
-                    return;
-                }
+        if (!pontoDb) {
+            customAlert("Erro: Ponto ativo não encontrado.", "erro");
+            return;
+        }
 
-                const { error } = await sb.from('pontos').update({ 
-                    equipe_id: idTrocaPendente,
-                    posicao: nomeTrocaPendente,
-                    troca_equipe_em: new Date().toISOString()
-                }).eq('id', pontoDb.id);
-                
-                if (error) {
-                    customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
-                    return;
-                }
+        // Faz a troca usando o UUID correto que estava guardado no botão
+        const { error } = await sb.from('pontos').update({ 
+            equipe_id: idTrocaPendente,
+            posicao: nomeTrocaPendente,
+            troca_equipe_em: new Date().toISOString()
+        }).eq('id', pontoDb.id);
+        
+        if (error) {
+            customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
+            return;
+        }
 
-                customAlert(`Você foi realocado para ${nomeTrocaPendente}!`);
-                setTimeout(() => { window.location.reload(); }, 1500);
-                
-            } catch (e) {
-                customAlert("Erro Crítico: " + e.message, "erro");
-            }
+        customAlert(`Você foi realocado para ${nomeTrocaPendente}!`);
+        
+        // Recarrega a página
+        setTimeout(() => { window.location.reload(); }, 1500);
+        
+    } catch (e) {
+        customAlert("Erro Crítico: " + e.message, "erro");
+    }
         }
 
         // ==========================================
