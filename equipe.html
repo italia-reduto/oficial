@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Itália 2.0 | Minha Equipe</title>
+    
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
     
@@ -39,21 +40,20 @@
         .box-info i { font-size: 10px; color: var(--verde); margin-right: 3px; }
         .box-info h4 { font-size: 14px; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* Quadradinho P1 Estilo BPM */
         .box-info.destaque-assento { border-color: rgba(34, 197, 94, 0.3); }
         .box-p-verde {
-    background: var(--verde-claro);
-    color: #000;
-    font-family: 'Oswald', sans-serif;
-    font-size: 16px; /* Reduzido de 20px para 16px */
-    font-weight: 700;
-    width: 36px;     /* Reduzido de 44px para 36px */
-    height: 36px;    /* Reduzido de 44px para 36px */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    margin-top: 4px;
+            background: var(--verde-claro);
+            color: #000;
+            font-family: 'Oswald', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            margin-top: 4px;
         }
 
         .integrantes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 5px;}
@@ -90,7 +90,6 @@
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
 
-        /* MODAIS CUSTOMIZADOS */
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
         .modal-overlay.ativo { display: flex; }
         .modal-content { background: #121814; border: 1px solid var(--borda); border-radius: 12px; padding: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 80vh; overflow-y: auto;}
@@ -104,7 +103,6 @@
         .btn-sim { flex: 1; background: var(--verde); color: #000; border: none; padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
         .btn-nao { flex: 1; background: transparent; color: var(--texto-mutado); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
 
-        /* Alerta Topo (Custom) */
         .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 99999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
         .alerta-custom.ativo { top: 20px; }
         .alerta-custom i { font-size: 20px; color: var(--verde); }
@@ -171,7 +169,7 @@
             </div>
             <div id="lista-integrantes"></div>
 
-            <button class="btn-trocar" onclick="abrirModalTroca()">
+            <button class="btn-trocar" id="btn-trocar-global" onclick="abrirModalTroca()">
                 <i class="fas fa-exchange-alt"></i> Trocar de Equipe
             </button>
 
@@ -206,7 +204,7 @@
         <div class="modal-content">
             <i class="fas fa-exchange-alt" style="font-size: 40px; color: var(--verde); margin-bottom: 15px;"></i>
             <h2 class="modal-titulo">Confirmar Troca?</h2>
-             <p style="font-size: 13px; color: #fff; margin-bottom: 20px;">Deseja ir para a equipe <strong id="nome-nova-equipe" style="color: var(--verde-claro);">---</strong>?<br><br><span style="color: var(--amarelo); font-size: 11px;"><i class="fas fa-exclamation-triangle"></i> Atenção: Após a troca, você não poderá mudar novamente até encerrar o ponto e iniciar um novo.</span></p>
+            <p style="font-size: 13px; color: #fff; margin-bottom: 20px;">Deseja ir para a equipe <strong id="nome-nova-equipe" style="color: var(--verde-claro);">---</strong>?<br><br><span style="color: var(--amarelo); font-size: 11px;"><i class="fas fa-exclamation-triangle"></i> Atenção: Após a troca, você não poderá mudar novamente até encerrar o ponto.</span></p>
             <div class="botoes-confirmar">
                 <button class="btn-nao" onclick="fecharModalConfirmar()">Cancelar</button>
                 <button class="btn-sim" onclick="confirmarTroca()">Sim, Trocar</button>
@@ -214,7 +212,7 @@
         </div>
     </div>
 
-    <!-- ALERTA CUSTOMIZADO (SUBSTITUI OS ALERTS DO CHROME) -->
+    <!-- ALERTA CUSTOMIZADO -->
     <div class="alerta-custom" id="alerta-site"><i class="fas fa-check-circle" id="alerta-icone"></i><p id="alerta-texto">Mensagem</p></div>
 
     <nav class="menu-inferior">
@@ -229,7 +227,8 @@
         let pontoAtual = null;
         let intervaloRelogio = null;
         let intervaloAtualizacaoSync = null;
-        let equipeSelecionadaParaTroca = null;
+        let idTrocaPendente = null;
+        let nomeTrocaPendente = null;
 
         const CARGOS_HIERARQUIA = [
             'lider da organização', '01 da organização', 'coordenador', 
@@ -248,268 +247,262 @@
         });
 
         async function carregarEquipe() {
-    const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+            const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
-    if (data) {
-        pontoAtual = data;
-        document.getElementById('tela-bloqueio').style.display = 'none';
-        document.getElementById('container-principal').style.display = 'flex';
+            if (data) {
+                pontoAtual = data;
+                document.getElementById('tela-bloqueio').style.display = 'none';
+                document.getElementById('container-principal').style.display = 'flex';
 
-        const { data: equipeInfo } = await sb.from('equipes').select('*').eq('id', pontoAtual.equipe_id).single();
-        
-        const nomeEquipe = equipeInfo ? equipeInfo.nome : 'Desconhecida';
-        const areaEquipe = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
-        
-        document.getElementById('nome-equipe').innerText = nomeEquipe;
-        document.getElementById('info-area').innerText = areaEquipe;
-        
-        const horaAtual = new Date().getHours();
-        const blocoTurno = Math.floor(horaAtual / 3) * 3;
-        const proxBloco = (blocoTurno + 3) % 24;
-        document.getElementById('info-turno').innerText = `${String(blocoTurno).padStart(2, '0')}:00 - ${String(proxBloco).padStart(2, '0')}:00`;
+                // BLINDAGEM: Busca a equipe e compara IDs como texto para evitar "Desconhecida"
+                const { data: todasEquipes } = await sb.from('equipes').select('*');
+                const equipeInfo = todasEquipes.find(eq => String(eq.id) === String(pontoAtual.equipe_id));
+                
+                const nomeEquipe = equipeInfo ? equipeInfo.nome : 'Desconhecida';
+                const areaEquipe = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
+                
+                document.getElementById('nome-equipe').innerText = nomeEquipe;
+                document.getElementById('info-area').innerText = areaEquipe;
+                
+                // Turno (Blocos de 3h)
+                const horaAtual = new Date().getHours();
+                const blocoTurno = Math.floor(horaAtual / 3) * 3;
+                const proxBloco = (blocoTurno + 3) % 24;
+                document.getElementById('info-turno').innerText = `${String(blocoTurno).padStart(2, '0')}:00 - ${String(proxBloco).padStart(2, '0')}:00`;
 
-        const horaEntrada = new Date(pontoAtual.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-        document.getElementById('info-entrada').innerText = horaEntrada;
+                const horaEntrada = new Date(pontoAtual.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                document.getElementById('info-entrada').innerText = horaEntrada;
 
-        if(intervaloRelogio) clearInterval(intervaloRelogio);
-        intervaloRelogio = setInterval(() => {
-            const dif = new Date() - new Date(pontoAtual.entrada);
-            const h = Math.floor(dif / 3600000);
-            const m = Math.floor((dif / 60000) % 60);
-            const s = Math.floor((dif / 1000) % 60);
-            document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-        }, 1000);
+                if(intervaloRelogio) clearInterval(intervaloRelogio);
+                intervaloRelogio = setInterval(() => {
+                    const dif = new Date() - new Date(pontoAtual.entrada);
+                    const h = Math.floor(dif / 3600000);
+                    const m = Math.floor((dif / 60000) % 60);
+                    const s = Math.floor((dif / 1000) % 60);
+                    document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                }, 1000);
 
-        // LÓGICA DE TROCA ÚNICA
-const dataEntrada = new Date(pontoAtual.entrada).getTime();
-const dataTroca = pontoAtual.troca_equipe_em ? new Date(pontoAtual.troca_equipe_em).getTime() : 0;
-const btnTrocar = document.querySelector('.btn-trocar');
+                // REGRA DO BOTÃO SUMIR: Se já trocou (data de troca > data de entrada), esconde.
+                const dataEntrada = new Date(pontoAtual.entrada).getTime();
+                const dataTroca = pontoAtual.troca_equipe_em ? new Date(pontoAtual.troca_equipe_em).getTime() : 0;
+                const btnTrocar = document.getElementById('btn-trocar-global');
 
-// Se ele já trocou de equipe (data da troca é maior que a data de entrada), esconde o botão
-if (dataTroca > (dataEntrada + 1000)) {
-    btnTrocar.style.display = 'none'; 
-} else {
-    btnTrocar.style.display = 'flex'; 
-}
+                if (dataTroca > (dataEntrada + 5000)) {
+                    btnTrocar.style.display = 'none'; 
+                } else {
+                    btnTrocar.style.display = 'flex'; 
+                }
 
-        await carregarIntegrantes(pontoAtual.equipe_id, nomeEquipe, areaEquipe);
+                await carregarIntegrantes(pontoAtual.equipe_id, nomeEquipe, areaEquipe);
 
-    } else {
-        document.getElementById('tela-bloqueio').style.display = 'flex';
-        document.getElementById('container-principal').style.display = 'none';
-    }
-        }
-
-        
-            async function carregarIntegrantes(equipeId, nomeEquipe, areaEquipe) {
-    const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']).order('entrada', { ascending: true });
-    
-    const container = document.getElementById('lista-integrantes');
-    if (!membrosAtivos || membrosAtivos.length === 0) {
-        container.innerHTML = '<p style="font-size: 12px; color: var(--texto-mutado); text-align: center; padding: 10px;">Ninguém nesta equipe.</p>';
-        return;
-    }
-
-    document.getElementById('badge-qtd').innerText = `${membrosAtivos.length} INTEGRANTES`;
-
-    // 1. Lógica de Comando
-    let passaportes = membrosAtivos.map(m => String(m.passaporte).trim());
-    const { data: dadosMembros } = await sb.from('membros').select('passaporte, cargo').in('passaporte', passaportes);
-
-    let liderNome = 'Sem Comando';
-    let menorIndexHierarquia = 999;
-
-    if (dadosMembros) {
-        dadosMembros.forEach(dm => {
-            const cargoFormatado = String(dm.cargo || '').trim().toLowerCase();
-            const index = CARGOS_HIERARQUIA.indexOf(cargoFormatado);
-            
-            if (index !== -1 && index < menorIndexHierarquia) {
-                menorIndexHierarquia = index;
-                const mInfo = membrosAtivos.find(m => String(m.passaporte).trim() === String(dm.passaporte).trim());
-                if (mInfo) liderNome = mInfo.nome;
+            } else {
+                document.getElementById('tela-bloqueio').style.display = 'flex';
+                document.getElementById('container-principal').style.display = 'none';
             }
-        });
-    }
-    document.getElementById('info-lider').innerText = liderNome;
-
-    // 2. Lógica do Quadradinho P1, P2, P3 (CORRIGIDA)
-    const areaUpper = (areaEquipe || '').toUpperCase();
-    const nomeUpper = (nomeEquipe || '').toUpperCase();
-    
-    let mostrarAssento = false;
-    let labelTexto = "Minha Posição";
-    let iconeHTML = '<i class="fas fa-store"></i>'; 
-    let textoPosicao = '---';
-
-    if (nomeUpper.includes('ROTA')) {
-        // --- LÓGICA PARA ROTAS (Ordem de entrada) ---
-        mostrarAssento = true;
-        labelTexto = "Meu Assento";
-        iconeHTML = '<i class="fas fa-car"></i>';
-        const maxAssentos = 4;
-        
-        const indexMeuAssento = membrosAtivos.findIndex(m => String(m.passaporte).trim() === String(membroLogado.passaporte).trim());
-        
-        if (indexMeuAssento >= 0 && indexMeuAssento < maxAssentos) {
-            textoPosicao = `P${indexMeuAssento + 1}`;
-        } else {
-            textoPosicao = `<span style="color: var(--vermelho); font-size: 12px; font-weight: bold;">Excedente</span>`;
         }
 
-    } else if (areaUpper.includes('VENDA') || areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO')) {
-        // --- LÓGICA PARA VENDAS/SEGURANÇA (Nome da equipe) ---
-        mostrarAssento = true;
-        labelTexto = "Minha Posição";
-        iconeHTML = areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO') ? '<i class="fas fa-shield-alt"></i>' : '<i class="fas fa-cash-register"></i>';
-        
-        // Extrai o P1, P2, P3 do nome da equipe (ex: "VENDAS P2" -> extrai "P2")
-        const matchPosicao = nomeEquipe.match(/P\d+/i);
-        textoPosicao = matchPosicao ? matchPosicao[0].toUpperCase() : 'P1'; // Fallback para P1 se não achar
-    }
-
-    const boxAssento = document.getElementById('box-assento');
-    const containerAssento = document.getElementById('container-assento');
-
-    if (mostrarAssento) {
-        boxAssento.style.display = 'flex';
-        document.getElementById('label-assento').innerHTML = `${iconeHTML} ${labelTexto}`;
-        
-        // Se for texto de "Excedente" (HTML), não coloca no quadradinho verde
-        if (textoPosicao.includes('span')) {
-            containerAssento.innerHTML = textoPosicao;
-        } else {
-            containerAssento.innerHTML = `<div class="box-p-verde">${textoPosicao}</div>`;
-        }
-    } else {
-        boxAssento.style.display = 'none';
-    }
-
-    // 3. Renderizar lista
-    let html = '';
-    membrosAtivos.forEach(m => {
-        const isEu = String(m.passaporte).trim() === String(membroLogado.passaporte).trim();
-        const hora = new Date(m.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-        const statusClass = m.status === 'aberto' ? 'ativo' : 'pausado';
-        
-        html += `
-            <div class="integrante ${isEu ? 'eu' : ''}">
-                <div class="integrante-info">
-                    <div class="integrante-avatar"><i class="fas fa-user"></i></div>
-                    <div>
-                        <div class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''} <span class="dot ${statusClass}"></span></div>
-                        <div class="integrante-pass">Passaporte ${m.passaporte}</div>
-                    </div>
-                </div>
-                <div class="integrante-tempo">desde<span>${hora}</span></div>
-            </div>
-        `;
-    });
-    container.innerHTML = html;
+        async function carregarIntegrantes(equipeId, nomeEquipe, areaEquipe) {
+            // Busca membros da equipe
+            const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']).order('entrada', { ascending: true });
+            
+            const container = document.getElementById('lista-integrantes');
+            if (!membrosAtivos || membrosAtivos.length === 0) {
+                container.innerHTML = '<p style="font-size: 12px; color: var(--texto-mutado); text-align: center; padding: 10px;">Ninguém nesta equipe.</p>';
+                return;
             }
 
-        // ==========================================
-// SISTEMA DE TROCA DE EQUIPE COM MODAL
-// ==========================================
+            document.getElementById('badge-qtd').innerText = `${membrosAtivos.length} INTEGRANTES`;
 
-// 1. Variáveis globais declaradas corretamente
-let idTrocaPendente = null;
-let nomeTrocaPendente = null;
+            // 1. Lógica de Comando (Líder)
+            let passaportes = membrosAtivos.map(m => String(m.passaporte).trim());
+            const { data: dadosMembros } = await sb.from('membros').select('passaporte, cargo').in('passaporte', passaportes);
 
-async function abrirModalTroca() {
-    document.getElementById('modal-troca').classList.add('ativo');
-    const container = document.getElementById('lista-opcoes-equipe');
-    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando equipes...</p>';
+            let liderNome = 'Sem Comando';
+            let menorIndexHierarquia = 999;
 
-    try {
-        const { data: todasEquipes } = await sb.from('equipes').select('*').eq('ativa', true);
-        const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+            if (dadosMembros) {
+                dadosMembros.forEach(dm => {
+                    const cargoFormatado = String(dm.cargo || '').trim().toLowerCase();
+                    const index = CARGOS_HIERARQUIA.indexOf(cargoFormatado);
+                    
+                    if (index !== -1 && index < menorIndexHierarquia) {
+                        menorIndexHierarquia = index;
+                        const mInfo = membrosAtivos.find(m => String(m.passaporte).trim() === String(dm.passaporte).trim());
+                        if (mInfo) liderNome = mInfo.nome;
+                    }
+                });
+            }
+            document.getElementById('info-lider').innerText = liderNome;
 
-        let contagem = {};
-        if (pontosAtivos) pontosAtivos.forEach(p => { contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1; });
-
-        let html = '';
-        todasEquipes.forEach(eq => {
-            if (eq.id === pontoAtual.equipe_id) return; 
+            // 2. Lógica de Posição (P1, P2, P3)
+            const areaUpper = (areaEquipe || '').toUpperCase();
+            const nomeUpper = (nomeEquipe || '').toUpperCase();
             
-            const ocupados = contagem[eq.id] || 0;
-            const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; 
-            
-            if (ocupados < limite) {
-                // Blindagem: Uso de aspas simples no nome para não quebrar o HTML
+            let mostrarAssento = false;
+            let labelTexto = "Minha Posição";
+            let iconeHTML = '<i class="fas fa-store"></i>'; 
+            let textoPosicao = '---';
+
+            if (nomeUpper.includes('ROTA')) {
+                mostrarAssento = true;
+                labelTexto = "Meu Assento";
+                iconeHTML = '<i class="fas fa-car"></i>';
+                const maxAssentos = 4;
+                
+                const indexMeuAssento = membrosAtivos.findIndex(m => String(m.passaporte).trim() === String(membroLogado.passaporte).trim());
+                
+                if (indexMeuAssento >= 0 && indexMeuAssento < maxAssentos) {
+                    textoPosicao = `P${indexMeuAssento + 1}`;
+                } else {
+                    textoPosicao = `<span style="color: var(--vermelho); font-size: 12px; font-weight: bold;">Excedente</span>`;
+                }
+
+            } else if (areaUpper.includes('VENDA') || areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO')) {
+                mostrarAssento = true;
+                labelTexto = "Minha Posição";
+                iconeHTML = areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO') ? '<i class="fas fa-shield-alt"></i>' : '<i class="fas fa-cash-register"></i>';
+                
+                const matchPosicao = nomeEquipe.match(/P\d+/i);
+                textoPosicao = matchPosicao ? matchPosicao[0].toUpperCase() : 'P1'; 
+            }
+
+            const boxAssento = document.getElementById('box-assento');
+            const containerAssento = document.getElementById('container-assento');
+
+            if (mostrarAssento) {
+                boxAssento.style.display = 'flex';
+                document.getElementById('label-assento').innerHTML = `${iconeHTML} ${labelTexto}`;
+                
+                if (textoPosicao.includes('span')) {
+                    containerAssento.innerHTML = textoPosicao;
+                } else {
+                    containerAssento.innerHTML = `<div class="box-p-verde">${textoPosicao}</div>`;
+                }
+            } else {
+                boxAssento.style.display = 'none';
+            }
+
+            // 3. Renderizar lista
+            let html = '';
+            membrosAtivos.forEach(m => {
+                const isEu = String(m.passaporte).trim() === String(membroLogado.passaporte).trim();
+                const hora = new Date(m.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+                const statusClass = m.status === 'aberto' ? 'ativo' : 'pausado';
+                
                 html += `
-                    <button class="btn-equipe-opcao" onclick="selecionarEquipeTroca('${eq.id}', '${eq.nome.replace(/'/g, "\\'")}')">
-                        <span>${eq.nome}</span>
-                        <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
-                    </button>
+                    <div class="integrante ${isEu ? 'eu' : ''}">
+                        <div class="integrante-info">
+                            <div class="integrante-avatar"><i class="fas fa-user"></i></div>
+                            <div>
+                                <div class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''} <span class="dot ${statusClass}"></span></div>
+                                <div class="integrante-pass">Passaporte ${m.passaporte}</div>
+                            </div>
+                        </div>
+                        <div class="integrante-tempo">desde<span>${hora}</span></div>
+                    </div>
                 `;
-            }
-        });
-
-        if (html === '') html = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Todas as outras equipes estão lotadas.</p>';
-        container.innerHTML = html;
-    } catch (e) {
-        container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao buscar equipes.</p>';
-    }
-}
-
-function fecharModalTroca() {
-    document.getElementById('modal-troca').classList.remove('ativo');
-}
-
-function selecionarEquipeTroca(id, nome) {
-    // Salva nas variáveis
-    idTrocaPendente = id;
-    nomeTrocaPendente = nome;
-    
-    // Atualiza o texto e abre a confirmação
-    document.getElementById('nome-nova-equipe').innerText = nome;
-    fecharModalTroca();
-    document.getElementById('modal-confirmar-troca').classList.add('ativo');
-}
-
-function fecharModalConfirmar() {
-    document.getElementById('modal-confirmar-troca').classList.remove('ativo');
-    // Não limpamos as variáveis aqui, só se o cara cancelar
-    idTrocaPendente = null;
-    nomeTrocaPendente = null;
-}
-
-async function confirmarTroca() {
-    if (!idTrocaPendente) return;
-    fecharModalConfirmar();
-
-    try {
-        const { data: pontoDb } = await sb.from('pontos').select('id').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
-
-        if (!pontoDb) {
-            customAlert("Erro: Ponto ativo não encontrado.", "erro");
-            return;
+            });
+            container.innerHTML = html;
         }
 
-        // AQUI: Não atualizamos a 'entrada', apenas a equipe e a data de troca.
-        const { error } = await sb.from('pontos').update({ 
-            equipe_id: idTrocaPendente,
-            posicao: nomeTrocaPendente,
-            troca_equipe_em: new Date().toISOString()
-        }).eq('id', pontoDb.id);
-        
-        if (error) {
-            customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
-            return;
-        }
-
-        customAlert(`Você foi realocado para ${nomeTrocaPendente}!`);
-        idTrocaPendente = null;
-        nomeTrocaPendente = null;
-        setTimeout(() => { window.location.reload(); }, 1500);
-        
-    } catch (e) {
-        customAlert("Erro Crítico: " + e.message, "erro");
-    }
-}
         // ==========================================
-        // ALERTAS E SINC
+        // SISTEMA DE TROCA DE EQUIPE
+        // ==========================================
+        async function abrirModalTroca() {
+            document.getElementById('modal-troca').classList.add('ativo');
+            const container = document.getElementById('lista-opcoes-equipe');
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando equipes...</p>';
+
+            try {
+                const { data: todasEquipes } = await sb.from('equipes').select('*').eq('ativa', true);
+                const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+
+                let contagem = {};
+                if (pontosAtivos) pontosAtivos.forEach(p => { contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1; });
+
+                let html = '';
+                todasEquipes.forEach(eq => {
+                    // Ignora a equipe atual
+                    if (String(eq.id) === String(pontoAtual.equipe_id)) return; 
+                    
+                    const ocupados = contagem[eq.id] || 0;
+                    const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; 
+                    
+                    if (ocupados < limite) {
+                        const idSafe = JSON.stringify(eq.id);
+                        const nomeSafe = JSON.stringify(eq.nome);
+
+                        html += `
+                            <button class="btn-equipe-opcao" onclick='selecionarEquipeTroca(${idSafe}, ${nomeSafe})'>
+                                <span>${eq.nome}</span>
+                                <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
+                            </button>
+                        `;
+                    }
+                });
+
+                if (html === '') html = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Todas as outras equipes estão lotadas.</p>';
+                container.innerHTML = html;
+            } catch (e) {
+                container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao buscar equipes.</p>';
+            }
+        }
+
+        function fecharModalTroca() {
+            document.getElementById('modal-troca').classList.remove('ativo');
+        }
+
+        function selecionarEquipeTroca(id, nome) {
+            idTrocaPendente = id;
+            nomeTrocaPendente = nome;
+            
+            document.getElementById('nome-nova-equipe').innerText = nome;
+            fecharModalTroca();
+            document.getElementById('modal-confirmar-troca').classList.add('ativo');
+        }
+
+        function fecharModalConfirmar() {
+            document.getElementById('modal-confirmar-troca').classList.remove('ativo');
+            idTrocaPendente = null;
+            nomeTrocaPendente = null;
+        }
+
+        async function confirmarTroca() {
+            if (!idTrocaPendente) return;
+            fecharModalConfirmar();
+
+            try {
+                // Busca o ID do ponto atualizado no banco (evita erros de null)
+                const { data: pontoDb } = await sb.from('pontos').select('id').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+
+                if (!pontoDb) {
+                    customAlert("Erro: Ponto ativo não encontrado.", "erro");
+                    return;
+                }
+
+                const { error } = await sb.from('pontos').update({ 
+                    equipe_id: idTrocaPendente,
+                    posicao: nomeTrocaPendente,
+                    troca_equipe_em: new Date().toISOString()
+                }).eq('id', pontoDb.id);
+                
+                if (error) {
+                    customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
+                    return;
+                }
+
+                customAlert(`Você foi realocado para ${nomeTrocaPendente}!`);
+                idTrocaPendente = null;
+                nomeTrocaPendente = null;
+                setTimeout(() => { window.location.reload(); }, 1500);
+                
+            } catch (e) {
+                customAlert("Erro Crítico: " + e.message, "erro");
+            }
+        }
+
+        // ==========================================
+        // FUNÇÕES GERAIS
         // ==========================================
         function atualizarSync() {
             const agora = new Date();
