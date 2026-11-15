@@ -409,64 +409,74 @@
             }
 
         // ==========================================
-        // SISTEMA DE TROCA DE EQUIPE COM MODAL
-        // ==========================================
-        async function abrirModalTroca() {
-            document.getElementById('modal-troca').classList.add('ativo');
-            const container = document.getElementById('lista-opcoes-equipe');
-            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando equipes...</p>';
+// SISTEMA DE TROCA DE EQUIPE COM MODAL
+// ==========================================
 
-            try {
-                const { data: todasEquipes } = await sb.from('equipes').select('*').eq('ativa', true);
-                const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+// 1. Variáveis globais declaradas corretamente
+let idTrocaPendente = null;
+let nomeTrocaPendente = null;
 
-                let contagem = {};
-                if (pontosAtivos) pontosAtivos.forEach(p => { contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1; });
+async function abrirModalTroca() {
+    document.getElementById('modal-troca').classList.add('ativo');
+    const container = document.getElementById('lista-opcoes-equipe');
+    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando equipes...</p>';
 
-                let html = '';
-                todasEquipes.forEach(eq => {
-                    if (eq.id === pontoAtual.equipe_id) return; // Não mostra a atual
-                    
-                    const ocupados = contagem[eq.id] || 0;
-                    const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; // Regra de vagas
-                    
-                    if (ocupados < limite) {
-                        html += `
-                            <button class="btn-equipe-opcao" onclick="selecionarEquipeTroca('${eq.id}', '${eq.nome}')">
-                                <span>${eq.nome}</span>
-                                <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
-                            </button>
-                        `;
-                    }
-                });
+    try {
+        const { data: todasEquipes } = await sb.from('equipes').select('*').eq('ativa', true);
+        const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
 
-                if (html === '') html = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Todas as outras equipes estão lotadas.</p>';
-                container.innerHTML = html;
-            } catch (e) {
-                container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao buscar equipes.</p>';
+        let contagem = {};
+        if (pontosAtivos) pontosAtivos.forEach(p => { contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1; });
+
+        let html = '';
+        todasEquipes.forEach(eq => {
+            if (eq.id === pontoAtual.equipe_id) return; 
+            
+            const ocupados = contagem[eq.id] || 0;
+            const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; 
+            
+            if (ocupados < limite) {
+                // Blindagem: Uso de aspas simples no nome para não quebrar o HTML
+                html += `
+                    <button class="btn-equipe-opcao" onclick="selecionarEquipeTroca('${eq.id}', '${eq.nome.replace(/'/g, "\\'")}')">
+                        <span>${eq.nome}</span>
+                        <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
+                    </button>
+                `;
             }
-        }
+        });
 
-        function fecharModalTroca() {
-            document.getElementById('modal-troca').classList.remove('ativo');
-        }
+        if (html === '') html = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Todas as outras equipes estão lotadas.</p>';
+        container.innerHTML = html;
+    } catch (e) {
+        container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao buscar equipes.</p>';
+    }
+}
 
-        function selecionarEquipeTroca(id, nome) {
-            equipeSelecionadaParaTroca = { id, nome };
-            document.getElementById('nome-nova-equipe').innerText = nome;
-            fecharModalTroca();
-            document.getElementById('modal-confirmar-troca').classList.add('ativo');
-        }
+function fecharModalTroca() {
+    document.getElementById('modal-troca').classList.remove('ativo');
+}
 
-        function fecharModalConfirmar() {
-            document.getElementById('modal-confirmar-troca').classList.remove('ativo');
-            equipeSelecionadaParaTroca = null;
-        }
+function selecionarEquipeTroca(id, nome) {
+    // Salva nas variáveis
+    idTrocaPendente = id;
+    nomeTrocaPendente = nome;
+    
+    // Atualiza o texto e abre a confirmação
+    document.getElementById('nome-nova-equipe').innerText = nome;
+    fecharModalTroca();
+    document.getElementById('modal-confirmar-troca').classList.add('ativo');
+}
 
-        async function confirmarTroca() {
-    fecharModalConfirmar();
+function fecharModalConfirmar() {
+    document.getElementById('modal-confirmar-troca').classList.remove('ativo');
+    // Não limpamos as variáveis aqui, só se o cara cancelar
+    idTrocaPendente = null;
+    nomeTrocaPendente = null;
+}
 
-    // Trava 1: Verifica se a equipe foi selecionada
+async function confirmarTroca() {
+    // Trava 1: Se não tem ID, para tudo
     if (!idTrocaPendente) {
         customAlert("Erro: Nenhuma equipe selecionada.", "erro");
         return;
@@ -474,12 +484,12 @@
 
     // Trava 2: Verifica se o membro está logado
     if (!membroLogado || !membroLogado.passaporte) {
-        customAlert("Erro: Sessão expirada. Faça login novamente.", "erro");
+        customAlert("Erro: Sessão expirada.", "erro");
         return;
     }
 
     try {
-        // 1. Busca o ID do seu ponto DIRETO do banco de dados (não confia no cache)
+        // 1. Busca o ponto DIRETO do banco (não confia na memória do celular)
         const { data: pontoDb, error: errBusca } = await sb.from('pontos')
             .select('id')
             .eq('passaporte', membroLogado.passaporte)
@@ -504,19 +514,18 @@
             return;
         }
 
+        // 3. Se deu tudo certo, avisa e recarrega a tela
         customAlert(`Você foi realocado para ${nomeTrocaPendente}!`);
         
-        // Limpa as variáveis e recarrega a tela do zero
         idTrocaPendente = null;
         nomeTrocaPendente = null;
+        
         setTimeout(() => { window.location.reload(); }, 1500);
         
     } catch (e) {
-        // Se qualquer outra coisa falhar, mostra na tela
         customAlert("Erro Crítico: " + e.message, "erro");
     }
-        }
-        
+}
         // ==========================================
         // ALERTAS E SINC
         // ==========================================
