@@ -338,54 +338,84 @@
         // ==========================================
         // 4. VER QUEM SE INSCREVEU
         // ==========================================
-        async function verPresencas(treinoId, tituloTreino) {
-            treinoSelecionadoId = treinoId;
-            document.getElementById('titulo-presenca').innerText = tituloTreino;
-            
-            const container = document.getElementById('lista-presenca-membros');
-            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando inscritos...</p>';
-            
-            document.getElementById('modal-presenca').classList.add('ativo');
+       async function verPresencas(treinoId, tituloTreino) {
+    treinoSelecionadoId = treinoId;
+    document.getElementById('titulo-presenca').innerText = tituloTreino;
+    
+    const container = document.getElementById('lista-presenca-membros');
+    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando inscritos...</p>';
+    
+    document.getElementById('modal-presenca').classList.add('ativo');
 
-            try {
-                const { data, error } = await sb.from('presencas_treinamento')
-                    .select('*')
-                    .eq('treinamento_id', treinoId);
+    try {
+        const { data, error } = await sb.from('presencas_treinamento')
+            .select('*')
+            .eq('treinamento_id', treinoId);
 
-                if (error) throw error;
+        if (error) throw error;
 
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);">Ninguém se inscreveu neste treinamento ainda.</p>';
-                    return;
-                }
-
-                let html = '';
-                data.forEach(insc => {
-                    let classeStatus = 'p-inscrito';
-                    let textoStatus = 'Inscrito';
-
-                    if (insc.status === 'presente') {
-                        classeStatus = 'p-presente';
-                        textoStatus = 'Presente';
-                    } else if (insc.status === 'falta') {
-                        classeStatus = 'p-falta';
-                        textoStatus = 'Falta';
-                    }
-
-                    html += `
-                        <div class="presenca-item">
-                            <div><strong>${insc.nome}</strong> <br> <span style="color: var(--texto-mutado); font-size: 11px;">Passaporte: ${insc.passaporte}</span></div>
-                            <span class="status-p ${classeStatus}">${textoStatus}</span>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<p style="text-align: center; color: var(--vermelho);">Erro ao carregar a lista.</p>';
-            }
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);">Ninguém se inscreveu neste treinamento ainda.</p>';
+            return;
         }
+
+        let html = '';
+        data.forEach(insc => {
+            // Se já for falta, mostra a tag vermelha
+            let botaoAcao = `<span class="status-p p-presente">Presente</span>`;
+            if (insc.status === 'inscrito' || insc.status === 'confirmado') {
+                botaoAcao = `<button class="btn btn-vermelho" onclick="aplicarFaltaIndividual('${insc.id}', '${insc.passaporte}')" style="padding: 4px 10px; font-size: 11px;">Dar Falta</button>`;
+            } else if (insc.status === 'falta') {
+                botaoAcao = `<span class="status-p p-falta">Falta</span>`;
+            }
+
+            html += `
+                <div class="presenca-item">
+                    <div><strong>${insc.nome}</strong> <br> <span style="color: var(--texto-mutado); font-size: 11px;">Passaporte: ${insc.passaporte}</span></div>
+                    ${botaoAcao}
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p style="text-align: center; color: var(--vermelho);">Erro ao carregar a lista.</p>';
+    }
+}
+
+// FUNÇÃO NOVA PARA DAR FALTA INDIVIDUAL
+async function aplicarFaltaIndividual(idInscricao, passaporte) {
+    if (!confirm("Dar falta para este membro? Ele não compareceu ao treinamento.")) return;
+
+    try {
+        const hoje = new Date().toISOString().split('T')[0];
+        
+        // Atualiza a tabela do treinamento
+        await sb.from('presencas_treinamento').update({ status: 'falta' }).eq('id', idInscricao);
+        
+        // Joga no histórico geral do membro
+        await sb.from('presencas').upsert([{
+            passaporte: passaporte,
+            status: 'falta',
+            data: hoje,
+            marcado_por: 'sistema',
+            marcado_por_nome: adminLogado.nome,
+            marcado_em: new Date().toISOString(),
+            justificativa: 'Falta em Treinamento',
+            status_justificativa: null,
+            motivo_recusa: null
+        }], { onConflict: 'data,passaporte' });
+
+        alert("Falta aplicada com sucesso!");
+        carregarTreinosAdmin(); // Recarrega os cards
+        document.getElementById('modal-presenca').classList.remove('ativo'); // Fecha a lista
+
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao dar falta: " + err.message);
+    }
+                     }
 
         // ==========================================
         // 5. FINALIZAR (SÓ TRANCA O CHECK-IN)
