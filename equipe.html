@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Itália 2.0 | Minha Equipe</title>
-    
     <meta name="theme-color" content="#0a0f0d">
     <meta name="color-scheme" content="dark">
     
@@ -18,21 +17,15 @@
         const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
     <style>
-        :root { --verde: #22c55e; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; }
+        :root { --verde: #22c55e; --verde-claro: #4ade80; --fundo: #0a0f0d; --vidro: rgba(15, 23, 20, 0.6); --borda: rgba(34, 197, 94, 0.2); --texto: #f3f4f6; --texto-mutado: #9ca3af; --amarelo: #eab308; --vermelho: #ef4444; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; padding: 15px; position: relative; }
         .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -2; }
         
         .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 15px; z-index: 10; padding-bottom: 100px; margin-top: 10px; }
-        
         .page-header { margin-bottom: 5px; }
         .page-header h1 { font-family: 'Oswald'; font-size: 22px; color: #fff; text-transform: uppercase; }
         .page-header p { font-size: 12px; color: var(--texto-mutado); margin-top: 2px; }
-
-        .aviso-bloqueio { background: #1c1a14; border: 1px solid rgba(234, 179, 8, 0.4); border-left: 4px solid var(--amarelo); border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 12px; margin-bottom: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .aviso-bloqueio i { font-size: 18px; color: var(--amarelo); }
-        .aviso-bloqueio div h4 { font-size: 11px; color: var(--amarelo); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px;}
-        .aviso-bloqueio div p { font-size: 14px; color: #fff; font-weight: 600; }
 
         .card-escala { background: var(--vidro); backdrop-filter: blur(15px); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
         .escala-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
@@ -46,17 +39,16 @@
         .box-info i { font-size: 10px; color: var(--verde); margin-right: 3px; }
         .box-info h4 { font-size: 14px; color: #fff; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        /* Quadradinho P1, P2 estilo BPM */
+        /* Quadradinho P1 Estilo BPM */
         .box-info.destaque-assento { border-color: rgba(34, 197, 94, 0.3); }
         .box-p-verde {
-            background: rgba(34, 197, 94, 0.15);
-            color: #4ade80;
-            border: 1px solid #22c55e;
+            background: var(--verde-claro);
+            color: #000;
             font-family: 'Oswald', sans-serif;
             font-size: 20px;
-            font-weight: bold;
-            width: 45px;
-            height: 45px;
+            font-weight: 700;
+            width: 44px;
+            height: 44px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -76,14 +68,13 @@
         .integrante-pass { font-size: 11px; color: var(--texto-mutado); }
         
         .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex-shrink: 0;}
-        .dot.ativo { background: var(--verde); box-shadow: 0 0 6px rgba(34, 197, 94, 0.5); }
-        .dot.pausado { background: var(--amarelo); box-shadow: 0 0 6px rgba(234, 179, 8, 0.5); }
+        .dot.ativo { background: var(--verde); }
+        .dot.pausado { background: var(--amarelo); }
 
         .integrante-tempo { font-size: 10px; color: var(--texto-mutado); text-align: right; text-transform: uppercase;}
         .integrante-tempo span { color: #fff; display: block; font-weight: 600; font-size: 12px;}
 
-        .btn-trocar { width: 100%; background: transparent; border: 1px solid var(--texto-mutado); color: var(--texto-mutado); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; cursor: not-allowed; display: flex; justify-content: center; align-items: center; gap: 8px; text-transform: uppercase; margin-top: 15px; transition: 0.3s;}
-        .btn-trocar.liberado { border-color: var(--verde); color: var(--verde); cursor: pointer; }
+        .btn-trocar { width: 100%; background: transparent; border: 1px solid var(--verde); color: var(--verde); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; text-transform: uppercase; margin-top: 15px; transition: 0.3s;}
 
         .rodape-sync { display: flex; justify-content: space-between; margin-top: 20px; font-size: 10px; color: var(--texto-mutado); border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px; }
         .rodape-sync i { margin-right: 4px; color: var(--verde); }
@@ -98,26 +89,37 @@
         .item-menu { display: flex; flex-direction: column; align-items: center; gap: 4px; text-decoration: none; color: var(--texto-mutado); font-size: 9px; font-weight: 500; padding: 6px 12px; border-radius: 10px; }
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
+
+        /* MODAIS CUSTOMIZADOS */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); z-index: 10000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.ativo { display: flex; }
+        .modal-content { background: #121814; border: 1px solid var(--borda); border-radius: 12px; padding: 25px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 10px 40px rgba(0,0,0,0.8); max-height: 80vh; overflow-y: auto;}
+        .modal-titulo { font-family: 'Oswald'; font-size: 20px; color: #fff; margin-bottom: 15px; text-transform: uppercase; }
+        
+        .lista-equipes-opcao { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;}
+        .btn-equipe-opcao { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 8px; color: #fff; font-family: 'Inter'; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center;}
+        .btn-equipe-opcao:hover { border-color: var(--verde); background: rgba(34,197,94,0.1); }
+        
+        .botoes-confirmar { display: flex; gap: 10px; } 
+        .btn-sim { flex: 1; background: var(--verde); color: #000; border: none; padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
+        .btn-nao { flex: 1; background: transparent; color: var(--texto-mutado); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 8px; font-family: 'Oswald'; font-weight: bold; cursor: pointer; font-size: 14px; text-transform: uppercase;}
+
+        /* Alerta Topo (Custom) */
+        .alerta-custom { position: fixed; top: -100px; left: 50%; transform: translateX(-50%); background: rgba(10, 15, 13, 0.95); border: 1px solid var(--borda); border-left: 3px solid var(--verde); border-radius: 8px; padding: 12px 20px; display: flex; align-items: center; gap: 12px; z-index: 99999; min-width: 280px; transition: top 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5);}
+        .alerta-custom.ativo { top: 20px; }
+        .alerta-custom i { font-size: 20px; color: var(--verde); }
+        .alerta-custom p { font-size: 13px; color: #fff; font-weight: 500;}
+        .alerta-custom.erro { border-left-color: var(--vermelho); } .alerta-custom.erro i { color: var(--vermelho); }
     </style>
-    </head>
-    <body>
+</head>
+<body>
     <div class="fundo-degrade"></div>
     
     <div class="container" id="container-principal" style="display: none;">
         
-        <!-- Cabeçalho Explicativo -->
         <div class="page-header">
             <h1>Minha Equipe</h1>
             <p>Acompanhe sua alocação atual e os membros ao seu redor.</p>
-        </div>
-
-        <!-- Notificação de Troca Estilo App -->
-        <div class="aviso-bloqueio" id="aviso-cooldown" style="display: none;">
-            <i class="fas fa-clock"></i>
-            <div>
-                <h4>Troca de equipe bloqueada</h4>
-                <p>Próxima troca em: <span id="timer-cooldown">10:00</span></p>
-            </div>
         </div>
 
         <!-- Card Principal -->
@@ -130,26 +132,26 @@
                 <div class="tag-servico"><i class="fas fa-circle" style="font-size: 6px;"></i> Em Serviço</div>
             </div>
 
-            <!-- Grid de Informações -->
             <div class="grid-info">
                 <div class="box-info">
                     <p><i class="fas fa-map-marker-alt"></i> Área</p>
                     <h4 id="info-area">---</h4>
                 </div>
+                
                 <div class="box-info">
-                    <p><i class="fas fa-briefcase"></i> Função</p>
-                    <h4 id="info-funcao">---</h4>
+                    <p><i class="fas fa-clock"></i> Turno</p>
+                    <h4 id="info-turno">--:-- - --:--</h4>
                 </div>
+                
                 <div class="box-info">
                     <p><i class="fas fa-shield-alt"></i> Comando</p>
                     <h4 id="info-lider">---</h4>
                 </div>
                 
-                <!-- Card de Assento/Posição (Oculto por padrão) -->
                 <div class="box-info destaque-assento" id="box-assento" style="display: none;">
                     <p id="label-assento"><i class="fas fa-car"></i> Minha Posição</p>
                     <div id="container-assento" style="display: flex; align-items: center;">
-                        <!-- O quadradinho verde P1, P2 vai aqui dentro -->
+                        <!-- O quadradinho P1, P2 vai aqui -->
                     </div>
                 </div>
                 
@@ -163,18 +165,14 @@
                 </div>
             </div>
 
-            <!-- Lista de Integrantes -->
             <div class="integrantes-header">
                 <h3>Quem está comigo</h3>
                 <span class="badge-qtd" id="badge-qtd">0 INTEGRANTES</span>
             </div>
-            <div id="lista-integrantes">
-                <!-- Injetado via JS -->
-            </div>
+            <div id="lista-integrantes"></div>
 
-            <!-- Botão de Troca -->
-            <button class="btn-trocar" id="btn-trocar" onclick="solicitarTroca()" disabled>
-                <i class="fas fa-exchange-alt"></i> <span id="txt-trocar">Carregando...</span>
+            <button class="btn-trocar" onclick="abrirModalTroca()">
+                <i class="fas fa-exchange-alt"></i> Trocar de Equipe
             </button>
 
             <div class="rodape-sync">
@@ -184,7 +182,6 @@
         </div>
     </div>
 
-    <!-- Tela de Bloqueio (Se não tiver ponto aberto) -->
     <div class="tela-bloqueio" id="tela-bloqueio">
         <i class="fas fa-info-circle"></i>
         <h2>Nenhum serviço ativo</h2>
@@ -192,7 +189,34 @@
         <a href="bateponto.html" class="btn-ir-ponto">Ir ao Controle de Ponto</a>
     </div>
 
-    <!-- Menu Inferior -->
+    <!-- MODAL DE ESCOLHA DE EQUIPE -->
+    <div class="modal-overlay" id="modal-troca">
+        <div class="modal-content">
+            <h2 class="modal-titulo">Escolha uma Equipe</h2>
+            <p style="font-size: 12px; color: var(--texto-mutado); margin-bottom: 15px;">Apenas equipes com vagas disponíveis são exibidas.</p>
+            <div class="lista-equipes-opcao" id="lista-opcoes-equipe">
+                <!-- Injetado via JS -->
+            </div>
+            <button class="btn-nao" style="width: 100%;" onclick="fecharModalTroca()">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE TROCA -->
+    <div class="modal-overlay" id="modal-confirmar-troca">
+        <div class="modal-content">
+            <i class="fas fa-exchange-alt" style="font-size: 40px; color: var(--verde); margin-bottom: 15px;"></i>
+            <h2 class="modal-titulo">Confirmar Troca?</h2>
+            <p style="font-size: 13px; color: #fff; margin-bottom: 20px;">Deseja realmente ir para a equipe <strong id="nome-nova-equipe" style="color: var(--verde-claro);">---</strong>? Você será realocado imediatamente.</p>
+            <div class="botoes-confirmar">
+                <button class="btn-nao" onclick="fecharModalConfirmar()">Cancelar</button>
+                <button class="btn-sim" onclick="confirmarTroca()">Sim, Trocar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ALERTA CUSTOMIZADO (SUBSTITUI OS ALERTS DO CHROME) -->
+    <div class="alerta-custom" id="alerta-site"><i class="fas fa-check-circle" id="alerta-icone"></i><p id="alerta-texto">Mensagem</p></div>
+
     <nav class="menu-inferior">
         <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Painel</span></a>
         <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
@@ -203,14 +227,14 @@
         <script>
         let membroLogado = null;
         let pontoAtual = null;
-        let intervaloCooldown = null;
         let intervaloRelogio = null;
         let intervaloAtualizacaoSync = null;
+        let equipeSelecionadaParaTroca = null;
 
         const CARGOS_HIERARQUIA = [
-            'Líder da organização', '01 da organização', 'Coordenador', 
-            'Gerente geral', 'Gerente', 'Auxiliar - Gerência', 
-            'O Vigia', 'Raiz', 'Executor', 'Novato'
+            'lider da organização', '01 da organização', 'coordenador', 
+            'gerente geral', 'gerente', 'auxiliar - gerência', 
+            'o vigia', 'raiz', 'executor', 'novato'
         ];
 
         window.addEventListener('DOMContentLoaded', async () => {
@@ -238,12 +262,16 @@
                 
                 document.getElementById('nome-equipe').innerText = nomeEquipe;
                 document.getElementById('info-area').innerText = areaEquipe;
-                document.getElementById('info-funcao').innerText = equipeInfo && equipeInfo.funcao ? equipeInfo.funcao : 'Geral';
                 
+                // Turno Simulado (Blocos de 3 em 3 horas)
+                const horaAtual = new Date().getHours();
+                const blocoTurno = Math.floor(horaAtual / 3) * 3;
+                const proxBloco = (blocoTurno + 3) % 24;
+                document.getElementById('info-turno').innerText = `${String(blocoTurno).padStart(2, '0')}:00 - ${String(proxBloco).padStart(2, '0')}:00`;
+
                 const horaEntrada = new Date(pontoAtual.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 document.getElementById('info-entrada').innerText = horaEntrada;
 
-                // Relógio de tempo em serviço
                 if(intervaloRelogio) clearInterval(intervaloRelogio);
                 intervaloRelogio = setInterval(() => {
                     const dif = new Date() - new Date(pontoAtual.entrada);
@@ -254,7 +282,6 @@
                 }, 1000);
 
                 await carregarIntegrantes(pontoAtual.equipe_id, nomeEquipe, areaEquipe);
-                iniciarCooldown(pontoAtual.troca_equipe_em || pontoAtual.entrada);
 
             } else {
                 document.getElementById('tela-bloqueio').style.display = 'flex';
@@ -263,7 +290,6 @@
         }
 
         async function carregarIntegrantes(equipeId, nomeEquipe, areaEquipe) {
-            // Puxa membros ordenados por entrada (quem entrou primeiro é o P1)
             const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']).order('entrada', { ascending: true });
             
             const container = document.getElementById('lista-integrantes');
@@ -274,8 +300,8 @@
 
             document.getElementById('badge-qtd').innerText = `${membrosAtivos.length} INTEGRANTES`;
 
-            // 1. Descobrir Líder
-            let passaportes = membrosAtivos.map(m => String(m.passaporte));
+            // 1. Lógica de Comando
+            let passaportes = membrosAtivos.map(m => String(m.passaporte).trim());
             const { data: dadosMembros } = await sb.from('membros').select('passaporte, cargo').in('passaporte', passaportes);
 
             let liderNome = 'Sem Comando';
@@ -283,10 +309,13 @@
 
             if (dadosMembros) {
                 dadosMembros.forEach(dm => {
-                    const index = CARGOS_HIERARQUIA.indexOf(dm.cargo);
+                    const cargoFormatado = String(dm.cargo || '').trim().toLowerCase();
+                    const index = CARGOS_HIERARQUIA.indexOf(cargoFormatado);
+                    
                     if (index !== -1 && index < menorIndexHierarquia) {
                         menorIndexHierarquia = index;
-                        const mInfo = membrosAtivos.find(m => String(m.passaporte) === String(dm.passaporte));
+                        // Acha o membro correspondente na lista ativa
+                        const mInfo = membrosAtivos.find(m => String(m.passaporte).trim() === String(dm.passaporte).trim());
                         if (mInfo) liderNome = mInfo.nome;
                     }
                 });
@@ -299,16 +328,23 @@
             
             let mostrarAssento = false;
             let labelTexto = "Minha Posição";
+            let iconeHTML = '<i class="fas fa-store"></i>'; 
             let maxAssentos = 2;
 
-            // Regras: Rota (4), Vendas (2), Segurança/Apoio (2)
             if (nomeUpper.includes('ROTA')) {
                 mostrarAssento = true;
                 labelTexto = "Meu Assento";
+                iconeHTML = '<i class="fas fa-car"></i>';
                 maxAssentos = 4;
-            } else if (areaUpper.includes('VENDA') || areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO')) {
+            } else if (areaUpper.includes('VENDA')) {
                 mostrarAssento = true;
                 labelTexto = "Minha Posição";
+                iconeHTML = '<i class="fas fa-cash-register"></i>';
+                maxAssentos = 2;
+            } else if (areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO')) {
+                mostrarAssento = true;
+                labelTexto = "Minha Posição";
+                iconeHTML = '<i class="fas fa-shield-alt"></i>';
                 maxAssentos = 2;
             }
 
@@ -317,9 +353,9 @@
 
             if (mostrarAssento) {
                 boxAssento.style.display = 'flex';
-                document.getElementById('label-assento').innerHTML = `<i class="fas fa-car"></i> ${labelTexto}`;
+                document.getElementById('label-assento').innerHTML = `${iconeHTML} ${labelTexto}`;
                 
-                const indexMeuAssento = membrosAtivos.findIndex(m => String(m.passaporte) === String(membroLogado.passaporte));
+                const indexMeuAssento = membrosAtivos.findIndex(m => String(m.passaporte).trim() === String(membroLogado.passaporte).trim());
                 
                 if (indexMeuAssento >= 0 && indexMeuAssento < maxAssentos) {
                     containerAssento.innerHTML = `<div class="box-p-verde">P${indexMeuAssento + 1}</div>`;
@@ -333,7 +369,7 @@
             // 3. Renderizar lista
             let html = '';
             membrosAtivos.forEach(m => {
-                const isEu = String(m.passaporte) === String(membroLogado.passaporte);
+                const isEu = String(m.passaporte).trim() === String(membroLogado.passaporte).trim();
                 const hora = new Date(m.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
                 const statusClass = m.status === 'aberto' ? 'ativo' : 'pausado';
                 
@@ -353,84 +389,97 @@
             container.innerHTML = html;
         }
 
-        function iniciarCooldown(trocaEquipeEm) {
-            if (intervaloCooldown) clearInterval(intervaloCooldown);
-            
-            const aviso = document.getElementById('aviso-cooldown');
-            const btn = document.getElementById('btn-trocar');
-            const txt = document.getElementById('txt-trocar');
-            const timerSpan = document.getElementById('timer-cooldown');
-            
-            const TEMPO_COOLDOWN_MS = 10 * 60 * 1000; 
-            
-            // Se a data de troca for igual à data de entrada (ou nula), ele nunca trocou. Libera o botão.
-            const dataEntrada = new Date(pontoAtual.entrada);
-            const dataTroca = trocaEquipeEm ? new Date(trocaEquipeEm) : dataEntrada;
-            
-            // Se a diferença for menor que 5 segundos, significa que ele acabou de entrar e não trocou.
-            const isPrimeiraVez = (dataTroca - dataEntrada) < 5000;
+        // ==========================================
+        // SISTEMA DE TROCA DE EQUIPE COM MODAL
+        // ==========================================
+        async function abrirModalTroca() {
+            document.getElementById('modal-troca').classList.add('ativo');
+            const container = document.getElementById('lista-opcoes-equipe');
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); font-size: 13px;">Buscando equipes...</p>';
 
-            if (isPrimeiraVez) {
-                aviso.style.display = 'none';
-                btn.classList.add('liberado');
-                btn.disabled = false;
-                txt.innerText = 'Trocar de Equipe';
-                return;
+            try {
+                const { data: todasEquipes } = await sb.from('equipes').select('*').eq('ativa', true);
+                const { data: pontosAtivos } = await sb.from('pontos').select('equipe_id').in('status', ['aberto', 'pausado']);
+
+                let contagem = {};
+                if (pontosAtivos) pontosAtivos.forEach(p => { contagem[p.equipe_id] = (contagem[p.equipe_id] || 0) + 1; });
+
+                let html = '';
+                todasEquipes.forEach(eq => {
+                    if (eq.id === pontoAtual.equipe_id) return; // Não mostra a atual
+                    
+                    const ocupados = contagem[eq.id] || 0;
+                    const limite = eq.nome.toUpperCase().includes('ROTA') ? 4 : 2; // Regra de vagas
+                    
+                    if (ocupados < limite) {
+                        html += `
+                            <button class="btn-equipe-opcao" onclick="selecionarEquipeTroca('${eq.id}', '${eq.nome}')">
+                                <span>${eq.nome}</span>
+                                <span style="color: var(--verde); font-size: 12px;">${limite - ocupados} vagas</span>
+                            </button>
+                        `;
+                    }
+                });
+
+                if (html === '') html = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Todas as outras equipes estão lotadas.</p>';
+                container.innerHTML = html;
+            } catch (e) {
+                container.innerHTML = '<p style="text-align: center; color: var(--vermelho); font-size: 13px;">Erro ao buscar equipes.</p>';
             }
-
-            // Se ele já trocou, inicia a contagem regressiva
-            aviso.style.display = 'flex';
-
-            intervaloCooldown = setInterval(() => {
-                const agora = new Date();
-                const diferenca = agora - dataTroca;
-                
-                if (diferenca >= TEMPO_COOLDOWN_MS) {
-                    clearInterval(intervaloCooldown);
-                    aviso.style.display = 'none';
-                    btn.classList.add('liberado');
-                    btn.disabled = false;
-                    txt.innerText = 'Trocar de Equipe';
-                } else {
-                    const restante = TEMPO_COOLDOWN_MS - diferenca;
-                    const mins = Math.floor(restante / 60000);
-                    const segs = Math.floor((restante % 60000) / 1000);
-                    timerSpan.innerText = `${String(mins).padStart(2, '0')}:${String(segs).padStart(2, '0')}`;
-                    txt.innerText = `Aguarde ${String(mins).padStart(2, '0')}:${String(segs).padStart(2, '0')}`;
-                }
-            }, 1000);
         }
 
-        async function solicitarTroca() {
-            if(!confirm("Deseja realmente trocar de equipe? Você será realocado.")) return;
-            
-            try {
-                const { data: equipes } = await sb.from('equipes').select('*').eq('ativa', true);
-                let opcoes = equipes.filter(e => e.id !== pontoAtual.equipe_id);
-                
-                if (opcoes.length === 0) opcoes = equipes; 
+        function fecharModalTroca() {
+            document.getElementById('modal-troca').classList.remove('ativo');
+        }
 
-                const novaEquipe = opcoes[Math.floor(Math.random() * opcoes.length)];
-                const agora = new Date().toISOString();
-                
+        function selecionarEquipeTroca(id, nome) {
+            equipeSelecionadaParaTroca = { id, nome };
+            document.getElementById('nome-nova-equipe').innerText = nome;
+            fecharModalTroca();
+            document.getElementById('modal-confirmar-troca').classList.add('ativo');
+        }
+
+        function fecharModalConfirmar() {
+            document.getElementById('modal-confirmar-troca').classList.remove('ativo');
+            equipeSelecionadaParaTroca = null;
+        }
+
+        async function confirmarTroca() {
+            if (!equipeSelecionadaParaTroca) return;
+            fecharModalConfirmar();
+
+            try {
                 await sb.from('pontos').update({ 
-                    equipe_id: novaEquipe.id,
-                    posicao: novaEquipe.nome,
-                    troca_equipe_em: agora
+                    equipe_id: equipeSelecionadaParaTroca.id,
+                    posicao: equipeSelecionadaParaTroca.nome,
+                    entrada: new Date().toISOString() // Reseta a entrada para recalcular os assentos (você será P1 na nova equipe)
                 }).eq('id', pontoAtual.id);
                 
-                alert(`Você foi realocado para a equipe ${novaEquipe.nome}!`);
+                customAlert(`Você foi realocado para ${equipeSelecionadaParaTroca.nome}!`);
                 carregarEquipe();
             } catch (e) {
-                alert("Erro ao trocar de equipe.");
-                console.error(e);
+                customAlert("Erro ao trocar de equipe.", "erro");
             }
         }
 
+        // ==========================================
+        // ALERTAS E SINC
+        // ==========================================
         function atualizarSync() {
             const agora = new Date();
             const hora = agora.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
             document.getElementById('hora-sync').innerText = `Sincronizado ${hora}`;
+        }
+
+        function customAlert(msg, tipo='sucesso') {
+            const a = document.getElementById('alerta-site'); const t = document.getElementById('alerta-texto'); const i = document.getElementById('alerta-icone');
+            if(!a) return;
+            t.innerText = msg; 
+            i.className = tipo === 'erro' ? 'fas fa-times-circle' : 'fas fa-check-circle';
+            a.style.borderLeftColor = tipo === 'erro' ? 'var(--vermelho)' : 'var(--verde)';
+            i.style.color = tipo === 'erro' ? 'var(--vermelho)' : 'var(--verde)';
+            a.classList.add('ativo'); 
+            setTimeout(() => a.classList.remove('ativo'), 3000);
         }
     </script>
 </body>
