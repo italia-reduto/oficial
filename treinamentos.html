@@ -329,24 +329,24 @@ const { error } = await sb.from('presencas_treinamento').insert([{
             }
         }
 
-        async function marcarPresenca(presencaId) {
-    if (!confirm("Você está no local do evento? Confirmar sua presença agora?")) return;
-
+        async function confirmarPresenca(convocacaoId) { // O nome pode ser treinamentoId no seu código
     try {
-        // CORREÇÃO: A coluna certa é 'status' e não 'status_presenca'
-        const { error } = await sb.from('presencas_treinamento')
-            .update({ status: 'presente' })
-            .eq('id', presencaId);
-        
+        const { error } = await sb.from('presencas_treinamento').insert([{
+            treinamento_id: treinamentoId, // ajuste se necessário
+            passaporte: membroLogado.passaporte,
+            nome: membroLogado.nome,
+            status: 'presente' // <--- AQUI ESTÁ A MUDANÇA
+        }]);
+
         if (error) throw error;
         
-        alert("Check-in realizado com sucesso! Bom trabalho.");
+        alert("Presença confirmada com sucesso! Não se esqueça de comparecer.");
         carregarDados(); 
     } catch (err) {
         console.error(err);
-        alert("Erro ao marcar presença: " + err.message);
+        alert("Erro ao confirmar presença. Tente novamente.");
     }
-        }
+            }
     </script>
 </body>
 </html>
