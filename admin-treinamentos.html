@@ -213,73 +213,68 @@
         // 2. CARREGAR LISTA
         // ==========================================
         async function carregarTreinosAdmin() {
-            const container = document.getElementById('lista-admin-treinos');
-            
-            try {
-                const { data, error } = await sb.from('treinamentos')
-                    .select('*')
-                    .order('data_hora', { ascending: false });
+    const container = document.getElementById('lista-admin-treinos');
+    
+    try {
+        const { data, error } = await sb.from('treinamentos')
+            .select('*')
+            .order('data_hora', { ascending: false });
 
-                if (error) throw error;
-                todosTreinos = data || [];
+        if (error) throw error;
+        todosTreinos = data || [];
 
-                if (todosTreinos.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); grid-column: 1/-1;">Nenhum treinamento criado ainda.</p>';
-                    return;
-                }
-
-                let html = '';
-                todosTreinos.forEach(t => {
-                    const dataObj = new Date(t.data_hora);
-                    const dataFormatada = dataObj.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
-                    const isConcluido = t.status === 'concluido';
-                    
-                    html += `
-                        <div class="card-admin">
-                            <div class="card-admin-header">
-                                <div class="card-admin-info">
-                                    <h3>${t.titulo}</h3>
-                                    <p><i class="fas fa-user-tie"></i> Instrutor: ${t.instrutor}</p>
-                                    <p><i class="far fa-calendar-alt"></i> ${dataFormatada}</p>
-                                    <p><i class="fas fa-users"></i> Vagas: ${t.vagas_totais}</p>
-                                </div>
-                                <span class="tag-status ${isConcluido ? 'tag-concluido' : 'tag-agendado'}">
-                                    ${isConcluido ? 'CONCLUÍDO' : 'AGENDADO'}
-                                </span>
-                            </div>
-                            
-                            <div class="card-admin-acoes">
-                                <button class="btn-acao-admin btn-ver" onclick="verPresencas('${t.id}', '${t.titulo.replace(/'/g, "\\'")}')">
-                                    <i class="fas fa-list"></i> Ver Inscritos
-                                </button>
-                                
-                                ${!isConcluido ? `
-                                    <button class="btn-acao-admin btn-finalizar" onclick="finalizarApenasTreinamento('${t.id}')">
-                                        <i class="fas fa-lock"></i> Finalizar
-                                    </button>
-                                ` : ''}
-
-                                <button class="btn-acao-admin btn-faltas" onclick="darFaltasTreinamento('${t.id}')">
-                                    <i class="fas fa-user-times"></i> Dar Faltas
-                                </button>
-
-                                ${isConcluido ? `
-                                    <button class="btn-acao-admin btn-deletar" onclick="deletarTreinamento('${t.id}')" title="Excluir Treinamento">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                ` : ''}
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<p style="text-align: center; color: var(--vermelho);">Erro ao carregar treinamentos.</p>';
-            }
+        if (todosTreinos.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado); grid-column: 1/-1;">Nenhum treinamento criado ainda.</p>';
+            return;
         }
 
+        let html = '';
+        todosTreinos.forEach(t => {
+            const dataObj = new Date(t.data_hora);
+            const dataFormatada = dataObj.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+            const isConcluido = t.status === 'concluido';
+            
+            html += `
+                <div class="card-admin">
+                    <div class="card-admin-header">
+                        <div class="card-admin-info">
+                            <h3>${t.titulo}</h3>
+                            <p><i class="fas fa-user-tie"></i> Instrutor: ${t.instrutor}</p>
+                            <p><i class="far fa-calendar-alt"></i> ${dataFormatada}</p>
+                            <p><i class="fas fa-users"></i> Vagas: ${t.vagas_totais}</p>
+                        </div>
+                        <span class="tag-status ${isConcluido ? 'tag-concluido' : 'tag-agendado'}">
+                            ${isConcluido ? 'CONCLUÍDO' : 'AGENDADO'}
+                        </span>
+                    </div>
+                    
+                    <div class="card-admin-acoes">
+                        <button class="btn-acao-admin btn-ver" onclick="verPresencas('${t.id}', '${t.titulo.replace(/'/g, "\\'")}')">
+                            <i class="fas fa-list"></i> Ver Inscritos
+                        </button>
+                        
+                        ${!isConcluido ? `
+                            <button class="btn-acao-admin btn-finalizar" onclick="finalizarApenasTreinamento('${t.id}')">
+                                <i class="fas fa-lock"></i> Finalizar
+                            </button>
+                        ` : ''}
+
+                        ${isConcluido ? `
+                            <button class="btn-acao-admin btn-deletar" onclick="deletarTreinamento('${t.id}')" title="Excluir Treinamento">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        });
+        container.innerHTML = html;
+
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p style="text-align: center; color: var(--vermelho);">Erro ao carregar treinamentos.</p>';
+    }
+        }
         // ==========================================
         // 3. CRIAR NOVO TREINAMENTO
         // ==========================================
