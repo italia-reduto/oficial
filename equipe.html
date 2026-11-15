@@ -464,45 +464,59 @@
         }
 
         async function confirmarTroca() {
-    // 1. Verifica se a equipe foi selecionada
-    if (!equipeSelecionadaParaTroca || !equipeSelecionadaParaTroca.id) {
-        customAlert("Erro: Nenhuma equipe válida selecionada.", "erro");
-        return;
-    }
     fecharModalConfirmar();
 
+    // Trava 1: Verifica se a equipe foi selecionada
+    if (!idTrocaPendente) {
+        customAlert("Erro: Nenhuma equipe selecionada.", "erro");
+        return;
+    }
+
+    // Trava 2: Verifica se o membro está logado
+    if (!membroLogado || !membroLogado.passaporte) {
+        customAlert("Erro: Sessão expirada. Faça login novamente.", "erro");
+        return;
+    }
+
     try {
-        // 2. Busca o ID do seu ponto ativo DIRETO do banco agora
-        const { data: pontoDb, error: errPonto } = await sb.from('pontos')
+        // 1. Busca o ID do seu ponto DIRETO do banco de dados (não confia no cache)
+        const { data: pontoDb, error: errBusca } = await sb.from('pontos')
             .select('id')
             .eq('passaporte', membroLogado.passaporte)
             .in('status', ['aberto', 'pausado'])
-            .single();
+            .maybeSingle();
 
-        if (errPonto || !pontoDb || !pontoDb.id) {
-            customAlert("Erro: Ponto ativo não encontrado.", "erro");
+        if (errBusca || !pontoDb || !pontoDb.id) {
+            customAlert("Erro: Ponto ativo não encontrado no banco.", "erro");
             return;
         }
 
-        // 3. Faz a atualização usando os IDs seguros
-        const { error } = await sb.from('pontos').update({ 
-            equipe_id: equipeSelecionadaParaTroca.id,
-            posicao: equipeSelecionadaParaTroca.nome,
+        // 2. Faz a atualização usando o ID seguro
+        const { error: errUpdate } = await sb.from('pontos').update({ 
+            equipe_id: idTrocaPendente,
+            posicao: nomeTrocaPendente,
             entrada: new Date().toISOString(),
             troca_equipe_em: new Date().toISOString()
         }).eq('id', pontoDb.id);
         
-        if (error) {
-            customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
+        if (errUpdate) {
+            customAlert(`ERRO DO BANCO: ${errUpdate.message}`, "erro");
             return;
         }
 
-        customAlert(`Você foi realocado para ${equipeSelecionadaParaTroca.nome}!`);
-        carregarEquipe();
+        customAlert(`Você foi realocado para ${nomeTrocaPendente}!`);
+        
+        // Limpa as variáveis e recarrega a tela do zero
+        idTrocaPendente = null;
+        nomeTrocaPendente = null;
+        setTimeout(() => { window.location.reload(); }, 1500);
+        
     } catch (e) {
-        customAlert("Erro ao trocar: " + e.message, "erro");
+        // Se qualquer outra coisa falhar, mostra na tela
+        customAlert("Erro Crítico: " + e.message, "erro");
     }
         }
+        
         // ==========================================
         // ALERTAS E SINC
         // ==========================================
