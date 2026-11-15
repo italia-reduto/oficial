@@ -289,105 +289,113 @@
             }
         }
 
-        async function carregarIntegrantes(equipeId, nomeEquipe, areaEquipe) {
-            const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']).order('entrada', { ascending: true });
+        
+            async function carregarIntegrantes(equipeId, nomeEquipe, areaEquipe) {
+    const { data: membrosAtivos } = await sb.from('pontos').select('*').eq('equipe_id', equipeId).in('status', ['aberto', 'pausado']).order('entrada', { ascending: true });
+    
+    const container = document.getElementById('lista-integrantes');
+    if (!membrosAtivos || membrosAtivos.length === 0) {
+        container.innerHTML = '<p style="font-size: 12px; color: var(--texto-mutado); text-align: center; padding: 10px;">Ninguém nesta equipe.</p>';
+        return;
+    }
+
+    document.getElementById('badge-qtd').innerText = `${membrosAtivos.length} INTEGRANTES`;
+
+    // 1. Lógica de Comando
+    let passaportes = membrosAtivos.map(m => String(m.passaporte).trim());
+    const { data: dadosMembros } = await sb.from('membros').select('passaporte, cargo').in('passaporte', passaportes);
+
+    let liderNome = 'Sem Comando';
+    let menorIndexHierarquia = 999;
+
+    if (dadosMembros) {
+        dadosMembros.forEach(dm => {
+            const cargoFormatado = String(dm.cargo || '').trim().toLowerCase();
+            const index = CARGOS_HIERARQUIA.indexOf(cargoFormatado);
             
-            const container = document.getElementById('lista-integrantes');
-            if (!membrosAtivos || membrosAtivos.length === 0) {
-                container.innerHTML = '<p style="font-size: 12px; color: var(--texto-mutado); text-align: center; padding: 10px;">Ninguém nesta equipe.</p>';
-                return;
+            if (index !== -1 && index < menorIndexHierarquia) {
+                menorIndexHierarquia = index;
+                const mInfo = membrosAtivos.find(m => String(m.passaporte).trim() === String(dm.passaporte).trim());
+                if (mInfo) liderNome = mInfo.nome;
             }
+        });
+    }
+    document.getElementById('info-lider').innerText = liderNome;
 
-            document.getElementById('badge-qtd').innerText = `${membrosAtivos.length} INTEGRANTES`;
+    // 2. Lógica do Quadradinho P1, P2, P3 (CORRIGIDA)
+    const areaUpper = (areaEquipe || '').toUpperCase();
+    const nomeUpper = (nomeEquipe || '').toUpperCase();
+    
+    let mostrarAssento = false;
+    let labelTexto = "Minha Posição";
+    let iconeHTML = '<i class="fas fa-store"></i>'; 
+    let textoPosicao = '---';
 
-            // 1. Lógica de Comando
-            let passaportes = membrosAtivos.map(m => String(m.passaporte).trim());
-            const { data: dadosMembros } = await sb.from('membros').select('passaporte, cargo').in('passaporte', passaportes);
-
-            let liderNome = 'Sem Comando';
-            let menorIndexHierarquia = 999;
-
-            if (dadosMembros) {
-                dadosMembros.forEach(dm => {
-                    const cargoFormatado = String(dm.cargo || '').trim().toLowerCase();
-                    const index = CARGOS_HIERARQUIA.indexOf(cargoFormatado);
-                    
-                    if (index !== -1 && index < menorIndexHierarquia) {
-                        menorIndexHierarquia = index;
-                        // Acha o membro correspondente na lista ativa
-                        const mInfo = membrosAtivos.find(m => String(m.passaporte).trim() === String(dm.passaporte).trim());
-                        if (mInfo) liderNome = mInfo.nome;
-                    }
-                });
-            }
-            document.getElementById('info-lider').innerText = liderNome;
-
-            // 2. Lógica do Quadradinho P1, P2...
-            const areaUpper = (areaEquipe || '').toUpperCase();
-            const nomeUpper = (nomeEquipe || '').toUpperCase();
-            
-            let mostrarAssento = false;
-            let labelTexto = "Minha Posição";
-            let iconeHTML = '<i class="fas fa-store"></i>'; 
-            let maxAssentos = 2;
-
-            if (nomeUpper.includes('ROTA')) {
-                mostrarAssento = true;
-                labelTexto = "Meu Assento";
-                iconeHTML = '<i class="fas fa-car"></i>';
-                maxAssentos = 4;
-            } else if (areaUpper.includes('VENDA')) {
-                mostrarAssento = true;
-                labelTexto = "Minha Posição";
-                iconeHTML = '<i class="fas fa-cash-register"></i>';
-                maxAssentos = 2;
-            } else if (areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO')) {
-                mostrarAssento = true;
-                labelTexto = "Minha Posição";
-                iconeHTML = '<i class="fas fa-shield-alt"></i>';
-                maxAssentos = 2;
-            }
-
-            const boxAssento = document.getElementById('box-assento');
-            const containerAssento = document.getElementById('container-assento');
-
-            if (mostrarAssento) {
-                boxAssento.style.display = 'flex';
-                document.getElementById('label-assento').innerHTML = `${iconeHTML} ${labelTexto}`;
-                
-                const indexMeuAssento = membrosAtivos.findIndex(m => String(m.passaporte).trim() === String(membroLogado.passaporte).trim());
-                
-                if (indexMeuAssento >= 0 && indexMeuAssento < maxAssentos) {
-                    containerAssento.innerHTML = `<div class="box-p-verde">P${indexMeuAssento + 1}</div>`;
-                } else {
-                    containerAssento.innerHTML = `<div style="color: var(--vermelho); font-size: 12px; font-weight: bold; padding: 5px 0;">Excedente</div>`;
-                }
-            } else {
-                boxAssento.style.display = 'none';
-            }
-
-            // 3. Renderizar lista
-            let html = '';
-            membrosAtivos.forEach(m => {
-                const isEu = String(m.passaporte).trim() === String(membroLogado.passaporte).trim();
-                const hora = new Date(m.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                const statusClass = m.status === 'aberto' ? 'ativo' : 'pausado';
-                
-                html += `
-                    <div class="integrante ${isEu ? 'eu' : ''}">
-                        <div class="integrante-info">
-                            <div class="integrante-avatar"><i class="fas fa-user"></i></div>
-                            <div>
-                                <div class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''} <span class="dot ${statusClass}"></span></div>
-                                <div class="integrante-pass">Passaporte ${m.passaporte}</div>
-                            </div>
-                        </div>
-                        <div class="integrante-tempo">desde<span>${hora}</span></div>
-                    </div>
-                `;
-            });
-            container.innerHTML = html;
+    if (nomeUpper.includes('ROTA')) {
+        // --- LÓGICA PARA ROTAS (Ordem de entrada) ---
+        mostrarAssento = true;
+        labelTexto = "Meu Assento";
+        iconeHTML = '<i class="fas fa-car"></i>';
+        const maxAssentos = 4;
+        
+        const indexMeuAssento = membrosAtivos.findIndex(m => String(m.passaporte).trim() === String(membroLogado.passaporte).trim());
+        
+        if (indexMeuAssento >= 0 && indexMeuAssento < maxAssentos) {
+            textoPosicao = `P${indexMeuAssento + 1}`;
+        } else {
+            textoPosicao = `<span style="color: var(--vermelho); font-size: 12px; font-weight: bold;">Excedente</span>`;
         }
+
+    } else if (areaUpper.includes('VENDA') || areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO')) {
+        // --- LÓGICA PARA VENDAS/SEGURANÇA (Nome da equipe) ---
+        mostrarAssento = true;
+        labelTexto = "Minha Posição";
+        iconeHTML = areaUpper.includes('SEGURAN') || areaUpper.includes('APOIO') ? '<i class="fas fa-shield-alt"></i>' : '<i class="fas fa-cash-register"></i>';
+        
+        // Extrai o P1, P2, P3 do nome da equipe (ex: "VENDAS P2" -> extrai "P2")
+        const matchPosicao = nomeEquipe.match(/P\d+/i);
+        textoPosicao = matchPosicao ? matchPosicao[0].toUpperCase() : 'P1'; // Fallback para P1 se não achar
+    }
+
+    const boxAssento = document.getElementById('box-assento');
+    const containerAssento = document.getElementById('container-assento');
+
+    if (mostrarAssento) {
+        boxAssento.style.display = 'flex';
+        document.getElementById('label-assento').innerHTML = `${iconeHTML} ${labelTexto}`;
+        
+        // Se for texto de "Excedente" (HTML), não coloca no quadradinho verde
+        if (textoPosicao.includes('span')) {
+            containerAssento.innerHTML = textoPosicao;
+        } else {
+            containerAssento.innerHTML = `<div class="box-p-verde">${textoPosicao}</div>`;
+        }
+    } else {
+        boxAssento.style.display = 'none';
+    }
+
+    // 3. Renderizar lista
+    let html = '';
+    membrosAtivos.forEach(m => {
+        const isEu = String(m.passaporte).trim() === String(membroLogado.passaporte).trim();
+        const hora = new Date(m.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        const statusClass = m.status === 'aberto' ? 'ativo' : 'pausado';
+        
+        html += `
+            <div class="integrante ${isEu ? 'eu' : ''}">
+                <div class="integrante-info">
+                    <div class="integrante-avatar"><i class="fas fa-user"></i></div>
+                    <div>
+                        <div class="integrante-nome">${m.nome} ${isEu ? '(Você)' : ''} <span class="dot ${statusClass}"></span></div>
+                        <div class="integrante-pass">Passaporte ${m.passaporte}</div>
+                    </div>
+                </div>
+                <div class="integrante-tempo">desde<span>${hora}</span></div>
+            </div>
+        `;
+    });
+    container.innerHTML = html;
+            }
 
         // ==========================================
         // SISTEMA DE TROCA DE EQUIPE COM MODAL
