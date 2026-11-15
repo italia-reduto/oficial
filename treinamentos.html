@@ -18,105 +18,66 @@
 
     <style>
         :root {
-            --verde: #22c55e; --fundo: #050806; --painel: #0d1410; --borda: #1a2b22;
-            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6;
+            --verde: #22c55e; --fundo: #0a0f0d; --painel: #0d1410; --borda: #1a2b22;
+            --texto: #f3f4f6; --texto-mutado: #9ca3af; --vermelho: #ef4444; --azul: #3b82f6; --amarelo: #eab308;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding-bottom: 90px; }
-
-        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.05) 0%, transparent 40%); z-index: -1; }
+        body { background-color: var(--fundo); color: var(--texto); min-height: 100vh; padding: 20px; padding-bottom: 100px; display: flex; flex-direction: column; align-items: center; }
         
-        .container { width: 100%; max-width: 650px; padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+        .fundo-degrade { position: fixed; inset: 0; background: radial-gradient(circle at 10% 10%, rgba(34, 197, 94, 0.1) 0%, transparent 40%); z-index: -2; }
+        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px; position: relative; z-index: 10; }
 
-        /* HEADER */
-        .topo { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; }
+        .topo { display: flex; align-items: center; gap: 15px; border-bottom: 1px solid var(--borda); padding-bottom: 15px; margin-bottom: 5px; }
         .btn-voltar { width: 40px; height: 40px; background: var(--painel); border: 1px solid var(--borda); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--texto-mutado); text-decoration: none; transition: 0.3s; }
         .btn-voltar:hover { color: var(--verde); border-color: var(--verde); }
         .titulo-pagina { font-family: 'Oswald', sans-serif; font-size: 24px; color: #fff; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* ABAS */
-        .secao-treinamentos { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; }
-        .secao-titulo h1 { font-family: 'Oswald'; font-size: 22px; color: #fff; margin-bottom: 5px; }
-        .secao-titulo p { font-size: 13px; color: var(--texto-mutado); margin-bottom: 20px; }
-        
-        .abas { display: flex; gap: 5px; background: rgba(0,0,0,0.3); padding: 5px; border-radius: 8px; }
-        .aba-btn { flex: 1; padding: 10px; background: transparent; border: none; border-radius: 6px; color: var(--texto-mutado); font-size: 13px; font-weight: 600; cursor: pointer; transition: 0.3s; }
-        .aba-btn.ativo { background: #16241c; color: #fff; border: 1px solid var(--borda); }
-
         /* CARDS DE TREINAMENTO */
         .card-treino { background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; padding: 20px; position: relative; }
+        .card-topo { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .tag-tipo { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.3); padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
         
-        .card-topo { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .tag-treino { background: rgba(34, 197, 94, 0.1); color: var(--verde); border: 1px solid rgba(34, 197, 94, 0.3); padding: 4px 10px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+        .treino-titulo { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 5px; }
+        .treino-desc { font-size: 13px; color: var(--texto-mutado); margin-bottom: 15px; line-height: 1.4; white-space: pre-wrap;}
         
-        .card-info-data { font-size: 11px; color: var(--texto-mutado); font-weight: 600; display: flex; align-items: center; gap: 5px; }
-
-        .treino-titulo { font-size: 18px; font-weight: 600; color: var(--azul); margin-bottom: 10px; }
-        .treino-desc { font-size: 13px; color: #d1d5db; line-height: 1.6; margin-bottom: 20px; white-space: pre-wrap; }
-
-        .treino-detalhes { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--borda); padding-top: 15px; margin-bottom: 15px; }
-        .detalhe-item { font-size: 12px; color: var(--texto-mutado); display: flex; align-items: center; gap: 5px; }
-        .detalhe-item strong { color: #fff; }
+        .treino-info { display: flex; gap: 20px; margin-bottom: 20px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 8px; flex-wrap: wrap;}
+        .info-item { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #fff; font-weight: 500; }
+        .info-item i { color: var(--verde); font-size: 16px; }
 
         /* BOTÕES DE AÇÃO */
         .btn-acao { width: 100%; padding: 12px; border-radius: 8px; border: none; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        
-        .btn-inscrever { background: var(--verde); color: #000; }
-        .btn-inscrever:hover { background: #16a34a; }
-        
-        .btn-checkin { background: var(--azul); color: #fff; animation: pulsar 2s infinite; }
-        .btn-checkin:hover { background: #2563eb; }
-        
+        .btn-confirmar { background: var(--verde); color: #000; }
+        .btn-confirmar:hover { background: #16a34a; }
         .btn-desabilitado { background: #27272a; color: #52525b; cursor: not-allowed; }
         .btn-presente { background: rgba(34, 197, 94, 0.15); color: var(--verde); border: 1px solid var(--verde); cursor: default; }
-        .btn-falta { background: rgba(239, 68, 68, 0.15); color: var(--vermelho); border: 1px solid var(--vermelho); cursor: default; }
-        .btn-lotado { background: rgba(239, 68, 68, 0.1); color: var(--vermelho); border: 1px solid rgba(239, 68, 68, 0.3); cursor: not-allowed; }
-
-        @keyframes pulsar { 0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); } 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); } }
 
         /* EMPTY STATE */
         .empty-state { text-align: center; padding: 40px 20px; background: var(--painel); border: 1px solid var(--borda); border-radius: 12px; color: var(--texto-mutado); }
         .empty-state i { font-size: 40px; margin-bottom: 10px; opacity: 0.5; }
 
         /* MENU INFERIOR */
-        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(5, 8, 6, 0.95); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 15px; z-index: 9999; }
-        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; padding: 5px 10px; border-radius: 10px; border: 1px solid transparent; }
+        .menu-inferior { position: fixed; bottom: 20px; left: 5%; right: 5%; margin: 0 auto; max-width: 400px; background: rgba(10, 15, 13, 0.95); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px); border: 1px solid var(--borda); border-radius: 25px; display: flex; justify-content: space-around; align-items: center; padding: 10px 20px; z-index: 9999; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .item-menu { display: flex; flex-direction: column; align-items: center; gap: 5px; text-decoration: none; color: var(--texto-mutado); font-size: 10px; font-weight: 500; transition: 0.3s; padding: 5px 10px; border-radius: 10px; cursor: pointer; border: 1px solid transparent; }
         .item-menu i { font-size: 18px; }
         .item-menu.ativo { color: var(--verde); background: rgba(34, 197, 94, 0.1); border: 1px solid rgba(34, 197, 94, 0.2); }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <div class="fundo-degrade"></div>
 
     <div class="container">
-        
         <!-- TOPO -->
         <div class="topo">
             <a href="mais.html" class="btn-voltar"><i class="fas fa-arrow-left"></i></a>
             <h1 class="titulo-pagina">Treinamentos</h1>
         </div>
 
-        <!-- SEÇÃO DE TREINAMENTOS -->
-        <div class="secao-treinamentos">
-            <div class="secao-titulo">
-                <h1>Centro de Instrução</h1>
-                <p>Aperfeiçoe suas habilidades e garanta sua presença nos treinos.</p>
-            </div>
-            
-            <!-- ABAS DE NAVEGAÇÃO -->
-            <div class="abas">
-                <button class="aba-btn ativo" id="aba-agendados" onclick="mudarAba('agendados', this)">Agendados</button>
-                <button class="aba-btn" id="aba-certificados" onclick="mudarAba('certificados', this)">Meus Certificados</button>
-            </div>
-        </div>
-
-        <!-- LISTA DE TREINOS -->
+        <!-- LISTA DE TREINAMENTOS -->
         <div id="lista-treinamentos" style="display: flex; flex-direction: column; gap: 15px;">
             <p style="text-align: center; color: var(--texto-mutado); font-size: 13px; margin-top: 20px;">
                 <i class="fas fa-spinner fa-spin"></i> Buscando treinamentos...
             </p>
         </div>
-
     </div>
 
     <!-- MENU INFERIOR -->
@@ -124,24 +85,14 @@
         <a href="dashboard.html" class="item-menu"><i class="fas fa-home"></i><span>Início</span></a>
         <a href="bateponto.html" class="item-menu"><i class="fas fa-clock"></i><span>Ponto</span></a>
         <a href="atendimento.html" class="item-menu"><i class="fas fa-headset"></i><span>Suporte</span></a>
-        <a href="mais.html" class="item-menu ativo"><i class="fas fa-bars"></i><span>Mais</span></a>
+        <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
     </nav>
         <script>
         let membroLogado = null;
-        let todosTreinos = [];
-        let minhasInscricoes = [];
-        let abaAtual = 'agendados';
 
-        // Função para evitar quebra de layout
-        function escapeHTML(str) {
-            if (!str) return '';
-            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
-        }
-
-        // Formatar Data
         function formatarData(dataStr) {
             const d = new Date(dataStr);
-            return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')} às ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+            return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
         }
 
         // ==========================================
@@ -156,169 +107,78 @@
         });
 
         // ==========================================
-        // 2. BUSCAR DADOS
+        // 2. BUSCAR DADOS (COM PROTEÇÃO CONTRA TELA INFINITA)
         // ==========================================
         async function carregarDados() {
-    const container = document.getElementById('lista-treinamentos');
-    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando treinamentos...</p>';
-    
-    try {
-        // Força um erro se o banco não responder em 5 segundos
-        const timeout = new Promise((_, reject) => 
-            setTimeout(() => reject(new Error("O banco de dados demorou muito para responder. Verifique a conexão.")), 5000)
-        );
-
-        // Requisição de teste simples
-        const request = sb.from('treinamentos').select('*');
-        
-        // Corre a requisição contra o relógio
-        const resultado = await Promise.race([request, timeout]);
-
-        if (resultado.error) throw new Error("Erro do Supabase: " + resultado.error.message);
-        
-        const treinos = resultado.data;
-
-        if (!treinos || treinos.length === 0) {
-            container.innerHTML = '<div class="empty-state"><i class="fas fa-graduation-cap"></i><br>Nenhum treinamento agendado no momento.</div>';
-            return;
-        }
-
-        // Se chegou aqui, o banco respondeu! Agora puxa as presenças.
-        const { data: presencas, error: err2 } = await sb.from('presencas_treinamento')
-            .select('*')
-            .eq('passaporte', membroLogado.passaporte);
-
-        if (err2) throw new Error("Erro nas presenças: " + err2.message);
-
-        // Chama a função que desenha na tela (se ela tiver outro nome no seu código, ajuste aqui)
-        renderizarTreinos(treinos, presencas || []);
-
-    } catch (err) {
-        console.error(err);
-        // MOSTRA O ERRO REAL NA TELA
-        container.innerHTML = `
-            <div class="empty-state" style="border-color: var(--vermelho); color: var(--vermelho); padding: 20px;">
-                <i class="fas fa-exclamation-triangle" style="font-size: 30px;"></i><br>
-                <strong>Falha na conexão:</strong><br>
-                <span style="font-size: 13px;">${err.message}</span>
-            </div>
-        `;
-    }
-        }
-
-        // ==========================================
-        // 3. ABAS
-        // ==========================================
-        function mudarAba(aba, btnElement) {
-            abaAtual = aba;
-            document.querySelectorAll('.aba-btn').forEach(btn => btn.classList.remove('ativo'));
-            btnElement.classList.add('ativo');
-            renderizarTreinos();
-        }
-
-        // ==========================================
-        // 4. RENDERIZAR TELA
-        // ==========================================
-        function renderizarTreinos() {
             const container = document.getElementById('lista-treinamentos');
+            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando treinamentos...</p>';
             
-            // Se for a aba de certificados, mostra só os que ele foi 'presente'
-            if (abaAtual === 'certificados') {
-                const meusCertificados = minhasInscricoes.filter(i => i.status === 'presente');
-                
-                if (meusCertificados.length === 0) {
-                    container.innerHTML = '<div class="empty-state"><i class="fas fa-medal"></i><br>Você ainda não concluiu nenhum treinamento.</div>';
+            try {
+                // Busca os treinamentos agendados e as presenças do jogador ao mesmo tempo
+                const [resTreinos, resPresencas] = await Promise.all([
+                    sb.from('treinamentos').select('*').eq('status', 'agendado').order('data_hora', { ascending: true }),
+                    sb.from('presencas_treinamento').select('*').eq('passaporte', membroLogado.passaporte)
+                ]);
+
+                // Verifica se deu erro no banco
+                if (resTreinos.error) throw new Error("Tabela Treinos: " + resTreinos.error.message);
+                if (resPresencas.error) throw new Error("Tabela Presenças: " + resPresencas.error.message);
+
+                const treinos = resTreinos.data || [];
+                const presencas = resPresencas.data || [];
+
+                if (treinos.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-graduation-cap"></i><br>Nenhum treinamento agendado no momento.</div>';
                     return;
                 }
 
-                let html = '';
-                meusCertificados.forEach(insc => {
-                    const treinoOriginal = todosTreinos.find(t => t.id === insc.treinamento_id);
-                    if (treinoOriginal) {
-                        html += `
-                            <div class="card-treino">
-                                <h2 class="treino-titulo" style="color: var(--verde);"><i class="fas fa-check-circle"></i> ${escapeHTML(treinoOriginal.titulo)}</h2>
-                                <p class="treino-desc" style="margin-bottom: 0;">Instrutor: ${escapeHTML(treinoOriginal.instrutor)} <br> Concluído em: ${formatarData(treinoOriginal.data_hora)}</p>
-                            </div>
-                        `;
-                    }
-                });
-                container.innerHTML = html;
-                return;
-            }
+                renderizar(treinos, presencas);
 
-            // Se for a aba Agendados
-            if (todosTreinos.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-crosshairs"></i><br>Nenhum treinamento agendado no momento.</div>';
-                return;
+            } catch (err) {
+                console.error(err);
+                // Mostra o erro na tela para não ficar carregando para sempre
+                container.innerHTML = `
+                    <div class="empty-state" style="border-color: var(--vermelho); color: var(--vermelho); padding: 20px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 30px;"></i><br>
+                        <strong>Erro ao carregar:</strong><br>
+                        <span style="font-size: 12px;">${err.message}</span>
+                    </div>
+                `;
             }
+        }
 
-            const agora = new Date();
+        // ==========================================
+        // 3. MONTAR OS CARDS NA TELA
+        // ==========================================
+        function renderizar(treinos, presencas) {
+            const container = document.getElementById('lista-treinamentos');
             let html = '';
 
-            todosTreinos.forEach(treino => {
-                const dataTreino = new Date(treino.data_hora);
-                const minhaInscricao = minhasInscricoes.find(i => i.treinamento_id === treino.id);
-                
-                // Conta quantos já se inscreveram
-                const inscritosNoTreino = minhasInscricoes.filter(i => i.treinamento_id === treino.id).length; 
-                // (Isso é uma limitação: só sabemos os que se inscreveram e estão na tabela, o ideal seria uma query separada, mas para simplificar vamos usar as vagas do banco)
-                
-                // Calcula a diferença de tempo em minutos
-                const diffMinutos = (dataTreino - agora) / 1000 / 60;
-                
-                let btnHtml = '';
-                
-                // Lógica de Tempo:
-                // 1. Faltam mais de 15 min para começar -> Inscrever
-                // 2. Entre 15 min antes e 2h depois do início -> Check-in (se inscrito)
-                // 3. Mais de 2h depois do início -> Falta (se não fez check-in)
+            treinos.forEach(t => {
+                // Verifica se o jogador já tem uma presença registrada neste treino
+                const minhaPresenca = presencas.find(p => String(p.treinamento_id) === String(t.id));
+                const isPresente = minhaPresenca ? true : false;
 
-                if (diffMinutos > 15) {
-                    if (minhaInscricao) {
-                        btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-check"></i> Inscrito</button>`;
-                    } else {
-                        btnHtml = `<button class="btn-acao btn-inscrever" onclick="inscrever('${treino.id}')"><i class="fas fa-user-plus"></i> Inscrever-se</button>`;
-                    }
-                } 
-                else if (diffMinutos <= 15 && diffMinutos > -120) {
-                    // Janela de Check-in (15 min antes até 2h depois do início)
-                    if (minhaInscricao) {
-                        if (minhaInscricao.status === 'inscrito') {
-                            btnHtml = `<button class="btn-acao btn-checkin" onclick="marcarPresenca('${minhaInscricao.id}')"><i class="fas fa-fingerprint"></i> Marcar Presença</button>`;
-                        } else if (minhaInscricao.status === 'presente') {
-                            btnHtml = `<button class="btn-acao btn-presente" disabled><i class="fas fa-check-double"></i> Presença Confirmada</button>`;
-                        }
-                    } else {
-                        btnHtml = `<button class="btn-acao btn-lotado" disabled><i class="fas fa-lock"></i> Fora do Prazo</button>`;
-                    }
-                } 
-                else {
-                    // Já passou do tempo
-                    if (minhaInscricao) {
-                        if (minhaInscricao.status === 'inscrito') {
-                            btnHtml = `<button class="btn-acao btn-falta" disabled><i class="fas fa-times"></i> Falta Registrada</button>`;
-                        } else if (minhaInscricao.status === 'presente') {
-                            btnHtml = `<button class="btn-acao btn-presente" disabled><i class="fas fa-check-double"></i> Presença Confirmada</button>`;
-                        }
-                    } else {
-                        btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-ban"></i> Encerrado</button>`;
-                    }
+                // Define qual botão vai aparecer
+                let btnHtml = '';
+                if (isPresente) {
+                    btnHtml = `<button class="btn-acao btn-presente" disabled><i class="fas fa-check-double"></i> PRESENÇA CONFIRMADA</button>`;
+                } else {
+                    btnHtml = `<button class="btn-acao btn-confirmar" onclick="confirmarPresenca('${t.id}')"><i class="fas fa-user-check"></i> CONFIRMAR PRESENÇA</button>`;
                 }
 
                 html += `
                     <div class="card-treino">
                         <div class="card-topo">
-                            <div class="tag-treino"><i class="fas fa-graduation-cap"></i> TREINAMENTO</div>
-                            <div class="card-info-data"><i class="far fa-calendar-alt"></i> ${formatarData(treino.data_hora)}</div>
+                            <span class="tag-tipo"><i class="fas fa-graduation-cap"></i> TREINAMENTO</span>
                         </div>
                         
-                        <h2 class="treino-titulo">${escapeHTML(treino.titulo)}</h2>
-                        <div class="treino-desc">${escapeHTML(treino.descricao)}</div>
+                        <h2 class="treino-titulo">${t.titulo}</h2>
+                        <p class="treino-desc">${t.descricao}</p>
 
-                        <div class="treino-detalhes">
-                            <div class="detalhe-item"><i class="fas fa-user-tie"></i> Instrutor: <strong>${escapeHTML(treino.instrutor)}</strong></div>
-                            <div class="detalhe-item"><i class="fas fa-users"></i> <strong>${treino.vagas_totais}</strong> Vagas</div>
+                        <div class="treino-info">
+                            <div class="info-item"><i class="fas fa-user-tie"></i> Instrutor: ${t.instrutor}</div>
+                            <div class="info-item"><i class="far fa-calendar-alt"></i> ${formatarData(t.data_hora)}</div>
                         </div>
 
                         ${btnHtml}
@@ -330,43 +190,30 @@
         }
 
         // ==========================================
-        // 5. AÇÕES
+        // 4. CONFIRMAR PRESENÇA (O CLIQUE ÚNICO)
         // ==========================================
-        
-const { error } = await sb.from('presencas_treinamento').insert([{
-    treinamento_id: convocacaoId, // ou treino
-    passaporte: membroLogado.passaporte,
-    nome: membroLogado.nome,
-    status_presenca: 'confirmado' // <-- AQUI MUDA PARA:
-    // status: 'presente'
-}]);
+        async function confirmarPresenca(treinoId) {
+            if (!confirm("Confirmar sua presença neste treinamento?")) return;
+
+            try {
+                // Salva o status já como 'presente' para a gerência não precisar cobrar 2 vezes
+                const { error } = await sb.from('presencas_treinamento').insert([{
+                    treinamento_id: treinoId,
+                    passaporte: membroLogado.passaporte,
+                    nome: membroLogado.nome,
+                    status: 'presente' 
+                }]);
 
                 if (error) throw error;
-                carregarDados(); // Recarrega a tela para atualizar o botão
+                
+                alert("Presença confirmada com sucesso! Não falte.");
+                carregarDados(); // Recarrega a tela para o botão ficar verde
+
             } catch (err) {
-                alert("Erro ao se inscrever. Tente novamente.");
                 console.error(err);
+                alert("Erro ao confirmar presença: " + err.message);
             }
         }
-
-        async function confirmarPresenca(convocacaoId) { // O nome pode ser treinamentoId no seu código
-    try {
-        const { error } = await sb.from('presencas_treinamento').insert([{
-            treinamento_id: treinamentoId, // ajuste se necessário
-            passaporte: membroLogado.passaporte,
-            nome: membroLogado.nome,
-            status: 'presente' // <--- AQUI ESTÁ A MUDANÇA
-        }]);
-
-        if (error) throw error;
-        
-        alert("Presença confirmada com sucesso! Não se esqueça de comparecer.");
-        carregarDados(); 
-    } catch (err) {
-        console.error(err);
-        alert("Erro ao confirmar presença. Tente novamente.");
-    }
-            }
     </script>
 </body>
 </html>
