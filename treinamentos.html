@@ -329,21 +329,23 @@
             }
         }
 
-        async function marcarPresenca(inscricaoId) {
-            try {
-                const { error } = await sb.from('presencas_treinamento').update({ status: 'presente' }).eq('id', inscricaoId);
-                
-                if (error) throw error;
-                carregarDados(); // Recarrega a tela para mostrar "Presença Confirmada"
-            } catch (err) {
-                alert("Erro ao confirmar presença.");
-                console.error(err);
-            }
-        }
+        async function marcarPresenca(presencaId) {
+    if (!confirm("Você está no local do evento? Confirmar sua presença agora?")) return;
 
-        function sair() {
-            sessionStorage.removeItem('membro_logado');
-            window.location.href = 'login.html';
+    try {
+        // CORREÇÃO: A coluna certa é 'status' e não 'status_presenca'
+        const { error } = await sb.from('presencas_treinamento')
+            .update({ status: 'presente' })
+            .eq('id', presencaId);
+        
+        if (error) throw error;
+        
+        alert("Check-in realizado com sucesso! Bom trabalho.");
+        carregarDados(); 
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao marcar presença: " + err.message);
+    }
         }
     </script>
 </body>
