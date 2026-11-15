@@ -312,14 +312,14 @@
         // ==========================================
         // 5. AÇÕES
         // ==========================================
-        async function inscrever(treinoId) {
-            try {
-                const { error } = await sb.from('presencas_treinamento').insert([{
-                    treinamento_id: treinoId,
-                    passaporte: membroLogado.passaporte,
-                    nome: membroLogado.nome,
-                    status: 'inscrito'
-                }]);
+        
+const { error } = await sb.from('presencas_treinamento').insert([{
+    treinamento_id: convocacaoId, // ou treino
+    passaporte: membroLogado.passaporte,
+    nome: membroLogado.nome,
+    status_presenca: 'confirmado' // <-- AQUI MUDA PARA:
+    // status: 'presente'
+}]);
 
                 if (error) throw error;
                 carregarDados(); // Recarrega a tela para atualizar o botão
