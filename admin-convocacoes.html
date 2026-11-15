@@ -240,15 +240,15 @@
                             </div>
                             
                             <div class="card-admin-acoes">
-                                <button class="btn-acao-admin btn-ver" onclick="verPresencas('${c.id}', '${c.titulo.replace(/'/g, "\\'")}')">
-                                    <i class="fas fa-list"></i> Ver Confirmados
-                                </button>
-                                ${!isFinalizada ? `
-                                    <button class="btn-acao-admin btn-finalizar" onclick="finalizarConvocacao('${c.id}')">
-                                        <i class="fas fa-flag-checkered"></i> Finalizar e Dar Faltas
-                                    </button>
-                                ` : ''}
-                            </div>
+    <button class="btn-acao-admin btn-ver" onclick="verPresencas('${c.id}', '${c.titulo.replace(/'/g, "\\'")}')">
+        <i class="fas fa-list"></i> Ver Confirmados
+    </button>
+    ${!isFinalizada ? `
+        <button class="btn-acao-admin btn-finalizar" onclick="finalizarConvocacao('${c.id}')">
+            <i class="fas fa-flag-checkered"></i> Finalizar
+        </button>
+    ` : ''}
+</div>
                         </div>
                     `;
                 });
