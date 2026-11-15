@@ -42,18 +42,18 @@
         /* Quadradinho P1 Estilo BPM */
         .box-info.destaque-assento { border-color: rgba(34, 197, 94, 0.3); }
         .box-p-verde {
-            background: var(--verde-claro);
-            color: #000;
-            font-family: 'Oswald', sans-serif;
-            font-size: 20px;
-            font-weight: 700;
-            width: 44px;
-            height: 44px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            margin-top: 4px;
+    background: var(--verde-claro);
+    color: #000;
+    font-family: 'Oswald', sans-serif;
+    font-size: 16px; /* Reduzido de 20px para 16px */
+    font-weight: 700;
+    width: 36px;     /* Reduzido de 44px para 36px */
+    height: 36px;    /* Reduzido de 44px para 36px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    margin-top: 4px;
         }
 
         .integrantes-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; margin-top: 5px;}
@@ -206,7 +206,7 @@
         <div class="modal-content">
             <i class="fas fa-exchange-alt" style="font-size: 40px; color: var(--verde); margin-bottom: 15px;"></i>
             <h2 class="modal-titulo">Confirmar Troca?</h2>
-            <p style="font-size: 13px; color: #fff; margin-bottom: 20px;">Deseja realmente ir para a equipe <strong id="nome-nova-equipe" style="color: var(--verde-claro);">---</strong>? Você será realocado imediatamente.</p>
+             <p style="font-size: 13px; color: #fff; margin-bottom: 20px;">Deseja ir para a equipe <strong id="nome-nova-equipe" style="color: var(--verde-claro);">---</strong>?<br><br><span style="color: var(--amarelo); font-size: 11px;"><i class="fas fa-exclamation-triangle"></i> Atenção: Após a troca, você não poderá mudar novamente até encerrar o ponto e iniciar um novo.</span></p>
             <div class="botoes-confirmar">
                 <button class="btn-nao" onclick="fecharModalConfirmar()">Cancelar</button>
                 <button class="btn-sim" onclick="confirmarTroca()">Sim, Trocar</button>
@@ -248,45 +248,56 @@
         });
 
         async function carregarEquipe() {
-            const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
+    const { data } = await sb.from('pontos').select('*').eq('passaporte', membroLogado.passaporte).in('status', ['aberto', 'pausado']).maybeSingle();
 
-            if (data) {
-                pontoAtual = data;
-                document.getElementById('tela-bloqueio').style.display = 'none';
-                document.getElementById('container-principal').style.display = 'flex';
+    if (data) {
+        pontoAtual = data;
+        document.getElementById('tela-bloqueio').style.display = 'none';
+        document.getElementById('container-principal').style.display = 'flex';
 
-                const { data: equipeInfo } = await sb.from('equipes').select('*').eq('id', pontoAtual.equipe_id).single();
-                
-                const nomeEquipe = equipeInfo ? equipeInfo.nome : 'Desconhecida';
-                const areaEquipe = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
-                
-                document.getElementById('nome-equipe').innerText = nomeEquipe;
-                document.getElementById('info-area').innerText = areaEquipe;
-                
-                // Turno Simulado (Blocos de 3 em 3 horas)
-                const horaAtual = new Date().getHours();
-                const blocoTurno = Math.floor(horaAtual / 3) * 3;
-                const proxBloco = (blocoTurno + 3) % 24;
-                document.getElementById('info-turno').innerText = `${String(blocoTurno).padStart(2, '0')}:00 - ${String(proxBloco).padStart(2, '0')}:00`;
+        const { data: equipeInfo } = await sb.from('equipes').select('*').eq('id', pontoAtual.equipe_id).single();
+        
+        const nomeEquipe = equipeInfo ? equipeInfo.nome : 'Desconhecida';
+        const areaEquipe = equipeInfo && equipeInfo.area ? equipeInfo.area : 'Não definida';
+        
+        document.getElementById('nome-equipe').innerText = nomeEquipe;
+        document.getElementById('info-area').innerText = areaEquipe;
+        
+        const horaAtual = new Date().getHours();
+        const blocoTurno = Math.floor(horaAtual / 3) * 3;
+        const proxBloco = (blocoTurno + 3) % 24;
+        document.getElementById('info-turno').innerText = `${String(blocoTurno).padStart(2, '0')}:00 - ${String(proxBloco).padStart(2, '0')}:00`;
 
-                const horaEntrada = new Date(pontoAtual.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
-                document.getElementById('info-entrada').innerText = horaEntrada;
+        const horaEntrada = new Date(pontoAtual.entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'});
+        document.getElementById('info-entrada').innerText = horaEntrada;
 
-                if(intervaloRelogio) clearInterval(intervaloRelogio);
-                intervaloRelogio = setInterval(() => {
-                    const dif = new Date() - new Date(pontoAtual.entrada);
-                    const h = Math.floor(dif / 3600000);
-                    const m = Math.floor((dif / 60000) % 60);
-                    const s = Math.floor((dif / 1000) % 60);
-                    document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-                }, 1000);
+        if(intervaloRelogio) clearInterval(intervaloRelogio);
+        intervaloRelogio = setInterval(() => {
+            const dif = new Date() - new Date(pontoAtual.entrada);
+            const h = Math.floor(dif / 3600000);
+            const m = Math.floor((dif / 60000) % 60);
+            const s = Math.floor((dif / 1000) % 60);
+            document.getElementById('info-tempo').innerText = `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }, 1000);
 
-                await carregarIntegrantes(pontoAtual.equipe_id, nomeEquipe, areaEquipe);
+        // LÓGICA DE TROCA ÚNICA: Verifica se a data de troca é diferente da data de entrada
+        const dataEntrada = new Date(pontoAtual.entrada).getTime();
+        const dataTroca = new Date(pontoAtual.troca_equipe_em || 0).getTime();
+        const btnTrocar = document.querySelector('.btn-trocar');
 
-            } else {
-                document.getElementById('tela-bloqueio').style.display = 'flex';
-                document.getElementById('container-principal').style.display = 'none';
-            }
+        // Se a diferença for maior que 5 segundos, ele já trocou uma vez.
+        if (dataTroca - dataEntrada > 5000) {
+            btnTrocar.style.display = 'none'; // Esconde o botão de trocar
+        } else {
+            btnTrocar.style.display = 'flex'; // Mostra o botão
+        }
+
+        await carregarIntegrantes(pontoAtual.equipe_id, nomeEquipe, areaEquipe);
+
+    } else {
+        document.getElementById('tela-bloqueio').style.display = 'flex';
+        document.getElementById('container-principal').style.display = 'none';
+    }
         }
 
         
@@ -453,23 +464,31 @@
         }
 
         async function confirmarTroca() {
-            if (!equipeSelecionadaParaTroca) return;
-            fecharModalConfirmar();
+    if (!equipeSelecionadaParaTroca) return;
+    fecharModalConfirmar();
 
-            try {
-                await sb.from('pontos').update({ 
-                    equipe_id: equipeSelecionadaParaTroca.id,
-                    posicao: equipeSelecionadaParaTroca.nome,
-                    entrada: new Date().toISOString() // Reseta a entrada para recalcular os assentos (você será P1 na nova equipe)
-                }).eq('id', pontoAtual.id);
-                
-                customAlert(`Você foi realocado para ${equipeSelecionadaParaTroca.nome}!`);
-                carregarEquipe();
-            } catch (e) {
-                customAlert("Erro ao trocar de equipe.", "erro");
-            }
+    try {
+        // Tenta fazer a atualização no Supabase
+        const { error } = await sb.from('pontos').update({ 
+            equipe_id: equipeSelecionadaParaTroca.id,
+            posicao: equipeSelecionadaParaTroca.nome,
+            entrada: new Date().toISOString(),
+            troca_equipe_em: new Date().toISOString()
+        }).eq('id', pontoAtual.id);
+        
+        // Se o Supabase retornar erro (bloqueio de RLS), mostramos no alerta customizado
+        if (error) {
+            console.error(error);
+            customAlert("Erro no banco: Verifique as permissões (RLS) da tabela pontos.", "erro");
+            return;
         }
 
+        customAlert(`Você foi realocado para ${equipeSelecionadaParaTroca.nome}!`);
+        carregarEquipe();
+    } catch (e) {
+        customAlert("Erro ao trocar de equipe.", "erro");
+    }
+            }
         // ==========================================
         // ALERTAS E SINC
         // ==========================================
