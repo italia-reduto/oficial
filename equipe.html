@@ -468,7 +468,6 @@
     fecharModalConfirmar();
 
     try {
-        // Tenta fazer a atualização no Supabase
         const { error } = await sb.from('pontos').update({ 
             equipe_id: equipeSelecionadaParaTroca.id,
             posicao: equipeSelecionadaParaTroca.nome,
@@ -476,19 +475,18 @@
             troca_equipe_em: new Date().toISOString()
         }).eq('id', pontoAtual.id);
         
-        // Se o Supabase retornar erro (bloqueio de RLS), mostramos no alerta customizado
         if (error) {
-            console.error(error);
-            customAlert("Erro no banco: Verifique as permissões (RLS) da tabela pontos.", "erro");
+            // MOSTRA O ERRO REAL DO SUPABASE NA TELA
+            customAlert(`ERRO DO BANCO: ${error.message}`, "erro");
             return;
         }
 
         customAlert(`Você foi realocado para ${equipeSelecionadaParaTroca.nome}!`);
         carregarEquipe();
     } catch (e) {
-        customAlert("Erro ao trocar de equipe.", "erro");
+        customAlert("Erro ao trocar de equipe. " + e.message, "erro");
     }
-            }
+        }
         // ==========================================
         // ALERTAS E SINC
         // ==========================================
