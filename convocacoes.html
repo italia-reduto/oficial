@@ -95,183 +95,141 @@
         <a href="mais.html" class="item-menu"><i class="fas fa-bars"></i><span>Mais</span></a>
     </nav>
         <script>
-        let membroLogado = null;
-        let todasConvocacoes = [];
-        let minhasPresencas = [];
+        
+                                    let membroLogado = null;
+let todasConvocacoes = [];
+let minhasPresencas = [];
 
-        // Função para evitar quebra de layout
-        function escapeHTML(str) {
-            if (!str) return '';
-            return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
-        }
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+}
 
-        // Formatar Data
-        function formatarData(dataStr) {
-            const d = new Date(dataStr);
-            return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-        }
+function formatarData(dataStr) {
+    const d = new Date(dataStr);
+    return d.toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+}
 
-        // ==========================================
-        // 1. INICIALIZAÇÃO
-        // ==========================================
-        window.addEventListener('DOMContentLoaded', async () => {
-            const logado = sessionStorage.getItem('membro_logado');
-            if (!logado) return window.location.href = 'login.html';
+// Timeout de proteção (evita "carregando infinito")
+function withTimeout(promise, ms = 15000) {
+    return Promise.race([
+        promise,
+        new Promise((_, rej) => setTimeout(() => rej(new Error("Timeout: o servidor demorou mais de 15s.")), ms))
+    ]);
+}
 
-            membroLogado = JSON.parse(logado);
-            carregarDados();
-        });
+window.addEventListener('DOMContentLoaded', () => {
+    const logado = sessionStorage.getItem('membro_logado');
+    if (!logado) return window.location.href = 'login.html';
+    membroLogado = JSON.parse(logado);
+    carregarDados();
+});
 
-        // ==========================================
-        // 2. BUSCAR DADOS
-        // ==========================================
-        async function carregarDados() {
-            const container = document.getElementById('lista-convocacoes');
-            
-            try {
-                // Puxa as convocações abertas
-                const { data: convocacoes, error: err1 } = await sb.from('convocacoes')
-                    .select('*')
-                    .eq('status', 'aberta')
-                    .order('data_hora', { ascending: true });
+async function carregarDados() {
+    const container = document.getElementById('lista-convocacoes');
+    container.innerHTML = '<p style="text-align:center;color:var(--texto-mutado);font-size:13px;margin-top:20px;"><i class="fas fa-spinner fa-spin"></i> Buscando convocações...</p>';
 
-                if (err1) throw err1;
-                todasConvocacoes = convocacoes || [];
+    try {
+        const { data: convocacoes, error: err1 } = await withTimeout(
+            sb.from('convocacoes').select('*').eq('status', 'aberta').order('data_hora', { ascending: true })
+        );
+        if (err1) throw new Error("Buscar convocações: " + err1.message);
+        todasConvocacoes = convocacoes || [];
 
-                // Puxa as presenças DESSE jogador
-                const { data: presencas, error: err2 } = await sb.from('presencas_convocacao')
-                    .select('*')
-                    .eq('passaporte', membroLogado.passaporte);
+        const { data: presencas, error: err2 } = await withTimeout(
+            sb.from('presencas_convocacao').select('*').eq('passaporte', membroLogado.passaporte)
+        );
+        if (err2) throw new Error("Buscar presenças: " + err2.message);
+        minhasPresencas = presencas || [];
 
-                if (err2) throw err2;
-                minhasPresencas = presencas || [];
+        renderizarConvocacoes();
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `
+            <div class="empty-state" style="border-color:#ef4444;color:#ef4444;background:rgba(239,68,68,0.05);">
+                <i class="fas fa-exclamation-triangle"></i><br>
+                <strong>Erro ao carregar convocações</strong>
+                <span style="display:block;font-size:12px;margin-top:8px;word-break:break-word;">${escapeHTML(err.message || 'Erro desconhecido')}</span>
+                <button onclick="carregarDados()" style="margin-top:15px;background:#ef4444;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-weight:bold;cursor:pointer;">
+                    <i class="fas fa-sync"></i> Tentar Novamente
+                </button>
+            </div>`;
+    }
+}
 
-                renderizarConvocacoes();
+function renderizarConvocacoes() {
+    const container = document.getElementById('lista-convocacoes');
 
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<div class="empty-state" style="border-color: #ef4444; color: #ef4444;"><i class="fas fa-exclamation-triangle"></i><br>Erro ao carregar as convocações.</div>';
+    if (todasConvocacoes.length === 0) {
+        container.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><br>Nenhuma convocação oficial no momento.</div>';
+        return;
+    }
+
+    let html = '';
+    todasConvocacoes.forEach(conv => {
+        const minha = minhasPresencas.find(p => p.convocacao_id === conv.id);
+        let btnHtml = '';
+
+        if (minha) {
+            if (minha.status_presenca === 'presente') {
+                btnHtml = `<button class="btn-acao btn-presente" disabled><i class="fas fa-check-double"></i> PRESENÇA CONFIRMADA</button>`;
+            } else if (minha.status_presenca === 'falta') {
+                btnHtml = `<button class="btn-acao btn-falta" disabled><i class="fas fa-times"></i> FALTA REGISTRADA</button>`;
+            } else {
+                btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-lock"></i> AGUARDANDO</button>`;
             }
+        } else {
+            btnHtml = `<button class="btn-acao btn-confirmar" onclick="confirmarPresenca('${conv.id}')"><i class="fas fa-user-check"></i> CONFIRMAR PRESENÇA</button>`;
         }
 
-        // ==========================================
-        // 3. RENDERIZAR OS CARDS
-        // ==========================================
-        function renderizarConvocacoes() {
-            const container = document.getElementById('lista-convocacoes');
-            
-            if (todasConvocacoes.length === 0) {
-                container.innerHTML = '<div class="empty-state"><i class="fas fa-bullhorn"></i><br>Nenhuma convocação oficial no momento.</div>';
-                return;
+        const tagXp = conv.recompensa_xp > 0
+            ? `<span class="info-item destaque"><i class="fas fa-star"></i> ${conv.recompensa_xp} XP</span>`
+            : '';
+
+        html += `
+            <div class="card-convocacao">
+                <div class="card-topo"><div class="tag-tipo"><i class="fas fa-bullhorn"></i> CONVOCAÇÃO OFICIAL</div></div>
+                <h2 class="conv-titulo">${escapeHTML(conv.titulo)}</h2>
+                <div class="conv-desc">${escapeHTML(conv.descricao)}</div>
+                <div class="conv-info">
+                    <div class="info-item"><i class="far fa-calendar-alt"></i> ${formatarData(conv.data_hora)}</div>
+                    ${tagXp}
+                </div>
+                ${btnHtml}
+            </div>`;
+    });
+    container.innerHTML = html;
+}
+
+async function confirmarPresenca(convocacaoId) {
+    // Trava de segurança: já existe registro?
+    if (minhasPresencas.some(p => p.convocacao_id === convocacaoId)) {
+        alert("Você já possui registro nesta convocação.");
+        return;
+    }
+
+    const btn = event?.target?.closest('button');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ENVIANDO...'; }
+
+    try {
+        const { error } = await withTimeout(
+            sb.from('presencas_convocacao').insert([{
+                convocacao_id: convocacaoId,
+                passaporte: membroLogado.passaporte,
+                nome: membroLogado.nome,
+                status_presenca: 'presente'
+            }])
+        );
+        if (error) throw new Error(error.message);
+
+        alert("Presença confirmada! Compareça no horário.");
+        carregarDados();
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao confirmar presença:\n" + (err.message || "Tente novamente."));
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-user-check"></i> CONFIRMAR PRESENÇA'; }
+    }
             }
-
-            const agora = new Date();
-            let html = '';
-
-            todasConvocacoes.forEach(conv => {
-                const dataConv = new Date(conv.data_hora);
-                const minhaPresenca = minhasPresencas.find(p => p.convocacao_id === conv.id);
-                
-                // Cálculo de tempo em minutos (positivo = falta acontecer, negativo = já aconteceu)
-                const diffMinutos = (dataConv - agora) / 1000 / 60;
-                
-                let btnHtml = '';
-                
-                // Lógica de Tempo e Botão
-                // 1. Se o evento já passou (mais de 2 horas)
-                if (diffMinutos < -120) {
-                    btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-lock"></i> ENCERRADO</button>`;
-                } 
-                // 2. Se está na janela de check-in (15 min antes até 2h depois)
-                else if (diffMinutos <= 15 && diffMinutos >= -120) {
-                    if (minhaPresenca) {
-                        if (minhaPresenca.status_presenca === 'confirmado') {
-                            btnHtml = `<button class="btn-acao btn-checkin" onclick="marcarPresenca('${minhaPresenca.id}')"><i class="fas fa-fingerprint"></i> MARCAR PRESENÇA</button>`;
-                        } else if (minhaPresenca.status_presenca === 'presente') {
-                            btnHtml = `<button class="btn-acao btn-presente" disabled><i class="fas fa-check-double"></i> PRESENÇA CONFIRMADA</button>`;
-                        } else if (minhaPresenca.status_presenca === 'falta') {
-                            btnHtml = `<button class="btn-acao btn-falta" disabled><i class="fas fa-times"></i> FALTA REGISTRADA</button>`;
-                        }
-                    } else {
-                        btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-lock"></i> FORA DO PRAZO</button>`;
-                    }
-                } 
-                // 3. Antes do evento (mais de 15 min antes)
-                else {
-                    if (minhaPresenca) {
-                        btnHtml = `<button class="btn-acao btn-desabilitado" disabled><i class="fas fa-check"></i> CONFIRMADO</button>`;
-                    } else {
-                        btnHtml = `<button class="btn-acao btn-confirmar" onclick="confirmarPresenca('${conv.id}')"><i class="fas fa-user-plus"></i> CONFIRMAR PRESENÇA</button>`;
-                    }
-                }
-
-                // Tag de XP
-                let tagXp = '';
-                if (conv.recompensa_xp > 0) {
-                    tagXp = `<span class="info-item destaque"><i class="fas fa-star"></i> ${conv.recompensa_xp} XP</span>`;
-                }
-
-                html += `
-                    <div class="card-convocacao">
-                        <div class="card-topo">
-                            <div class="tag-tipo"><i class="fas fa-bullhorn"></i> CONVOCAÇÃO OFICIAL</div>
-                        </div>
-                        
-                        <h2 class="conv-titulo">${escapeHTML(conv.titulo)}</h2>
-                        <div class="conv-desc">${escapeHTML(conv.descricao)}</div>
-
-                        <div class="conv-info">
-                            <div class="info-item"><i class="far fa-calendar-alt"></i> ${formatarData(conv.data_hora)}</div>
-                            ${tagXp}
-                        </div>
-
-                        ${btnHtml}
-                    </div>
-                `;
-            });
-
-            container.innerHTML = html;
-        }
-
-        // ==========================================
-        // 4. AÇÕES DO JOGADOR
-        // ==========================================
-        async function confirmarPresenca(convocacaoId) {
-            try {
-                const { error } = await sb.from('presencas_convocacao').insert([{
-                    convocacao_id: convocacaoId,
-                    passaporte: membroLogado.passaporte,
-                    nome: membroLogado.nome,
-                    status_presenca: 'confirmado'
-                }]);
-
-                if (error) throw error;
-                
-                alert("Presença confirmada com sucesso! Não se esqueça de comparecer.");
-                carregarDados(); // Recarrega para o botão mudar
-            } catch (err) {
-                console.error(err);
-                alert("Erro ao confirmar presença. Tente novamente.");
-            }
-        }
-
-        async function marcarPresenca(presencaId) {
-            if (!confirm("Você está no local do evento? Confirmar sua presença agora?")) return;
-
-            try {
-                const { error } = await sb.from('presencas_convocacao')
-                    .update({ status_presenca: 'presente' })
-                    .eq('id', presencaId);
-                
-                if (error) throw error;
-                
-                alert("Check-in realizado com sucesso! Bom trabalho.");
-                carregarDados(); // Recarrega para o botão mudar
-            } catch (err) {
-                console.error(err);
-                alert("Erro ao marcar presença.");
-            }
-        }
     </script>
 </body>
 </html>
