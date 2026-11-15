@@ -317,134 +317,166 @@
         // 4. VER QUEM CONFIRMOU
         // ==========================================
         async function verPresencas(convocacaoId, titulo) {
-            convocacaoSelecionadaId = convocacaoId;
-            document.getElementById('titulo-presenca').innerText = titulo;
-            
-            const container = document.getElementById('lista-presenca-membros');
-            container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando confirmados...</p>';
-            
-            document.getElementById('modal-presenca').classList.add('ativo');
+    convocacaoSelecionadaId = convocacaoId;
+    document.getElementById('titulo-presenca').innerText = titulo;
 
-            try {
-                const { data, error } = await sb.from('presencas_convocacao')
-                    .select('*')
-                    .eq('convocacao_id', convocacaoId);
+    const container = document.getElementById('lista-presenca-membros');
+    container.innerHTML = '<p style="text-align:center;color:var(--texto-mutado);"><i class="fas fa-spinner fa-spin"></i> Buscando...</p>';
+    document.getElementById('modal-presenca').classList.add('ativo');
 
-                if (error) throw error;
+    try {
+        const { data, error } = await sb.from('presencas_convocacao')
+            .select('*').eq('convocacao_id', convocacaoId).order('nome', { ascending: true });
+        if (error) throw error;
 
-                if (!data || data.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--texto-mutado);">Ninguém confirmou presença ainda.</p>';
-                    return;
-                }
-
-                let html = '';
-                data.forEach(insc => {
-                    let classeStatus = 'p-confirmado';
-                    let textoStatus = 'Confirmado';
-
-                    if (insc.status_presenca === 'presente') {
-                        classeStatus = 'p-presente';
-                        textoStatus = 'Presente';
-                    } else if (insc.status_presenca === 'falta') {
-                        classeStatus = 'p-falta';
-                        textoStatus = 'Falta';
-                    }
-
-                    html += `
-                        <div class="presenca-item">
-                            <div><strong>${insc.nome}</strong> <br> <span style="color: var(--texto-mutado); font-size: 11px;">Passaporte: ${insc.passaporte}</span></div>
-                            <span class="status-p ${classeStatus}">${textoStatus}</span>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-            } catch (err) {
-                console.error(err);
-                container.innerHTML = '<p style="text-align: center; color: var(--vermelho);">Erro ao carregar a lista.</p>';
-            }
+        if (!data || data.length === 0) {
+            container.innerHTML = '<p style="text-align:center;color:var(--texto-mutado);">Ninguém se manifestou ainda.</p>';
+            return;
         }
+
+        let html = '';
+        data.forEach(insc => {
+            let acaoHtml = '';
+
+            if (insc.status_presenca === 'presente') {
+                acaoHtml = `<span class="status-p p-presente"><i class="fas fa-check"></i> Presente</span>`;
+            } else if (insc.status_presenca === 'falta') {
+                acaoHtml = `<span class="status-p p-falta"><i class="fas fa-times"></i> Falta</span>`;
+            } else {
+                // 'inscrito' → botão de dar falta
+                acaoHtml = `<button class="btn-dar-falta"
+                    onclick="darFaltaIndividual('${insc.id}', '${insc.passaporte}', '${insc.nome.replace(/'/g, "\\'")}')">
+                    <i class="fas fa-times"></i> Dar Falta
+                </button>`;
+            }
+
+            html += `
+                <div class="presenca-item">
+                    <div>
+                        <strong>${escapeHTML(insc.nome)}</strong><br>
+                        <span style="color:var(--texto-mutado);font-size:11px;">Passaporte: ${insc.passaporte}</span>
+                    </div>
+                    ${acaoHtml}
+                </div>`;
+        });
+        container.innerHTML = html;
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = `<p style="text-align:center;color:var(--vermelho);">Erro: ${escapeHTML(err.message || 'desconhecido')}</p>`;
+    }
+}
+
+async function darFaltaIndividual(presencaId, passaporte, nome) {
+    if (!confirm(`Dar FALTA para ${nome}?\n\nIsso registrará a falta no evento e no histórico geral do membro.`)) return;
+
+    try {
+        // 1) Atualiza tabela do evento
+        const { error: err1 } = await sb.from('presencas_convocacao')
+            .update({ status_presenca: 'falta' }).eq('id', presencaId);
+        if (err1) throw err1;
+
+        // 2) Insere no histórico geral (upsert protegido)
+        const hoje = new Date().toISOString().split('T')[0];
+        const { error: err2 } = await sb.from('presencas').upsert([{
+            passaporte: passaporte,
+            status: 'falta',
+            data: hoje,
+            marcado_por_nome: (adminLogado?.nome || 'Admin') + ' (Convocação)',
+            marcado_em: new Date().toISOString(),
+            justificativa: null,
+            motivo_recusa: null
+        }], { onConflict: 'data,passaporte' });
+        if (err2) throw err2;
+
+        // Recarrega o modal mantendo o título
+        const tituloAtual = document.getElementById('titulo-presenca').innerText;
+        verPresencas(convocacaoSelecionadaId, tituloAtual);
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao dar falta: " + (err.message || "Tente novamente."));
+    }
+                     }
 
         // ==========================================
         // 5. FINALIZAR E DAR FALTAS / DAR XP
         // ==========================================
         async function finalizarConvocacao(convocacaoId) {
-            if (!confirm("Tem certeza? Quem confirmou e não veio receberá FALTA. Quem veio receberá o XP.")) return;
+    if (!confirm("Finalizar esta convocação?\n\n• A tela do jogador será TRAVADA\n• XP será entregue a quem está marcado como PRESENTE\n• Não é possível desfazer")) return;
 
-            const convocacaoOriginal = todasConvocacoes.find(c => c.id === convocacaoId);
-            const xpRecompensa = convocacaoOriginal ? convocacaoOriginal.recompensa_xp : 0;
+    const original = todasConvocacoes.find(c => c.id === convocacaoId);
+    if (!original) return alert("Convocação não encontrada.");
+    if (original.status === 'finalizada') return alert("Já está finalizada.");
 
-            try {
-                // 1. Marca a convocação como finalizada
-                const { error: errConv } = await sb.from('convocacoes')
-                    .update({ status: 'finalizada' })
-                    .eq('id', convocacaoId);
-                if (errConv) throw errConv;
+    const xpRecompensa = original.recompensa_xp || 0;
 
-                // 2. Busca todos os confirmados
-                const { data: confirmados, error: errBusca } = await sb.from('presencas_convocacao')
-                    .select('*')
-                    .eq('convocacao_id', convocacaoId);
-                
-                if (errBusca) throw errBusca;
+    try {
+        // 1) Tranca a convocação
+        const { error: errLock } = await sb.from('convocacoes')
+            .update({ status: 'finalizada' }).eq('id', convocacaoId);
+        if (errLock) throw errLock;
 
-                let qtdFaltas = 0;
-                let qtdPresentes = 0;
-                const hoje = new Date().toISOString().split('T')[0];
+        // 2) Busca todos os registros
+        const { data: registros, error: errBusca } = await sb.from('presencas_convocacao')
+            .select('*').eq('convocacao_id', convocacaoId);
+        if (errBusca) throw errBusca;
 
-                for (const user of confirmados) {
-                    if (user.status_presenca === 'confirmado') {
-                        // Deu Falta
-                        qtdFaltas++;
-                        await sb.from('presencas_convocacao').update({ status_presenca: 'falta' }).eq('id', user.id);
-                        
-                        // Salva na tabela geral de presenças
-                        await sb.from('presencas').upsert([{ 
-                            passaporte: user.passaporte, 
-                            status: 'falta', 
-                            data: hoje, 
-                            marcado_por: 'sistema',
-                            marcado_por_nome: 'Convocação Oficial', 
-                            marcado_em: new Date().toISOString(), 
-                            justificativa: null, 
-                            status_justificativa: null,
-                            motivo_recusa: null
-                        }], { onConflict: 'data,passaporte' });
+        const hoje = new Date().toISOString().split('T')[0];
+        let qtdPresentes = 0, qtdXp = 0, qtdPendentes = 0;
 
-                    } else if (user.status_presenca === 'presente') {
-                        // Deu Presença
-                        qtdPresentes++;
-                        await sb.from('presencas').upsert([{ 
-                            passaporte: user.passaporte, 
-                            status: 'presente', 
-                            data: hoje, 
-                            marcado_por: 'sistema',
-                            marcado_por_nome: 'Convocação Oficial', 
-                            marcado_em: new Date().toISOString() 
-                        }], { onConflict: 'data,passaporte' });
+        for (const r of (registros || [])) {
+            if (r.status_presenca === 'presente') {
+                qtdPresentes++;
 
-                        // Se tiver XP de recompensa, dá o XP
-                        if (xpRecompensa > 0) {
-                            const { data: membro } = await sb.from('membros').select('xp_total').eq('passaporte', user.passaporte).single();
-                            if(membro) {
-                                await sb.from('membros').update({ xp_total: (membro.xp_total || 0) + xpRecompensa }).eq('passaporte', user.passaporte);
-                            }
-                        }
+                // Histórico geral
+                await sb.from('presencas').upsert([{
+                    passaporte: r.passaporte,
+                    status: 'presente',
+                    data: hoje,
+                    marcado_por_nome: 'Convocação Oficial',
+                    marcado_em: new Date().toISOString(),
+                    justificativa: null,
+                    motivo_recusa: null
+                }], { onConflict: 'data,passaporte' });
+
+                // Entrega XP
+                if (xpRecompensa > 0) {
+                    const { data: m } = await sb.from('membros')
+                        .select('xp_total').eq('passaporte', r.passaporte).maybeSingle();
+                    if (m) {
+                        await sb.from('membros')
+                            .update({ xp_total: (m.xp_total || 0) + xpRecompensa })
+                            .eq('passaporte', r.passaporte);
+                        qtdXp++;
                     }
                 }
-
-                alert(`Convocação finalizada!\n✅ Presentes (Ganharam XP): ${qtdPresentes}\n❌ Faltas (Não compareceram): ${qtdFaltas}`);
-                carregarConvocacoesAdmin();
-
-            } catch (err) {
-                console.error(err);
-                alert("Erro ao finalizar convocação: " + err.message);
+            } else if (r.status_presenca === 'inscrito') {
+                qtdPendentes++;
             }
         }
+
+        alert(
+            `Convocação finalizada!\n\n` +
+            `✅ Presentes (receberam presença): ${qtdPresentes}\n` +
+            `⭐ XP entregue: ${qtdXp} membros × ${xpRecompensa} XP\n` +
+            `⚠️ Pendentes (ainda como "inscrito"): ${qtdPendentes}\n\n` +
+            (qtdPendentes > 0 ? `Use "Ver Confirmados" para dar FALTA individual nos pendentes.` : 'Tudo regularizado.')
+        );
+
+        carregarConvocacoesAdmin();
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao finalizar: " + (err.message || "Tente novamente."));
+    }
+                            }
 
         // ==========================================
         // 6. LOGOUT
         // ==========================================
+
+        function escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag]));
+        }
         function sair() {
             sessionStorage.removeItem('membro_logado');
             window.location.href = 'login.html';
